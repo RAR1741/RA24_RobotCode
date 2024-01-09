@@ -11,7 +11,7 @@ public class Limelight extends Subsystem {
   private NetworkTable m_limelightTable;
   private String m_name = "limelight";
 
-  // Limelight Offsets:
+  // Limelight Offsets (Incorrect currently):
   // X: 12 5426 in
   // Y: 9.19 in
   // Z: 10.1175 in

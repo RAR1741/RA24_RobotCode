@@ -1,10 +1,12 @@
 package frc.robot.autonomous.modes;
 
+import java.sql.Driver;
 import java.util.ArrayList;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.Constants;
 import frc.robot.autonomous.tasks.Task;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
@@ -50,15 +52,16 @@ public abstract class AutoModeBase {
   };
 
   private Pose2d getStartingPosition() {
-    // TODO: Deal with this later
-    // DriverStation.Alliance alliance = DriverStation.getAlliance().get();
+    DriverStation.Alliance alliance = DriverStation.Alliance.Red; //Default to RED
+    if(DriverStation.getAlliance().isPresent()) {
+      alliance = DriverStation.getAlliance().get();
+    }
 
-    // if (alliance == DriverStation.Alliance.Blue) {
-    //   return getBlueStartingPosition();
-    // } else {
-    //   return getRedStartingPosition();
-    // }
-    return getRedStartingPosition();
+    if (alliance == DriverStation.Alliance.Blue) {
+      return getBlueStartingPosition();
+    } else {
+      return getRedStartingPosition();
+    }
   }
 
   // public static PathPlannerTrajectory
