@@ -10,38 +10,7 @@ public final class Constants {
     public static final double k_bumperStart = 1; // Inches
     public static final double k_bumperHeight = 5; // Inches
   }
-
-  public static class LEDs {
-    public static final int k_PWMId = 0;
-    public static final int k_totalLength = ArmRight.k_length + ArmLeft.k_length + Drive.k_length;
-    public static final int k_sideLength = 13;
-    public static final int k_sideLengthOffset = 23 - k_sideLength;
-
-    public static class ArmRight {
-      public static final int k_start = 0;
-      public static final int k_length = 60;
-      public static final int k_frontTop = k_sideLength;
-      public static final int k_backTop = k_start + k_length - k_sideLength - k_sideLengthOffset;
-    }
-
-    public static class ArmLeft {
-      public static final int k_start = ArmRight.k_start + ArmRight.k_length;
-      public static final int k_length = 60;
-      public static final int k_frontTop = k_start + k_sideLength;
-      public static final int k_backTop = k_start + k_length - k_sideLength - k_sideLengthOffset;
-    }
-
-    public static class Drive {
-      public static final int k_start = ArmLeft.k_start + ArmLeft.k_length;
-      public static final int k_length = 120;
-    }
-  }
-
-  public static class Simulation {
-    public static final double k_width = 150; // Inches
-    public static final double k_height = 80; // Inches
-  }
-
+  
   public static class Auto {
     public static final double k_maxSpeed = 1; // 1 meters per second
     public static final double k_maxAcceleration = 0.5;
