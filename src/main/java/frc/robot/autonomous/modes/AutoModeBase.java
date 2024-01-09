@@ -1,6 +1,10 @@
 package frc.robot.autonomous.modes;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import com.pathplanner.lib.path.PathPlannerTrajectory;
+import com.pathplanner.lib.path.PathPlannerTrajectory.State;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -62,59 +66,4 @@ public abstract class AutoModeBase {
       return getRedStartingPosition();
     }
   }
-
-  // public static PathPlannerTrajectory
-  // transformTrajectoryForAlliance(PathPlannerTrajectory trajectory) {
-  // return trajectory;
-
-  // if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
-  // return trajectory;
-  // }
-
-  // // Flip the trajectory for blue
-  // List<State> transformedStates = new ArrayList<>();
-
-  // // for (State s : trajectory.getStates()) {
-  // // State state = (PathPlannerState) s;
-
-  // // transformedStates.add(transformStateForAlliance(state));
-  // // }
-
-  // return new PathPlannerTrajectory(
-  // transformedStates,
-  // trajectory.getMarkers(),
-  // trajectory.getStartStopEvent(),
-  // trajectory.getEndStopEvent(),
-  // trajectory.fromGUI);
-  // }
-
-  // public static PathPlannerState transformStateForAlliance(PathPlannerState
-  // state) {
-  // // Create a new state so that we don't overwrite the original
-  // PathPlannerState transformedState = new PathPlannerState();
-
-  // Translation2d transformedTranslation = new Translation2d(
-  // Constants.Field.k_width - state.poseMeters.getX(), state.poseMeters.getY());
-
-  // Rotation2d transformedHeading =
-  // Rotation2d.fromDegrees(state.poseMeters.getRotation().getDegrees() + 180);
-  // Rotation2d transformedHolonomicRotation =
-  // Rotation2d.fromDegrees(state.holonomicRotation.getDegrees() + 180);
-
-  // transformedState.timeSeconds = state.timeSeconds;
-  // transformedState.velocityMetersPerSecond = state.velocityMetersPerSecond;
-  // transformedState.accelerationMetersPerSecondSq =
-  // state.accelerationMetersPerSecondSq;
-  // transformedState.poseMeters = new Pose2d(transformedTranslation,
-  // transformedHeading);
-  // transformedState.angularVelocityRadPerSec = -state.angularVelocityRadPerSec;
-  // transformedState.holonomicRotation = transformedHolonomicRotation;
-  // transformedState.holonomicAngularVelocityRadPerSec =
-  // -state.holonomicAngularVelocityRadPerSec;
-  // // transformedState.curveRadius = -state.curveRadius;
-  // transformedState.curvatureRadPerMeter = -state.curvatureRadPerMeter;
-  // // transformedState.deltaPos = state.deltaPos;
-
-  // return transformedState;
-  // }
 }
