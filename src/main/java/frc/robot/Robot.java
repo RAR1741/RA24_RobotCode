@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.autonomous.AutoChooser;
 import frc.robot.autonomous.AutoRunner;
 import frc.robot.autonomous.tasks.Task;
@@ -23,7 +22,6 @@ import frc.robot.controls.controllers.OperatorController;
 import frc.robot.simulation.Field;
 import frc.robot.subsystems.Subsystem;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
-import frc.robot.subsystems.leds.LEDs;
 
 public class Robot extends TimedRobot {
   private final DriverController m_driverController = new DriverController(0, true, true);
@@ -37,7 +35,6 @@ public class Robot extends TimedRobot {
   // Robot subsystems
   private List<Subsystem> m_allSubsystems = new ArrayList<>();
   public final SwerveDrive m_swerve = SwerveDrive.getInstance();
-  public final LEDs m_leds = LEDs.getInstance();
   private Task m_currentTask;
   private AutoRunner m_autoRunner = AutoRunner.getInstance();
 
@@ -79,7 +76,6 @@ public class Robot extends TimedRobot {
 
     // m_allSubsystems.add(m_limelight);
     m_allSubsystems.add(m_swerve);
-    m_allSubsystems.add(m_leds);
   }
 
   @Override
@@ -192,8 +188,6 @@ public class Robot extends TimedRobot {
   public void disabledInit() {
     m_allSubsystems.forEach(subsystem -> subsystem.stop());
     m_swerve.resetOdometry(new Pose2d(0, 0, new Rotation2d(0)));
-    m_leds.setArmsColor(Color.kRed);
-    m_leds.setDriveColor(Color.kRed);
   }
 
   @Override
