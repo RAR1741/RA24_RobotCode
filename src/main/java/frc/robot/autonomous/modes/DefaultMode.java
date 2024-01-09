@@ -19,10 +19,6 @@ public class DefaultMode extends AutoModeBase {
         new PointForwardTask(),
         new WaitTask(0.5)));
 
-    queueTask(new WaitTask(Constants.Auto.k_defaultGripperWait + 0.5));
-
-    queueTask(new WaitTask(Constants.Auto.k_defaultGripperWait));
-
     queueTask(new BrakeTask(true));
   }
 }
