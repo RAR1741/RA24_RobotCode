@@ -1,6 +1,5 @@
 package frc.robot.autonomous.modes;
 
-import java.sql.Driver;
 import java.util.ArrayList;
 
 import edu.wpi.first.math.geometry.Pose2d;
