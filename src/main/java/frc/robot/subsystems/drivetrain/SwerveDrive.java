@@ -1,6 +1,7 @@
 package frc.robot.subsystems.drivetrain;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -77,17 +78,17 @@ public class SwerveDrive extends Subsystem {
   }
 
   public void brakeOn() {
-    m_frontLeft.getDriveMotor().setNeutralMode(NeutralMode.Brake);
-    m_frontRight.getDriveMotor().setNeutralMode(NeutralMode.Brake);
-    m_backLeft.getDriveMotor().setNeutralMode(NeutralMode.Brake);
-    m_backRight.getDriveMotor().setNeutralMode(NeutralMode.Brake);
+    m_frontLeft.getDriveMotor().setNeutralMode(NeutralModeValue.Brake);
+    m_frontRight.getDriveMotor().setNeutralMode(NeutralModeValue.Brake);
+    m_backLeft.getDriveMotor().setNeutralMode(NeutralModeValue.Brake);
+    m_backRight.getDriveMotor().setNeutralMode(NeutralModeValue.Brake);
   }
 
   public void brakeOff() {
-    m_frontLeft.getDriveMotor().setNeutralMode(NeutralMode.Coast);
-    m_frontRight.getDriveMotor().setNeutralMode(NeutralMode.Coast);
-    m_backLeft.getDriveMotor().setNeutralMode(NeutralMode.Coast);
-    m_backRight.getDriveMotor().setNeutralMode(NeutralMode.Coast);
+    m_frontLeft.getDriveMotor().setNeutralMode(NeutralModeValue.Coast);
+    m_frontRight.getDriveMotor().setNeutralMode(NeutralModeValue.Coast);
+    m_backLeft.getDriveMotor().setNeutralMode(NeutralModeValue.Coast);
+    m_backRight.getDriveMotor().setNeutralMode(NeutralModeValue.Coast);
   }
 
   public void reset() {

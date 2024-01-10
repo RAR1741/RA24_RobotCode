@@ -1,7 +1,9 @@
 package frc.robot.subsystems.drivetrain;
 
-import com.ctre.phoenix.motorcontrol.TalonFXSensorCollection;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+// import com.ctre.phoenix.motorcontrol.TalonFXSensorCollection;
+// import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -47,7 +49,7 @@ public class SwerveModule {
   private static final double k_moduleMaxAngularVelocity = Math.PI;
   private static final double k_moduleMaxAngularAcceleration = 2 * Math.PI; // radians per second squared
 
-  private final WPI_TalonFX m_driveMotor;
+  private final TalonFX m_driveMotor;
   private final CANSparkMax m_turningMotor;
   private SwerveModuleState m_desiredState;
 
@@ -57,7 +59,7 @@ public class SwerveModule {
 
   private final PeriodicIO m_periodicIO = new PeriodicIO();
 
-  private final TalonFXSensorCollection m_driveEncoder;
+  // private final TalonFXSensorCollection m_driveEncoder;
   private final AbsoluteEncoder m_turningEncoder;
 
   private final PIDController m_drivePIDController = new PIDController(k_driveP, k_driveI, k_driveD);
@@ -92,9 +94,11 @@ public class SwerveModule {
 
     m_smartDashboardKey = "Drivetrain/" + m_moduleName + "/";
 
-    m_driveMotor = new WPI_TalonFX(driveMotorChannel);
-    m_driveMotor.configFactoryDefault();
-    m_driveEncoder = m_driveMotor.getSensorCollection();
+    // m_driveMotor = new WPI_TalonFX(driveMotorChannel);
+    // m_driveMotor.configFactoryDefault();
+    m_driveMotor = new TalonFX(driveMotorChannel);
+    m_driveMotor.getConfigurator().apply(new TalonFXConfiguration()); // TODO: Test if this is a valid replacement
+    // m_driveEncoder = m_driveMotor.getSensorCollection();
 
     m_turningMotor = new CANSparkMax(turningMotorChannel, MotorType.kBrushless);
     m_turningMotor.restoreFactoryDefaults();
@@ -129,7 +133,7 @@ public class SwerveModule {
     return Helpers.modRotations(m_turningEncoder.getPosition() - m_turningOffset);
   }
 
-  public WPI_TalonFX getDriveMotor() {
+  public TalonFX getDriveMotor() {
     return m_driveMotor;
   }
 
@@ -140,7 +144,7 @@ public class SwerveModule {
   // Returns the drive velocity in meters per second.
   public double getDriveVelocity() {
     // In revs per second
-    double velocity = m_driveEncoder.getIntegratedSensorVelocity() / k_driveEncPerSec;
+    double velocity = m_driveMotor.getVelocity().getValue() / k_driveEncPerSec;// TODO: Test if this is a valid replacement
 
     // Convert to in per second
     velocity *= ((2.0 * k_wheelRadiusIn * Math.PI) / k_driveGearRatio);
@@ -157,7 +161,8 @@ public class SwerveModule {
    * @return The current position of the module (Meters, Angle).
    */
   public SwerveModulePosition getPosition() {
-    double drivePosition = m_driveEncoder.getIntegratedSensorPosition();
+    // double drivePosition = m_driveEncoder.getIntegratedSensorPosition();
+    double drivePosition = m_driveMotor.getPosition().getValue(); // TODO: Test if this is a valid replacement
     drivePosition /= k_driveEncPerRot; // Convert to # of rotations
     drivePosition *= ((2 * k_wheelRadiusIn * Math.PI) / k_driveGearRatio); // Convert to inches
     drivePosition = Units.inchesToMeters(drivePosition);
@@ -167,7 +172,8 @@ public class SwerveModule {
   }
 
   public void resetDriveEncoder() {
-    m_driveEncoder.setIntegratedSensorPosition(0.0, 50);
+    // m_driveEncoder.setIntegratedSensorPosition(0.0, 50);
+    m_driveMotor.setPosition(0.0, 50); // TODO: Test if this is a valid replacement
   }
 
   public SwerveModuleState getDesiredState() {
@@ -214,7 +220,7 @@ public class SwerveModule {
   }
 
   public void outputTelemetry() {
-    SmartDashboard.putNumber(m_smartDashboardKey + "DriveMotorPos", m_driveEncoder.getIntegratedSensorPosition());
+    SmartDashboard.putNumber(m_smartDashboardKey + "DriveMotorPos", m_driveMotor.getPosition().getValue()); // TODO: Test if this is a valid replacement
     SmartDashboard.putNumber(m_smartDashboardKey + "DriveMotorVelocity", getDriveVelocity());
     SmartDashboard.putNumber(m_smartDashboardKey + "TurnMotorPosition", getTurnPosition());
   }
