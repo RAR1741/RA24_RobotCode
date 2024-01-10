@@ -1,11 +1,6 @@
 package frc.robot.autonomous.modes;
 
 import java.util.ArrayList;
-import java.util.List;
-
-import com.pathplanner.lib.path.PathPlannerTrajectory;
-import com.pathplanner.lib.path.PathPlannerTrajectory.State;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
