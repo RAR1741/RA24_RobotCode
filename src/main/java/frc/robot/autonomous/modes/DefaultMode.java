@@ -21,13 +21,9 @@ public class DefaultMode extends AutoModeBase {
         new PointForwardTask(),
         new WaitTask(0.5)));
 
-    queueTask(new ParallelTask(
-        new DriveForwardTask(2.1, 1.0)));
+    // queueTask(new ParallelTask(new DriveForwardTask(0.5, 1.0)));
+    queueTask(new DriveForwardTask(0.5, 2));
 
-    m_swerve.stop();
-
-    System.out.println("Done driving? Please!!");
-
-    queueTask(new BrakeTask(true));
+    queueTask(new BrakeTask(false));
   }
 }

@@ -94,11 +94,8 @@ public class SwerveModule {
 
     m_smartDashboardKey = "Drivetrain/" + m_moduleName + "/";
 
-    // m_driveMotor = new WPI_TalonFX(driveMotorChannel);
-    // m_driveMotor.configFactoryDefault();
     m_driveMotor = new TalonFX(driveMotorChannel);
-    m_driveMotor.getConfigurator().apply(new TalonFXConfiguration()); // TODO: Test if this is a valid replacement
-    // m_driveEncoder = m_driveMotor.getSensorCollection();
+    m_driveMotor.getConfigurator().apply(new TalonFXConfiguration());
 
     m_turningMotor = new CANSparkMax(turningMotorChannel, MotorType.kBrushless);
     m_turningMotor.restoreFactoryDefaults();
@@ -144,7 +141,7 @@ public class SwerveModule {
   // Returns the drive velocity in meters per second.
   public double getDriveVelocity() {
     // In revs per second
-    double velocity = m_driveMotor.getVelocity().getValue(); // / k_driveEncPerSec;// TODO: Test if this is a valid replacement
+    double velocity = m_driveMotor.getVelocity().getValue(); 
 
     // Convert to in per second
     velocity *= ((2.0 * k_wheelRadiusIn * Math.PI) / k_driveGearRatio);
@@ -170,8 +167,7 @@ public class SwerveModule {
   }
 
   public void resetDriveEncoder() {
-    // m_driveEncoder.setIntegratedSensorPosition(0.0, 50);
-    m_driveMotor.setPosition(0.0, 50); // TODO: Test if this is a valid replacement
+    m_driveMotor.setPosition(0.0, 50);
   }
 
   public SwerveModuleState getDesiredState() {
@@ -219,7 +215,7 @@ public class SwerveModule {
 
   public void outputTelemetry() {
     SmartDashboard.putString(m_smartDashboardKey + "DriveMotorPositionUnits", m_driveMotor.getPosition().getUnits());
-    SmartDashboard.putNumber(m_smartDashboardKey + "DriveMotorPos", m_driveMotor.getPosition().getValueAsDouble()); // TODO: Test if this is a valid replacement
+    SmartDashboard.putNumber(m_smartDashboardKey + "DriveMotorPos", m_driveMotor.getPosition().getValueAsDouble());
     SmartDashboard.putNumber(m_smartDashboardKey + "DriveMotorVelocity", getDriveVelocity());
     SmartDashboard.putNumber(m_smartDashboardKey + "TurnMotorPosition", getTurnPosition());
   }
