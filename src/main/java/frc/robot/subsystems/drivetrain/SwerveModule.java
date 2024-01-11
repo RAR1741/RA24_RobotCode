@@ -144,7 +144,7 @@ public class SwerveModule {
   // Returns the drive velocity in meters per second.
   public double getDriveVelocity() {
     // In revs per second
-    double velocity = m_driveMotor.getVelocity().getValue() / k_driveEncPerSec;// TODO: Test if this is a valid replacement
+    double velocity = m_driveMotor.getVelocity().getValue(); // / k_driveEncPerSec;// TODO: Test if this is a valid replacement
 
     // Convert to in per second
     velocity *= ((2.0 * k_wheelRadiusIn * Math.PI) / k_driveGearRatio);
@@ -161,9 +161,7 @@ public class SwerveModule {
    * @return The current position of the module (Meters, Angle).
    */
   public SwerveModulePosition getPosition() {
-    // double drivePosition = m_driveEncoder.getIntegratedSensorPosition();
-    double drivePosition = m_driveMotor.getPosition().getValue(); // TODO: Test if this is a valid replacement
-    drivePosition /= k_driveEncPerRot; // Convert to # of rotations
+    double drivePosition = m_driveMotor.getPosition().getValueAsDouble();
     drivePosition *= ((2 * k_wheelRadiusIn * Math.PI) / k_driveGearRatio); // Convert to inches
     drivePosition = Units.inchesToMeters(drivePosition);
 
@@ -220,7 +218,8 @@ public class SwerveModule {
   }
 
   public void outputTelemetry() {
-    SmartDashboard.putNumber(m_smartDashboardKey + "DriveMotorPos", m_driveMotor.getPosition().getValue()); // TODO: Test if this is a valid replacement
+    SmartDashboard.putString(m_smartDashboardKey + "DriveMotorPositionUnits", m_driveMotor.getPosition().getUnits());
+    SmartDashboard.putNumber(m_smartDashboardKey + "DriveMotorPos", m_driveMotor.getPosition().getValueAsDouble()); // TODO: Test if this is a valid replacement
     SmartDashboard.putNumber(m_smartDashboardKey + "DriveMotorVelocity", getDriveVelocity());
     SmartDashboard.putNumber(m_smartDashboardKey + "TurnMotorPosition", getTurnPosition());
   }
