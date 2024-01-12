@@ -142,21 +142,21 @@ public class Robot extends TimedRobot {
     double rot = m_rotRateLimiter.calculate(m_driverController.getTurnAxis());
 
     // slowScaler should scale between k_slowScaler and 1
-    double slowScaler = Constants.Drivetrain.k_slowScaler
-        + ((1 - m_driverController.getSlowScaler()) * (1 - Constants.Drivetrain.k_slowScaler));
+    double slowScaler = Constants.SwerveDrive.k_slowScaler
+        + ((1 - m_driverController.getSlowScaler()) * (1 - Constants.SwerveDrive.k_slowScaler));
 
     // boostScaler should scale between 1 and k_boostScaler
-    double boostScaler = 1 + (m_driverController.getBoostScaler() * (Constants.Drivetrain.k_boostScaler - 1));
+    double boostScaler = 1 + (m_driverController.getBoostScaler() * (Constants.SwerveDrive.k_boostScaler - 1));
 
     if (Preferences.getBoolean("demoMode", false)) {
       // boostScaler = 1;
-      xSpeed *= Constants.Drivetrain.k_maxDemoSpeed;
-      ySpeed *= Constants.Drivetrain.k_maxDemoSpeed;
-      rot *= Constants.Drivetrain.k_maxDemoAngularSpeed;
+      xSpeed *= Constants.SwerveDrive.k_maxDemoSpeed;
+      ySpeed *= Constants.SwerveDrive.k_maxDemoSpeed;
+      rot *= Constants.SwerveDrive.k_maxDemoAngularSpeed;
     } else {
-      xSpeed *= Constants.Drivetrain.k_maxSpeed;
-      ySpeed *= Constants.Drivetrain.k_maxSpeed;
-      rot *= Constants.Drivetrain.k_maxAngularSpeed;
+      xSpeed *= Constants.SwerveDrive.k_maxSpeed;
+      ySpeed *= Constants.SwerveDrive.k_maxSpeed;
+      rot *= Constants.SwerveDrive.k_maxAngularSpeed;
     }
 
     xSpeed *= slowScaler * boostScaler;

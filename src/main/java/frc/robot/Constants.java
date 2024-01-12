@@ -16,7 +16,7 @@ public final class Constants {
     public static final double k_maxAcceleration = 0.5;
   }
 
-  public class Drivetrain {
+  public class SwerveDrive {
     // Drivetrain wheel offsets
     // TODO: Change for final robot
     public static final double k_xDistance = 0.762; // 30 inches Forward/Backward
