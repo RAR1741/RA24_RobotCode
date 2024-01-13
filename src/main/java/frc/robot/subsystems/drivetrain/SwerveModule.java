@@ -1,14 +1,14 @@
 package frc.robot.subsystems.drivetrain;
 
-// import com.ctre.phoenix.motorcontrol.TalonFXSensorCollection;
-// import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.mechanisms.swerve.utility.PhoenixPIDController;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
 import com.revrobotics.SparkAbsoluteEncoder;
+import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -23,53 +23,38 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Helpers;
 
 public class SwerveModule {
-  private static final double k_wheelRadiusIn = 2; // 2 inches
-  private static final double k_driveGearRatio = (50.0 / 14.0) * (17.0 / 27.0) * (45.0 / 15.0);
-  private static final double k_driveEncPerRot = 2048.0;
-  private static final double k_driveEncPerSec = 2048.0 / 10.0; // Encoder reports 2048 Encoder counter per 100 ms
-
-  private static final double k_turningP = 20.0;
-  private static final double k_turningI = 0.1;
-  private static final double k_turningD = 0.01;
-  private static final double k_turnFeedForwardS = 1;
-  private static final double k_turnFeedForwardV = 0.5;
-  private static final double k_turnFeedForwardA = 0.0;
-
-  // These values were obtained via SysId
-  // In "Feedback Analysis" section, we set Measurement Delay to 58 ms, which was
-  // pulled from the "Feedforward Analysis" Velocity Measurement Delay
-  private static final double k_driveP = 0.86853;
-  private static final double k_driveI = 0.0;
-  private static final double k_driveD = 0.0;
-  private static final double k_driveFeedForwardS = 0.25043;
-  private static final double k_driveFeedForwardV = 3.0125;
-  private static final double k_driveFeedForwardA = 0.38005;
-
-  // TODO: Make sure these are right
-  private static final double k_moduleMaxAngularVelocity = Math.PI;
-  private static final double k_moduleMaxAngularAcceleration = 2 * Math.PI; // radians per second squared
-
   private final TalonFX m_driveMotor;
+
   private final CANSparkMax m_turningMotor;
-  private SwerveModuleState m_desiredState;
+  private final AbsoluteEncoder m_turningEncoder;
+
+  private final PhoenixPIDController m_drivePIDController;
+  private final SparkPIDController m_turningPIDController;
+
+  private final PeriodicIO m_periodicIO = new PeriodicIO();
 
   private final double m_turningOffset;
   private final String m_moduleName;
   private final String m_smartDashboardKey;
+  
+  private static final double k_wheelRadiusIn = 2; // 2 inches
+  private static final double k_driveGearRatio = (50.0 / 14.0) * (17.0 / 27.0) * (45.0 / 15.0);
 
-  private final PeriodicIO m_periodicIO = new PeriodicIO();
+  private static final double k_turningP = 20.0;
+  private static final double k_turningI = 0.1;
+  private static final double k_turningD = 0.01;
+  
+  private static final double k_turnFeedForwardS = 1;
+  private static final double k_turnFeedForwardV = 0.5;
+  private static final double k_turnFeedForwardA = 0.0;
 
-  // private final TalonFXSensorCollection m_driveEncoder;
-  private final AbsoluteEncoder m_turningEncoder;
+  private static final double k_driveP = 0.86853;
+  private static final double k_driveI = 0.0;
+  private static final double k_driveD = 0.0;
 
-  private final PIDController m_drivePIDController = new PIDController(k_driveP, k_driveI, k_driveD);
-
-  private final ProfiledPIDController m_turningPIDController = new ProfiledPIDController(
-      k_turningP,
-      k_turningI,
-      k_turningD,
-      new TrapezoidProfile.Constraints(
-          k_moduleMaxAngularVelocity, k_moduleMaxAngularAcceleration));
+  private static final double k_driveFeedForwardS = 0.25043;
+  private static final double k_driveFeedForwardV = 3.0125;
+  private static final double k_driveFeedForwardA = 0.38005;
 
   private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(
       k_driveFeedForwardS,
@@ -81,18 +66,17 @@ public class SwerveModule {
   private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(k_turnFeedForwardS,
       k_turnFeedForwardV, k_turnFeedForwardA);
 
-  /**
-   * Constructs a SwerveModule with a drive motor, turning motor, drive encoder
-   * and turning encoder.
-   *
-   * @param driveMotorChannel   CAN output for the drive motor.
-   * @param turningMotorChannel CAN output for the turning motor.
-   */
+  private static class PeriodicIO {
+    double turnMotorVoltage = 0.0;
+    double driveMotorVoltage = 0.0;
+    SwerveModuleState desiredState;
+  }
+
   public SwerveModule(int driveMotorChannel, int turningMotorChannel, double turningOffset, String moduleName) {
     m_turningOffset = turningOffset;
     m_moduleName = moduleName;
 
-    m_smartDashboardKey = "Drivetrain/" + m_moduleName + "/";
+    m_smartDashboardKey = "SwerveDrive/" + m_moduleName + "/";
 
     m_driveMotor = new TalonFX(driveMotorChannel);
     m_driveMotor.getConfigurator().apply(new TalonFXConfiguration());
@@ -103,24 +87,12 @@ public class SwerveModule {
     m_turningEncoder = m_turningMotor.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
     m_turningMotor.setInverted(true);
 
-    // Attempt to fix robot drivetrain jittery-ness
     m_turningMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 20);
 
-    // Limit the PID Controller's input range between 0 and 1 and set the input to
-    // be continuous.
-    m_turningPIDController.enableContinuousInput(0, 1);
+    m_turningPIDController = m_turningMotor.getPIDController();
+    m_drivePIDController = new PhoenixPIDController(k_driveP, k_driveI, k_driveD);
   }
 
-  private static class PeriodicIO {
-    double turnMotorVoltage = 0.0;
-    double driveMotorVoltage = 0.0;
-  }
-
-  /**
-   * Returns the current state of the module.
-   *
-   * @return The current state of the module.
-   */
   public SwerveModuleState getState() {
     return new SwerveModuleState(
         getDriveVelocity(), Rotation2d.fromRotations(getTurnPosition()));
@@ -130,15 +102,19 @@ public class SwerveModule {
     return Helpers.modRotations(m_turningEncoder.getPosition() - m_turningOffset);
   }
 
+  public SwerveModulePosition getPosition() {
+    double drivePosition = m_driveMotor.getPosition().getValueAsDouble();
+    drivePosition *= ((2 * k_wheelRadiusIn * Math.PI) / k_driveGearRatio); // Convert to inches
+    drivePosition = Units.inchesToMeters(drivePosition);
+
+    return new SwerveModulePosition(
+        drivePosition, Rotation2d.fromRotations(getTurnPosition()));
+  }
+
   public TalonFX getDriveMotor() {
     return m_driveMotor;
   }
 
-  public void clearTurnPIDAccumulation() {
-    m_turningPIDController.reset(getTurnPosition());
-  }
-
-  // Returns the drive velocity in meters per second.
   public double getDriveVelocity() {
     // In revs per second
     double velocity = m_driveMotor.getVelocity().getValue(); 
@@ -152,60 +128,40 @@ public class SwerveModule {
     return velocity;
   }
 
-  /**
-   * Returns the current position of the module (Meters, Angle).
-   *
-   * @return The current position of the module (Meters, Angle).
-   */
-  public SwerveModulePosition getPosition() {
-    double drivePosition = m_driveMotor.getPosition().getValueAsDouble();
-    drivePosition *= ((2 * k_wheelRadiusIn * Math.PI) / k_driveGearRatio); // Convert to inches
-    drivePosition = Units.inchesToMeters(drivePosition);
-
-    return new SwerveModulePosition(
-        drivePosition, Rotation2d.fromRotations(getTurnPosition()));
+  public void clearTurnPIDAccumulation() {
+    
   }
 
   public void resetDriveEncoder() {
     m_driveMotor.setPosition(0.0, 50);
   }
 
-  public SwerveModuleState getDesiredState() {
-    return m_desiredState;
-  }
-
-  /**
-   * Sets the desired state for the module.
-   *
-   * @param desiredState Desired state with speed and angle.
-   */
   public void setDesiredState(SwerveModuleState desiredState) {
     // Optimize the reference state to avoid spinning further than 90 degrees
     desiredState = SwerveModuleState.optimize(desiredState, Rotation2d.fromRotations(getTurnPosition()));
-    m_desiredState = desiredState;
-
+    m_periodicIO.desiredState = desiredState;
     // Calculate the drive output from the drive PID controller.
-    double driveOutput = m_drivePIDController.calculate(getDriveVelocity(), desiredState.speedMetersPerSecond);
-
-    double driveFeedforward = m_driveFeedforward.calculate(desiredState.speedMetersPerSecond);
+    double driveOutput = m_drivePIDController.calculate(getDriveVelocity(), m_periodicIO.desiredState.speedMetersPerSecond, );
+    double driveFeedforward = m_driveFeedforward.calculate(m_periodicIO.desiredState.speedMetersPerSecond);
 
     // Calculate the turning motor output from the turning PID controller.
-    double turnTarget = desiredState.angle.getRotations();
-
+    double turnTarget = m_periodicIO.desiredState.angle.getRotations();
     double turnOutput = m_turningPIDController.calculate(getTurnPosition(), turnTarget);
-
     double turnFeedforward = m_turnFeedforward.calculate(m_turningPIDController.getSetpoint().velocity);
-
     boolean turnAtGoal = m_turningPIDController.atGoal();
 
     SmartDashboard.putNumber(m_smartDashboardKey + "TurnTarget", turnTarget);
     SmartDashboard.putNumber(m_smartDashboardKey + "TurnOutput", turnOutput + turnFeedforward);
     SmartDashboard.putBoolean(m_smartDashboardKey + "TurnAtGoal", turnAtGoal);
-    SmartDashboard.putNumber(m_smartDashboardKey + "DriveTargetVelocity", desiredState.speedMetersPerSecond);
+    SmartDashboard.putNumber(m_smartDashboardKey + "DriveTargetVelocity", m_periodicIO.desiredState.speedMetersPerSecond);
     SmartDashboard.putNumber(m_smartDashboardKey + "DriveOutput", driveOutput + driveFeedforward);
 
     m_periodicIO.turnMotorVoltage = turnOutput + turnFeedforward;
     m_periodicIO.driveMotorVoltage = driveOutput + driveFeedforward;
+  }
+
+  public SwerveModuleState getDesiredState() {
+    return m_periodicIO.desiredState;
   }
 
   public void periodic() {

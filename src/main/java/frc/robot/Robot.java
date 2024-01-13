@@ -57,14 +57,6 @@ public class Robot extends TimedRobot {
     DataLogManager.start();
     System.out.println("Logging initialized. Fard.");
 
-    // Set up demo mode picker
-    if (!Preferences.containsKey("demoMode")) {
-      Preferences.setBoolean("demoMode", false);
-    }
-    if (!Preferences.containsKey("demoLEDMode")) {
-      Preferences.setInt("demoLEDMode", 0);
-    }
-
     // Set up the Field2d object for simulation
     SmartDashboard.putData("Field", m_field);
 
@@ -85,8 +77,6 @@ public class Robot extends TimedRobot {
     m_allSubsystems.forEach(subsystem -> subsystem.outputTelemetry());
     m_allSubsystems.forEach(subsystem -> subsystem.writeToLog());
 
-    SmartDashboard.putNumber("Compressor/Pressure", m_compressor.getPressure());
-
     updateSim();
   }
 
@@ -94,7 +84,7 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     m_autoHasRan = true;
 
-    m_swerve.brakeOff();
+    m_swerve.setBrakeMode(false);
 
     m_autoRunner.setAutoMode(m_autoChooser.getSelectedAuto());
     m_currentTask = m_autoRunner.getNextTask();
@@ -128,7 +118,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    m_swerve.brakeOff();
+    m_swerve.setBrakeMode(false);
     m_swerve.drive(0, 0, 0, false);
     m_swerve.setGyroAngleAdjustment(0);
   }
@@ -136,9 +126,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     double xSpeed = m_xRateLimiter.calculate(m_driverController.getForwardAxis());
-
     double ySpeed = m_yRateLimiter.calculate(m_driverController.getStrafeAxis());
-
     double rot = m_rotRateLimiter.calculate(m_driverController.getTurnAxis());
 
     // slowScaler should scale between k_slowScaler and 1
@@ -148,22 +136,8 @@ public class Robot extends TimedRobot {
     // boostScaler should scale between 1 and k_boostScaler
     double boostScaler = 1 + (m_driverController.getBoostScaler() * (Constants.SwerveDrive.k_boostScaler - 1));
 
-    if (Preferences.getBoolean("demoMode", false)) {
-      // boostScaler = 1;
-      xSpeed *= Constants.SwerveDrive.k_maxDemoSpeed;
-      ySpeed *= Constants.SwerveDrive.k_maxDemoSpeed;
-      rot *= Constants.SwerveDrive.k_maxDemoAngularSpeed;
-    } else {
-      xSpeed *= Constants.SwerveDrive.k_maxSpeed;
-      ySpeed *= Constants.SwerveDrive.k_maxSpeed;
-      rot *= Constants.SwerveDrive.k_maxAngularSpeed;
-    }
-
     xSpeed *= slowScaler * boostScaler;
     ySpeed *= slowScaler;// * boostScaler;
-    if (Preferences.getBoolean("demoMode", false)) {
-      ySpeed *= boostScaler;
-    }
     rot *= slowScaler * boostScaler;
 
     m_swerve.drive(xSpeed, ySpeed, rot, true);
