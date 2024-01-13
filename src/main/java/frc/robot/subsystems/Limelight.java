@@ -1,20 +1,18 @@
 package frc.robot.subsystems;
 
+import java.util.Arrays;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.LimelightHelpers;
 
 public class Limelight extends Subsystem {
   private static Limelight m_limelight;
   private NetworkTable m_limelightTable;
-  private String m_name = "limelight";
-
-  // Limelight Offsets (Incorrect currently):
-  // X: 12 5426 in
-  // Y: 9.19 in
-  // Z: 10.1175 in
+  private final String m_name = "limelight";
 
   /**
    * Constructor
@@ -78,6 +76,13 @@ public class Limelight extends Subsystem {
 
   @Override
   public void outputTelemetry() {
+    for (String key: m_limelightTable.getKeys()) {
+      String type = m_limelightTable.getEntry(key).getType().name().substring(1);
+
+      SmartDashboard.putString(
+        key, (type.equals("String") || type.equals("Double")) ? m_limelightTable.getEntry(key).toString()
+          : Arrays.toString(m_limelightTable.getEntry(key).getDoubleArray(new double[6])));
+    }
   }
 
   /**

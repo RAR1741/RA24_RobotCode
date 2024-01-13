@@ -1,8 +1,8 @@
 package frc.robot.subsystems.drivetrain;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.mechanisms.swerve.utility.PhoenixPIDController;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -10,25 +10,23 @@ import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
 import com.revrobotics.SparkAbsoluteEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.IdleMode;
+import com.revrobotics.CANSparkBase.ControlType;
 
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants;
 import frc.robot.Helpers;
 
 public class SwerveModule {
   private final TalonFX m_driveMotor;
+  private VelocityVoltage m_driveVoltage;
 
   private final CANSparkMax m_turningMotor;
   private final AbsoluteEncoder m_turningEncoder;
-
-  private final PhoenixPIDController m_drivePIDController;
   private final SparkPIDController m_turningPIDController;
 
   private final PeriodicIO m_periodicIO = new PeriodicIO();
@@ -36,39 +34,13 @@ public class SwerveModule {
   private final double m_turningOffset;
   private final String m_moduleName;
   private final String m_smartDashboardKey;
-  
-  private static final double k_wheelRadiusIn = 2; // 2 inches
-  private static final double k_driveGearRatio = (50.0 / 14.0) * (17.0 / 27.0) * (45.0 / 15.0);
-
-  private static final double k_turningP = 20.0;
-  private static final double k_turningI = 0.1;
-  private static final double k_turningD = 0.01;
-  
-  private static final double k_turnFeedForwardS = 1;
-  private static final double k_turnFeedForwardV = 0.5;
-  private static final double k_turnFeedForwardA = 0.0;
-
-  private static final double k_driveP = 0.86853;
-  private static final double k_driveI = 0.0;
-  private static final double k_driveD = 0.0;
-
-  private static final double k_driveFeedForwardS = 0.25043;
-  private static final double k_driveFeedForwardV = 3.0125;
-  private static final double k_driveFeedForwardA = 0.38005;
-
-  private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(
-      k_driveFeedForwardS,
-      k_driveFeedForwardV,
-      k_driveFeedForwardA);
 
   // TODO: Gains are for example purposes only - must be determined for your own
   // robot!
-  private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(k_turnFeedForwardS,
-      k_turnFeedForwardV, k_turnFeedForwardA);
+  // private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(Constants.SwerveDrive.Turn.k_turnFeedForwardS,
+  //     Constants.SwerveDrive.Turn.k_turnFeedForwardV, Constants.SwerveDrive.Turn.k_turnFeedForwardA);
 
   private static class PeriodicIO {
-    double turnMotorVoltage = 0.0;
-    double driveMotorVoltage = 0.0;
     SwerveModuleState desiredState;
   }
 
@@ -79,18 +51,38 @@ public class SwerveModule {
     m_smartDashboardKey = "SwerveDrive/" + m_moduleName + "/";
 
     m_driveMotor = new TalonFX(driveMotorChannel);
-    m_driveMotor.getConfigurator().apply(new TalonFXConfiguration());
+    TalonFXConfiguration talonConfig = new TalonFXConfiguration();
+
+    m_driveVoltage = new VelocityVoltage(0);
+    m_driveVoltage.Slot = 0;
+
+    talonConfig.Slot0.kP = Constants.SwerveDrive.Drive.k_driveP;
+    talonConfig.Slot0.kI = Constants.SwerveDrive.Drive.k_driveI;
+    talonConfig.Slot0.kD = Constants.SwerveDrive.Drive.k_driveD;
+
+    talonConfig.Slot0.kS = Constants.SwerveDrive.Drive.k_driveFeedForwardS;
+    talonConfig.Slot0.kV = Constants.SwerveDrive.Drive.k_driveFeedForwardV;
+    talonConfig.Slot0.kA = Constants.SwerveDrive.Drive.k_driveFeedForwardA;
+
+    m_driveMotor.getConfigurator().apply(talonConfig);
 
     m_turningMotor = new CANSparkMax(turningMotorChannel, MotorType.kBrushless);
     m_turningMotor.restoreFactoryDefaults();
     m_turningMotor.setIdleMode(IdleMode.kBrake);
     m_turningEncoder = m_turningMotor.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
     m_turningMotor.setInverted(true);
-
     m_turningMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 20);
 
-    m_turningPIDController = m_turningMotor.getPIDController();
-    m_drivePIDController = new PhoenixPIDController(k_driveP, k_driveI, k_driveD);
+    m_turningPIDController = m_turningMotor.getPIDController(); // TODO: Set PID Values
+
+    m_turningPIDController.setP(Constants.SwerveDrive.Turn.k_turningP);
+    m_turningPIDController.setI(Constants.SwerveDrive.Turn.k_turningI);
+    m_turningPIDController.setD(Constants.SwerveDrive.Turn.k_turningD);
+    m_turningPIDController.setIZone(Constants.SwerveDrive.Turn.k_turningIZone);
+    m_turningPIDController.setFF(Constants.SwerveDrive.Turn.k_turningFF);
+
+    m_turningPIDController.setOutputRange(
+      Constants.SwerveDrive.Turn.kTurningMinOutput, Constants.SwerveDrive.Turn.kTurningMinOutput);
   }
 
   public SwerveModuleState getState() {
@@ -104,7 +96,7 @@ public class SwerveModule {
 
   public SwerveModulePosition getPosition() {
     double drivePosition = m_driveMotor.getPosition().getValueAsDouble();
-    drivePosition *= ((2 * k_wheelRadiusIn * Math.PI) / k_driveGearRatio); // Convert to inches
+    drivePosition *= ((2 * Constants.SwerveDrive.k_wheelRadiusIn * Math.PI) / Constants.SwerveDrive.k_driveGearRatio); // Convert to inches
     drivePosition = Units.inchesToMeters(drivePosition);
 
     return new SwerveModulePosition(
@@ -120,7 +112,7 @@ public class SwerveModule {
     double velocity = m_driveMotor.getVelocity().getValue(); 
 
     // Convert to in per second
-    velocity *= ((2.0 * k_wheelRadiusIn * Math.PI) / k_driveGearRatio);
+    velocity *= ((2.0 * Constants.SwerveDrive.k_wheelRadiusIn * Math.PI) / Constants.SwerveDrive.k_driveGearRatio);
 
     // Convert to m per second
     velocity = Units.inchesToMeters(velocity);
@@ -128,8 +120,8 @@ public class SwerveModule {
     return velocity;
   }
 
-  public void clearTurnPIDAccumulation() {
-    
+  public void clearTurnPIDAccumulation() { 
+    m_turningPIDController.setIAccum(0); //TODO: Make sure this works
   }
 
   public void resetDriveEncoder() {
@@ -140,24 +132,26 @@ public class SwerveModule {
     // Optimize the reference state to avoid spinning further than 90 degrees
     desiredState = SwerveModuleState.optimize(desiredState, Rotation2d.fromRotations(getTurnPosition()));
     m_periodicIO.desiredState = desiredState;
-    // Calculate the drive output from the drive PID controller.
-    double driveOutput = m_drivePIDController.calculate(getDriveVelocity(), m_periodicIO.desiredState.speedMetersPerSecond, );
-    double driveFeedforward = m_driveFeedforward.calculate(m_periodicIO.desiredState.speedMetersPerSecond);
 
+    // If the velocity changes, set drive motor accordingly.
+    if(m_driveVoltage.Velocity != m_periodicIO.desiredState.speedMetersPerSecond * Constants.SwerveDrive.k_driveGearRatio * Units.inchesToMeters(Constants.SwerveDrive.k_wheelRadiusIn)) {
+      m_driveVoltage = new VelocityVoltage(m_periodicIO.desiredState.speedMetersPerSecond);
+      m_driveVoltage.Slot = 0;
+      m_driveMotor.setControl(m_driveVoltage);
+    }
+    
     // Calculate the turning motor output from the turning PID controller.
-    double turnTarget = m_periodicIO.desiredState.angle.getRotations();
-    double turnOutput = m_turningPIDController.calculate(getTurnPosition(), turnTarget);
-    double turnFeedforward = m_turnFeedforward.calculate(m_turningPIDController.getSetpoint().velocity);
-    boolean turnAtGoal = m_turningPIDController.atGoal();
+    // double turnTarget = m_periodicIO.desiredState.angle.getRotations();
+    // double turnOutput = m_turningPIDController.calculate(getTurnPosition(), turnTarget);
+    // double turnFeedforward = m_turnFeedforward.calculate(m_periodicIO.desiredState.speedMetersPerSecond);
+    // boolean turnAtGoal = m_turningPIDController.atGoal();
 
-    SmartDashboard.putNumber(m_smartDashboardKey + "TurnTarget", turnTarget);
-    SmartDashboard.putNumber(m_smartDashboardKey + "TurnOutput", turnOutput + turnFeedforward);
-    SmartDashboard.putBoolean(m_smartDashboardKey + "TurnAtGoal", turnAtGoal);
+    m_turningPIDController.setReference(m_periodicIO.desiredState.angle.getRotations(), ControlType.kPosition);
+
+    // SmartDashboard.putNumber(m_smartDashboardKey + "TurnTarget", turnTarget);
+    // SmartDashboard.putNumber(m_smartDashboardKey + "TurnOutput", turnOutput + turnFeedforward);
+    // SmartDashboard.putBoolean(m_smartDashboardKey + "TurnAtGoal", turnAtGoal);
     SmartDashboard.putNumber(m_smartDashboardKey + "DriveTargetVelocity", m_periodicIO.desiredState.speedMetersPerSecond);
-    SmartDashboard.putNumber(m_smartDashboardKey + "DriveOutput", driveOutput + driveFeedforward);
-
-    m_periodicIO.turnMotorVoltage = turnOutput + turnFeedforward;
-    m_periodicIO.driveMotorVoltage = driveOutput + driveFeedforward;
   }
 
   public SwerveModuleState getDesiredState() {
@@ -165,8 +159,6 @@ public class SwerveModule {
   }
 
   public void periodic() {
-    m_turningMotor.setVoltage(m_periodicIO.turnMotorVoltage);
-    m_driveMotor.setVoltage(m_periodicIO.driveMotorVoltage);
   }
 
   public void outputTelemetry() {
