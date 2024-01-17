@@ -134,7 +134,7 @@ public class Robot extends TimedRobot {
     }
 
     if(autoAimEnabled) {
-      rot = m_swerve.calculateAutoAim();
+      rot = m_swerve.calculateAutoAimAngle();
     } else {
       rot = m_rotRateLimiter.calculate(m_driverController.getTurnAxis());
     }

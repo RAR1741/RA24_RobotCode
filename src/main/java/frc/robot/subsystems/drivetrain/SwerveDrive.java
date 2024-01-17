@@ -99,20 +99,17 @@ public class SwerveDrive extends Subsystem {
         pose);
   }
 
-  public double calculateAutoAim() {
-    double new_rot = 0.0;
+  public double calculateAutoAimAngle() {
+    double bot_x = m_poseEstimator.getEstimatedPosition().getX();
+    double bot_y = m_poseEstimator.getEstimatedPosition().getY();
+    double speaker_x = Constants.Field.k_redSpeakerPose.getX();
+    double speaker_y = Constants.Field.k_redSpeakerPose.getY();
 
-    if (m_poseEstimator.getEstimatedPosition().getRotation().getDegrees() != Constants.Field.k_redSpeakerPose.getRotation().getDegrees()) {
-      double bot_x = m_poseEstimator.getEstimatedPosition().getX();
-      double bot_y = m_poseEstimator.getEstimatedPosition().getY();
-      double speaker_x = Constants.Field.k_redSpeakerPose.getX();
-      double speaker_y = Constants.Field.k_redSpeakerPose.getY();
+    double x = Constants.Field.k_width-bot_x;
+    double distance = Math.sqrt(Math.pow(speaker_x - bot_x,2) + Math.pow(speaker_y - bot_y,2));
 
-      // sqrt((x2-x1)^2 + (y2-y1)^2)
-      // inverse cosine(distance / bot_x)
-    }
-
-    return new_rot;
+    return Math.toDegrees(Math.acos(x/distance)); //Theta
+    // inverse cosine(x/d)
   }
 
   public void resetPose() {
