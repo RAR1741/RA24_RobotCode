@@ -46,6 +46,14 @@ public class Limelight {
     return m_limelightTable.getEntry("tv").getInteger(0) == 1;
   }
 
+  public double getDistanceFromTag(int targetTagID) {
+    double distance = 0.0;
+
+
+
+    return distance;
+  }
+
   public double getTimeOffset(double currentTime) {
     return currentTime - LimelightHelpers.getLatency_Pipeline(m_name);
   }

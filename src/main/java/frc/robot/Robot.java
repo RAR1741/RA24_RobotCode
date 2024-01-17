@@ -39,6 +39,8 @@ public class Robot extends TimedRobot {
   private Task m_currentTask;
   private AutoRunner m_autoRunner = AutoRunner.getInstance();
 
+  private boolean autoAimEnabled = false;
+
   // The mere instantiation of this object will cause the compressor to start
   // running. We don't need to do anything else with it, so we'll suppress the
   // warning.
@@ -122,9 +124,24 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
+    double rot = 0;
+
+    if (m_driverController.getWantsAutoAim() && m_swerve.getPose().getX() >= Constants.Field.k_autoAimThreshold && !autoAimEnabled) {
+      autoAimEnabled = true;
+    }
+    if (autoAimEnabled && m_driverController.getWantsAutoAim() || m_swerve.getPose().getX() <= Constants.Field.k_autoAimThreshold) {
+      autoAimEnabled = false;
+    }
+
+    if(autoAimEnabled) {
+      rot = m_swerve.calculateAutoAim();
+    } else {
+      rot = m_rotRateLimiter.calculate(m_driverController.getTurnAxis());
+    }
+
     double xSpeed = m_xRateLimiter.calculate(m_driverController.getForwardAxis());
     double ySpeed = m_yRateLimiter.calculate(m_driverController.getStrafeAxis());
-    double rot = m_rotRateLimiter.calculate(m_driverController.getTurnAxis());
+
 
     // slowScaler should scale between k_slowScaler and 1
     double slowScaler = Constants.SwerveDrive.k_slowScaler

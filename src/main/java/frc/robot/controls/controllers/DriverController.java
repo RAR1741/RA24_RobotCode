@@ -48,6 +48,10 @@ public class DriverController extends FilteredController {
     return this.getFilteredAxis(RawAxis.RIGHT_TRIGGER) > k_triggerActivationThreshold;
   }
 
+  public boolean getWantsAutoAim() {
+    return this.getRawButton(RawButton.START);
+  }
+
   public void outputTelemetry() {
     SmartDashboard.putNumber(m_smartDashboardKey + "Forward", getForwardAxis());
     SmartDashboard.putNumber(m_smartDashboardKey + "Strafe", getStrafeAxis());

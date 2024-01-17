@@ -13,7 +13,7 @@ public class FilteredController extends GenericHID {
   private Deadband m_deadband = new Deadband(DEADBAND_LIMIT);
   private SquaredInput m_squaredInput = new SquaredInput(DEADBAND_LIMIT);
 
-  private final DPadButton[] hatButtons = {new DPadButton(this, DPadButton.Direction.UP), 
+  private final DPadButton[] hatButtons = {new DPadButton(this, DPadButton.Direction.UP),
     new DPadButton(this, DPadButton.Direction.DOWN), new DPadButton(this, DPadButton.Direction.LEFT),
     new DPadButton(this, DPadButton.Direction.RIGHT)};
 
@@ -63,7 +63,7 @@ public class FilteredController extends GenericHID {
     int START = 7;
     int BACK = 8;
     int LEFT_JOYSTICK = 9;
-    int RIGHT_JOYSTICK = 10;    
+    int RIGHT_JOYSTICK = 10;
   }
 
   public interface RawAxis {

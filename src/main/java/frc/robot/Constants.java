@@ -1,5 +1,7 @@
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 
 public final class Constants {
@@ -10,7 +12,7 @@ public final class Constants {
     public static final double k_bumperStart = 1; // Inches
     public static final double k_bumperHeight = 5; // Inches
   }
-  
+
   public static class Auto {
     public static final double k_maxSpeed = 1; // 1 meters per second
     public static final double k_maxAcceleration = 0.5;
@@ -69,8 +71,8 @@ public final class Constants {
       public static final double k_turningIZone = 0;
       public static final double k_turningFF = 0;
 
-      public static final int kTurningMinOutput = -1;
-      public static final int kTurningMaxOutput = 1;
+      public static final int k_TurningMinOutput = -1;
+      public static final int k_TurningMaxOutput = 1;
     }
   }
 
@@ -84,5 +86,17 @@ public final class Constants {
 
     public static final double k_width = Units.feetToMeters(54.0);
     public static final double k_length = Units.feetToMeters(27.0);
+
+    public static final double k_autoAimThreshold = 1; // in meters
+
+    public static final Pose2d k_redSpeakerPose = new Pose2d(0, 0, new Rotation2d(0));
+    public static final Pose2d k_blueSpeakerPose = new Pose2d(0, 0, new Rotation2d(0));
+  }
+
+  public static class Limelight {
+    public static class AprilTags {
+      public static final int k_redCenterSpeaker = 4;
+      public static final int k_blueCenterSpeaker = 7;
+    }
   }
 }

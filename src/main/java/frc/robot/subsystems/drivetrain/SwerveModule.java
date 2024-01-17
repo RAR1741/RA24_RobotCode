@@ -82,7 +82,7 @@ public class SwerveModule {
     m_turningPIDController.setFF(Constants.SwerveDrive.Turn.k_turningFF);
 
     m_turningPIDController.setOutputRange(
-      Constants.SwerveDrive.Turn.kTurningMinOutput, Constants.SwerveDrive.Turn.kTurningMinOutput);
+      Constants.SwerveDrive.Turn.k_TurningMinOutput, Constants.SwerveDrive.Turn.k_TurningMinOutput);
   }
 
   public SwerveModuleState getState() {
@@ -109,7 +109,7 @@ public class SwerveModule {
 
   public double getDriveVelocity() {
     // In revs per second
-    double velocity = m_driveMotor.getVelocity().getValue(); 
+    double velocity = m_driveMotor.getVelocity().getValue();
 
     // Convert to in per second
     velocity *= ((2.0 * Constants.SwerveDrive.k_wheelRadiusIn * Math.PI) / Constants.SwerveDrive.k_driveGearRatio);
@@ -120,7 +120,7 @@ public class SwerveModule {
     return velocity;
   }
 
-  public void clearTurnPIDAccumulation() { 
+  public void clearTurnPIDAccumulation() {
     m_turningPIDController.setIAccum(0); //TODO: Make sure this works
   }
 
@@ -139,7 +139,7 @@ public class SwerveModule {
       m_driveVoltage.Slot = 0;
       m_driveMotor.setControl(m_driveVoltage);
     }
-    
+
     // Calculate the turning motor output from the turning PID controller.
     // double turnTarget = m_periodicIO.desiredState.angle.getRotations();
     // double turnOutput = m_turningPIDController.calculate(getTurnPosition(), turnTarget);

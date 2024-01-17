@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
+import frc.robot.LimelightHelpers;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Subsystem;
 
@@ -75,7 +76,7 @@ public class SwerveDrive extends Subsystem {
 
   /**
    * Toggles between NeutralModeValue.Brake and NeutralModeValue.Coast
-   * 
+   *
    * @param isBrake true enables Brake mode, false enables Coast mode
    */
   public void setBrakeMode(boolean isBrake) {
@@ -96,6 +97,22 @@ public class SwerveDrive extends Subsystem {
           m_modules[Module.BACK_RIGHT].getPosition()
         },
         pose);
+  }
+
+  public double calculateAutoAim() {
+    double new_rot = 0.0;
+
+    if (m_poseEstimator.getEstimatedPosition().getRotation().getDegrees() != Constants.Field.k_redSpeakerPose.getRotation().getDegrees()) {
+      double bot_x = m_poseEstimator.getEstimatedPosition().getX();
+      double bot_y = m_poseEstimator.getEstimatedPosition().getY();
+      double speaker_x = Constants.Field.k_redSpeakerPose.getX();
+      double speaker_y = Constants.Field.k_redSpeakerPose.getY();
+
+      // sqrt((x2-x1)^2 + (y2-y1)^2)
+      // inverse cosine(distance / bot_x)
+    }
+
+    return new_rot;
   }
 
   public void resetPose() {
@@ -121,7 +138,7 @@ public class SwerveDrive extends Subsystem {
                 Rotation2d.fromRotations(m_modules[Module.BACK_LEFT].getTurnPosition()))
         },
         new Pose2d(0, 0, Rotation2d.fromDegrees(0)));
-    
+
     setPose(pose);
   }
 
@@ -251,7 +268,7 @@ public class SwerveDrive extends Subsystem {
             m_modules[Module.BACK_RIGHT].getPosition()
         }
     );
-    
+
     for (SwerveModule module : m_modules) {
       module.outputTelemetry();
     }
@@ -264,7 +281,7 @@ public class SwerveDrive extends Subsystem {
     SmartDashboard.putNumberArray("SwerveDrive/Pose",
         new double[] { getPose().getX(), getPose().getY(), getPose().getRotation().getDegrees() });
   }
-  
+
   public interface Module {
     int FRONT_LEFT = 0;
     int FRONT_RIGHT = 1;
