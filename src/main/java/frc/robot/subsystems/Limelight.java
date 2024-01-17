@@ -9,28 +9,16 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.LimelightHelpers;
 
-public class Limelight extends Subsystem {
-  private static Limelight m_limelight;
+public class Limelight {
   private NetworkTable m_limelightTable;
-  private final String m_name = "limelight";
+  private final String m_name;
 
   /**
    * Constructor
    */
-  private Limelight() {
+  public Limelight(String limelightName) {
+    m_name = limelightName;
     m_limelightTable = NetworkTableInstance.getDefault().getTable(m_name);
-  }
-
-  /**
-   * Get a new instance of the limelight class
-   *
-   * @return New instance of the limelight class
-   */
-  public static Limelight getInstance() {
-    if (m_limelight == null) {
-      m_limelight = new Limelight();
-    }
-    return m_limelight;
   }
 
   /**
@@ -62,19 +50,6 @@ public class Limelight extends Subsystem {
     return currentTime - LimelightHelpers.getLatency_Pipeline(m_name);
   }
 
-  @Override
-  public void periodic() {
-  }
-
-  @Override
-  public void stop() {
-  }
-
-  @Override
-  public void writePeriodicOutputs() {
-  }
-
-  @Override
   public void outputTelemetry() {
     for (String key: m_limelightTable.getKeys()) {
       String type = m_limelightTable.getEntry(key).getType().name().substring(1);

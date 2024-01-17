@@ -38,7 +38,6 @@ public class Robot extends TimedRobot {
   public final SwerveDrive m_swerve = SwerveDrive.getInstance();
   private Task m_currentTask;
   private AutoRunner m_autoRunner = AutoRunner.getInstance();
-  private final Limelight m_limelight = Limelight.getInstance();
 
   // The mere instantiation of this object will cause the compressor to start
   // running. We don't need to do anything else with it, so we'll suppress the
@@ -64,10 +63,6 @@ public class Robot extends TimedRobot {
 
     // Camera server
     m_camera = CameraServer.startAutomaticCapture();
-
-    // Turn Limelight LED's off
-    m_limelight.setLightEnabled(false);
-    m_allSubsystems.add(m_limelight);
 
     m_allSubsystems.add(m_swerve);
   }
