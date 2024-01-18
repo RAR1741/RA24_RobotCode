@@ -11,11 +11,14 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.Preferences;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
+import frc.robot.simulation.Field;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Subsystem;
 
@@ -63,6 +66,8 @@ public class SwerveDrive extends Subsystem {
     },
     new Pose2d(0, 0, Rotation2d.fromDegrees(0)));
 
+  private Field m_field = Field.getInstance();
+
   private SwerveDrive() {
     reset();
   }
@@ -105,11 +110,16 @@ public class SwerveDrive extends Subsystem {
     double speaker_x = Constants.Field.k_redSpeakerPose.getX();
     double speaker_y = Constants.Field.k_redSpeakerPose.getY();
 
-    double x = Constants.Field.k_width-bot_x;
-    double distance = Math.sqrt(Math.pow(speaker_x - bot_x,2) + Math.pow(speaker_y - bot_y,2));
+    double x = speaker_x - bot_x;
+    double distance = Math.sqrt(Math.pow(x, 2) + Math.pow(speaker_y - bot_y, 2));
 
-    return Math.toDegrees(Math.acos(x/distance)); //Theta
-    // inverse cosine(x/d)
+    double theta = Math.acos(x / distance);
+
+    SmartDashboard.putNumber("SwerveDrive/AutoAimAngle", Math.toDegrees(theta));
+    // System.out.println(theta);
+    
+    return theta; //Theta
+    // arccosine(x/d)
   }
 
   public void resetPose() {
@@ -255,16 +265,24 @@ public class SwerveDrive extends Subsystem {
       m_poseEstimator.addVisionMeasurement(m_limelight.getBotpose2D(), currentTime);
     }
 
-    m_poseEstimator.updateWithTime(
-        currentTime,
-        m_gyro.getRotation2d(),
-        new SwerveModulePosition[] {
-            m_modules[Module.FRONT_LEFT].getPosition(),
-            m_modules[Module.FRONT_RIGHT].getPosition(),
-            m_modules[Module.BACK_LEFT].getPosition(),
-            m_modules[Module.BACK_RIGHT].getPosition()
-        }
-    );
+    if(RobotBase.isReal()) {
+      m_poseEstimator.updateWithTime(
+          currentTime,
+          m_gyro.getRotation2d(),
+          new SwerveModulePosition[] {
+              m_modules[Module.FRONT_LEFT].getPosition(),
+              m_modules[Module.FRONT_RIGHT].getPosition(),
+              m_modules[Module.BACK_LEFT].getPosition(),
+              m_modules[Module.BACK_RIGHT].getPosition()
+          }
+      );
+    } else {
+      setPose(new Pose2d(
+        Preferences.getDouble("SwerveDrive/x",0),
+        Preferences.getDouble("SwerveDrive/y",0),
+        new Rotation2d(Math.toRadians(Preferences.getDouble("SwerveDrive/rot",0)))
+      ));
+    }
 
     for (SwerveModule module : m_modules) {
       module.outputTelemetry();

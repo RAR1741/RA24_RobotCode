@@ -89,8 +89,9 @@ public final class Constants {
 
     public static final double k_autoAimThreshold = 1; // in meters
 
-    public static final Pose2d k_redSpeakerPose = new Pose2d(0, 0, new Rotation2d(0));
-    public static final Pose2d k_blueSpeakerPose = new Pose2d(0, 0, new Rotation2d(0));
+    // TODO: Make sure the robot uses the same coordinate system
+    public static final Pose2d k_redSpeakerPose = new Pose2d(16.579342, 5.547868, new Rotation2d(0));
+    public static final Pose2d k_blueSpeakerPose = new Pose2d(-0.0381, 5.547868, new Rotation2d(0));
   }
 
   public static class Limelight {

@@ -20,7 +20,7 @@ import frc.robot.autonomous.tasks.Task;
 import frc.robot.controls.controllers.DriverController;
 import frc.robot.controls.controllers.OperatorController;
 import frc.robot.simulation.Field;
-import frc.robot.subsystems.Limelight;
+// import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Subsystem;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 
@@ -39,7 +39,7 @@ public class Robot extends TimedRobot {
   private Task m_currentTask;
   private AutoRunner m_autoRunner = AutoRunner.getInstance();
 
-  private boolean autoAimEnabled = false;
+  private boolean autoAimEnabled = true;
 
   // The mere instantiation of this object will cause the compressor to start
   // running. We don't need to do anything else with it, so we'll suppress the
@@ -65,6 +65,10 @@ public class Robot extends TimedRobot {
 
     // Camera server
     m_camera = CameraServer.startAutomaticCapture();
+
+    Preferences.setDouble("SwerveDrive/x", 0);
+    Preferences.setDouble("SwerveDrive/y", 0);
+    Preferences.setDouble("SwerveDrive/rot", 0);
 
     m_allSubsystems.add(m_swerve);
   }
@@ -126,15 +130,15 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     double rot = 0;
 
-    if (m_driverController.getWantsAutoAim() && m_swerve.getPose().getX() >= Constants.Field.k_autoAimThreshold && !autoAimEnabled) {
-      autoAimEnabled = true;
-    }
-    if (autoAimEnabled && m_driverController.getWantsAutoAim() || m_swerve.getPose().getX() <= Constants.Field.k_autoAimThreshold) {
-      autoAimEnabled = false;
-    }
+    // if (m_driverController.getWantsAutoAim() && m_swerve.getPose().getX() >= Constants.Field.k_autoAimThreshold && !autoAimEnabled) {
+    //   autoAimEnabled = true;
+    // }
+    // if (autoAimEnabled && m_driverController.getWantsAutoAim() || m_swerve.getPose().getX() <= Constants.Field.k_autoAimThreshold) {
+    //   autoAimEnabled = false;
+    // }
 
     if(autoAimEnabled) {
-      rot = m_swerve.calculateAutoAimAngle();
+      rot = m_swerve.calculateAutoAimAngle(); // TODO: Convert angle to speed
     } else {
       rot = m_rotRateLimiter.calculate(m_driverController.getTurnAxis());
     }
