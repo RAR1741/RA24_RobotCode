@@ -52,6 +52,7 @@ public class Robot extends TimedRobot {
   // The mere instantiation of this object will cause the compressor to start
   // running. We don't need to do anything else with it, so we'll suppress the
   // warning.
+  @SuppressWarnings("unused")
   private final Compressor m_compressor = new Compressor(PneumaticsModuleType.REVPH);
   @SuppressWarnings("unused")
   private UsbCamera m_camera;

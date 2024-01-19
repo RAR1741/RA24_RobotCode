@@ -3,7 +3,6 @@ package frc.robot.subsystems.drivetrain;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.kauailabs.navx.frc.AHRS;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -19,7 +18,6 @@ import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
-import frc.robot.simulation.Field;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Subsystem;
 
@@ -66,8 +64,6 @@ public class SwerveDrive extends Subsystem {
       m_modules[Module.BACK_RIGHT].getPosition()
     },
     new Pose2d(0, 0, Rotation2d.fromDegrees(0)));
-
-  private Field m_field = Field.getInstance();
 
   private SwerveDrive() {
     reset();

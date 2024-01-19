@@ -12,8 +12,6 @@ import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkBase.ControlType;
 
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -35,11 +33,6 @@ public class SwerveModule {
   private final double m_turningOffset;
   private final String m_moduleName;
   private final String m_smartDashboardKey;
-
-  // TODO: Gains are for example purposes only - must be determined for your own
-  // robot!
-  // private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(Constants.SwerveDrive.Turn.k_turnFeedForwardS,
-  //     Constants.SwerveDrive.Turn.k_turnFeedForwardV, Constants.SwerveDrive.Turn.k_turnFeedForwardA);
 
   private static class PeriodicIO {
     SwerveModuleState desiredState;
