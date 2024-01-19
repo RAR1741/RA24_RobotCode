@@ -17,35 +17,39 @@ public class DriverController extends FilteredController {
 
   // Drive
   public double getForwardAxis() {
-    return -this.getFilteredAxis(1);
+    return -this.getFilteredAxis(RawAxis.LEFT_Y_AXIS);
   }
 
   public double getStrafeAxis() {
-    return -this.getFilteredAxis(0);
+    return -this.getFilteredAxis(RawAxis.LEFT_X_AXIS);
   }
 
   public double getTurnAxis() {
-    return -this.getFilteredAxis(4);
+    return -this.getFilteredAxis(RawAxis.RIGHT_X_AXIS);
   }
 
   public double getSlowScaler() {
-    return this.getFilteredAxis(3);
+    return this.getFilteredAxis(RawAxis.RIGHT_TRIGGER);
   }
 
   public double getBoostScaler() {
-    return this.getFilteredAxis(2);
+    return this.getFilteredAxis(RawAxis.LEFT_TRIGGER);
   }
 
   public boolean getWantsResetGyro() {
-    return this.getRawButton(4);
+    return this.getRawButton(RawButton.Y);
   }
 
   public boolean getWantsBrake() {
-    return this.getRawButton(5);
+    return this.getRawButton(RawButton.LEFT_BUMPER);
   }
 
   public boolean getWantsSlowMode() {
-    return this.getFilteredAxis(3) > k_triggerActivationThreshold;
+    return this.getFilteredAxis(RawAxis.RIGHT_TRIGGER) > k_triggerActivationThreshold;
+  }
+
+  public boolean getWantsAutoAim() {
+    return this.getRawButton(RawButton.START);
   }
 
   public void outputTelemetry() {

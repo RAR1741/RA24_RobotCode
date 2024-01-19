@@ -4,12 +4,14 @@ package frc.robot.controls.controllers;
 
 public class DPadButton {
 
-    FilteredController controller;
-    Direction direction;
+    FilteredController m_controller;
+    Direction m_direction;
+
+    public boolean m_pressed = false;
 
     public DPadButton(FilteredController controller, Direction direction) {
-        this.controller = controller;
-        this.direction = direction;
+        this.m_controller = controller;
+        this.m_direction = direction;
     }
 
     public static enum Direction {
@@ -23,10 +25,19 @@ public class DPadButton {
     }
 
     public boolean get() {
-        int dPadValue = controller.getPOV();
-        return dPadValue == direction.direction;
-        // return (dPadValue == direction.direction) || (dPadValue == (direction.direction + 45) % 360)
-        //         || (dPadValue == (direction.direction + 315) % 360);
+        return m_controller.getPOV() == m_direction.direction;
+    }
+
+    public boolean getPressed() {
+        if(get()) {
+            if(!m_pressed) {
+                m_pressed = true;
+                return true;
+            }
+        } else {
+          m_pressed = false;
+        }
+        return false;
     }
 
 }

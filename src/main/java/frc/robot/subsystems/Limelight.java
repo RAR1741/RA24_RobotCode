@@ -1,38 +1,24 @@
 package frc.robot.subsystems;
 
+import java.util.Arrays;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.LimelightHelpers;
 
-public class Limelight extends Subsystem {
-  private static Limelight m_limelight;
+public class Limelight {
   private NetworkTable m_limelightTable;
-  private String m_name = "limelight";
-
-  // Limelight Offsets (Incorrect currently):
-  // X: 12 5426 in
-  // Y: 9.19 in
-  // Z: 10.1175 in
+  private final String m_name;
 
   /**
    * Constructor
    */
-  private Limelight() {
+  public Limelight(String limelightName) {
+    m_name = limelightName;
     m_limelightTable = NetworkTableInstance.getDefault().getTable(m_name);
-  }
-
-  /**
-   * Get a new instance of the limelight class
-   *
-   * @return New instance of the limelight class
-   */
-  public static Limelight getInstance() {
-    if (m_limelight == null) {
-      m_limelight = new Limelight();
-    }
-    return m_limelight;
   }
 
   /**
@@ -60,24 +46,26 @@ public class Limelight extends Subsystem {
     return m_limelightTable.getEntry("tv").getInteger(0) == 1;
   }
 
+  public double getDistanceFromTag(int targetTagID) {
+    double distance = 0.0;
+
+
+
+    return distance;
+  }
+
   public double getTimeOffset(double currentTime) {
     return currentTime - LimelightHelpers.getLatency_Pipeline(m_name);
   }
 
-  @Override
-  public void periodic() {
-  }
-
-  @Override
-  public void stop() {
-  }
-
-  @Override
-  public void writePeriodicOutputs() {
-  }
-
-  @Override
   public void outputTelemetry() {
+    for (String key: m_limelightTable.getKeys()) {
+      String type = m_limelightTable.getEntry(key).getType().name().substring(1);
+
+      SmartDashboard.putString(
+        key, (type.equals("String") || type.equals("Double")) ? m_limelightTable.getEntry(key).toString()
+          : Arrays.toString(m_limelightTable.getEntry(key).getDoubleArray(new double[6])));
+    }
   }
 
   /**

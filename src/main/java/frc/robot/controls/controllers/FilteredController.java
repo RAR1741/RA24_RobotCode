@@ -13,12 +13,9 @@ public class FilteredController extends GenericHID {
   private Deadband m_deadband = new Deadband(DEADBAND_LIMIT);
   private SquaredInput m_squaredInput = new SquaredInput(DEADBAND_LIMIT);
 
-  private boolean m_hatLock = false;
-
-  private final DPadButton m_up = new DPadButton(this, DPadButton.Direction.UP);
-  private final DPadButton m_down = new DPadButton(this, DPadButton.Direction.DOWN);
-  private final DPadButton m_left = new DPadButton(this, DPadButton.Direction.LEFT);
-  private final DPadButton m_right = new DPadButton(this, DPadButton.Direction.RIGHT);
+  private final DPadButton[] hatButtons = {new DPadButton(this, DPadButton.Direction.UP),
+    new DPadButton(this, DPadButton.Direction.DOWN), new DPadButton(this, DPadButton.Direction.LEFT),
+    new DPadButton(this, DPadButton.Direction.RIGHT)};
 
   public FilteredController(int port) {
     super(port);
@@ -48,67 +45,40 @@ public class FilteredController extends GenericHID {
     return value;
   }
 
-  public boolean getHatUpPressed() { //TODO: We hate this
-    if(this.getPOV() != -1) {
-      if(!m_hatLock) {
-        m_hatLock = m_up.get();
-        return m_hatLock;
-      }
-    } else {
-      m_hatLock = false;
-    }
-    return false;
+  public boolean getHatPressed(int direction) {
+    return hatButtons[direction].getPressed();
   }
 
-  public boolean getHatDownPressed() {
-    if(this.getPOV() != -1) {
-      if(!m_hatLock) {
-        m_hatLock = m_down.get();
-        return m_hatLock;
-      }
-    } else {
-      m_hatLock = false;
-    }
-    return false;
+  public boolean getHat(int direction) {
+    return hatButtons[direction].get();
   }
 
-  public boolean getHatLeftPressed() {
-    if(this.getPOV() != -1) {
-      if(!m_hatLock) {
-        m_hatLock = m_left.get();
-        return m_hatLock;
-      }
-    } else {
-      m_hatLock = false;
-    }
-    return false;
+  public interface RawButton {
+    int A = 1;
+    int B = 2;
+    int X = 3;
+    int Y = 4;
+    int LEFT_BUMPER = 5;
+    int RIGHT_BUMPER = 6;
+    int START = 7;
+    int BACK = 8;
+    int LEFT_JOYSTICK = 9;
+    int RIGHT_JOYSTICK = 10;
   }
 
-  public boolean getHatRightPressed() {
-    if(this.getPOV() != -1) {
-      if(!m_hatLock) {
-        m_hatLock = m_right.get();
-        return m_hatLock;
-      }
-    } else {
-      m_hatLock = false;
-    }
-    return false;
+  public interface RawAxis {
+    int LEFT_X_AXIS = 0;
+    int LEFT_Y_AXIS = 1;
+    int LEFT_TRIGGER = 2;
+    int RIGHT_TRIGGER = 3;
+    int RIGHT_X_AXIS = 4;
+    int RIGHT_Y_AXIS = 5;
   }
 
-  public boolean getHatUp() {
-    return m_up.get();
-  }
-
-  public boolean getHatDown() {
-    return m_down.get();
-  }
-
-  public boolean getHatLeft() {
-    return m_left.get();
-  }
-
-  public boolean getHatRight() {
-    return m_right.get();
+  public interface Direction {
+    int UP = 0;
+    int DOWN = 1;
+    int LEFT = 2;
+    int RIGHT = 3;
   }
 }
