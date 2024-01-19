@@ -3,6 +3,7 @@ package frc.robot.subsystems.drivetrain;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -11,13 +12,13 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
-import frc.robot.LimelightHelpers;
 import frc.robot.simulation.Field;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Subsystem;
@@ -104,7 +105,10 @@ public class SwerveDrive extends Subsystem {
         pose);
   }
 
-  public double calculateAutoAimAngle() {
+  /**
+   * @param degreeMode If <code>true</code>, return result in degrees; otherwise, return in radians
+   */
+  public double calculateAutoAimAngle(boolean degreeMode) {
     double bot_x = m_poseEstimator.getEstimatedPosition().getX();
     double bot_y = m_poseEstimator.getEstimatedPosition().getY();
     double speaker_x = Constants.Field.k_redSpeakerPose.getX();
@@ -117,8 +121,8 @@ public class SwerveDrive extends Subsystem {
 
     SmartDashboard.putNumber("SwerveDrive/AutoAimAngle", Math.toDegrees(theta));
     // System.out.println(theta);
-    
-    return theta; //Theta
+
+    return degreeMode ? Units.radiansToDegrees(theta) : theta;
     // arccosine(x/d)
   }
 

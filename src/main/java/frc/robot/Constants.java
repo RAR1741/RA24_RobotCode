@@ -74,6 +74,12 @@ public final class Constants {
       public static final int k_TurningMinOutput = -1;
       public static final int k_TurningMaxOutput = 1;
     }
+
+    public class AutoAim {
+      public static final double k_P = 1;
+      public static final double k_I = 0;
+      public static final double k_D = 0;
+    }
   }
 
   public static class Field {

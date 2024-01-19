@@ -12,6 +12,7 @@ import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkBase.ControlType;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -28,7 +29,7 @@ public class SwerveModule {
   private final CANSparkMax m_turningMotor;
   private final AbsoluteEncoder m_turningEncoder;
   private final SparkPIDController m_turningPIDController;
-
+  
   private final PeriodicIO m_periodicIO = new PeriodicIO();
 
   private final double m_turningOffset;
@@ -73,7 +74,7 @@ public class SwerveModule {
     m_turningMotor.setInverted(true);
     m_turningMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 20);
 
-    m_turningPIDController = m_turningMotor.getPIDController(); // TODO: Set PID Values
+    m_turningPIDController = m_turningMotor.getPIDController();
 
     m_turningPIDController.setP(Constants.SwerveDrive.Turn.k_turningP);
     m_turningPIDController.setI(Constants.SwerveDrive.Turn.k_turningI);

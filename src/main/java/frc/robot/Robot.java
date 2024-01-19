@@ -5,6 +5,7 @@ import java.util.List;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -32,6 +33,13 @@ public class Robot extends TimedRobot {
   private final SlewRateLimiter m_xRateLimiter = new SlewRateLimiter(3);
   private final SlewRateLimiter m_yRateLimiter = new SlewRateLimiter(3);
   private final SlewRateLimiter m_rotRateLimiter = new SlewRateLimiter(3);
+
+  // PID Controller for Swerve Auto Aim speed
+  private final PIDController m_autoAimPID = new PIDController(
+    Constants.SwerveDrive.AutoAim.k_P,
+    Constants.SwerveDrive.AutoAim.k_I,
+    Constants.SwerveDrive.AutoAim.k_D
+  );
 
   // Robot subsystems
   private List<Subsystem> m_allSubsystems = new ArrayList<>();
@@ -128,7 +136,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    double rot = 0;
+    double rot = 0.0;
 
     // if (m_driverController.getWantsAutoAim() && m_swerve.getPose().getX() >= Constants.Field.k_autoAimThreshold && !autoAimEnabled) {
     //   autoAimEnabled = true;
@@ -138,14 +146,13 @@ public class Robot extends TimedRobot {
     // }
 
     if(autoAimEnabled) {
-      rot = m_swerve.calculateAutoAimAngle(); // TODO: Convert angle to speed
+      rot = m_autoAimPID.calculate(m_swerve.getRotation2d().getRadians(), m_swerve.calculateAutoAimAngle(false));
     } else {
       rot = m_rotRateLimiter.calculate(m_driverController.getTurnAxis());
     }
 
     double xSpeed = m_xRateLimiter.calculate(m_driverController.getForwardAxis());
     double ySpeed = m_yRateLimiter.calculate(m_driverController.getStrafeAxis());
-
 
     // slowScaler should scale between k_slowScaler and 1
     double slowScaler = Constants.SwerveDrive.k_slowScaler
