@@ -40,13 +40,7 @@ public class Logger {
     new File(dir).mkdirs();
 
     String date = Calendar.YEAR + "_" + Calendar.MONTH + "_" + Calendar.DATE;
-    int match = 1;
-    File[] files = new File(dir).listFiles();
-    for (File i : files) {
-      if (i.getName().contains(date)) {
-        match++;
-      }
-    }
+    int match = DriverStation.getMatchNumber();
 
     String fileName = "RAR_LOG-" + date + "-" + match + ".wpilog";
     DataLogManager.start(dir, fileName);
