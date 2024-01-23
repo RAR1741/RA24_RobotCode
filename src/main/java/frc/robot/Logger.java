@@ -16,8 +16,6 @@ public class Logger {
   private static DataLog m_log;
 
   private static HashMap<String, Integer> m_entries = new HashMap<>();
-  // private static ArrayList<String> m_doubleEntries = new ArrayList<>();
-  // private static ArrayList<String> m_booleanEntries = new ArrayList<>();
 
   public static Logger getInstance() {
     if (m_logger == null) {

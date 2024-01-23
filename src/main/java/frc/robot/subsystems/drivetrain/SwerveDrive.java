@@ -46,7 +46,8 @@ public class SwerveDrive extends Subsystem {
   };
 
   private final AHRS m_gyro = new AHRS(SPI.Port.kMXP);
-  private final Limelight m_limelight = new Limelight("limelight");
+  private final Limelight m_limelightOne = new Limelight("limelight-one");
+  private final Limelight m_limelightTwo = new Limelight("limelight-two");
 
   private SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
       m_moduleLocations[Module.FRONT_LEFT],
@@ -261,8 +262,12 @@ public class SwerveDrive extends Subsystem {
   public void outputTelemetry() {
     double currentTime = Timer.getFPGATimestamp();
 
-    if(m_limelight.seesAprilTag()) {
-      m_poseEstimator.addVisionMeasurement(m_limelight.getBotpose2D(), currentTime);
+    if(m_limelightOne.seesAprilTag()) {
+      m_poseEstimator.addVisionMeasurement(m_limelightOne.getBotpose2D(), currentTime);
+    }
+
+    if(m_limelightTwo.seesAprilTag()) {
+      m_poseEstimator.addVisionMeasurement(m_limelightTwo.getBotpose2D(), currentTime);
     }
 
     if(RobotBase.isReal()) {
