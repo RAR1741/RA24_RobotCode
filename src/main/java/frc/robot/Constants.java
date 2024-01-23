@@ -42,13 +42,11 @@ public final class Constants {
       public static final int k_BLMotorId = 7;
       public static final int k_BRMotorId = 8;
 
-      public static final double k_driveP = 0.86853;
-      public static final double k_driveI = 0.0;
-      public static final double k_driveD = 0.0;
-
-      public static final double k_driveFeedForwardS = 0.25043;
-      public static final double k_driveFeedForwardV = 3.0125;
-      public static final double k_driveFeedForwardA = 0.38005;
+      public static final double k_P = 0.86853;
+      public static final double k_I = 0.0;
+      public static final double k_D = 0.0;
+      public static final double k_IZone = 0.0;
+      public static final double k_FF = 0.0;
     }
 
     // Drivetrain (turn) constants

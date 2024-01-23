@@ -1,7 +1,7 @@
 package frc.robot.subsystems.drivetrain;
 
-import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.kauailabs.navx.frc.AHRS;
+import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -84,9 +84,8 @@ public class SwerveDrive extends Subsystem {
    */
   public void setBrakeMode(boolean isBrake) {
     for (SwerveModule module : m_modules) {
-      module.getDriveMotor().setNeutralMode(
-          isBrake ? NeutralModeValue.Brake : NeutralModeValue.Coast);
-
+      module.getDriveMotor().setIdleMode(
+          isBrake ? IdleMode.kBrake : IdleMode.kCoast);
     }
   }
 
