@@ -14,6 +14,11 @@ import org.tomlj.TomlParseResult;
 public class Config {
     static TomlParseResult m_parsedConfig;
 
+    /**
+     * Load the configs from the specified file
+     *
+     * @param filepath Path to the config file
+     */
     public static void loadFromFile(String filepath) {
         try {
             Path file = Paths.get(new File(filepath).getName());
@@ -42,7 +47,15 @@ public class Config {
         System.out.println("Config succesfully loaded...");
     }
 
-    public static double getDouble(String key, double defaultValue) {
+    /**
+     * Get data assigned to the specified key
+     *
+     * @param key The key
+     * @param defaultValue Value to be returned if no valid data is found
+     *
+     * @return The data found at the specified key
+     */
+    public static double getData(String key, double defaultValue) {
         if (m_parsedConfig == null) {
             return defaultValue;
         }
@@ -57,7 +70,15 @@ public class Config {
         );
     }
 
-    public static boolean getBoolean(String key, boolean defaultValue) {
+    /**
+     * Get data assigned to the specified key
+     *
+     * @param key The key
+     * @param defaultValue Value to be returned if no valid data is found
+     *
+     * @return The data found at the specified key
+     */
+    public static boolean getData(String key, boolean defaultValue) {
         if (m_parsedConfig == null) {
             return defaultValue;
         }
