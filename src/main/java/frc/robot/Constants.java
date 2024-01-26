@@ -22,7 +22,7 @@ public final class Constants {
     // Drivetrain wheel offsets
     // TODO: Change for final robot
     public static final double k_xDistance = 0.762; // 30 inches Forward/Backward
-    public static final double k_yDistance = 0.6858; // in meters! Side-to-Side
+    public static final double k_yDistance = 0.762; // in meters! Side-to-Side
 
     public static final double k_xCenterDistance = k_xDistance / 2.0;
     public static final double k_yCenterDistance = k_yDistance / 2.0;
@@ -33,16 +33,16 @@ public final class Constants {
     public static final double k_boostScaler = 2.0; // 200% increase in speed
 
     public static final double k_wheelRadiusIn = 2; // 2 inches
-    public static final double k_driveGearRatio = (50.0 / 14.0) * (17.0 / 27.0) * (45.0 / 15.0);
+    public static final double k_driveGearRatio = (50.0 / 14.0) * (16.0 / 28.0) * (45.0 / 15.0);
 
     // Drivetrain drive motor constants
     public class Drive {
-      public static final int k_FLMotorId = 5;
-      public static final int k_FRMotorId = 6;
-      public static final int k_BLMotorId = 7;
-      public static final int k_BRMotorId = 8;
+      public static final int k_FLMotorId = 6;
+      public static final int k_FRMotorId = 8;
+      public static final int k_BLMotorId = 10;
+      public static final int k_BRMotorId = 12;
 
-      public static final double k_P = 0.86853;
+      public static final double k_P = 1.0;
       public static final double k_I = 0.0;
       public static final double k_D = 0.0;
       public static final double k_IZone = 0.0;
@@ -52,20 +52,20 @@ public final class Constants {
     // Drivetrain (turn) constants
     public class Turn {
       // Drivetrain turning offset constants
-      public static final double k_FLOffset = 0.796705;
-      public static final double k_FROffset = 0.884635;
-      public static final double k_BLOffset = 0.754982;
-      public static final double k_BROffset = 0.103446;
+      public static final double k_FLOffset = 0.0;
+      public static final double k_FROffset = 0.0;
+      public static final double k_BLOffset = 0.0;
+      public static final double k_BROffset = 0.0;
 
-      public static final int k_FLMotorId = 9;
-      public static final int k_FRMotorId = 10;
-      public static final int k_BLMotorId = 11;
-      public static final int k_BRMotorId = 12;
+      public static final int k_FLMotorId = 5;
+      public static final int k_FRMotorId = 7;
+      public static final int k_BLMotorId = 9;
+      public static final int k_BRMotorId = 11;
 
       // TODO: Tweak these as necessary
-      public static final double k_turningP = 20.0;
-      public static final double k_turningI = 0.1;
-      public static final double k_turningD = 0.01;
+      public static final double k_turningP = 1.0;
+      public static final double k_turningI = 0.0;
+      public static final double k_turningD = 0.0;
       public static final double k_turningIZone = 0;
       public static final double k_turningFF = 0;
 

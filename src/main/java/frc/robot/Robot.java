@@ -46,7 +46,7 @@ public class Robot extends TimedRobot {
   private Task m_currentTask;
   private AutoRunner m_autoRunner = AutoRunner.getInstance();
 
-  private boolean autoAimEnabled = true;
+  private boolean m_autoAimEnabled = false;
 
   // The mere instantiation of this object will cause the compressor to start
   // running. We don't need to do anything else with it, so we'll suppress the
@@ -54,7 +54,7 @@ public class Robot extends TimedRobot {
   @SuppressWarnings("unused")
   private final Compressor m_compressor = new Compressor(PneumaticsModuleType.REVPH);
   @SuppressWarnings("unused")
-  private UsbCamera m_camera;
+  // private UsbCamera m_camera;
 
   // Auto things
   AutoChooser m_autoChooser = new AutoChooser();
@@ -72,7 +72,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData("Field", m_field);
 
     // Camera server
-    m_camera = CameraServer.startAutomaticCapture();
+    // m_camera = CameraServer.startAutomaticCapture();
 
     Preferences.setDouble("SwerveDrive/x", 0);
     Preferences.setDouble("SwerveDrive/y", 0);
@@ -145,7 +145,7 @@ public class Robot extends TimedRobot {
     //   autoAimEnabled = false;
     // }
 
-    if(autoAimEnabled) {
+    if(m_autoAimEnabled) {
       rot = m_autoAimPID.calculate(m_swerve.getRotation2d().getRadians(), m_swerve.calculateAutoAimAngle(false));
     } else {
       rot = m_rotRateLimiter.calculate(m_driverController.getTurnAxis());
@@ -162,7 +162,7 @@ public class Robot extends TimedRobot {
     double boostScaler = 1 + (m_driverController.getBoostScaler() * (Constants.SwerveDrive.k_boostScaler - 1));
 
     xSpeed *= slowScaler * boostScaler;
-    ySpeed *= slowScaler;// * boostScaler;
+    ySpeed *= slowScaler * boostScaler;
     rot *= slowScaler * boostScaler;
 
     m_swerve.drive(xSpeed, ySpeed, rot, true);
@@ -173,6 +173,10 @@ public class Robot extends TimedRobot {
 
     if (m_driverController.getWantsBrake()) {
       m_swerve.pointInwards();
+    }
+
+    if (m_driverController.getWantsAutoAim()) {
+      m_autoAimEnabled = !m_autoAimEnabled;
     }
 
     m_driverController.outputTelemetry();

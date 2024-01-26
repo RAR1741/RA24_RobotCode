@@ -49,7 +49,7 @@ public class DriverController extends FilteredController {
   }
 
   public boolean getWantsAutoAim() {
-    return this.getRawButton(RawButton.START);
+    return this.getRawButtonPressed(RawButton.START);
   }
 
   public void outputTelemetry() {

@@ -50,6 +50,8 @@ public class SwerveModule {
     m_driveMotor.restoreFactoryDefaults();
     m_driveMotor.setIdleMode(IdleMode.kBrake);
     m_driveEncoder = m_driveMotor.getEncoder();
+    m_driveEncoder.setPositionConversionFactor(Units.inchesToMeters(Constants.SwerveDrive.k_wheelRadiusIn * 2 * Math.PI) / Constants.SwerveDrive.k_driveGearRatio);
+    m_driveEncoder.setVelocityConversionFactor(Units.inchesToMeters((Constants.SwerveDrive.k_wheelRadiusIn * 2 * Math.PI) / Constants.SwerveDrive.k_driveGearRatio) / 60);
 
     m_turningMotor = new CANSparkMax(turningMotorChannel, MotorType.kBrushless);
     m_turningMotor.restoreFactoryDefaults();
@@ -127,9 +129,9 @@ public class SwerveModule {
     m_periodicIO.desiredState = desiredState;
 
     // If the velocity changes, set drive motor accordingly.
-    if(m_driveEncoder.getVelocity() != m_periodicIO.desiredState.speedMetersPerSecond * Constants.SwerveDrive.k_driveGearRatio * Units.inchesToMeters(Constants.SwerveDrive.k_wheelRadiusIn)) {
-      m_drivePIDController.setReference(m_periodicIO.desiredState.speedMetersPerSecond, ControlType.kVelocity);
-    }
+    // if(m_driveEncoder.getVelocity() != m_periodicIO.desiredState.speedMetersPerSecond * Constants.SwerveDrive.k_driveGearRatio * Units.inchesToMeters(Constants.SwerveDrive.k_wheelRadiusIn)) {
+    //   m_drivePIDController.setReference(m_periodicIO.desiredState.speedMetersPerSecond, ControlType.kVelocity);
+    // }
 
     // Calculate the turning motor output from the turning PID controller.
     // double turnTarget = m_periodicIO.desiredState.angle.getRotations();
@@ -138,9 +140,9 @@ public class SwerveModule {
     // boolean turnAtGoal = m_turningPIDController.atGoal();
 
     // If the turn position changes, set turn motor accordingly
-    if(m_turningEncoder.getPosition() != m_periodicIO.desiredState.angle.getRotations()) {
-      m_turnPIDController.setReference(m_periodicIO.desiredState.angle.getRotations(), ControlType.kPosition);
-    }
+    // if(m_turningEncoder.getPosition() != m_periodicIO.desiredState.angle.getRotations()) {
+    //   m_turnPIDController.setReference(m_periodicIO.desiredState.angle.getRotations(), ControlType.kPosition);
+    // }
 
     // SmartDashboard.putNumber(m_smartDashboardKey + "TurnTarget", turnTarget);
     // SmartDashboard.putNumber(m_smartDashboardKey + "TurnOutput", turnOutput + turnFeedforward);
