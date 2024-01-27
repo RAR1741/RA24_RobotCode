@@ -35,10 +35,9 @@ public class Robot extends TimedRobot {
 
   // PID Controller for Swerve Auto Aim speed
   private final PIDController m_autoAimPID = new PIDController(
-    Constants.SwerveDrive.AutoAim.k_P,
-    Constants.SwerveDrive.AutoAim.k_I,
-    Constants.SwerveDrive.AutoAim.k_D
-  );
+      Constants.SwerveDrive.AutoAim.k_P,
+      Constants.SwerveDrive.AutoAim.k_I,
+      Constants.SwerveDrive.AutoAim.k_D);
 
   // Robot subsystems
   private List<Subsystem> m_allSubsystems = new ArrayList<>();
@@ -138,14 +137,16 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     double rot = 0.0;
 
-    // if (m_driverController.getWantsAutoAim() && m_swerve.getPose().getX() >= Constants.Field.k_autoAimThreshold && !autoAimEnabled) {
-    //   autoAimEnabled = true;
+    // if (m_driverController.getWantsAutoAim() && m_swerve.getPose().getX() >=
+    // Constants.Field.k_autoAimThreshold && !autoAimEnabled) {
+    // autoAimEnabled = true;
     // }
-    // if (autoAimEnabled && m_driverController.getWantsAutoAim() || m_swerve.getPose().getX() <= Constants.Field.k_autoAimThreshold) {
-    //   autoAimEnabled = false;
+    // if (autoAimEnabled && m_driverController.getWantsAutoAim() ||
+    // m_swerve.getPose().getX() <= Constants.Field.k_autoAimThreshold) {
+    // autoAimEnabled = false;
     // }
 
-    if(m_autoAimEnabled) {
+    if (m_autoAimEnabled) {
       rot = m_autoAimPID.calculate(m_swerve.getRotation2d().getRadians(), m_swerve.calculateAutoAimAngle(false));
     } else {
       rot = m_rotRateLimiter.calculate(m_driverController.getTurnAxis());
@@ -165,7 +166,8 @@ public class Robot extends TimedRobot {
     ySpeed *= slowScaler * boostScaler;
     rot *= slowScaler * boostScaler;
 
-    m_swerve.drive(xSpeed, ySpeed, rot, true);
+    // m_swerve.drive(xSpeed, ySpeed, rot, true);
+    m_swerve.drive(0, 0, 0, false);
 
     if (m_driverController.getWantsResetGyro()) {
       m_swerve.resetGyro();

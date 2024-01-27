@@ -32,21 +32,22 @@ public final class Constants {
     public static final double k_slowScaler = 0.2; // 20% reduction in speed
     public static final double k_boostScaler = 2.0; // 200% increase in speed
 
-    public static final double k_wheelRadiusIn = 2; // 2 inches
+    public static final double k_wheelRadiusIn = 2.0; // 2 inches
     public static final double k_driveGearRatio = (50.0 / 14.0) * (16.0 / 28.0) * (45.0 / 15.0);
+    public static final double k_turnGearRatio = 7.0 / 150.0;
 
     // Drivetrain drive motor constants
     public class Drive {
       public static final int k_FLMotorId = 6;
       public static final int k_FRMotorId = 8;
-      public static final int k_BLMotorId = 10;
-      public static final int k_BRMotorId = 12;
+      public static final int k_BLMotorId = 12;
+      public static final int k_BRMotorId = 10;
 
-      public static final double k_P = 1.0;
+      public static final double k_P = 0.0;
       public static final double k_I = 0.0;
       public static final double k_D = 0.0;
       public static final double k_IZone = 0.0;
-      public static final double k_FF = 0.0;
+      public static final double k_FF = 3.25;
     }
 
     // Drivetrain (turn) constants
@@ -59,11 +60,11 @@ public final class Constants {
 
       public static final int k_FLMotorId = 5;
       public static final int k_FRMotorId = 7;
-      public static final int k_BLMotorId = 9;
-      public static final int k_BRMotorId = 11;
+      public static final int k_BLMotorId = 11;
+      public static final int k_BRMotorId = 9;
 
       // TODO: Tweak these as necessary
-      public static final double k_turningP = 1.0;
+      public static final double k_turningP = 0.1;
       public static final double k_turningI = 0.0;
       public static final double k_turningD = 0.0;
       public static final double k_turningIZone = 0;
