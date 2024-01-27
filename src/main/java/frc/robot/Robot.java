@@ -5,8 +5,6 @@ import java.util.List;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -66,6 +64,8 @@ public class Robot extends TimedRobot {
     Preferences.setDouble("SwerveDrive/rot", 0);
 
     m_allSubsystems.add(m_swerve);
+
+    m_swerve.setGyroAngleAdjustment(0);
   }
 
   @Override
@@ -118,7 +118,6 @@ public class Robot extends TimedRobot {
   public void teleopInit() {
     m_swerve.setBrakeMode(false);
     m_swerve.drive(0, 0, 0, false);
-    m_swerve.setGyroAngleAdjustment(0);
   }
 
   @Override
@@ -173,13 +172,12 @@ public class Robot extends TimedRobot {
 
   @Override
   public void simulationPeriodic() {
-    updateSim();
   }
 
   @Override
   public void disabledInit() {
     m_allSubsystems.forEach(subsystem -> subsystem.stop());
-    m_swerve.resetOdometry(new Pose2d(0, 0, new Rotation2d(0)));
+    // m_swerve.resetOdometry(new Pose2d(3, 3, new Rotation2d(0)));
   }
 
   @Override
@@ -189,8 +187,6 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledPeriodic() {
     m_allSubsystems.forEach(subsystem -> subsystem.outputTelemetry());
-
-    updateSim();
   }
 
   @Override
