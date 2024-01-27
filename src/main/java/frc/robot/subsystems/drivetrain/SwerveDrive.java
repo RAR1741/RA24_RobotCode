@@ -25,13 +25,13 @@ public class SwerveDrive extends Subsystem {
   private static SwerveDrive m_swerve = null;
 
   private final SwerveModule[] m_modules = {
-    new SwerveModule(Constants.SwerveDrive.Drive.k_FLMotorId, Constants.SwerveDrive.Turn.k_FLMotorId,
+    new SwerveModule(Constants.SwerveDrive.Drive.k_FLMotorId, Constants.SwerveDrive.Turn.k_FLMotorId, Constants.SwerveDrive.Turn.k_FLAbsID,
       Constants.SwerveDrive.Turn.k_FLOffset, "FL"), // 0
-    new SwerveModule(Constants.SwerveDrive.Drive.k_FRMotorId, Constants.SwerveDrive.Turn.k_FRMotorId,
+    new SwerveModule(Constants.SwerveDrive.Drive.k_FRMotorId, Constants.SwerveDrive.Turn.k_FRMotorId, Constants.SwerveDrive.Turn.k_FRAbsID,
       Constants.SwerveDrive.Turn.k_FROffset, "FR"), // 1
-    new SwerveModule(Constants.SwerveDrive.Drive.k_BLMotorId, Constants.SwerveDrive.Turn.k_BLMotorId,
+    new SwerveModule(Constants.SwerveDrive.Drive.k_BLMotorId, Constants.SwerveDrive.Turn.k_BLMotorId, Constants.SwerveDrive.Turn.k_BLAbsID,
       Constants.SwerveDrive.Turn.k_BLOffset, "BL"), // 2
-    new SwerveModule(Constants.SwerveDrive.Drive.k_BRMotorId, Constants.SwerveDrive.Turn.k_BRMotorId,
+    new SwerveModule(Constants.SwerveDrive.Drive.k_BRMotorId, Constants.SwerveDrive.Turn.k_BRMotorId, Constants.SwerveDrive.Turn.k_BRAbsID,
       Constants.SwerveDrive.Turn.k_BROffset, "BR") // 3
   };
 

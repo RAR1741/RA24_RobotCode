@@ -1,20 +1,18 @@
 package frc.robot.subsystems.drivetrain;
 
-import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
-import com.revrobotics.SparkAbsoluteEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.Helpers;
@@ -24,7 +22,7 @@ public class SwerveModule {
   private final CANSparkMax m_turningMotor;
   private final RelativeEncoder m_driveEncoder;
   private final RelativeEncoder m_turningRelEncoder;
-  private final AbsoluteEncoder m_turningAbsEncoder;
+  private final DutyCycleEncoder m_turningAbsEncoder;
   private final SparkPIDController m_turningPIDController;
   private final SparkPIDController m_drivePIDController;
 
@@ -52,7 +50,7 @@ public class SwerveModule {
     SwerveModuleState desiredState;
   }
 
-  public SwerveModule(int driveMotorChannel, int turningMotorChannel, double turningOffset, String moduleName) {
+  public SwerveModule(int driveMotorChannel, int turningMotorChannel, int turningAbsoluteID, double turningOffset, String moduleName) {
     m_turningOffset = turningOffset;
     m_moduleName = moduleName;
 
@@ -69,14 +67,18 @@ public class SwerveModule {
 
     m_turningMotor = new CANSparkMax(turningMotorChannel, MotorType.kBrushless);
     m_turningMotor.restoreFactoryDefaults();
-    m_turningMotor.burnFlash();
+    // m_turningMotor.burnFlash();
     m_turningMotor.setIdleMode(IdleMode.kCoast);
 
-    m_turningAbsEncoder = m_turningMotor.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
+    m_turningAbsEncoder = new DutyCycleEncoder(turningAbsoluteID);
     // TODO: use m_turningAbsEncoder.getPosition() to set the offset for the
     // m_turningRelEncoder
 
+    m_turningAbsEncoder.setDistancePerRotation(Constants.SwerveDrive.k_turnGearRatio * 2 * Math.PI);
+
     m_turningRelEncoder = m_turningMotor.getEncoder();
+    m_turningRelEncoder.setPosition(getTurnPosition());
+    
     m_turningMotor.setInverted(true);
     m_turningMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 20);
     m_turningRelEncoder.setPositionConversionFactor(Constants.SwerveDrive.k_turnGearRatio * 2 * Math.PI);
@@ -145,7 +147,7 @@ public class SwerveModule {
 
   public void setDesiredState(SwerveModuleState desiredState) {
     // Optimize the reference state to avoid spinning further than 90 degrees
-    // desiredState = SwerveModuleState.optimize(desiredState, Rotation2d.fromRadians(getTurnPosition()));
+    desiredState = SwerveModuleState.optimize(desiredState, Rotation2d.fromRadians(getTurnPosition()));
     desiredState.angle = new Rotation2d(Helpers.modRadians(desiredState.angle.getRadians()));
     m_periodicIO.desiredState = desiredState;
 
@@ -174,6 +176,7 @@ public class SwerveModule {
   }
 
   public void outputTelemetry() {
+    SmartDashboard.putNumber(m_smartDashboardKey + "TurnAbsPosition", m_turningAbsEncoder.get());
     SmartDashboard.putNumber(m_smartDashboardKey + "DriveMotorPos", m_driveEncoder.getPosition());
     SmartDashboard.putNumber(m_smartDashboardKey + "DriveMotorVelocity", getDriveVelocity());
     SmartDashboard.putNumber(m_smartDashboardKey + "TurnMotorPosition", getTurnPosition());
