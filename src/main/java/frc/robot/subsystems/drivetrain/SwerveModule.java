@@ -1,12 +1,12 @@
 package frc.robot.subsystems.drivetrain;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.CANSparkLowLevel.MotorType;
-import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
-import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
+import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkPIDController;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -50,7 +50,8 @@ public class SwerveModule {
     SwerveModuleState desiredState;
   }
 
-  public SwerveModule(int driveMotorChannel, int turningMotorChannel, int turningAbsoluteID, double turningOffset, String moduleName) {
+  public SwerveModule(int driveMotorChannel, int turningMotorChannel, int turningAbsoluteID, double turningOffset,
+      String moduleName) {
     m_turningOffset = turningOffset;
     m_moduleName = moduleName;
 
@@ -77,12 +78,13 @@ public class SwerveModule {
     m_turningAbsEncoder.setDistancePerRotation(Constants.SwerveDrive.k_turnGearRatio * 2 * Math.PI);
 
     m_turningRelEncoder = m_turningMotor.getEncoder();
-    m_turningRelEncoder.setPosition(getTurnPosition());
-    
+
     m_turningMotor.setInverted(true);
     m_turningMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 20);
     m_turningRelEncoder.setPositionConversionFactor(Constants.SwerveDrive.k_turnGearRatio * 2 * Math.PI);
     m_turningRelEncoder.setVelocityConversionFactor(Constants.SwerveDrive.k_turnGearRatio * 2 * Math.PI / 60);
+
+    m_turningRelEncoder.setPosition(getTurnPosition());
 
     m_turningPIDController = m_turningMotor.getPIDController();
     m_turningPIDController.setP(Constants.SwerveDrive.Turn.k_turningP);
@@ -91,7 +93,8 @@ public class SwerveModule {
     m_turningPIDController.setIZone(Constants.SwerveDrive.Turn.k_turningIZone);
     m_turningPIDController.setFF(Constants.SwerveDrive.Turn.k_turningFF);
     // m_turningPIDController.setOutputRange(
-        // Constants.SwerveDrive.Turn.k_TurningMinOutput, Constants.SwerveDrive.Turn.k_TurningMaxOutput);
+    // Constants.SwerveDrive.Turn.k_TurningMinOutput,
+    // Constants.SwerveDrive.Turn.k_TurningMaxOutput);
 
     m_drivePIDController = m_driveMotor.getPIDController();
     m_drivePIDController.setP(Constants.SwerveDrive.Drive.k_P);
@@ -161,7 +164,8 @@ public class SwerveModule {
     m_drivePIDController.setReference(desiredState.speedMetersPerSecond, ControlType.kVelocity);
     m_turningPIDController.setReference(m_periodicIO.desiredState.angle.getRadians(), ControlType.kPosition);
 
-    SmartDashboard.putNumber(m_smartDashboardKey + "TurnVoltage", m_turningMotor.getBusVoltage() * m_turningMotor.getAppliedOutput());
+    SmartDashboard.putNumber(m_smartDashboardKey + "TurnVoltage",
+        m_turningMotor.getBusVoltage() * m_turningMotor.getAppliedOutput());
     SmartDashboard.putNumber(m_smartDashboardKey + "DriveTargetVelocity",
         m_periodicIO.desiredState.speedMetersPerSecond);
     SmartDashboard.putNumber(m_smartDashboardKey + "TurnTargetAngleRadians",

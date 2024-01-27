@@ -50,7 +50,7 @@ public class Config {
     /**
      * Get data assigned to the specified key
      *
-     * @param key The key
+     * @param key          The key
      * @param defaultValue Value to be returned if no valid data is found
      *
      * @return The data found at the specified key
@@ -61,19 +61,18 @@ public class Config {
         }
 
         return m_parsedConfig.getDouble(
-            key, new DoubleSupplier() {
-                @Override
-                public double getAsDouble() {
-                    return defaultValue;
-                }
-            }
-        );
+                key, new DoubleSupplier() {
+                    @Override
+                    public double getAsDouble() {
+                        return defaultValue;
+                    }
+                });
     }
 
     /**
      * Get data assigned to the specified key
      *
-     * @param key The key
+     * @param key          The key
      * @param defaultValue Value to be returned if no valid data is found
      *
      * @return The data found at the specified key
@@ -84,12 +83,11 @@ public class Config {
         }
 
         return m_parsedConfig.getBoolean(
-            key, new BooleanSupplier() {
-                @Override
-                public boolean getAsBoolean() {
-                    return defaultValue;
-                }
-            }
-        );
+                key, new BooleanSupplier() {
+                    @Override
+                    public boolean getAsBoolean() {
+                        return defaultValue;
+                    }
+                });
     }
 }

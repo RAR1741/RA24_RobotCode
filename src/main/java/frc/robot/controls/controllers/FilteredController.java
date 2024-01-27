@@ -13,9 +13,9 @@ public class FilteredController extends GenericHID {
   private Deadband m_deadband = new Deadband(DEADBAND_LIMIT);
   private SquaredInput m_squaredInput = new SquaredInput(DEADBAND_LIMIT);
 
-  private final DPadButton[] hatButtons = {new DPadButton(this, DPadButton.Direction.UP),
-    new DPadButton(this, DPadButton.Direction.DOWN), new DPadButton(this, DPadButton.Direction.LEFT),
-    new DPadButton(this, DPadButton.Direction.RIGHT)};
+  private final DPadButton[] hatButtons = { new DPadButton(this, DPadButton.Direction.UP),
+      new DPadButton(this, DPadButton.Direction.DOWN), new DPadButton(this, DPadButton.Direction.LEFT),
+      new DPadButton(this, DPadButton.Direction.RIGHT) };
 
   public FilteredController(int port) {
     super(port);

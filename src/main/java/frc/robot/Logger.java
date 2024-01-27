@@ -42,7 +42,7 @@ public class Logger {
 
     String fileName = "RAR_LOG-" + date + "-" + match + ".wpilog";
     DataLogManager.start(dir, fileName);
-    
+
     m_log = DataLogManager.getLog();
     DriverStation.startDataLog(m_log); // Driver Station/Joystick Logs
 

@@ -25,24 +25,28 @@ public class SwerveDrive extends Subsystem {
   private static SwerveDrive m_swerve = null;
 
   private final SwerveModule[] m_modules = {
-    new SwerveModule(Constants.SwerveDrive.Drive.k_FLMotorId, Constants.SwerveDrive.Turn.k_FLMotorId, Constants.SwerveDrive.Turn.k_FLAbsID,
-      Constants.SwerveDrive.Turn.k_FLOffset, "FL"), // 0
-    new SwerveModule(Constants.SwerveDrive.Drive.k_FRMotorId, Constants.SwerveDrive.Turn.k_FRMotorId, Constants.SwerveDrive.Turn.k_FRAbsID,
-      Constants.SwerveDrive.Turn.k_FROffset, "FR"), // 1
-    new SwerveModule(Constants.SwerveDrive.Drive.k_BLMotorId, Constants.SwerveDrive.Turn.k_BLMotorId, Constants.SwerveDrive.Turn.k_BLAbsID,
-      Constants.SwerveDrive.Turn.k_BLOffset, "BL"), // 2
-    new SwerveModule(Constants.SwerveDrive.Drive.k_BRMotorId, Constants.SwerveDrive.Turn.k_BRMotorId, Constants.SwerveDrive.Turn.k_BRAbsID,
-      Constants.SwerveDrive.Turn.k_BROffset, "BR") // 3
+      new SwerveModule(Constants.SwerveDrive.Drive.k_FLMotorId, Constants.SwerveDrive.Turn.k_FLMotorId,
+          Constants.SwerveDrive.Turn.k_FLAbsID,
+          Constants.SwerveDrive.Turn.k_FLOffset, "FL"), // 0
+      new SwerveModule(Constants.SwerveDrive.Drive.k_FRMotorId, Constants.SwerveDrive.Turn.k_FRMotorId,
+          Constants.SwerveDrive.Turn.k_FRAbsID,
+          Constants.SwerveDrive.Turn.k_FROffset, "FR"), // 1
+      new SwerveModule(Constants.SwerveDrive.Drive.k_BLMotorId, Constants.SwerveDrive.Turn.k_BLMotorId,
+          Constants.SwerveDrive.Turn.k_BLAbsID,
+          Constants.SwerveDrive.Turn.k_BLOffset, "BL"), // 2
+      new SwerveModule(Constants.SwerveDrive.Drive.k_BRMotorId, Constants.SwerveDrive.Turn.k_BRMotorId,
+          Constants.SwerveDrive.Turn.k_BRAbsID,
+          Constants.SwerveDrive.Turn.k_BROffset, "BR") // 3
   };
 
   // Robot "forward" is +x
   // Robot "left" is +y
   // Robot "clockwise" is -z
   private final Translation2d[] m_moduleLocations = {
-    new Translation2d(Constants.SwerveDrive.k_xCenterDistance, Constants.SwerveDrive.k_yCenterDistance),
-    new Translation2d(Constants.SwerveDrive.k_xCenterDistance, -Constants.SwerveDrive.k_yCenterDistance),
-    new Translation2d(-Constants.SwerveDrive.k_xCenterDistance, Constants.SwerveDrive.k_yCenterDistance),
-    new Translation2d(-Constants.SwerveDrive.k_xCenterDistance, -Constants.SwerveDrive.k_yCenterDistance)
+      new Translation2d(Constants.SwerveDrive.k_xCenterDistance, Constants.SwerveDrive.k_yCenterDistance),
+      new Translation2d(Constants.SwerveDrive.k_xCenterDistance, -Constants.SwerveDrive.k_yCenterDistance),
+      new Translation2d(-Constants.SwerveDrive.k_xCenterDistance, Constants.SwerveDrive.k_yCenterDistance),
+      new Translation2d(-Constants.SwerveDrive.k_xCenterDistance, -Constants.SwerveDrive.k_yCenterDistance)
   };
 
   private final AHRS m_gyro = new AHRS(SPI.Port.kMXP);
@@ -56,15 +60,15 @@ public class SwerveDrive extends Subsystem {
       m_moduleLocations[Module.BACK_RIGHT]);
 
   private SwerveDrivePoseEstimator m_poseEstimator = new SwerveDrivePoseEstimator(
-    m_kinematics,
-    m_gyro.getRotation2d(),
-    new SwerveModulePosition[] {
-      m_modules[Module.FRONT_LEFT].getPosition(),
-      m_modules[Module.FRONT_RIGHT].getPosition(),
-      m_modules[Module.BACK_LEFT].getPosition(),
-      m_modules[Module.BACK_RIGHT].getPosition()
-    },
-    new Pose2d(0, 0, Rotation2d.fromDegrees(0)));
+      m_kinematics,
+      m_gyro.getRotation2d(),
+      new SwerveModulePosition[] {
+          m_modules[Module.FRONT_LEFT].getPosition(),
+          m_modules[Module.FRONT_RIGHT].getPosition(),
+          m_modules[Module.BACK_LEFT].getPosition(),
+          m_modules[Module.BACK_RIGHT].getPosition()
+      },
+      new Pose2d(0, 0, Rotation2d.fromDegrees(0)));
 
   private SwerveDrive() {
     reset();
@@ -93,16 +97,17 @@ public class SwerveDrive extends Subsystem {
     m_poseEstimator.resetPosition(
         getRotation2d(),
         new SwerveModulePosition[] {
-          m_modules[Module.FRONT_LEFT].getPosition(),
-          m_modules[Module.FRONT_RIGHT].getPosition(),
-          m_modules[Module.BACK_LEFT].getPosition(),
-          m_modules[Module.BACK_RIGHT].getPosition()
+            m_modules[Module.FRONT_LEFT].getPosition(),
+            m_modules[Module.FRONT_RIGHT].getPosition(),
+            m_modules[Module.BACK_LEFT].getPosition(),
+            m_modules[Module.BACK_RIGHT].getPosition()
         },
         pose);
   }
 
   /**
-   * @param degreeMode If <code>true</code>, return result in degrees; otherwise, return in radians
+   * @param degreeMode If <code>true</code>, return result in degrees; otherwise,
+   *                   return in radians
    */
   public double calculateAutoAimAngle(boolean degreeMode) {
     double bot_x = m_poseEstimator.getEstimatedPosition().getX();
@@ -168,7 +173,7 @@ public class SwerveDrive extends Subsystem {
     double maxBoostSpeed = Constants.SwerveDrive.k_maxSpeed * Constants.SwerveDrive.k_boostScaler;
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, maxBoostSpeed);
 
-    for(int i = 0; i < m_modules.length; i++) {
+    for (int i = 0; i < m_modules.length; i++) {
       m_modules[i].setDesiredState(swerveModuleStates[i]);
     }
   }
@@ -184,7 +189,7 @@ public class SwerveDrive extends Subsystem {
       moduleState.speedMetersPerSecond = 0.0;
     }
 
-    for(int i = 0; i < m_modules.length; i++) {
+    for (int i = 0; i < m_modules.length; i++) {
       m_modules[i].setDesiredState(swerveModuleStates[i]);
     }
   }
@@ -228,7 +233,7 @@ public class SwerveDrive extends Subsystem {
   @Override
   public void stop() {
     setBrakeMode(true);
-    drive(0.0,0.0,0.0,true);
+    drive(0.0, 0.0, 0.0, true);
   }
 
   @Override
@@ -248,10 +253,14 @@ public class SwerveDrive extends Subsystem {
 
   private double[] getDesiredStates() {
     double[] desiredStates = {
-        m_modules[Module.FRONT_LEFT].getDesiredState().angle.getDegrees(), m_modules[Module.FRONT_LEFT].getDesiredState().speedMetersPerSecond,
-        m_modules[Module.FRONT_RIGHT].getDesiredState().angle.getDegrees(), m_modules[Module.FRONT_RIGHT].getDesiredState().speedMetersPerSecond,
-        m_modules[Module.BACK_LEFT].getDesiredState().angle.getDegrees(), m_modules[Module.FRONT_LEFT].getDesiredState().speedMetersPerSecond,
-        m_modules[Module.BACK_RIGHT].getDesiredState().angle.getDegrees(), m_modules[Module.BACK_RIGHT].getDesiredState().speedMetersPerSecond
+        m_modules[Module.FRONT_LEFT].getDesiredState().angle.getDegrees(),
+        m_modules[Module.FRONT_LEFT].getDesiredState().speedMetersPerSecond,
+        m_modules[Module.FRONT_RIGHT].getDesiredState().angle.getDegrees(),
+        m_modules[Module.FRONT_RIGHT].getDesiredState().speedMetersPerSecond,
+        m_modules[Module.BACK_LEFT].getDesiredState().angle.getDegrees(),
+        m_modules[Module.FRONT_LEFT].getDesiredState().speedMetersPerSecond,
+        m_modules[Module.BACK_RIGHT].getDesiredState().angle.getDegrees(),
+        m_modules[Module.BACK_RIGHT].getDesiredState().speedMetersPerSecond
     };
 
     return desiredStates;
@@ -261,15 +270,15 @@ public class SwerveDrive extends Subsystem {
   public void outputTelemetry() {
     double currentTime = Timer.getFPGATimestamp();
 
-    if(m_limelightOne.seesAprilTag()) {
+    if (m_limelightOne.seesAprilTag()) {
       m_poseEstimator.addVisionMeasurement(m_limelightOne.getBotpose2D(), currentTime);
     }
 
-    if(m_limelightTwo.seesAprilTag()) {
+    if (m_limelightTwo.seesAprilTag()) {
       m_poseEstimator.addVisionMeasurement(m_limelightTwo.getBotpose2D(), currentTime);
     }
 
-    if(RobotBase.isReal()) {
+    if (RobotBase.isReal()) {
       m_poseEstimator.updateWithTime(
           currentTime,
           m_gyro.getRotation2d(),
@@ -278,14 +287,12 @@ public class SwerveDrive extends Subsystem {
               m_modules[Module.FRONT_RIGHT].getPosition(),
               m_modules[Module.BACK_LEFT].getPosition(),
               m_modules[Module.BACK_RIGHT].getPosition()
-          }
-      );
+          });
     } else {
       setPose(new Pose2d(
-        Preferences.getDouble("SwerveDrive/x",0),
-        Preferences.getDouble("SwerveDrive/y",0),
-        new Rotation2d(Math.toRadians(Preferences.getDouble("SwerveDrive/rot",0)))
-      ));
+          Preferences.getDouble("SwerveDrive/x", 0),
+          Preferences.getDouble("SwerveDrive/y", 0),
+          new Rotation2d(Math.toRadians(Preferences.getDouble("SwerveDrive/rot", 0)))));
     }
 
     for (SwerveModule module : m_modules) {

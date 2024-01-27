@@ -49,8 +49,6 @@ public class Limelight {
   public double getDistanceFromTag(int targetTagID) {
     double distance = 0.0;
 
-
-
     return distance;
   }
 
@@ -59,12 +57,12 @@ public class Limelight {
   }
 
   public void outputTelemetry() {
-    for (String key: m_limelightTable.getKeys()) {
+    for (String key : m_limelightTable.getKeys()) {
       String type = m_limelightTable.getEntry(key).getType().name().substring(1);
 
       SmartDashboard.putString(
-        key, (type.equals("String") || type.equals("Double")) ? m_limelightTable.getEntry(key).toString()
-          : Arrays.toString(m_limelightTable.getEntry(key).getDoubleArray(new double[6])));
+          key, (type.equals("String") || type.equals("Double")) ? m_limelightTable.getEntry(key).toString()
+              : Arrays.toString(m_limelightTable.getEntry(key).getDoubleArray(new double[6])));
     }
   }
 

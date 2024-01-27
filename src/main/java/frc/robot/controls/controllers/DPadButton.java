@@ -29,13 +29,13 @@ public class DPadButton {
     }
 
     public boolean getPressed() {
-        if(get()) {
-            if(!m_pressed) {
+        if (get()) {
+            if (!m_pressed) {
                 m_pressed = true;
                 return true;
             }
         } else {
-          m_pressed = false;
+            m_pressed = false;
         }
         return false;
     }
