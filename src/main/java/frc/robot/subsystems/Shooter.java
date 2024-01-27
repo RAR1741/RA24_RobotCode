@@ -1,5 +1,12 @@
 package frc.robot.subsystems;
 
+/**
+ * 2 Vortexes (maybe)
+ * 1 Neo
+ *
+ * Through-bore Encoder
+ */
+
 public class Shooter extends Subsystem {
   private static Shooter m_shooter;
 

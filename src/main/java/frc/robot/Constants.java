@@ -85,6 +85,23 @@ public final class Constants {
     }
   }
 
+  public class Intake {
+    public static final int k_pivotMotorID = 98;
+    public static final int k_intakeMotorID = 99;
+
+    public static final int k_pivotEncoderId = 0;
+    public static final double k_pivotEncoderOffset = 0.0;
+
+    public static final double k_groundPivotAngle = 0.0;
+    public static final double k_sourcePivotAngle = 0.0;
+    public static final double k_ampPivotAngle = 0.0;
+    public static final double k_stowPivotAngle = 0.0;
+
+    public static final double k_pivotMotorP = 0.0;
+    public static final double k_pivotMotorI = 0.0;
+    public static final double k_pivotMotorD = 0.0;
+  }
+
   public static class Field {
     // All dimensions from Figure 5-16 in the manual
     public static final double k_lowGoalX = 22.75; // Inches
