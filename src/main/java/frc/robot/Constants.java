@@ -64,7 +64,7 @@ public final class Constants {
       public static final int k_BRMotorId = 9;
 
       // TODO: Tweak these as necessary
-      public static final double k_turningP = 0.1;
+      public static final double k_turningP = 1.0;
       public static final double k_turningI = 0.0;
       public static final double k_turningD = 0.0;
       public static final double k_turningIZone = 0;

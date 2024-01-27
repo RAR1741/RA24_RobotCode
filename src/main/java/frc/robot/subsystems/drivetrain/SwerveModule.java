@@ -69,6 +69,7 @@ public class SwerveModule {
 
     m_turningMotor = new CANSparkMax(turningMotorChannel, MotorType.kBrushless);
     m_turningMotor.restoreFactoryDefaults();
+    m_turningMotor.burnFlash();
     m_turningMotor.setIdleMode(IdleMode.kCoast);
 
     m_turningAbsEncoder = m_turningMotor.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
@@ -87,8 +88,8 @@ public class SwerveModule {
     m_turningPIDController.setD(Constants.SwerveDrive.Turn.k_turningD);
     m_turningPIDController.setIZone(Constants.SwerveDrive.Turn.k_turningIZone);
     m_turningPIDController.setFF(Constants.SwerveDrive.Turn.k_turningFF);
-    m_turningPIDController.setOutputRange(
-        Constants.SwerveDrive.Turn.k_TurningMinOutput, Constants.SwerveDrive.Turn.k_TurningMinOutput);
+    // m_turningPIDController.setOutputRange(
+        // Constants.SwerveDrive.Turn.k_TurningMinOutput, Constants.SwerveDrive.Turn.k_TurningMaxOutput);
 
     m_drivePIDController = m_driveMotor.getPIDController();
     m_drivePIDController.setP(Constants.SwerveDrive.Drive.k_P);
@@ -144,7 +145,8 @@ public class SwerveModule {
 
   public void setDesiredState(SwerveModuleState desiredState) {
     // Optimize the reference state to avoid spinning further than 90 degrees
-    desiredState = SwerveModuleState.optimize(desiredState, Rotation2d.fromRadians(getTurnPosition()));
+    // desiredState = SwerveModuleState.optimize(desiredState, Rotation2d.fromRadians(getTurnPosition()));
+    desiredState.angle = new Rotation2d(Helpers.modRadians(desiredState.angle.getRadians()));
     m_periodicIO.desiredState = desiredState;
 
     // If the turn position changes, set turn motor accordingly
@@ -157,6 +159,7 @@ public class SwerveModule {
     m_drivePIDController.setReference(desiredState.speedMetersPerSecond, ControlType.kVelocity);
     m_turningPIDController.setReference(m_periodicIO.desiredState.angle.getRadians(), ControlType.kPosition);
 
+    SmartDashboard.putNumber(m_smartDashboardKey + "TurnVoltage", m_turningMotor.getBusVoltage() * m_turningMotor.getAppliedOutput());
     SmartDashboard.putNumber(m_smartDashboardKey + "DriveTargetVelocity",
         m_periodicIO.desiredState.speedMetersPerSecond);
     SmartDashboard.putNumber(m_smartDashboardKey + "TurnTargetAngleRadians",

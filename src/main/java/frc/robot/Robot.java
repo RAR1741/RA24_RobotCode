@@ -166,8 +166,7 @@ public class Robot extends TimedRobot {
     ySpeed *= slowScaler * boostScaler;
     rot *= slowScaler * boostScaler;
 
-    // m_swerve.drive(xSpeed, ySpeed, rot, true);
-    m_swerve.drive(0, 0, 0, false);
+    m_swerve.drive(xSpeed, ySpeed, rot, true);
 
     if (m_driverController.getWantsResetGyro()) {
       m_swerve.resetGyro();
