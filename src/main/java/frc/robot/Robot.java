@@ -7,9 +7,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DataLogManager;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -44,14 +42,6 @@ public class Robot extends TimedRobot {
   private AutoRunner m_autoRunner = AutoRunner.getInstance();
 
   private boolean m_autoAimEnabled = false;
-
-  // The mere instantiation of this object will cause the compressor to start
-  // running. We don't need to do anything else with it, so we'll suppress the
-  // warning.
-  @SuppressWarnings("unused")
-  private final Compressor m_compressor = new Compressor(PneumaticsModuleType.REVPH);
-  @SuppressWarnings("unused")
-  // private UsbCamera m_camera;
 
   // Auto things
   AutoChooser m_autoChooser = new AutoChooser();

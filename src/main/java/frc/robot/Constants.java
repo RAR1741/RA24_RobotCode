@@ -20,7 +20,6 @@ public final class Constants {
 
   public class SwerveDrive {
     // Drivetrain wheel offsets
-    // TODO: Change for final robot
     public static final double k_xDistance = 0.762; // 30 inches Forward/Backward
     public static final double k_yDistance = 0.762; // in meters! Side-to-Side
 
@@ -40,8 +39,8 @@ public final class Constants {
     public class Drive {
       public static final int k_FLMotorId = 6;
       public static final int k_FRMotorId = 8;
-      public static final int k_BLMotorId = 12;
       public static final int k_BRMotorId = 10;
+      public static final int k_BLMotorId = 12;
 
       public static final double k_P = 0.0;
       public static final double k_I = 0.0;
@@ -53,23 +52,23 @@ public final class Constants {
     // Drivetrain (turn) constants
     public class Turn {
       // Drivetrain turning offset constants
-      public static final double k_FLOffset = 1.162901;
-      public static final double k_FROffset = 1.328305;
-      public static final double k_BLOffset = 0.825598;
-      public static final double k_BROffset = 1.338448;
+      public static final double k_FLOffset = 0.157329;
+      public static final double k_FROffset = 0.345974;
+      public static final double k_BROffset = 0.823048;
+      public static final double k_BLOffset = 0.329460;
 
       public static final int k_FLAbsID = 0;
       public static final int k_FRAbsID = 1;
-      public static final int k_BLAbsID = 2;
-      public static final int k_BRAbsID = 3;
+      public static final int k_BRAbsID = 2;
+      public static final int k_BLAbsID = 3;
 
       public static final int k_FLMotorId = 5;
       public static final int k_FRMotorId = 7;
-      public static final int k_BLMotorId = 11;
       public static final int k_BRMotorId = 9;
+      public static final int k_BLMotorId = 11;
 
       // TODO: Tweak these as necessary
-      public static final double k_turningP = 1.0;
+      public static final double k_turningP = 0.1;
       public static final double k_turningI = 0.0;
       public static final double k_turningD = 0.0;
       public static final double k_turningIZone = 0;

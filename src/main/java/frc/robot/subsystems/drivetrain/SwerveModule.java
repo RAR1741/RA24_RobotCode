@@ -72,10 +72,8 @@ public class SwerveModule {
     m_turningMotor.setIdleMode(IdleMode.kCoast);
 
     m_turningAbsEncoder = new DutyCycleEncoder(turningAbsoluteID);
-    // TODO: use m_turningAbsEncoder.getPosition() to set the offset for the
-    // m_turningRelEncoder
 
-    m_turningAbsEncoder.setDistancePerRotation(Constants.SwerveDrive.k_turnGearRatio * 2 * Math.PI);
+    m_turningAbsEncoder.setDistancePerRotation(Constants.SwerveDrive.k_turnGearRatio);
 
     m_turningRelEncoder = m_turningMotor.getEncoder();
 
@@ -84,7 +82,8 @@ public class SwerveModule {
     m_turningRelEncoder.setPositionConversionFactor(Constants.SwerveDrive.k_turnGearRatio * 2 * Math.PI);
     m_turningRelEncoder.setVelocityConversionFactor(Constants.SwerveDrive.k_turnGearRatio * 2 * Math.PI / 60);
 
-    m_turningRelEncoder.setPosition(getTurnPosition());
+    m_turningRelEncoder.setPosition(
+        Helpers.modRadians(Units.rotationsToRadians(m_turningAbsEncoder.get() - m_turningOffset)));
 
     m_turningPIDController = m_turningMotor.getPIDController();
     m_turningPIDController.setP(Constants.SwerveDrive.Turn.k_turningP);
@@ -92,6 +91,9 @@ public class SwerveModule {
     m_turningPIDController.setD(Constants.SwerveDrive.Turn.k_turningD);
     m_turningPIDController.setIZone(Constants.SwerveDrive.Turn.k_turningIZone);
     m_turningPIDController.setFF(Constants.SwerveDrive.Turn.k_turningFF);
+    m_turningPIDController.setPositionPIDWrappingEnabled(true);
+    m_turningPIDController.setPositionPIDWrappingMinInput(0.0);
+    m_turningPIDController.setPositionPIDWrappingMaxInput(2.0 * Math.PI);
     // m_turningPIDController.setOutputRange(
     // Constants.SwerveDrive.Turn.k_TurningMinOutput,
     // Constants.SwerveDrive.Turn.k_TurningMaxOutput);
@@ -110,7 +112,7 @@ public class SwerveModule {
   }
 
   public double getTurnPosition() {
-    return Helpers.modRadians(m_turningRelEncoder.getPosition() - m_turningOffset);
+    return Helpers.modRadians(m_turningRelEncoder.getPosition());
   }
 
   public SwerveModulePosition getPosition() {
@@ -180,7 +182,7 @@ public class SwerveModule {
   }
 
   public void outputTelemetry() {
-    SmartDashboard.putNumber(m_smartDashboardKey + "TurnAbsPosition", m_turningAbsEncoder.get());
+    SmartDashboard.putNumber(m_smartDashboardKey + "TurnAbsPosition", Helpers.modRotations(m_turningAbsEncoder.get()));
     SmartDashboard.putNumber(m_smartDashboardKey + "DriveMotorPos", m_driveEncoder.getPosition());
     SmartDashboard.putNumber(m_smartDashboardKey + "DriveMotorVelocity", getDriveVelocity());
     SmartDashboard.putNumber(m_smartDashboardKey + "TurnMotorPosition", getTurnPosition());
