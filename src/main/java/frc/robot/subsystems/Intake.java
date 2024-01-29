@@ -6,15 +6,10 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.Helpers;
-
-/**
- * 2 Neo
- *
- * Limit Switch
- * Through-bore Encoder
- */
 
 public class Intake extends Subsystem {
   private static Intake m_manipulation;
@@ -60,21 +55,26 @@ public class Intake extends Subsystem {
     }
 
     m_periodicIO.intake_speed = intakeStateToSpeed(m_periodicIO.intake_state);
+    SmartDashboard.putString("Intake/CurrentState", m_periodicIO.intake_state.toString());
   }
 
   @Override
   public void stop() {
+    m_periodicIO.intake_pivot_voltage = 0.0;
 
+    stopIntake();
   }
 
   @Override
   public void writePeriodicOutputs() {
-
+    m_pivotMotor.setVoltage(m_periodicIO.intake_pivot_voltage);
+    m_intakeMotor.set(m_periodicIO.intake_speed);
   }
 
   @Override
   public void outputTelemetry() {
-
+    SmartDashboard.putNumber("Intake/Speed", intakeStateToSpeed(m_periodicIO.intake_state));
+    SmartDashboard.putNumber("Intake/CurrentSetpoint", getAngleFromTarget(m_periodicIO.pivot_target));
   }
 
   private double getAngleFromTarget(PivotTarget target) {
@@ -89,45 +89,26 @@ public class Intake extends Subsystem {
   }
 
   private double intakeStateToSpeed(IntakeState state) {
+    switch (state) {
+      case INTAKE: return Constants.Intake.k_intakeSpeed;
+      case EJECT: return Constants.Intake.k_ejectSpeed;
+      case FEED_SHOOTER: return Constants.Intake.k_feedShooterSpeed;
 
-  }
+      case PULSE: {
+        if (Timer.getFPGATimestamp() % 1.0 < (1.0 / 45.0)) { // TODO: check if this is what we want
+          return Constants.Intake.k_intakeSpeed;
+        }
 
-  public void goToGround() {
-    m_periodicIO.pivot_target = PivotTarget.GROUND;
-  }
+        return 0.0;
+      }
 
-  public void goToSource() {
-    m_periodicIO.pivot_target = PivotTarget.SOURCE;
-  }
-
-  public void goToAmp() {
-    m_periodicIO.pivot_target = PivotTarget.SOURCE;
-  }
-
-  public void goToStow() {
-    m_periodicIO.pivot_target = PivotTarget.STOW;
-  }
-
-  // Intake helper functions
-  public void intake() {
-    m_periodicIO.intake_state = IntakeState.INTAKE;
-  }
-
-  public void eject() {
-    m_periodicIO.intake_state = IntakeState.EJECT;
-  }
-
-  public void pulse() {
-    m_periodicIO.intake_state = IntakeState.PULSE;
-  }
-
-  public void feedShooter() {
-    m_periodicIO.intake_state = IntakeState.FEED_SHOOTER;
+      default: return 0.0;
+    }
   }
 
   public void stopIntake() {
-    m_periodicIO.intake_state = IntakeState.NONE;
     m_periodicIO.intake_speed = 0.0;
+    m_periodicIO.intake_state = IntakeState.NONE;
   }
 
   public void setState(IntakeState state) {

@@ -92,10 +92,16 @@ public final class Constants {
     public static final int k_pivotEncoderId = 0;
     public static final double k_pivotEncoderOffset = 0.0;
 
+    // TODO: get pivot angles
     public static final double k_groundPivotAngle = 0.0;
     public static final double k_sourcePivotAngle = 0.0;
     public static final double k_ampPivotAngle = 0.0;
     public static final double k_stowPivotAngle = 0.0;
+
+    // TODO: get intake speeds
+    public static double k_intakeSpeed = 0.0;
+    public static double k_ejectSpeed = 0.0;
+    public static double k_feedShooterSpeed = 0.0;
 
     public static final double k_pivotMotorP = 0.0;
     public static final double k_pivotMotorI = 0.0;
