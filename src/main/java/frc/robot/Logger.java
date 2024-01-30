@@ -16,8 +16,6 @@ public class Logger {
   private static DataLog m_log;
 
   private static HashMap<String, Integer> m_entries = new HashMap<>();
-  // private static ArrayList<String> m_doubleEntries = new ArrayList<>();
-  // private static ArrayList<String> m_booleanEntries = new ArrayList<>();
 
   public static Logger getInstance() {
     if (m_logger == null) {
@@ -40,17 +38,11 @@ public class Logger {
     new File(dir).mkdirs();
 
     String date = Calendar.YEAR + "_" + Calendar.MONTH + "_" + Calendar.DATE;
-    int match = 1;
-    File[] files = new File(dir).listFiles();
-    for (File i : files) {
-      if (i.getName().contains(date)) {
-        match++;
-      }
-    }
+    int match = DriverStation.getMatchNumber();
 
     String fileName = "RAR_LOG-" + date + "-" + match + ".wpilog";
     DataLogManager.start(dir, fileName);
-    
+
     m_log = DataLogManager.getLog();
     DriverStation.startDataLog(m_log); // Driver Station/Joystick Logs
 

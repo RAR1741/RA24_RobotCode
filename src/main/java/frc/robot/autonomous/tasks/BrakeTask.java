@@ -13,12 +13,7 @@ public class BrakeTask extends Task {
 
   @Override
   public void start() {
-    if (m_brake) {
-      m_swerve.brakeOn();
-    } else {
-      m_swerve.brakeOff();
-    }
-
+    m_swerve.setBrakeMode(m_brake);
   }
 
   @Override
