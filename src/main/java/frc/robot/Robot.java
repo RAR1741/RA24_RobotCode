@@ -3,14 +3,9 @@ package frc.robot;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DataLogManager;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -32,18 +27,19 @@ public class Robot extends TimedRobot {
   private final SlewRateLimiter m_yRateLimiter = new SlewRateLimiter(3);
   private final SlewRateLimiter m_rotRateLimiter = new SlewRateLimiter(3);
 
+  // PID Controller for Swerve Auto Aim speed
+  private final PIDController m_autoAimPID = new PIDController(
+      Constants.SwerveDrive.AutoAim.k_P,
+      Constants.SwerveDrive.AutoAim.k_I,
+      Constants.SwerveDrive.AutoAim.k_D);
+
   // Robot subsystems
   private List<Subsystem> m_allSubsystems = new ArrayList<>();
   public final SwerveDrive m_swerve = SwerveDrive.getInstance();
   private Task m_currentTask;
   private AutoRunner m_autoRunner = AutoRunner.getInstance();
 
-  // The mere instantiation of this object will cause the compressor to start
-  // running. We don't need to do anything else with it, so we'll suppress the
-  // warning.
-  private final Compressor m_compressor = new Compressor(PneumaticsModuleType.REVPH);
-  @SuppressWarnings("unused")
-  private UsbCamera m_camera;
+  private boolean m_autoAimEnabled = false;
 
   // Auto things
   AutoChooser m_autoChooser = new AutoChooser();
@@ -57,25 +53,19 @@ public class Robot extends TimedRobot {
     DataLogManager.start();
     System.out.println("Logging initialized. Fard.");
 
-    // Set up demo mode picker
-    if (!Preferences.containsKey("demoMode")) {
-      Preferences.setBoolean("demoMode", false);
-    }
-    if (!Preferences.containsKey("demoLEDMode")) {
-      Preferences.setInt("demoLEDMode", 0);
-    }
-
     // Set up the Field2d object for simulation
     SmartDashboard.putData("Field", m_field);
 
     // Camera server
-    m_camera = CameraServer.startAutomaticCapture();
+    // m_camera = CameraServer.startAutomaticCapture();
 
-    // Turn Limelight LED's off
-    // m_limelight.setLightEnabled(false);
+    Preferences.setDouble("SwerveDrive/x", 0);
+    Preferences.setDouble("SwerveDrive/y", 0);
+    Preferences.setDouble("SwerveDrive/rot", 0);
 
-    // m_allSubsystems.add(m_limelight);
     m_allSubsystems.add(m_swerve);
+
+    m_swerve.setGyroAngleAdjustment(0);
   }
 
   @Override
@@ -85,8 +75,6 @@ public class Robot extends TimedRobot {
     m_allSubsystems.forEach(subsystem -> subsystem.outputTelemetry());
     m_allSubsystems.forEach(subsystem -> subsystem.writeToLog());
 
-    SmartDashboard.putNumber("Compressor/Pressure", m_compressor.getPressure());
-
     updateSim();
   }
 
@@ -94,7 +82,7 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     m_autoHasRan = true;
 
-    m_swerve.brakeOff();
+    m_swerve.setBrakeMode(false);
 
     m_autoRunner.setAutoMode(m_autoChooser.getSelectedAuto());
     m_currentTask = m_autoRunner.getNextTask();
@@ -128,42 +116,41 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    m_swerve.brakeOff();
+    m_swerve.setBrakeMode(false);
     m_swerve.drive(0, 0, 0, false);
-    m_swerve.setGyroAngleAdjustment(0);
   }
 
   @Override
   public void teleopPeriodic() {
-    double xSpeed = m_xRateLimiter.calculate(m_driverController.getForwardAxis());
+    double rot = 0.0;
 
+    // if (m_driverController.getWantsAutoAim() && m_swerve.getPose().getX() >=
+    // Constants.Field.k_autoAimThreshold && !autoAimEnabled) {
+    // autoAimEnabled = true;
+    // }
+    // if (autoAimEnabled && m_driverController.getWantsAutoAim() ||
+    // m_swerve.getPose().getX() <= Constants.Field.k_autoAimThreshold) {
+    // autoAimEnabled = false;
+    // }
+
+    if (m_autoAimEnabled) {
+      rot = m_autoAimPID.calculate(m_swerve.getRotation2d().getRadians(), m_swerve.calculateAutoAimAngle(false));
+    } else {
+      rot = m_rotRateLimiter.calculate(m_driverController.getTurnAxis());
+    }
+
+    double xSpeed = m_xRateLimiter.calculate(m_driverController.getForwardAxis());
     double ySpeed = m_yRateLimiter.calculate(m_driverController.getStrafeAxis());
 
-    double rot = m_rotRateLimiter.calculate(m_driverController.getTurnAxis());
-
     // slowScaler should scale between k_slowScaler and 1
-    double slowScaler = Constants.Drivetrain.k_slowScaler
-        + ((1 - m_driverController.getSlowScaler()) * (1 - Constants.Drivetrain.k_slowScaler));
+    double slowScaler = Constants.SwerveDrive.k_slowScaler
+        + ((1 - m_driverController.getSlowScaler()) * (1 - Constants.SwerveDrive.k_slowScaler));
 
     // boostScaler should scale between 1 and k_boostScaler
-    double boostScaler = 1 + (m_driverController.getBoostScaler() * (Constants.Drivetrain.k_boostScaler - 1));
-
-    if (Preferences.getBoolean("demoMode", false)) {
-      // boostScaler = 1;
-      xSpeed *= Constants.Drivetrain.k_maxDemoSpeed;
-      ySpeed *= Constants.Drivetrain.k_maxDemoSpeed;
-      rot *= Constants.Drivetrain.k_maxDemoAngularSpeed;
-    } else {
-      xSpeed *= Constants.Drivetrain.k_maxSpeed;
-      ySpeed *= Constants.Drivetrain.k_maxSpeed;
-      rot *= Constants.Drivetrain.k_maxAngularSpeed;
-    }
+    double boostScaler = 1 + (m_driverController.getBoostScaler() * (Constants.SwerveDrive.k_boostScaler - 1));
 
     xSpeed *= slowScaler * boostScaler;
-    ySpeed *= slowScaler;// * boostScaler;
-    if (Preferences.getBoolean("demoMode", false)) {
-      ySpeed *= boostScaler;
-    }
+    ySpeed *= slowScaler * boostScaler;
     rot *= slowScaler * boostScaler;
 
     m_swerve.drive(xSpeed, ySpeed, rot, true);
@@ -176,18 +163,21 @@ public class Robot extends TimedRobot {
       m_swerve.pointInwards();
     }
 
+    if (m_driverController.getWantsAutoAim()) {
+      m_autoAimEnabled = !m_autoAimEnabled;
+    }
+
     m_driverController.outputTelemetry();
   }
 
   @Override
   public void simulationPeriodic() {
-    updateSim();
   }
 
   @Override
   public void disabledInit() {
     m_allSubsystems.forEach(subsystem -> subsystem.stop());
-    m_swerve.resetOdometry(new Pose2d(0, 0, new Rotation2d(0)));
+    // m_swerve.resetOdometry(new Pose2d(3, 3, new Rotation2d(0)));
   }
 
   @Override
@@ -197,8 +187,6 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledPeriodic() {
     m_allSubsystems.forEach(subsystem -> subsystem.outputTelemetry());
-
-    updateSim();
   }
 
   @Override

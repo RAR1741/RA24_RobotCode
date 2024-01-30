@@ -11,6 +11,7 @@ import frc.robot.subsystems.drivetrain.SwerveDrive;
 
 public class DefaultMode extends AutoModeBase {
   SwerveDrive m_swerve = SwerveDrive.getInstance();
+
   @Override
   public Pose2d getRedStartingPosition() {
     return new Pose2d(14.655021228445234, 4.458172598636864, Rotation2d.fromDegrees(180));

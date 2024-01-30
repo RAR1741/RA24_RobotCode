@@ -1,6 +1,7 @@
 package frc.robot.autonomous.modes;
 
 import java.util.ArrayList;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -50,8 +51,8 @@ public abstract class AutoModeBase {
   };
 
   private Pose2d getStartingPosition() {
-    DriverStation.Alliance alliance = DriverStation.Alliance.Red; //Default to RED
-    if(DriverStation.getAlliance().isPresent()) {
+    DriverStation.Alliance alliance = DriverStation.Alliance.Red; // Default to RED
+    if (DriverStation.getAlliance().isPresent()) {
       alliance = DriverStation.getAlliance().get();
     }
 
