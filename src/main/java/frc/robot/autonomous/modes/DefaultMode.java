@@ -14,7 +14,7 @@ public class DefaultMode extends AutoModeBase {
 
   @Override
   public Pose2d getRedStartingPosition() {
-    return new Pose2d(14.655021228445234, 4.458172598636864, Rotation2d.fromDegrees(180));
+    return new Pose2d(1, 1, Rotation2d.fromDegrees(0));
   }
 
   public void queueTasks() {
@@ -23,7 +23,7 @@ public class DefaultMode extends AutoModeBase {
         new WaitTask(0.5)));
 
     // queueTask(new ParallelTask(new DriveForwardTask(0.5, 1.0)));
-    queueTask(new DriveForwardTask(0.5, 2));
+    queueTask(new DriveForwardTask(2, 0.1));
 
     queueTask(new BrakeTask(false));
   }

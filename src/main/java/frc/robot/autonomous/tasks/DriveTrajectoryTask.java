@@ -1,11 +1,15 @@
 package frc.robot.autonomous.tasks;
 
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.controllers.PPRamseteController;
+import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.PathPlannerTrajectory;
 import com.pathplanner.lib.path.PathPlannerTrajectory.State;
+import com.pathplanner.lib.util.PIDConstants;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -20,23 +24,24 @@ public class DriveTrajectoryTask extends Task {
   private String m_smartDashboardKey = "DriveTrajectoryTask/";
 
   private final Timer m_runningTimer = new Timer();
-  private PPRamseteController m_driveController;
+  private PPHolonomicDriveController m_driveController;
 
   public DriveTrajectoryTask(String pathName, double maxSpeed, double maxAcceleration) {
     try {
       PathPlannerPath m_autoPath = PathPlannerPath.fromPathFile(pathName);
+      m_autoTrajectory = m_autoPath.getTrajectory(new ChassisSpeeds(0,0,0), new Rotation2d(0));
+      // m_autoTrajectory = new PathPlannerTrajectory(
+      //     m_autoPath,
+      //     new ChassisSpeeds(0,0,0),
+      //     m_swerve.getPose().getRotation());
 
-      m_autoTrajectory = new PathPlannerTrajectory(
-          m_autoPath,
-          new ChassisSpeeds(),
-          m_swerve.getPose().getRotation());
     } catch (Exception ex) {
       DriverStation.reportError("Unable to load PathPlanner trajectory: " + pathName, ex.getStackTrace());
       m_isFinished = true;
     }
 
     // https://docs.wpilib.org/en/stable/docs/software/advanced-controls/trajectories/ramsete.html
-    m_driveController = new PPRamseteController(2.0, 0.7);
+    m_driveController = new PPHolonomicDriveController(new PIDConstants(1, 0, 0), new PIDConstants(1, 0, 0), maxSpeed, maxAcceleration);
   }
 
   @Override
@@ -53,11 +58,12 @@ public class DriveTrajectoryTask extends Task {
     State goal = m_autoTrajectory.sample(m_runningTimer.get());
     ChassisSpeeds chassisSpeeds = m_driveController.calculateRobotRelativeSpeeds(m_swerve.getPose(), goal);
 
+
     m_swerve.drive(
         chassisSpeeds.vxMetersPerSecond,
         chassisSpeeds.vyMetersPerSecond,
         chassisSpeeds.omegaRadiansPerSecond,
-        true);
+        false);
 
     m_isFinished |= m_runningTimer.get() >= m_autoTrajectory.getTotalTimeSeconds();
 

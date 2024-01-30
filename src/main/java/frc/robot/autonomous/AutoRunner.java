@@ -3,6 +3,7 @@ package frc.robot.autonomous;
 import frc.robot.autonomous.modes.AutoModeBase;
 import frc.robot.autonomous.modes.DefaultMode;
 import frc.robot.autonomous.modes.DoNothingMode;
+import frc.robot.autonomous.modes.TestMode;
 import frc.robot.autonomous.tasks.Task;
 
 public class AutoRunner {
@@ -19,10 +20,7 @@ public class AutoRunner {
   public enum AutoMode {
     DO_NOTHING,
     DEFAULT,
-    RIGHT_CUBE_BALANCE,
-    CENTER_CUBE_BALANCE_MOBILITY,
-    LEFT_CUBE_BALANCE,
-    CENTER_CUBE_BALANCE
+    TEST
   }
 
   public Task getNextTask() {
@@ -36,6 +34,9 @@ public class AutoRunner {
         break;
       case DEFAULT:
         m_autoMode = new DefaultMode();
+        break;
+      case TEST:
+        m_autoMode = new TestMode();
         break;
       default:
         System.out.println("Invalid auto mode selected. Defaulting to do nothing.");

@@ -6,7 +6,7 @@ import edu.wpi.first.math.util.Units;
 
 public final class Constants {
   public static class Robot {
-    public static final double k_width = 27; // Inches
+    public static final double k_width = 30; // Inches
     public static final double k_length = 30; // Inches
 
     public static final double k_bumperStart = 1; // Inches

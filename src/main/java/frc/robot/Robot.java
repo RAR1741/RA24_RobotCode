@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.autonomous.AutoChooser;
 import frc.robot.autonomous.AutoRunner;
+import frc.robot.autonomous.AutoRunner.AutoMode;
 import frc.robot.autonomous.tasks.Task;
 import frc.robot.controls.controllers.DriverController;
 import frc.robot.controls.controllers.OperatorController;
@@ -84,7 +85,8 @@ public class Robot extends TimedRobot {
 
     m_swerve.setBrakeMode(false);
 
-    m_autoRunner.setAutoMode(m_autoChooser.getSelectedAuto());
+    // m_autoRunner.setAutoMode(m_autoChooser.getSelectedAuto());
+    m_autoRunner.setAutoMode(AutoMode.TEST);
     m_currentTask = m_autoRunner.getNextTask();
 
     // Start the first task
