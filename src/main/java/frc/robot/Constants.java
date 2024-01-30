@@ -56,6 +56,25 @@ public final class Constants {
     }
   }
 
+  public static class Intake {
+    //TODO Get values
+    //All units in inches
+    public static final double k_length = 10.0;
+    public static final double k_mass = 1.0; //In kg
+    
+    public static final double k_pivotHeight = 1.0;
+
+    public static final double k_minAngle = 0.0;
+    public static final double k_maxAngle = 0.0;
+    public static final double k_startingAngle = 0.0;
+  }
+
+  public static class Simulation {
+    //TODO Get values
+    public static final double k_width = 150; // Inches
+    public static final double k_height = 80; // Inches
+  }
+
   public static class Field {
     // All dimensions from Figure 5-16 in the manual
     public static final double k_lowGoalX = 22.75; // Inches
