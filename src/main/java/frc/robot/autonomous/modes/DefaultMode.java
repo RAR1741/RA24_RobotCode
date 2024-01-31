@@ -13,7 +13,7 @@ public class DefaultMode extends AutoModeBase {
   SwerveDrive m_swerve = SwerveDrive.getInstance();
 
   @Override
-  public Pose2d getRedStartingPosition() {
+  public Pose2d getBlueStartingPosition() {
     return new Pose2d(1, 1, Rotation2d.fromDegrees(0));
   }
 
