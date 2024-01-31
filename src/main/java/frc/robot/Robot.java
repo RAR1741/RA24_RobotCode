@@ -15,7 +15,9 @@ import frc.robot.autonomous.tasks.Task;
 import frc.robot.controls.controllers.DriverController;
 import frc.robot.controls.controllers.OperatorController;
 import frc.robot.simulation.Field;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Subsystem;
+import frc.robot.subsystems.Intake.IntakePivotTarget;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 
 public class Robot extends TimedRobot {
@@ -36,6 +38,9 @@ public class Robot extends TimedRobot {
   // Robot subsystems
   private List<Subsystem> m_allSubsystems = new ArrayList<>();
   public final SwerveDrive m_swerve = SwerveDrive.getInstance();
+  public final Intake m_intake = Intake.getInstance();
+
+  // Auto tasks
   private Task m_currentTask;
   private AutoRunner m_autoRunner = AutoRunner.getInstance();
 
@@ -64,6 +69,7 @@ public class Robot extends TimedRobot {
     Preferences.setDouble("SwerveDrive/rot", 0);
 
     m_allSubsystems.add(m_swerve);
+    m_allSubsystems.add(m_intake);
 
     m_swerve.setGyroAngleAdjustment(0);
   }

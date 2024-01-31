@@ -74,6 +74,7 @@ public class Intake extends Subsystem {
   @Override
   public void outputTelemetry() {
     SmartDashboard.putNumber("Intake/Speed", intakeStateToSpeed(m_periodicIO.intake_state));
+    SmartDashboard.putNumber("Intake/CurrentPivotAngle", getCurrentPivotAngle());
     SmartDashboard.putNumber("Intake/CurrentSetpoint", getAngleFromTarget(m_periodicIO.pivot_target));
   }
 
@@ -119,7 +120,7 @@ public class Intake extends Subsystem {
     m_periodicIO.pivot_target = target;
   }
 
-  private double getCurrentPivotAngle() {
+  public double getCurrentPivotAngle() {
     double value = m_pivotMotorEncoder.getAbsolutePosition() - Constants.Intake.k_pivotEncoderOffset + 0.5;
 
     return Units.rotationsToDegrees(Helpers.modRotations(value));

@@ -88,7 +88,7 @@ public final class Constants {
 
   public class Intake {
     // TODO: Get intake motor id's
-    public static final int k_pivotMotorID = 98;
+    public static final int k_pivotMotorID = 13;
     public static final int k_intakeMotorID = 99;
 
     public static final int k_pivotEncoderID = 4;
