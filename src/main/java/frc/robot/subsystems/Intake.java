@@ -10,9 +10,11 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.Helpers;
+import frc.robot.simulation.IntakeSim;
 
 public class Intake extends Subsystem {
-  private static Intake m_manipulation;
+  private static Intake m_intake;
+  private static IntakeSim m_intakeSim;
 
   private CANSparkMax m_pivotMotor;
   private CANSparkMax m_intakeMotor;
@@ -25,6 +27,8 @@ public class Intake extends Subsystem {
   private PeriodicIO m_periodicIO;
 
   private Intake() {
+    m_intakeSim = IntakeSim.getInstance();
+
     m_pivotMotor = new CANSparkMax(Constants.Intake.k_pivotMotorID, MotorType.kBrushless);
     m_pivotMotor.restoreFactoryDefaults();
     m_pivotMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
@@ -38,11 +42,11 @@ public class Intake extends Subsystem {
   }
 
   public static Intake getInstance() {
-    if (m_manipulation == null) {
-      m_manipulation = new Intake();
+    if (m_intake == null) {
+      m_intake = new Intake();
     }
 
-    return m_manipulation;
+    return m_intake;
   }
 
   @Override

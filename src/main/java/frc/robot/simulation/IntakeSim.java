@@ -37,6 +37,8 @@ public class IntakeSim {
   private final MechanismRoot2d m_intakePivot = m_mech2d.getRoot("IntakePivot", m_origin.getX(),
       Constants.Intake.k_pivotHeight);
 
+  private final MechanismRoot2d m_crosshair = m_mech2d.getRoot("Crosshair", m_origin.getX(), m_origin.getY());
+
   private final MechanismLigament2d m_intakeBase = m_intakePivot.append(
       new MechanismLigament2d(
           "IntakeBase",
@@ -66,8 +68,11 @@ public class IntakeSim {
     SmartDashboard.putData("Intake Sim", m_mech2d);
   }
 
-  public void updateIntakePosition(double intakeAngle) {
+  public void updateIntakePosition(double intakeAngle, double x, double y) {
     m_intake.setAngle(k_simOffset + intakeAngle); //TODO The intake will likely handle angles oddly, so this will 100% need modified
+
+    Translation2d setpoint = m_origin.plus(new Translation2d(x, y));
+    m_crosshair.setPosition(setpoint.getX(), setpoint.getY());
     
     SmartDashboard.putNumber("Intake Sim Angle", intakeAngle);
   }
@@ -82,5 +87,24 @@ public class IntakeSim {
             0,
             Constants.Robot.k_bumperHeight,
             new Color8Bit(Color.kRed)));
+
+    // Draw crosshair
+    final double k_crosshairLength = 2;
+    final double k_crosshairThickness = 1;
+    final Color8Bit k_crosshairColor = new Color8Bit(Color.kOrange);
+
+    final String[] k_directions = { "Right", "Top", "Left", "Bottom" };
+    double crosshairAngle = 0;
+    for (String direction : k_directions) {
+      m_crosshair.append(
+        new MechanismLigament2d(
+          "Crosshair" + direction,
+          k_crosshairLength,
+          crosshairAngle,
+          k_crosshairThickness,
+          k_crosshairColor
+        ));
+      crosshairAngle += 90;
+    }
   }
 }
