@@ -41,8 +41,8 @@ public class DriveTrajectoryTask extends Task {
 
     // https://docs.wpilib.org/en/stable/docs/software/advanced-controls/trajectories/ramsete.html
     m_driveController = new PPHolonomicDriveController(
-      new PIDConstants(1, 0, 0), 
-      new PIDConstants(1, 0, 0),
+      new PIDConstants(0.5, 0, 0), 
+      new PIDConstants(1,0, 0),
       Constants.SwerveDrive.k_maxSpeed, 
       Constants.Robot.k_width/2);
   }
