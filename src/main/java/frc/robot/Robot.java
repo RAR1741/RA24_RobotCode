@@ -8,6 +8,7 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.autonomous.AutoChooser;
 import frc.robot.autonomous.AutoRunner;
@@ -40,6 +41,8 @@ public class Robot extends TimedRobot {
   public final Intake m_intake = Intake.getInstance();
   private Task m_currentTask;
   private AutoRunner m_autoRunner = AutoRunner.getInstance();
+
+  private Timer m_timer = new Timer();
 
   private boolean m_autoAimEnabled = false;
 
@@ -170,6 +173,12 @@ public class Robot extends TimedRobot {
     }
 
     m_driverController.outputTelemetry();
+
+    if (m_timer.get() == 0) {
+      m_timer.start();
+    }
+
+    m_intake.setSimPosition(Helpers.modDegrees(m_timer.get() * 5));
   }
 
   @Override

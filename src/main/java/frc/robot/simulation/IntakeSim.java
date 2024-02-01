@@ -32,18 +32,18 @@ public class IntakeSim {
 
   private final Mechanism2d m_mech2d = new Mechanism2d(Constants.Simulation.k_width, Constants.Simulation.k_height);
 
-  private final Translation2d m_origin = new Translation2d(Constants.Simulation.k_width / 2.0, 0);
+  private final Translation2d m_origin = new Translation2d((Constants.Simulation.k_width / 2) - Constants.Intake.k_distanceFromCenter, 0);
 
-  private final MechanismRoot2d m_intakePivot = m_mech2d.getRoot("IntakePivot", m_origin.getX(),
+  private final MechanismRoot2d m_intakeBase = m_mech2d.getRoot("IntakePivot", m_origin.getX(),
       Constants.Intake.k_pivotHeight);
 
   private final MechanismRoot2d m_crosshair = m_mech2d.getRoot("Crosshair", m_origin.getX(), m_origin.getY());
 
-  private final MechanismLigament2d m_intakeBase = m_intakePivot.append(
+  private final MechanismLigament2d m_intakePivot = m_intakeBase.append(
       new MechanismLigament2d(
-          "IntakeBase",
+          "IntakePivot",
           Constants.Intake.k_pivotHeight,
-          -90,
+          90,
           4,
           new Color8Bit(Color.kBlue)));
 
@@ -68,10 +68,16 @@ public class IntakeSim {
     SmartDashboard.putData("Intake Sim", m_mech2d);
   }
 
-  public void updateIntakePosition(double intakeAngle, double x, double y) {
-    m_intake.setAngle(k_simOffset + intakeAngle); //TODO The intake will likely handle angles oddly, so this will 100% need modified
+  public void updateIntakePosition(double intakeAngle) {
+    m_intake.setAngle(k_simOffset + intakeAngle);
 
-    Translation2d setpoint = m_origin.plus(new Translation2d(x, y));
+    // Translation2d setpoint = m_origin.plus(new Translation2d(x, y));
+    // m_crosshair.setPosition(setpoint.getX(), setpoint.getY());
+
+    double x = Math.cos(Units.degreesToRadians(intakeAngle - k_simOffset + 90)) * Constants.Intake.k_length;
+    double y = Math.sin(Units.degreesToRadians(intakeAngle - k_simOffset + 90)) * Constants.Intake.k_length;
+
+    Translation2d setpoint = m_origin.plus(new Translation2d(x, y + Constants.Intake.k_pivotHeight)); // Good enough, I guess (the crosshair drifts a little)
     m_crosshair.setPosition(setpoint.getX(), setpoint.getY());
     
     SmartDashboard.putNumber("Intake Sim Angle", intakeAngle);

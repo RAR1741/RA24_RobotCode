@@ -129,6 +129,10 @@ public class Intake extends Subsystem {
     return Units.rotationsToDegrees(Helpers.modRotations(value));
   }
 
+  public void setSimPosition(double a) {
+    m_intakeSim.updateIntakePosition(a);
+  }
+
   private static class PeriodicIO {
     PivotTarget pivot_target = PivotTarget.STOW;
     IntakeState intake_state = IntakeState.NONE;

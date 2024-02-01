@@ -116,6 +116,8 @@ public final class Constants {
     public static final double k_minAngle = 0.0;
     public static final double k_maxAngle = 0.0;
     public static final double k_startingAngle = 0.0;
+
+    public static final double k_distanceFromCenter = 12.0;
   }
 
   public static class Simulation {
