@@ -121,6 +121,10 @@ public class Shooter extends Subsystem {
     }
   }
 
+  public void setSpeed(double rpm) {
+    m_periodicIO.shooter_rpm = rpm;
+  }
+
   public void stopShooter() {
     m_periodicIO.shooter_rpm = 0.0;
   }
@@ -140,6 +144,10 @@ public class Shooter extends Subsystem {
   }
 
   public boolean isAtTarget(ShooterPivotTarget target) {
+    if (target == ShooterPivotTarget.SHOOTER_NONE) {
+      return true;
+    }
+
     double current_angle = getCurrentPivotAngle();
     double target_angle = getAngleFromTarget(target);
 
@@ -154,6 +162,6 @@ public class Shooter extends Subsystem {
   }
 
   public enum ShooterPivotTarget {
-    SHOOTER_LOW, SHOOTER_AMP, SHOOTER_SPEAKER
+    SHOOTER_LOW, SHOOTER_AMP, SHOOTER_SPEAKER, SHOOTER_NONE
   }
 }

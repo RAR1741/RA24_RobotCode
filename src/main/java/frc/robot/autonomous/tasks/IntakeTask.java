@@ -24,7 +24,9 @@ public class IntakeTask extends Task {
 	}
 
 	@Override
-	public void update() {}
+	public void update() {
+		m_intake.periodic();
+	}
 
 	@Override
 	public boolean isFinished() {
