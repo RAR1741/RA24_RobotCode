@@ -54,7 +54,7 @@ public class Intake extends Subsystem {
       m_periodicIO.intake_pivot_voltage = 0.0;
     }
 
-    m_periodicIO.intake_speed = intakeStateToSpeed(m_periodicIO.intake_state);
+    m_periodicIO.intake_speed = getSpeedFromState(m_periodicIO.intake_state);
     SmartDashboard.putString("Intake/CurrentState", m_periodicIO.intake_state.toString());
   }
 
@@ -73,7 +73,7 @@ public class Intake extends Subsystem {
 
   @Override
   public void outputTelemetry() {
-    SmartDashboard.putNumber("Intake/Speed", intakeStateToSpeed(m_periodicIO.intake_state));
+    SmartDashboard.putNumber("Intake/Speed", getSpeedFromState(m_periodicIO.intake_state));
     SmartDashboard.putNumber("Intake/CurrentPivotAngle", getCurrentPivotAngle());
     SmartDashboard.putNumber("Intake/CurrentSetpoint", getAngleFromTarget(m_periodicIO.pivot_target));
   }
@@ -89,7 +89,7 @@ public class Intake extends Subsystem {
     }
   }
 
-  private double intakeStateToSpeed(IntakeState state) {
+  private double getSpeedFromState(IntakeState state) {
     switch (state) {
       case INTAKE_STATE_INTAKE: return Constants.Intake.k_intakeSpeed;
       case INTAKE_STATE_EJECT: return Constants.Intake.k_ejectSpeed;
@@ -124,6 +124,32 @@ public class Intake extends Subsystem {
     double value = m_pivotMotorEncoder.getAbsolutePosition() - Constants.Intake.k_pivotEncoderOffset + 0.5;
 
     return Units.rotationsToDegrees(Helpers.modRotations(value));
+  }
+
+  public double getCurrentSpeed() {
+    return m_intakeMotor.getEncoder().getVelocity();
+  }
+
+  public boolean isAtPivotTarget(IntakePivotTarget target) {
+    if (target == IntakePivotTarget.INTAKE_PIVOT_NONE) {
+      return true;
+    }
+
+    double current_angle = getCurrentPivotAngle();
+    double target_angle = getAngleFromTarget(target);
+
+    return current_angle <= target_angle+2 && current_angle >= target_angle-2;
+  }
+
+  public boolean isAtState(IntakeState state) {
+    if (state == IntakeState.INTAKE_STATE_NONE) {
+      return true;
+    }
+
+    double current_speed = getCurrentSpeed();
+    double target_speed = getSpeedFromState(state);
+
+    return current_speed <= target_speed+0.1 && current_speed >= target_speed-0.1;
   }
 
   private static class PeriodicIO {
