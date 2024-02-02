@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.Helpers;
 import frc.robot.simulation.IntakeSim;
+import frc.robot.simulation.SimMaster;
 
 public class Intake extends Subsystem {
   private static Intake m_intake;
@@ -22,19 +23,19 @@ public class Intake extends Subsystem {
   private final DutyCycleEncoder m_pivotMotorEncoder = new DutyCycleEncoder(Constants.Intake.k_pivotEncoderId);
 
   private final PIDController m_pivotPID = new PIDController(
-    Constants.Intake.k_pivotMotorP, Constants.Intake.k_pivotMotorI, Constants.Intake.k_pivotMotorD);
+      Constants.Intake.k_pivotMotorP, Constants.Intake.k_pivotMotorI, Constants.Intake.k_pivotMotorD);
 
   private PeriodicIO m_periodicIO;
 
   private Intake() {
-    m_intakeSim = IntakeSim.getInstance();
+    m_intakeSim = SimMaster.getInstance().getIntakeSim();
 
-    m_pivotMotor = new CANSparkMax(Constants.Intake.k_pivotMotorID, MotorType.kBrushless);
+    m_pivotMotor = new CANSparkMax(Constants.Intake.k_pivotMotorId, MotorType.kBrushless);
     m_pivotMotor.restoreFactoryDefaults();
     m_pivotMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
     m_pivotMotor.setSmartCurrentLimit(10); // TODO: Double check this
 
-    m_intakeMotor = new CANSparkMax(Constants.Intake.k_intakeMotorID, MotorType.kBrushless);
+    m_intakeMotor = new CANSparkMax(Constants.Intake.k_intakeMotorId, MotorType.kBrushless);
     m_intakeMotor.restoreFactoryDefaults();
     m_intakeMotor.setIdleMode(CANSparkMax.IdleMode.kCoast);
 
@@ -84,20 +85,28 @@ public class Intake extends Subsystem {
 
   private double getAngleFromTarget(IntakePivotTarget target) {
     switch (target) {
-      case INTAKE_PIVOT_GROUND: return Constants.Intake.k_groundPivotAngle;
-      case INTAKE_PIVOT_SOURCE: return Constants.Intake.k_sourcePivotAngle;
-      case INTAKE_PIVOT_AMP: return Constants.Intake.k_ampPivotAngle;
-      case INTAKE_PIVOT_STOW: return Constants.Intake.k_stowPivotAngle;
+      case INTAKE_PIVOT_GROUND:
+        return Constants.Intake.k_groundPivotAngle;
+      case INTAKE_PIVOT_SOURCE:
+        return Constants.Intake.k_sourcePivotAngle;
+      case INTAKE_PIVOT_AMP:
+        return Constants.Intake.k_ampPivotAngle;
+      case INTAKE_PIVOT_STOW:
+        return Constants.Intake.k_stowPivotAngle;
 
-      default: return 180.0;
+      default:
+        return 180.0;
     }
   }
 
   private double getSpeedFromState(IntakeState state) {
     switch (state) {
-      case INTAKE_STATE_INTAKE: return Constants.Intake.k_intakeSpeed;
-      case INTAKE_STATE_EJECT: return Constants.Intake.k_ejectSpeed;
-      case INTAKE_STATE_FEED_SHOOTER: return Constants.Intake.k_feedShooterSpeed;
+      case INTAKE_STATE_INTAKE:
+        return Constants.Intake.k_intakeSpeed;
+      case INTAKE_STATE_EJECT:
+        return Constants.Intake.k_ejectSpeed;
+      case INTAKE_STATE_FEED_SHOOTER:
+        return Constants.Intake.k_feedShooterSpeed;
 
       case INTAKE_STATE_PULSE: {
         if (Timer.getFPGATimestamp() % 1.0 < (1.0 / 45.0)) { // TODO: check if this is what we want
@@ -107,7 +116,8 @@ public class Intake extends Subsystem {
         return 0.0;
       }
 
-      default: return 0.0;
+      default:
+        return 0.0;
     }
   }
 
@@ -130,6 +140,7 @@ public class Intake extends Subsystem {
     return Units.rotationsToDegrees(Helpers.modRotations(value));
   }
 
+  // TODO Get rid of this and make it part of the actual functionality
   public void setSimPosition(double a) {
     m_intakeSim.updateIntakePosition(a);
   }
@@ -146,7 +157,7 @@ public class Intake extends Subsystem {
     double current_angle = getCurrentPivotAngle();
     double target_angle = getAngleFromTarget(target);
 
-    return current_angle <= target_angle+2 && current_angle >= target_angle-2;
+    return current_angle <= target_angle + 2 && current_angle >= target_angle - 2;
   }
 
   public boolean isAtState(IntakeState state) {
@@ -157,7 +168,7 @@ public class Intake extends Subsystem {
     double current_speed = getCurrentSpeed();
     double target_speed = getSpeedFromState(state);
 
-    return current_speed <= target_speed+0.1 && current_speed >= target_speed-0.1;
+    return current_speed <= target_speed + 0.1 && current_speed >= target_speed - 0.1;
   }
 
   private static class PeriodicIO {

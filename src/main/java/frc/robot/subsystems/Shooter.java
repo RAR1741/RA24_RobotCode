@@ -14,9 +14,12 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.Helpers;
+import frc.robot.simulation.ShooterSim;
+import frc.robot.simulation.SimMaster;
 
 public class Shooter extends Subsystem {
   private static Shooter m_shooter;
+  private static ShooterSim m_shooterSim;
 
   private CANSparkFlex m_topShooterMotor;
   private CANSparkFlex m_bottomShooterMotor;
@@ -24,29 +27,31 @@ public class Shooter extends Subsystem {
 
   private RelativeEncoder m_topMotorEncoder;
   private RelativeEncoder m_bottomMotorEncoder;
-  private DutyCycleEncoder m_pivotAbsEncoder = new DutyCycleEncoder(Constants.Shooter.k_pivotEncoderID);
+  private DutyCycleEncoder m_pivotAbsEncoder = new DutyCycleEncoder(Constants.Shooter.k_pivotEncoderId);
 
   private SparkPIDController m_topShooterMotorPID;
   private SparkPIDController m_bottomShooterMotorPID;
   private PIDController m_pivotMotorPID = new PIDController(
-    Constants.Shooter.k_pivotMotorP, Constants.Shooter.k_pivotMotorI, Constants.Shooter.k_pivotMotorD);;
+      Constants.Shooter.k_pivotMotorP, Constants.Shooter.k_pivotMotorI, Constants.Shooter.k_pivotMotorD);;
 
-  private SlewRateLimiter m_speedLimiter = new SlewRateLimiter(1000); // Double-check this value
+  private SlewRateLimiter m_speedLimiter = new SlewRateLimiter(1000); // TODO Double-check this value
 
   private PeriodicIO m_periodicIO;
 
   private Shooter() {
-    m_topShooterMotor = new CANSparkFlex(Constants.Shooter.k_topMotorID, MotorType.kBrushless);
+    m_shooterSim = SimMaster.getInstance().getShooterSim();
+
+    m_topShooterMotor = new CANSparkFlex(Constants.Shooter.k_topMotorId, MotorType.kBrushless);
     m_topShooterMotor.restoreFactoryDefaults();
     m_topShooterMotor.setIdleMode(CANSparkFlex.IdleMode.kCoast);
     m_topShooterMotor.setInverted(false);
 
-    m_bottomShooterMotor = new CANSparkFlex(Constants.Shooter.k_bottomMotorID, MotorType.kBrushless);
+    m_bottomShooterMotor = new CANSparkFlex(Constants.Shooter.k_bottomMotorId, MotorType.kBrushless);
     m_bottomShooterMotor.restoreFactoryDefaults();
     m_bottomShooterMotor.setIdleMode(CANSparkFlex.IdleMode.kCoast);
     m_bottomShooterMotor.setInverted(true);
 
-    m_pivotMotor = new CANSparkMax(Constants.Intake.k_pivotMotorID, MotorType.kBrushless);
+    m_pivotMotor = new CANSparkMax(Constants.Shooter.k_pivotMotorId, MotorType.kBrushless);
     m_pivotMotor.restoreFactoryDefaults();
     m_pivotMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
     m_pivotMotor.setSmartCurrentLimit(10); // TODO: Double check this
@@ -115,10 +120,23 @@ public class Shooter extends Subsystem {
 
   public void setAngle(ShooterPivotTarget target) {
     switch (target) {
-      case SHOOTER_LOW: m_periodicIO.pivot_angle = Constants.Shooter.k_lowPivotAngle; break;
-      case SHOOTER_AMP: m_periodicIO.pivot_angle = Constants.Shooter.k_ampPivotAngle; break;
-      case SHOOTER_SPEAKER: m_periodicIO.pivot_angle = Constants.Shooter.k_speakerPivotAngle; break;
+      case SHOOTER_LOW:
+        m_periodicIO.pivot_angle = Constants.Shooter.k_lowPivotAngle;
+        break;
+      case SHOOTER_AMP:
+        m_periodicIO.pivot_angle = Constants.Shooter.k_ampPivotAngle;
+        break;
+      case SHOOTER_SPEAKER:
+        m_periodicIO.pivot_angle = Constants.Shooter.k_speakerPivotAngle;
+        break;
+      default:
+        break;
     }
+  }
+
+  // TODO Get rid of this and make it part of the actual functionality
+  public void setSimPosition(double a) {
+    m_shooterSim.updateIntakePosition(a);
   }
 
   public void setSpeed(double rpm) {
@@ -135,11 +153,15 @@ public class Shooter extends Subsystem {
 
   public double getAngleFromTarget(ShooterPivotTarget target) {
     switch (target) {
-      case SHOOTER_LOW: return Constants.Shooter.k_lowPivotAngle;
-      case SHOOTER_AMP: return Constants.Shooter.k_ampPivotAngle;
-      case SHOOTER_SPEAKER: return Constants.Shooter.k_speakerPivotAngle;
+      case SHOOTER_LOW:
+        return Constants.Shooter.k_lowPivotAngle;
+      case SHOOTER_AMP:
+        return Constants.Shooter.k_ampPivotAngle;
+      case SHOOTER_SPEAKER:
+        return Constants.Shooter.k_speakerPivotAngle;
 
-      default: return Constants.Shooter.k_lowPivotAngle;
+      default:
+        return Constants.Shooter.k_lowPivotAngle;
     }
   }
 
@@ -151,7 +173,7 @@ public class Shooter extends Subsystem {
     double current_angle = getCurrentPivotAngle();
     double target_angle = getAngleFromTarget(target);
 
-    return current_angle <= target_angle+2 && current_angle >= target_angle-2;
+    return current_angle <= target_angle + 2 && current_angle >= target_angle - 2;
   }
 
   private static class PeriodicIO {
