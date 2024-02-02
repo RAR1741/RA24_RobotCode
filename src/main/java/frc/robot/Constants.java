@@ -3,6 +3,7 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DutyCycle;
 
 public final class Constants {
   public static class Robot {
@@ -86,7 +87,8 @@ public final class Constants {
   }
 
   public class Intake {
-    public static final int k_pivotMotorID = 98;
+    // TODO: Get intake motor id's
+    public static final int k_pivotMotorID = 13;
     public static final int k_intakeMotorID = 99;
 
     public static final int k_pivotEncoderId = 4;
@@ -103,6 +105,7 @@ public final class Constants {
     public static final double k_ejectSpeed = 0.0;
     public static final double k_feedShooterSpeed = 0.0;
 
+    // TODO: get intake pivot PID
     public static final double k_pivotMotorP = 0.0;
     public static final double k_pivotMotorI = 0.0;
     public static final double k_pivotMotorD = 0.0;
@@ -124,6 +127,32 @@ public final class Constants {
     //TODO Get values
     public static final double k_width = 150; // Inches
     public static final double k_height = 80; // Inches
+  }
+
+  public class Shooter {
+    public static int k_topMotorID = 98;
+    public static int k_bottomMotorID = 99;
+
+    // TODO: Get shooter motor PID
+    public static double k_shooterMotorP = 0.0;
+    public static double k_shooterMotorI = 0.0;
+    public static double k_shooterMotorD = 0.0;
+
+    // TODO: Check these
+    public static double k_shooterMinOutput = 0.0;
+    public static double k_shooterMaxOutput = 1.0;
+
+    public static int k_pivotEncoderID = 5;
+
+    // TODO: get shooter pivot PID
+    public static double k_pivotMotorP = 0.0;
+    public static double k_pivotMotorI = 0.0;
+    public static double k_pivotMotorD = 0.0;
+
+    // TODO: get shooter pivot setpoint angles
+    public static double k_lowPivotAngle = 0.0;
+    public static double k_ampPivotAngle = 0.0;
+    public static double k_speakerPivotAngle = 0.0;
   }
 
   public static class Field {

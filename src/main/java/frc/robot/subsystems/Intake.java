@@ -58,7 +58,7 @@ public class Intake extends Subsystem {
       m_periodicIO.intake_pivot_voltage = 0.0;
     }
 
-    m_periodicIO.intake_speed = intakeStateToSpeed(m_periodicIO.intake_state);
+    m_periodicIO.intake_speed = getSpeedFromState(m_periodicIO.intake_state);
     SmartDashboard.putString("Intake/CurrentState", m_periodicIO.intake_state.toString());
   }
 
@@ -77,28 +77,29 @@ public class Intake extends Subsystem {
 
   @Override
   public void outputTelemetry() {
-    SmartDashboard.putNumber("Intake/Speed", intakeStateToSpeed(m_periodicIO.intake_state));
+    SmartDashboard.putNumber("Intake/Speed", getSpeedFromState(m_periodicIO.intake_state));
+    SmartDashboard.putNumber("Intake/CurrentPivotAngle", getCurrentPivotAngle());
     SmartDashboard.putNumber("Intake/CurrentSetpoint", getAngleFromTarget(m_periodicIO.pivot_target));
   }
 
-  private double getAngleFromTarget(PivotTarget target) {
+  private double getAngleFromTarget(IntakePivotTarget target) {
     switch (target) {
-      case GROUND: return Constants.Intake.k_groundPivotAngle;
-      case SOURCE: return Constants.Intake.k_sourcePivotAngle;
-      case AMP: return Constants.Intake.k_ampPivotAngle;
-      case STOW: return Constants.Intake.k_stowPivotAngle;
+      case INTAKE_PIVOT_GROUND: return Constants.Intake.k_groundPivotAngle;
+      case INTAKE_PIVOT_SOURCE: return Constants.Intake.k_sourcePivotAngle;
+      case INTAKE_PIVOT_AMP: return Constants.Intake.k_ampPivotAngle;
+      case INTAKE_PIVOT_STOW: return Constants.Intake.k_stowPivotAngle;
 
       default: return 180.0;
     }
   }
 
-  private double intakeStateToSpeed(IntakeState state) {
+  private double getSpeedFromState(IntakeState state) {
     switch (state) {
-      case INTAKE: return Constants.Intake.k_intakeSpeed;
-      case EJECT: return Constants.Intake.k_ejectSpeed;
-      case FEED_SHOOTER: return Constants.Intake.k_feedShooterSpeed;
+      case INTAKE_STATE_INTAKE: return Constants.Intake.k_intakeSpeed;
+      case INTAKE_STATE_EJECT: return Constants.Intake.k_ejectSpeed;
+      case INTAKE_STATE_FEED_SHOOTER: return Constants.Intake.k_feedShooterSpeed;
 
-      case PULSE: {
+      case INTAKE_STATE_PULSE: {
         if (Timer.getFPGATimestamp() % 1.0 < (1.0 / 45.0)) { // TODO: check if this is what we want
           return Constants.Intake.k_intakeSpeed;
         }
@@ -112,18 +113,18 @@ public class Intake extends Subsystem {
 
   public void stopIntake() {
     m_periodicIO.intake_speed = 0.0;
-    m_periodicIO.intake_state = IntakeState.NONE;
+    m_periodicIO.intake_state = IntakeState.INTAKE_STATE_NONE;
   }
 
   public void setState(IntakeState state) {
     m_periodicIO.intake_state = state;
   }
 
-  public void setPivotTarget(PivotTarget target) {
+  public void setPivotTarget(IntakePivotTarget target) {
     m_periodicIO.pivot_target = target;
   }
 
-  private double getCurrentPivotAngle() {
+  public double getCurrentPivotAngle() {
     double value = m_pivotMotorEncoder.getAbsolutePosition() - Constants.Intake.k_pivotEncoderOffset + 0.5;
 
     return Units.rotationsToDegrees(Helpers.modRotations(value));
@@ -133,19 +134,53 @@ public class Intake extends Subsystem {
     m_intakeSim.updateIntakePosition(a);
   }
 
+  public double getCurrentSpeed() {
+    return m_intakeMotor.getEncoder().getVelocity();
+  }
+
+  public boolean isAtPivotTarget(IntakePivotTarget target) {
+    if (target == IntakePivotTarget.INTAKE_PIVOT_NONE) {
+      return true;
+    }
+
+    double current_angle = getCurrentPivotAngle();
+    double target_angle = getAngleFromTarget(target);
+
+    return current_angle <= target_angle+2 && current_angle >= target_angle-2;
+  }
+
+  public boolean isAtState(IntakeState state) {
+    if (state == IntakeState.INTAKE_STATE_NONE) {
+      return true;
+    }
+
+    double current_speed = getCurrentSpeed();
+    double target_speed = getSpeedFromState(state);
+
+    return current_speed <= target_speed+0.1 && current_speed >= target_speed-0.1;
+  }
+
   private static class PeriodicIO {
-    PivotTarget pivot_target = PivotTarget.STOW;
-    IntakeState intake_state = IntakeState.NONE;
+    IntakePivotTarget pivot_target = IntakePivotTarget.INTAKE_PIVOT_STOW;
+    IntakeState intake_state = IntakeState.INTAKE_STATE_NONE;
 
     double intake_pivot_voltage = 0.0;
     double intake_speed = 0.0;
   }
 
-  public enum PivotTarget {
-    NONE, GROUND, SOURCE, AMP, STOW
+  public enum IntakePivotTarget {
+    INTAKE_PIVOT_NONE,
+    INTAKE_PIVOT_GROUND,
+    INTAKE_PIVOT_SOURCE,
+    INTAKE_PIVOT_AMP,
+    INTAKE_PIVOT_STOW
   }
 
   public enum IntakeState {
-    NONE, INTAKE, EJECT, PULSE, FEED_SHOOTER
+    INTAKE_STATE_NONE,
+    INTAKE_STATE_INTAKE,
+    INTAKE_STATE_EJECT,
+    INTAKE_STATE_PULSE,
+    INTAKE_STATE_FEED_SHOOTER
   }
 }
