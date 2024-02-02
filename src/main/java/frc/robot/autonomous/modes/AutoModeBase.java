@@ -50,7 +50,7 @@ public abstract class AutoModeBase {
     return new Pose2d(redStartingTranslation, redStartingRotation);
   };
 
-  private Pose2d getStartingPosition() {
+  public Pose2d getStartingPosition() {
     DriverStation.Alliance alliance = DriverStation.Alliance.Red; // Default to RED
     if (DriverStation.getAlliance().isPresent()) {
       alliance = DriverStation.getAlliance().get();
@@ -59,7 +59,7 @@ public abstract class AutoModeBase {
     if (alliance == DriverStation.Alliance.Blue) {
       return getBlueStartingPosition();
     } else {
-      return getBlueStartingPosition();
+      return getRedStartingPosition();
     }
   }
 }

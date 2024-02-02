@@ -4,6 +4,7 @@ import frc.robot.autonomous.modes.AutoModeBase;
 import frc.robot.autonomous.modes.DefaultMode;
 import frc.robot.autonomous.modes.DoNothingMode;
 import frc.robot.autonomous.modes.TestMode;
+import frc.robot.autonomous.modes.TestMode2;
 import frc.robot.autonomous.tasks.Task;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 
@@ -47,6 +48,6 @@ public class AutoRunner {
     }
 
     m_autoMode.queueTasks();
-    m_swerve.setPose(m_autoMode.getBlueStartingPosition()); //TODO: If red, set to red starting pos
+    m_swerve.setPose(m_autoMode.getStartingPosition()); //TODO: If red, set to red starting pos
   }
 }
