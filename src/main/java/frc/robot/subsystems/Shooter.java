@@ -20,7 +20,7 @@ public class Shooter extends Subsystem {
 
   private CANSparkFlex m_topShooterMotor;
   private CANSparkFlex m_bottomShooterMotor;
-  private CANSparkMax m_pivotMotor;
+  private CANSparkFlex m_pivotMotor;
 
   private RelativeEncoder m_topMotorEncoder;
   private RelativeEncoder m_bottomMotorEncoder;
@@ -46,7 +46,7 @@ public class Shooter extends Subsystem {
     m_bottomShooterMotor.setIdleMode(CANSparkFlex.IdleMode.kCoast);
     m_bottomShooterMotor.setInverted(true);
 
-    m_pivotMotor = new CANSparkMax(Constants.Intake.k_pivotMotorID, MotorType.kBrushless);
+    m_pivotMotor = new CANSparkFlex(Constants.Intake.k_pivotMotorID, MotorType.kBrushless);
     m_pivotMotor.restoreFactoryDefaults();
     m_pivotMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
     m_pivotMotor.setSmartCurrentLimit(10); // TODO: Double check this
