@@ -6,12 +6,14 @@ import com.pathplanner.lib.path.PathPlannerTrajectory;
 import com.pathplanner.lib.path.PathPlannerTrajectory.State;
 import com.pathplanner.lib.util.PIDConstants;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
@@ -27,25 +29,28 @@ public class DriveTrajectoryTask extends Task {
 
   public DriveTrajectoryTask(String pathName) {
     try {
-      PathPlannerPath m_autoPath = PathPlannerPath.fromPathFile(pathName);
-      System.out.println(m_autoPath.isChoreoPath());
+      PathPlannerPath autoPath = PathPlannerPath.fromPathFile(pathName);
+
+      Pose2d startingPose = m_swerve.getPose();
+      Rotation2d startingRotation = startingPose.getRotation();
+      SmartDashboard.putNumber(m_smartDashboardKey + "Starting Rotation", startingPose.getRotation().getDegrees());
 
       if(DriverStation.getAlliance().get() == Alliance.Red) {
         DriverStation.reportWarning("Translating path for Red Alliance!", false);
-        m_autoPath = m_autoPath.flipPath();
-        m_autoPath.preventFlipping = true;
+        autoPath = autoPath.flipPath();
+        autoPath.preventFlipping = true;
       }
-
-      m_autoTrajectory = m_autoPath.getTrajectory(new ChassisSpeeds(0,0,0), new Rotation2d(0));
+      
+      m_autoTrajectory = autoPath.getTrajectory(new ChassisSpeeds(0,0,0), startingRotation);
 
     } catch (Exception ex) {
       DriverStation.reportError("Unable to load PathPlanner trajectory: " + pathName, ex.getStackTrace());
     }
 
-    m_driveController = new PPHolonomicDriveController(
+    m_driveController = new PPHolonomicDriveController (
       new PIDConstants(0.5, 0, 0),
       new PIDConstants(0.7,0, 0),
-      Constants.SwerveDrive.k_maxSpeed, 
+      Constants.SwerveDrive.k_maxSpeed,
       Constants.Robot.k_width/2);
   }
 
@@ -83,15 +88,11 @@ public class DriveTrajectoryTask extends Task {
   @Override
   public void updateSim() {
     if (!RobotBase.isReal() && m_autoTrajectory != null) {
-      // PathPlannerTrajectory.State autoState = (PathPlannerTrajectory.State) m_autoTrajectory
-      //     .sample(m_runningTimer.get());
+      State state = m_autoTrajectory.sample(m_runningTimer.get());
 
-      // Pose2d targetPose2d = new Pose2d(
-      //     autoState.positionMeters.getX(),
-      //     autoState.positionMeters.getY(),
-      //     autoState.targetHolonomicRotation);
-
-      m_swerve.setPose(m_autoTrajectory.sample(m_runningTimer.get()).getTargetHolonomicPose());
+      Preferences.setDouble("SwerveDrive/x", state.getTargetHolonomicPose().getX());
+      Preferences.setDouble("SwerveDrive/y", state.getTargetHolonomicPose().getY());
+      Preferences.setDouble("SwerveDrive/rot", state.getTargetHolonomicPose().getRotation().getDegrees());
     }
   }
 

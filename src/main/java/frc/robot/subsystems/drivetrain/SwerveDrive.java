@@ -94,21 +94,15 @@ public class SwerveDrive extends Subsystem {
   }
 
   public void setPose(Pose2d pose) {
-    if(RobotBase.isReal()) {
-      m_poseEstimator.resetPosition(
-          getRotation2d(),
-          new SwerveModulePosition[] {
-              m_modules[Module.FRONT_LEFT].getPosition(),
-              m_modules[Module.FRONT_RIGHT].getPosition(),
-              m_modules[Module.BACK_LEFT].getPosition(),
-              m_modules[Module.BACK_RIGHT].getPosition()
-          },
-          pose);
-    } else {
-      Preferences.setDouble("SwerveDrive/x", pose.getX());
-      Preferences.setDouble("SwerveDrive/y", pose.getY());
-      Preferences.setDouble("SwerveDrive/rot", pose.getRotation().getDegrees());
-    }
+    m_poseEstimator.resetPosition(
+        getRotation2d(),
+        new SwerveModulePosition[] {
+            m_modules[Module.FRONT_LEFT].getPosition(),
+            m_modules[Module.FRONT_RIGHT].getPosition(),
+            m_modules[Module.BACK_LEFT].getPosition(),
+            m_modules[Module.BACK_RIGHT].getPosition()
+        },
+        pose);
   }
 
   /**

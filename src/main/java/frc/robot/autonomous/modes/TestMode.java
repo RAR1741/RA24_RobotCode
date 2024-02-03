@@ -11,8 +11,8 @@ public class TestMode extends AutoModeBase {
 
     @Override
     public void queueTasks() {
-        // queueTask(new ParallelTask(new DriveTrajectoryTask("pleasegodihope")));
-        queueTask(new DriveTrajectoryTask("pleasegodihope"));
+        queueTask(new ParallelTask(new DriveTrajectoryTask("pleasegodihope")));
+        // queueTask(new DriveTrajectoryTask("pleasework"));
         queueTask(new PointForwardTask());
         queueTask(new WaitTask(10));
     }

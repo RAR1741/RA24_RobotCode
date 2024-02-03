@@ -47,6 +47,6 @@ public class AutoRunner {
     }
 
     m_autoMode.queueTasks();
-    m_swerve.setPose(m_autoMode.getStartingPosition()); //TODO: If red, set to red starting pos
+    m_swerve.setPose(m_autoMode.getStartingPosition());
   }
 }
