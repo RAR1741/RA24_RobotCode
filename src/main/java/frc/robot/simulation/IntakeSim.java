@@ -26,7 +26,7 @@ public class IntakeSim {
       k_pivotGearRatio,
       SingleJointedArmSim.estimateMOI(Units.inchesToMeters(Constants.Intake.k_length),
           Constants.Intake.k_mass),
-      /* Units.inchesToMeters( */Constants.Intake.k_length/* ) */,
+      Constants.Intake.k_length,
       Constants.Intake.k_minAngle,
       Constants.Intake.k_maxAngle,
       true,

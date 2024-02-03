@@ -26,7 +26,7 @@ public class ShooterSim {
       k_pivotGearRatio,
       SingleJointedArmSim.estimateMOI(Units.inchesToMeters(Constants.Shooter.k_length),
           Constants.Shooter.k_mass),
-      /* Units.inchesToMeters( */Constants.Shooter.k_length/* ) */,
+      Constants.Shooter.k_length,
       Constants.Shooter.k_minAngle,
       Constants.Shooter.k_maxAngle,
       true,
