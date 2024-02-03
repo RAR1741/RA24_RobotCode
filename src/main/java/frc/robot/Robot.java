@@ -6,7 +6,10 @@ import java.util.List;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Preferences;
+import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.autonomous.AutoChooser;
@@ -184,12 +187,13 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledInit() {
+    Config.loadFromFile("config.toml");
     m_allSubsystems.forEach(subsystem -> subsystem.stop());
     // m_swerve.resetOdometry(new Pose2d(3, 3, new Rotation2d(0)));
   }
 
   @Override
-  public void disabledExit() {
+  public void disabledExit() { 
   }
 
   @Override

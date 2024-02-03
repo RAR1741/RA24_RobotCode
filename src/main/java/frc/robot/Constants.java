@@ -15,8 +15,8 @@ public final class Constants {
   }
 
   public static class Auto {
-    public static final double k_maxSpeed = 1; // 1 meters per second
-    public static final double k_maxAcceleration = 0.5;
+    public static final double k_maxSpeed = Config.getData("autoMaxSpeed", 3); // 1 meters per second
+    public static final double k_maxAcceleration = Config.getData("autoMaxAcceleration", 3);
   }
 
   public class SwerveDrive {
@@ -27,10 +27,10 @@ public final class Constants {
     public static final double k_xCenterDistance = k_xDistance / 2.0;
     public static final double k_yCenterDistance = k_yDistance / 2.0;
 
-    public static final double k_maxSpeed = 3.0; // 3 meters per second
-    public static final double k_maxAngularSpeed = Math.PI; // 1/2 rotation per second
-    public static final double k_slowScaler = 0.2; // 20% reduction in speed
-    public static final double k_boostScaler = 2.0; // 200% increase in speed
+    public static final double k_maxSpeed = Config.getData("driveMaxSpeed", 3); // 3 meters per second
+    public static final double k_maxAngularSpeed = Config.getData("maxAngularSpeed", Math.PI); // 1/2 rotation per second
+    public static final double k_slowScaler = Config.getData("slowScaler", 0.2); // 20% reduction in speed
+    public static final double k_boostScaler = Config.getData("boostScaler", 2); // 200% increase in speed
 
     public static final double k_wheelRadiusIn = 2.0; // 2 inches
     public static final double k_driveGearRatio = (50.0 / 14.0) * (16.0 / 28.0) * (45.0 / 15.0);
@@ -43,20 +43,20 @@ public final class Constants {
       public static final int k_BRMotorId = 10;
       public static final int k_BLMotorId = 12;
 
-      public static final double k_P = 0.0;
-      public static final double k_I = 0.0;
-      public static final double k_D = 0.0;
-      public static final double k_IZone = 0.0;
-      public static final double k_FF = 3.25;
+      public static final double k_P = Config.getData("driveP", 1);
+      public static final double k_I = Config.getData("driveI", 0);
+      public static final double k_D = Config.getData("driveD", 0);
+      public static final double k_IZone = Config.getData("driveIZone", 0);
+      public static final double k_FF = Config.getData("driveFF", 3.25);
     }
 
     // Drivetrain (turn) constants
     public class Turn {
       // Drivetrain turning offset constants
-      public static final double k_FLOffset = 0.157329;
-      public static final double k_FROffset = 0.345974;
-      public static final double k_BROffset = 0.823048;
-      public static final double k_BLOffset = 0.329460;
+      public static final double k_FLOffset = Config.getData("FLModuleOffset", 0);
+      public static final double k_FROffset = Config.getData("FRModuleOffset", 0);
+      public static final double k_BROffset = Config.getData("BRModuleOffset", 0);
+      public static final double k_BLOffset = Config.getData("BLModuleOffset", 0);
 
       public static final int k_FLAbsID = 0;
       public static final int k_FRAbsID = 1;
@@ -69,20 +69,20 @@ public final class Constants {
       public static final int k_BLMotorId = 11;
 
       // TODO: Tweak these as necessary
-      public static final double k_turningP = 0.1;
-      public static final double k_turningI = 0.0;
-      public static final double k_turningD = 0.0;
-      public static final double k_turningIZone = 0;
-      public static final double k_turningFF = 0;
+      public static final double k_turningP = Config.getData("turnP", 0.1);
+      public static final double k_turningI = Config.getData("turnI", 0);
+      public static final double k_turningD = Config.getData("turnD", 0);
+      public static final double k_turningIZone = Config.getData("turnIZone", 0);
+      public static final double k_turningFF = Config.getData("turnFF", 0);
 
-      public static final int k_TurningMinOutput = -1;
-      public static final int k_TurningMaxOutput = 1;
+      public static final double k_TurningMinOutput = Config.getData("turningMinOutput", -1);
+      public static final double k_TurningMaxOutput = Config.getData("turningMaxOutput", 1);
     }
 
     public class AutoAim {
-      public static final double k_P = 1;
-      public static final double k_I = 0;
-      public static final double k_D = 0;
+      public static final double k_P = Config.getData("autoAimP", 1);
+      public static final double k_I = Config.getData("autoAimI", 0);
+      public static final double k_D = Config.getData("autoAimD", 0);
     }
   }
 
@@ -92,23 +92,23 @@ public final class Constants {
     public static final int k_intakeMotorID = 99;
 
     public static final int k_pivotEncoderID = 4;
-    public static final double k_pivotEncoderOffset = 0.0;
+    public static final double k_pivotEncoderOffset = Config.getData("pivotEncoderOffset", 0);
 
     // TODO: get pivot angles
-    public static final double k_groundPivotAngle = 0.0;
-    public static final double k_sourcePivotAngle = 0.0;
-    public static final double k_ampPivotAngle = 0.0;
-    public static final double k_stowPivotAngle = 0.0;
+    public static final double k_groundPivotAngle = Config.getData("groundPivotAngle", 0);
+    public static final double k_sourcePivotAngle = Config.getData("sourcePivotAngle", 0);
+    public static final double k_ampPivotAngle = Config.getData("intakeAmpPivotAngle", 0);
+    public static final double k_stowPivotAngle = Config.getData("stowPivotAngle", 0);
 
     // TODO: get intake speeds
-    public static double k_intakeSpeed = 0.0;
-    public static double k_ejectSpeed = 0.0;
-    public static double k_feedShooterSpeed = 0.0;
+    public static double k_intakeSpeed = Config.getData("intakeSpeed", 0);
+    public static double k_ejectSpeed = Config.getData("ejectSpeed", 0);
+    public static double k_feedShooterSpeed = Config.getData("feedShooterSpeed", 0);
 
     // TODO: get intake pivot PID
-    public static final double k_pivotMotorP = 0.0;
-    public static final double k_pivotMotorI = 0.0;
-    public static final double k_pivotMotorD = 0.0;
+    public static final double k_pivotMotorP = Config.getData("intakePivotMotorP", 1);
+    public static final double k_pivotMotorI = Config.getData("intakePivotMotorI", 0);
+    public static final double k_pivotMotorD = Config.getData("intakePivotMotorD", 0);
   }
 
   public class Shooter {
@@ -116,25 +116,25 @@ public final class Constants {
     public static int k_bottomMotorID = 99;
 
     // TODO: Get shooter motor PID
-    public static double k_shooterMotorP = 0.0;
-    public static double k_shooterMotorI = 0.0;
-    public static double k_shooterMotorD = 0.0;
+    public static double k_shooterMotorP = Config.getData("shooterMotorP", 1);
+    public static double k_shooterMotorI = Config.getData("shooterMotorI", 0);
+    public static double k_shooterMotorD = Config.getData("shooterMotorD", 0);
 
     // TODO: Check these
-    public static double k_shooterMinOutput = 0.0;
-    public static double k_shooterMaxOutput = 1.0;
+    public static double k_shooterMinOutput = Config.getData("shooterMinOutput", 0);
+    public static double k_shooterMaxOutput = Config.getData("shooterMaxOutput", 1);
 
     public static int k_pivotEncoderID = 5;
 
     // TODO: get shooter pivot PID
-    public static double k_pivotMotorP = 0.0;
-    public static double k_pivotMotorI = 0.0;
-    public static double k_pivotMotorD = 0.0;
+    public static double k_pivotMotorP = Config.getData("shooterPivotMotorP", 1);
+    public static double k_pivotMotorI = Config.getData("shooterPivotMotorI", 0);
+    public static double k_pivotMotorD = Config.getData("shooterPivotMotorD", 0);
 
     // TODO: get shooter pivot setpoint angles
-    public static double k_lowPivotAngle = 0.0;
-    public static double k_ampPivotAngle = 0.0;
-    public static double k_speakerPivotAngle = 0.0;
+    public static double k_lowPivotAngle = Config.getData("lowPivotAngle", 0);
+    public static double k_ampPivotAngle = Config.getData("shooterAmpPivotAngle", 0);
+    public static double k_speakerPivotAngle = Config.getData("speakerPivotAngle", 0);
   }
 
   public static class Field {
@@ -148,7 +148,7 @@ public final class Constants {
     public static final double k_width = Units.feetToMeters(54.0);
     public static final double k_length = Units.feetToMeters(27.0);
 
-    public static final double k_autoAimThreshold = 1; // in meters
+    public static final double k_autoAimThreshold = Config.getData("autoAimThreshold", 1); // in meters
 
     // TODO: Make sure the robot uses the same coordinate system
     public static final Pose2d k_redSpeakerPose = new Pose2d(16.579342, 5.547868, new Rotation2d(0));

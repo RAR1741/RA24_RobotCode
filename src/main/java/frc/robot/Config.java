@@ -11,29 +11,29 @@ import org.tomlj.Toml;
 import org.tomlj.TomlParseError;
 import org.tomlj.TomlParseResult;
 
+import edu.wpi.first.wpilibj.Filesystem;
+
 public class Config {
-  static TomlParseResult m_parsedConfig;
+  private static TomlParseResult m_parsedConfig;
 
   /**
    * Load the configs from the specified file
    *
    * @param filepath Path to the config file
    */
-  public static void loadFromFile(String filepath) {
+  public static void loadFromFile(String fileName) {
     try {
-      Path file = Paths.get(new File(filepath).getName());
-
-      m_parsedConfig = Toml.parse(file);
-    } catch (IOException exception) {
-      System.err.printf("Unable to read from config file '%s':\n%s\n", filepath, exception.getMessage());
-
-      m_parsedConfig = null;
-
+      Path source = Paths.get(new File(Filesystem.getDeployDirectory(), fileName).getPath());
+      m_parsedConfig = Toml.parse(source);
+    } catch (IOException e) {
+      System.out.println("Failed to load configuration: " + e.getMessage());
+      m_parsedConfig = null; // Gross but a quick way to implement this interface
+      // TODO Change this interface
       return;
     }
 
     if (!m_parsedConfig.errors().isEmpty()) {
-      System.err.printf("Error(s) parsing config file '%s':\n", filepath);
+      System.err.printf("Error(s) parsing config file '%s':\n", fileName);
 
       for (TomlParseError error : m_parsedConfig.errors()) {
         System.err.println(error.getMessage());
