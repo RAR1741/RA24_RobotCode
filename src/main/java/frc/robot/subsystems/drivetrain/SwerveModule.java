@@ -155,14 +155,7 @@ public class SwerveModule {
     desiredState = SwerveModuleState.optimize(desiredState, Rotation2d.fromRadians(getTurnPosition()));
     desiredState.angle = new Rotation2d(Helpers.modRadians(desiredState.angle.getRadians()));
     m_periodicIO.desiredState = desiredState;
-
-    // If the turn position changes, set turn motor accordingly
-    // if (m_turningEncoder.getPosition() !=
-    // m_periodicIO.desiredState.angle.getRotations()) {
-    // m_turnPIDController.setReference(m_periodicIO.desiredState.angle.getRotations(),
-    // ControlType.kPosition);
-    // }
-
+    
     m_drivePIDController.setReference(desiredState.speedMetersPerSecond, ControlType.kVelocity);
     m_turningPIDController.setReference(m_periodicIO.desiredState.angle.getRadians(), ControlType.kPosition);
 

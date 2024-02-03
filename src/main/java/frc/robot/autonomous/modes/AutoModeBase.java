@@ -38,19 +38,19 @@ public abstract class AutoModeBase {
 
   public abstract void queueTasks();
 
-  public abstract Pose2d getRedStartingPosition();
+  public abstract Pose2d getBlueStartingPosition();
 
-  private Pose2d getBlueStartingPosition() {
-    Rotation2d blueStartingRotation = Rotation2d.fromDegrees(getRedStartingPosition().getRotation().getDegrees() - 180);
+  private Pose2d getRedStartingPosition() {
+    Rotation2d redStartingRotation = Rotation2d.fromDegrees(getBlueStartingPosition().getRotation().getDegrees() - 180);
 
-    Translation2d blueStartingTranslation = new Translation2d(
-        Constants.Field.k_width - getRedStartingPosition().getX(),
-        getRedStartingPosition().getY());
+    Translation2d redStartingTranslation = new Translation2d(
+        Constants.Field.k_width - getBlueStartingPosition().getX(),
+        getBlueStartingPosition().getY());
 
-    return new Pose2d(blueStartingTranslation, blueStartingRotation);
+    return new Pose2d(redStartingTranslation, redStartingRotation);
   };
 
-  private Pose2d getStartingPosition() {
+  public Pose2d getStartingPosition() {
     DriverStation.Alliance alliance = DriverStation.Alliance.Red; // Default to RED
     if (DriverStation.getAlliance().isPresent()) {
       alliance = DriverStation.getAlliance().get();

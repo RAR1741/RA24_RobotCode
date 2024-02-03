@@ -3,10 +3,13 @@ package frc.robot.autonomous;
 import frc.robot.autonomous.modes.AutoModeBase;
 import frc.robot.autonomous.modes.DefaultMode;
 import frc.robot.autonomous.modes.DoNothingMode;
+import frc.robot.autonomous.modes.TestMode;
 import frc.robot.autonomous.tasks.Task;
+import frc.robot.subsystems.drivetrain.SwerveDrive;
 
 public class AutoRunner {
   private static AutoRunner m_autoRunner = null;
+  private SwerveDrive m_swerve = SwerveDrive.getInstance();
   private AutoModeBase m_autoMode;
 
   public static AutoRunner getInstance() {
@@ -19,10 +22,7 @@ public class AutoRunner {
   public enum AutoMode {
     DO_NOTHING,
     DEFAULT,
-    RIGHT_CUBE_BALANCE,
-    CENTER_CUBE_BALANCE_MOBILITY,
-    LEFT_CUBE_BALANCE,
-    CENTER_CUBE_BALANCE
+    TEST
   }
 
   public Task getNextTask() {
@@ -37,6 +37,9 @@ public class AutoRunner {
       case DEFAULT:
         m_autoMode = new DefaultMode();
         break;
+      case TEST:
+        m_autoMode = new TestMode();
+        break;
       default:
         System.out.println("Invalid auto mode selected. Defaulting to do nothing.");
         m_autoMode = new DoNothingMode();
@@ -44,5 +47,6 @@ public class AutoRunner {
     }
 
     m_autoMode.queueTasks();
+    m_swerve.setPose(m_autoMode.getStartingPosition());
   }
 }
