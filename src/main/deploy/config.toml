@@ -1,0 +1,66 @@
+# THE CONFIG FILE
+# Circa February 2024
+
+autoMaxSpeed = 1 # m/s
+autoMaxAcceleration = 0.5
+
+driveMaxSpeed = 3.0 # m/s
+maxAngularSpeed = 3.14159 # 1/2 rotation per second
+slowScaler = 0.2 # 20% reduction in speed
+boostScaler = 2.0 # 200% increase in speed
+
+driveP = 0.0
+driveI = 0.0
+driveD = 0.0
+driveIZone = 0.0
+driveFF = 3.25
+
+# Drivetrain turning offset constants
+FLModuleOffset = 0.157329
+FRModuleOffset = 0.345974
+BRModuleOffset = 0.823048
+BLModuleOffset = 0.329460
+
+turnP = 0.1
+turnI = 0.0
+turnD = 0.0
+turnIZone = 0
+turnFF = 0
+
+turningMinOutput = -1
+turningMaxOutput = 1
+
+autoAimP = 1
+autoAimI = 0
+autoAimD = 0
+autoAimThreshold = 1 # meters
+
+pivotEncoderOffset = 0.0
+
+groundPivotAngle = 0.0
+sourcePivotAngle = 0.0
+ampPivotAngle = 0.0
+stowPivotAngle = 0.0
+
+intakeSpeed = 0.0
+ejectSpeed = 0.0
+feedShooterSpeed = 0.0
+
+pivotMotorP = 0.0
+pivotMotorI = 0.0
+pivotMotorD = 0.0
+
+shooterMotorP = 0.0
+shooterMotorI = 0.0
+shooterMotorD = 0.0
+
+shooterMinOutput = 0.0
+shooterMaxOutput = 1.0
+
+pivotMotorP = 0.0
+pivotMotorI = 0.0
+pivotMotorD = 0.0
+
+lowPivotAngle = 0.0
+ampPivotAngle = 0.0
+speakerPivotAngle = 0.0
