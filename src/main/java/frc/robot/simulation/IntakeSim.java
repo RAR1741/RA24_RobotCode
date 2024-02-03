@@ -20,11 +20,13 @@ public class IntakeSim {
 
   private final double k_simOffset = 0.0;
 
+  @SuppressWarnings("unused")
   private final SingleJointedArmSim m_joint = new SingleJointedArmSim(
       k_pivotMotor,
       k_pivotGearRatio,
-      SingleJointedArmSim.estimateMOI(Units.inchesToMeters(Constants.Intake.k_length), Constants.Intake.k_mass),
-      Units.inchesToMeters(Constants.Intake.k_length),
+      SingleJointedArmSim.estimateMOI(Units.inchesToMeters(Constants.Intake.k_length),
+          Constants.Intake.k_mass),
+      /* Units.inchesToMeters( */Constants.Intake.k_length/* ) */,
       Constants.Intake.k_minAngle,
       Constants.Intake.k_maxAngle,
       true,
@@ -50,7 +52,7 @@ public class IntakeSim {
 
   private IntakeSim(Mechanism2d mech2d) {
     m_mech2d = mech2d;
-    m_intakeBase = m_mech2d.getRoot("IntakePivot", m_origin.getX(), 1);
+    m_intakeBase = m_mech2d.getRoot("IntakePivot", m_origin.getX(), Constants.Robot.k_bumperStart);
     m_intakePivot = m_intakeBase.append(
         new MechanismLigament2d(
             "IntakePivot",

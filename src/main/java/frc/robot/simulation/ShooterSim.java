@@ -20,11 +20,13 @@ public class ShooterSim {
   private final DCMotor k_pivotMotor = DCMotor.getNeoVortex(1);
   private final double k_pivotGearRatio = 1.0;
 
+  @SuppressWarnings("unused")
   private final SingleJointedArmSim m_joint = new SingleJointedArmSim(
       k_pivotMotor,
       k_pivotGearRatio,
-      SingleJointedArmSim.estimateMOI(Units.inchesToMeters(Constants.Shooter.k_length), Constants.Shooter.k_mass),
-      Units.inchesToMeters(Constants.Shooter.k_length),
+      SingleJointedArmSim.estimateMOI(Units.inchesToMeters(Constants.Shooter.k_length),
+          Constants.Shooter.k_mass),
+      /* Units.inchesToMeters( */Constants.Shooter.k_length/* ) */,
       Constants.Shooter.k_minAngle,
       Constants.Shooter.k_maxAngle,
       true,
@@ -41,6 +43,9 @@ public class ShooterSim {
 
   private MechanismLigament2d m_shooter = null;
 
+  private MechanismRoot2d m_dir = null;
+  private MechanismLigament2d m_arrow = null;
+
   public static ShooterSim getInstance(Mechanism2d mech2d) {
     if (m_sim == null) {
       m_sim = new ShooterSim(mech2d);
@@ -51,7 +56,7 @@ public class ShooterSim {
 
   private ShooterSim(Mechanism2d mech2d) {
     m_mech2d = mech2d;
-    m_shooterBase = m_mech2d.getRoot("ShooterPivot", m_origin.getX(), 1);
+    m_shooterBase = m_mech2d.getRoot("ShooterPivot", m_origin.getX(), Constants.Robot.k_bumperStart);
     m_shooterPivot = m_shooterBase.append(
         new MechanismLigament2d(
             "ShooterPivot",
@@ -66,14 +71,42 @@ public class ShooterSim {
             k_simOffset,
             4,
             new Color8Bit(Color.kYellow)));
+
+    // addAdditionalDrawings();
   }
 
   public void updateIntakePosition(double shooterAngle) {
-    m_shooter.setAngle(-1 * (k_simOffset + shooterAngle));
+    double a = -1 * (k_simOffset + shooterAngle);
+    m_shooter.setAngle(a);
 
     // Translation2d setpoint = m_origin.plus(new Translation2d(x, y));
     // m_crosshair.setPosition(setpoint.getX(), setpoint.getY());
 
     SmartDashboard.putNumber("Sim/Shoter Sim Angle", shooterAngle);
+  }
+
+  @SuppressWarnings("unused")
+  private void addAdditionalDrawings() {
+    // Draw aiming arrow
+    m_dir = m_mech2d.getRoot("Arrow", m_origin.getX(), m_origin.getY());
+    m_arrow = new MechanismLigament2d(
+        "ArrowBase",
+        4,
+        0,
+        1,
+        new Color8Bit(Color.kOrange));
+    m_dir.append(m_arrow);
+    m_arrow.append(new MechanismLigament2d(
+        "Beam1",
+        2,
+        210,
+        1,
+        new Color8Bit(Color.kOrange)));
+    m_arrow.append(new MechanismLigament2d(
+        "Beam2",
+        2,
+        -210,
+        1,
+        new Color8Bit(Color.kOrange)));
   }
 }

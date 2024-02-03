@@ -6,7 +6,7 @@ import edu.wpi.first.math.util.Units;
 
 public final class Constants {
   public static class Robot {
-    public static final double k_width = 27; // Inches
+    public static final double k_width = 30; // Inches
     public static final double k_length = 30; // Inches
 
     public static final double k_bumperStart = 1; // Inches
@@ -125,7 +125,7 @@ public final class Constants {
   public static class Simulation {
     // TODO Get values
     public static final double k_width = 150; // Inches
-    public static final double k_height = 80; // Inches
+    public static final double k_height = 100; // Inches
   }
 
   public class Shooter {
@@ -155,28 +155,28 @@ public final class Constants {
     public static final double k_speakerPivotAngle = 0.0;
 
     // TODO get values
-    public static final double k_length = 10; // in inches
-    public static final double k_mass = 1; // in kg
+    public static final double k_length = 11.94335; // in inches
+    public static final double k_mass = 5.44311; // in kg
 
-    public static final double k_pivotHeight = 1.0;
+    public static final double k_pivotHeight = 4.0;
 
-    public static final double k_minAngle = 0.0;
-    public static final double k_maxAngle = 0.0;
+    public static final double k_minAngle = 18.0;
+    public static final double k_maxAngle = 63.75;
     public static final double k_startingAngle = 0.0;
 
-    public static final double k_distanceFromCenter = 12.0;
+    public static final double k_distanceFromCenter = 4.0008;
   }
 
   public static class Field {
-    // All dimensions from Figure 5-16 in the manual
-    public static final double k_lowGoalX = 22.75; // Inches
-    public static final double k_lowGoalHeight = 34; // Inches
-
-    public static final double k_highGoalX = 39.75; // Inches
-    public static final double k_highGoalHeight = 46; // Inches
-
     public static final double k_width = Units.feetToMeters(54.0);
     public static final double k_length = Units.feetToMeters(27.0);
+
+    public static final double k_ampBottom = 26;
+    public static final double k_ampTop = 44;
+
+    public static final double k_speakerBottom = 78;
+    public static final double k_speakerTop = 82.875;
+    public static final double k_speakerAngle = 14.0;
 
     public static final double k_autoAimThreshold = 1; // in meters
 
