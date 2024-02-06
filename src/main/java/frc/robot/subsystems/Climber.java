@@ -64,11 +64,11 @@ public class Climber extends Subsystem {
   }
 
   public boolean isAtBottom() {
-
+    return false;
   }
 
   public boolean isAtTop() {
-
+    return false;
   }
 
   private static class PeriodicIO {
