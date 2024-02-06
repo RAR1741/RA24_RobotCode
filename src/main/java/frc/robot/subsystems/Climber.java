@@ -1,5 +1,12 @@
 package frc.robot.subsystems;
 
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkLowLevel.MotorType;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants;
+
 /**
  * 1 neo
  */
@@ -7,8 +14,18 @@ package frc.robot.subsystems;
 public class Climber extends Subsystem {
   private static Climber m_climber;
 
-  private Climber() {
+  private CANSparkMax m_motor;
+  private RelativeEncoder m_encoder;
 
+  private PeriodicIO m_periodicIO;
+
+  private Climber() {
+    m_motor = new CANSparkMax(Constants.Climber.k_motorID, MotorType.kBrushless);
+    m_motor.restoreFactoryDefaults();
+    m_motor.setIdleMode(CANSparkMax.IdleMode.kBrake);
+
+    m_encoder = m_motor.getEncoder();
+    m_encoder.setPositionConversionFactor(1/16); // TODO: Fix this to account for whinch circumference (approx. 3.5in)
   }
 
   public static Climber getInstance() {
@@ -21,22 +38,46 @@ public class Climber extends Subsystem {
 
   @Override
   public void periodic() {
-
+    if (isLimited()) {
+      m_periodicIO.power = Constants.Climber.k_velocity;
+    }
   }
 
   @Override
   public void stop() {
-
+    m_periodicIO.power = 0.0;
   }
 
   @Override
   public void writePeriodicOutputs() {
-
+    SmartDashboard.putString("Climber/Direction", m_periodicIO.target_direction.toString());
+    SmartDashboard.putBoolean("Climber/IsFullyRaised", m_periodicIO.fully_raised);
+    SmartDashboard.putNumber("Climber/Power", m_periodicIO.power);
   }
 
   @Override
   public void outputTelemetry() {
+  }
+
+  public boolean isLimited() {
+    return isAtBottom() || isAtTop();
+  }
+
+  public boolean isAtBottom() {
 
   }
 
+  public boolean isAtTop() {
+
+  }
+
+  private static class PeriodicIO {
+    boolean fully_raised = false;
+    DirectionTarget target_direction = DirectionTarget.UP;
+    double power = 0.0;
+  }
+
+  public enum DirectionTarget {
+    UP, DOWN
+  }
 }

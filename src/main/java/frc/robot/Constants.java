@@ -89,7 +89,7 @@ public final class Constants {
   public class Intake {
     // TODO: Get intake motor id's
     public static final int k_pivotMotorID = 13;
-    public static final int k_intakeMotorID = 99;
+    public static final int k_intakeMotorID = 14;
 
     public static final int k_pivotEncoderID = 4;
     public static final double k_pivotEncoderOffset = Config.getData("pivotEncoderOffset", 0);
@@ -101,9 +101,9 @@ public final class Constants {
     public static final double k_stowPivotAngle = Config.getData("stowPivotAngle", 0);
 
     // TODO: get intake speeds
-    public static double k_intakeSpeed = Config.getData("intakeSpeed", 0);
-    public static double k_ejectSpeed = Config.getData("ejectSpeed", 0);
-    public static double k_feedShooterSpeed = Config.getData("feedShooterSpeed", 0);
+    public static final double k_intakeSpeed = Config.getData("intakeSpeed", 0);
+    public static final double k_ejectSpeed = Config.getData("ejectSpeed", 0);
+    public static final double k_feedShooterSpeed = Config.getData("feedShooterSpeed", 0);
 
     // TODO: get intake pivot PID
     public static final double k_pivotMotorP = Config.getData("intakePivotMotorP", 1);
@@ -112,29 +112,36 @@ public final class Constants {
   }
 
   public class Shooter {
-    public static int k_topMotorID = 98;
-    public static int k_bottomMotorID = 99;
+    public static final int k_pivotMotorID = 15;
+    public static final int k_topMotorID = 16;
+    public static final int k_bottomMotorID = 17;
 
     // TODO: Get shooter motor PID
-    public static double k_shooterMotorP = Config.getData("shooterMotorP", 1);
-    public static double k_shooterMotorI = Config.getData("shooterMotorI", 0);
-    public static double k_shooterMotorD = Config.getData("shooterMotorD", 0);
+    public static final double k_shooterMotorP = Config.getData("shooterMotorP", 1);
+    public static final double k_shooterMotorI = Config.getData("shooterMotorI", 0);
+    public static final double k_shooterMotorD = Config.getData("shooterMotorD", 0);
 
     // TODO: Check these
-    public static double k_shooterMinOutput = Config.getData("shooterMinOutput", 0);
-    public static double k_shooterMaxOutput = Config.getData("shooterMaxOutput", 1);
+    public static final double k_shooterMinOutput = Config.getData("shooterMinOutput", 0);
+    public static final double k_shooterMaxOutput = Config.getData("shooterMaxOutput", 1);
 
-    public static int k_pivotEncoderID = 5;
+    public static final int k_pivotEncoderID = 5;
 
     // TODO: get shooter pivot PID
-    public static double k_pivotMotorP = Config.getData("shooterPivotMotorP", 1);
-    public static double k_pivotMotorI = Config.getData("shooterPivotMotorI", 0);
-    public static double k_pivotMotorD = Config.getData("shooterPivotMotorD", 0);
+    public static final double k_pivotMotorP = Config.getData("shooterPivotMotorP", 1);
+    public static final double k_pivotMotorI = Config.getData("shooterPivotMotorI", 0);
+    public static final double k_pivotMotorD = Config.getData("shooterPivotMotorD", 0);
 
     // TODO: get shooter pivot setpoint angles
-    public static double k_lowPivotAngle = Config.getData("lowPivotAngle", 0);
-    public static double k_ampPivotAngle = Config.getData("shooterAmpPivotAngle", 0);
-    public static double k_speakerPivotAngle = Config.getData("speakerPivotAngle", 0);
+    public static final double k_lowPivotAngle = Config.getData("lowPivotAngle", 0);
+    public static final double k_ampPivotAngle = Config.getData("shooterAmpPivotAngle", 0);
+    public static final double k_speakerPivotAngle = Config.getData("speakerPivotAngle", 0);
+  }
+
+  public static class Climber {
+    public static final int k_motorID = 18;
+
+    public static final double k_velocity = Config.getData("climberVelocity", 0);
   }
 
   public static class Field {
