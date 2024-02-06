@@ -1,7 +1,7 @@
 # THE CONFIG FILE
 # Circa February 2024
 
-autoMaxSpeed = 1
+autoMaxSpeed = 1.0
 autoMaxAcceleration = 0.5
 
 driveMaxSpeed = 3.0
@@ -24,16 +24,16 @@ BLModuleOffset = 0.329460
 turnP = 0.1
 turnI = 0.0
 turnD = 0.0
-turnIZone = 0
-turnFF = 0
+turnIZone = 0.0
+turnFF = 0.0
 
 turningMinOutput = -1
 turningMaxOutput = 1
 
-autoAimP = 1
-autoAimI = 0
-autoAimD = 0
-autoAimThreshold = 1
+autoAimP = 1.0
+autoAimI = 0.0
+autoAimD = 0.0
+autoAimThreshold = 1.0
 
 # Intake
 pivotEncoderOffset = 0.0
