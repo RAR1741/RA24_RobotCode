@@ -36,6 +36,8 @@ public class Shooter extends Subsystem {
   private PeriodicIO m_periodicIO;
 
   private Shooter() {
+    super("Shooter");
+
     m_topShooterMotor = new CANSparkFlex(Constants.Shooter.k_topMotorID, MotorType.kBrushless);
     m_topShooterMotor.restoreFactoryDefaults();
     m_topShooterMotor.setIdleMode(CANSparkFlex.IdleMode.kCoast);
@@ -104,9 +106,14 @@ public class Shooter extends Subsystem {
 
   @Override
   public void outputTelemetry() {
-    SmartDashboard.putNumber("Shooter/Speed", m_periodicIO.shooter_rpm);
-    SmartDashboard.putNumber("Shooter/TopMotorSpeed", m_topMotorEncoder.getVelocity());
-    SmartDashboard.putNumber("Shooter/BottomMotorSpeed", m_bottomMotorEncoder.getVelocity());
+    putNumber("Speed", m_periodicIO.shooter_rpm);
+    putNumber("TopMotorSpeed", m_topMotorEncoder.getVelocity());
+    putNumber("BottomMotorSpeed", m_bottomMotorEncoder.getVelocity());
+  }
+
+  @Override
+  public void reset() {
+    throw new UnsupportedOperationException("Unimplemented method 'reset'");
   }
 
   public void setAngle(double angle) {

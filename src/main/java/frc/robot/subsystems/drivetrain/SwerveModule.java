@@ -126,20 +126,14 @@ public class SwerveModule {
     return m_driveMotor;
   }
 
+  // returns m/s
   public double getDriveVelocity() {
-    // In revs per minute
-    double velocity = m_driveEncoder.getVelocity();
+    return m_driveEncoder.getVelocity();
+  }
 
-    // Convert to revs per second
-    velocity = velocity / 60;
-
-    // Convert to in per second
-    velocity *= ((2.0 * Constants.SwerveDrive.k_wheelRadiusIn * Math.PI) / Constants.SwerveDrive.k_driveGearRatio);
-
-    // Convert to m per second
-    velocity = Units.inchesToMeters(velocity);
-
-    return velocity;
+  // returns meters
+  public double getDrivePosition() {
+    return m_driveEncoder.getPosition();
   }
 
   public void clearTurnPIDAccumulation() {
@@ -155,16 +149,13 @@ public class SwerveModule {
     desiredState = SwerveModuleState.optimize(desiredState, Rotation2d.fromRadians(getTurnPosition()));
     desiredState.angle = new Rotation2d(Helpers.modRadians(desiredState.angle.getRadians()));
     m_periodicIO.desiredState = desiredState;
-    
-    m_drivePIDController.setReference(desiredState.speedMetersPerSecond, ControlType.kVelocity);
-    m_turningPIDController.setReference(m_periodicIO.desiredState.angle.getRadians(), ControlType.kPosition);
+  }
 
-    SmartDashboard.putNumber(m_smartDashboardKey + "TurnVoltage",
-        m_turningMotor.getBusVoltage() * m_turningMotor.getAppliedOutput());
-    SmartDashboard.putNumber(m_smartDashboardKey + "DriveTargetVelocity",
-        m_periodicIO.desiredState.speedMetersPerSecond);
-    SmartDashboard.putNumber(m_smartDashboardKey + "TurnTargetAngleRadians",
-        m_periodicIO.desiredState.angle.getRadians());
+  // plumb voltage into drive motor and set turn motor to 0deg
+  public void sysidDrive(double volts) {
+    m_turningPIDController.setReference(0, ControlType.kPosition);
+
+    m_driveMotor.setVoltage(volts);
   }
 
   public SwerveModuleState getDesiredState() {
@@ -172,6 +163,8 @@ public class SwerveModule {
   }
 
   public void periodic() {
+    m_drivePIDController.setReference(m_periodicIO.desiredState.speedMetersPerSecond, ControlType.kVelocity);
+    m_turningPIDController.setReference(m_periodicIO.desiredState.angle.getRadians(), ControlType.kPosition);
   }
 
   public void outputTelemetry() {
@@ -179,5 +172,12 @@ public class SwerveModule {
     SmartDashboard.putNumber(m_smartDashboardKey + "DriveMotorPos", m_driveEncoder.getPosition());
     SmartDashboard.putNumber(m_smartDashboardKey + "DriveMotorVelocity", getDriveVelocity());
     SmartDashboard.putNumber(m_smartDashboardKey + "TurnMotorPosition", getTurnPosition());
+
+    SmartDashboard.putNumber(m_smartDashboardKey + "TurnVoltage",
+        m_turningMotor.getBusVoltage() * m_turningMotor.getAppliedOutput());
+    SmartDashboard.putNumber(m_smartDashboardKey + "DriveTargetVelocity",
+        m_periodicIO.desiredState.speedMetersPerSecond);
+    SmartDashboard.putNumber(m_smartDashboardKey + "TurnTargetAngleRadians",
+        m_periodicIO.desiredState.angle.getRadians());
   }
 }

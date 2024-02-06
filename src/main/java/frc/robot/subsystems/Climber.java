@@ -20,6 +20,8 @@ public class Climber extends Subsystem {
   private PeriodicIO m_periodicIO;
 
   private Climber() {
+    super("Climber");
+
     m_motor = new CANSparkMax(Constants.Climber.k_motorID, MotorType.kBrushless);
     m_motor.restoreFactoryDefaults();
     m_motor.setIdleMode(CANSparkMax.IdleMode.kBrake);
@@ -50,13 +52,18 @@ public class Climber extends Subsystem {
 
   @Override
   public void writePeriodicOutputs() {
-    SmartDashboard.putString("Climber/Direction", m_periodicIO.target_direction.toString());
-    SmartDashboard.putBoolean("Climber/IsFullyRaised", m_periodicIO.fully_raised);
-    SmartDashboard.putNumber("Climber/Power", m_periodicIO.power);
+    putString("Direction", m_periodicIO.target_direction.toString());
+    putBoolean("IsFullyRaised", m_periodicIO.fully_raised);
+    putNumber("Power", m_periodicIO.power);
   }
 
   @Override
   public void outputTelemetry() {
+  }
+
+  @Override
+  public void reset() {
+    throw new UnsupportedOperationException("Unimplemented method 'reset'");
   }
 
   public boolean isLimited() {
