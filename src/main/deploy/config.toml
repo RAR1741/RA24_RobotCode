@@ -27,8 +27,8 @@ turnD = 0.0
 turnIZone = 0.0
 turnFF = 0.0
 
-turningMinOutput = -1
-turningMaxOutput = 1
+turningMinOutput = -1.0
+turningMaxOutput = 1.0
 
 autoAimP = 1.0
 autoAimI = 0.0
