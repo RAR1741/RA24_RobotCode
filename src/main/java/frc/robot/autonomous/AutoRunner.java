@@ -4,6 +4,7 @@ import frc.robot.autonomous.modes.AutoModeBase;
 import frc.robot.autonomous.modes.DefaultMode;
 import frc.robot.autonomous.modes.DoNothingMode;
 import frc.robot.autonomous.modes.TestMode;
+import frc.robot.autonomous.modes.TestMode2;
 import frc.robot.autonomous.tasks.Task;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 
@@ -38,7 +39,7 @@ public class AutoRunner {
         m_autoMode = new DefaultMode();
         break;
       case TEST:
-        m_autoMode = new TestMode();
+        m_autoMode = new TestMode2();
         break;
       default:
         System.out.println("Invalid auto mode selected. Defaulting to do nothing.");

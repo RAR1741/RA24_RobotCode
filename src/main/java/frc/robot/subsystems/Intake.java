@@ -1,6 +1,8 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.SparkPIDController;
+import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -19,8 +21,7 @@ public class Intake extends Subsystem {
 
   private final DutyCycleEncoder m_pivotMotorEncoder = new DutyCycleEncoder(Constants.Intake.k_pivotEncoderID);
 
-  private final PIDController m_pivotPID = new PIDController(
-    Constants.Intake.k_pivotMotorP, Constants.Intake.k_pivotMotorI, Constants.Intake.k_pivotMotorD);
+  private final SparkPIDController m_pivotPID;
 
   private PeriodicIO m_periodicIO;
 
@@ -33,6 +34,12 @@ public class Intake extends Subsystem {
     m_intakeMotor = new CANSparkMax(Constants.Intake.k_intakeMotorID, MotorType.kBrushless);
     m_intakeMotor.restoreFactoryDefaults();
     m_intakeMotor.setIdleMode(CANSparkMax.IdleMode.kCoast);
+
+    m_pivotPID = m_pivotMotor.getPIDController();
+    m_pivotPID.setP(Constants.Intake.k_pivotMotorP);
+    m_pivotPID.setI(Constants.Intake.k_pivotMotorI);
+    m_pivotPID.setD(Constants.Intake.k_pivotMotorD);
+    m_pivotPID.setIZone(Constants.Intake.k_pivotMotorIZone);
 
     m_periodicIO = new PeriodicIO();
   }
@@ -47,8 +54,10 @@ public class Intake extends Subsystem {
 
   @Override
   public void periodic() {
+    // m_periodicIO.intake_pivot_voltage = m_pivotPID.calculate(getCurrentPivotAngle(), pivot_angle);
+
     double pivot_angle = getAngleFromTarget(m_periodicIO.pivot_target);
-    m_periodicIO.intake_pivot_voltage = m_pivotPID.calculate(getCurrentPivotAngle(), pivot_angle);
+    m_pivotPID.setReference(pivot_angle, ControlType.kPosition);
 
     if (m_pivotMotorEncoder.get() == 0.0) {
       m_periodicIO.intake_pivot_voltage = 0.0;

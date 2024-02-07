@@ -109,6 +109,7 @@ public final class Constants {
     public static final double k_pivotMotorP = Config.getData("intakePivotMotorP", 1.0);
     public static final double k_pivotMotorI = Config.getData("intakePivotMotorI", 0.0);
     public static final double k_pivotMotorD = Config.getData("intakePivotMotorD", 0.0);
+    public static final double k_pivotMotorIZone = Config.getData("intakePivotMotorIZone", 0);
   }
 
   public class Shooter {

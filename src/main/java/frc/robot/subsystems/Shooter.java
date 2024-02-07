@@ -115,9 +115,17 @@ public class Shooter extends Subsystem {
 
   public void setAngle(ShooterPivotTarget target) {
     switch (target) {
-      case SHOOTER_LOW: m_periodicIO.pivot_angle = Constants.Shooter.k_lowPivotAngle; break;
-      case SHOOTER_AMP: m_periodicIO.pivot_angle = Constants.Shooter.k_ampPivotAngle; break;
-      case SHOOTER_SPEAKER: m_periodicIO.pivot_angle = Constants.Shooter.k_speakerPivotAngle; break;
+      case SHOOTER_LOW:
+        m_periodicIO.pivot_angle = Constants.Shooter.k_lowPivotAngle; 
+        break;
+      case SHOOTER_AMP: 
+        m_periodicIO.pivot_angle = Constants.Shooter.k_ampPivotAngle; 
+        break;
+      case SHOOTER_SPEAKER: 
+        m_periodicIO.pivot_angle = Constants.Shooter.k_speakerPivotAngle; 
+        break;
+      default: 
+        break;
     }
   }
 

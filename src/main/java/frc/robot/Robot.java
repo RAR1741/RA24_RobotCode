@@ -6,10 +6,8 @@ import java.util.List;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.DataLogManager;
-import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.autonomous.AutoChooser;
@@ -21,7 +19,6 @@ import frc.robot.controls.controllers.OperatorController;
 import frc.robot.simulation.Field;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Subsystem;
-import frc.robot.subsystems.Intake.IntakePivotTarget;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 
 public class Robot extends TimedRobot {
@@ -68,9 +65,11 @@ public class Robot extends TimedRobot {
     // Camera server
     // m_camera = CameraServer.startAutomaticCapture();
 
-    Preferences.setDouble("SwerveDrive/x", 0);
-    Preferences.setDouble("SwerveDrive/y", 0);
-    Preferences.setDouble("SwerveDrive/rot", 0);
+    if(!RobotBase.isReal()) {
+      Preferences.setDouble("SwerveDrive/x", 0);
+      Preferences.setDouble("SwerveDrive/y", 0);
+      Preferences.setDouble("SwerveDrive/rot", 0);
+    }
 
     m_allSubsystems.add(m_swerve);
     m_allSubsystems.add(m_intake);

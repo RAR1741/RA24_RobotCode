@@ -50,6 +50,7 @@ feedShooterSpeed = 0.0
 intakePivotMotorP = 0.0
 intakePivotMotorI = 0.0
 intakePivotMotorD = 0.0
+intakePivotMotorIZone = 0.0
 
 # Shooter
 shooterMotorP = 0.0
