@@ -12,6 +12,8 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.autonomous.AutoChooser;
 import frc.robot.autonomous.AutoRunner;
 import frc.robot.autonomous.AutoRunner.AutoMode;
@@ -86,6 +88,8 @@ public class Robot extends TimedRobot {
     m_allSubsystems.forEach(subsystem -> subsystem.writeToLog());
 
     updateSim();
+
+    CommandScheduler.getInstance().run(); // used by sysid
   }
 
   @Override
@@ -193,7 +197,7 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void disabledExit() { 
+  public void disabledExit() {
   }
 
   @Override
@@ -203,11 +207,22 @@ public class Robot extends TimedRobot {
 
   @Override
   public void testInit() {
+    CommandScheduler.getInstance().cancelAll();
   }
 
   @Override
   public void testPeriodic() {
-    m_swerve.drive(0, 0, 0, false);
+    // m_swerve.drive(0, 0, 0, false);
+
+    if (m_driverController.getWantsSysIdQuasistaticForward()) {
+      m_swerve.sysIdQuasistatic(SysIdRoutine.Direction.kForward).schedule();
+    } else if (m_driverController.getWantsSysIdQuasistaticBackward()) {
+      m_swerve.sysIdQuasistatic(SysIdRoutine.Direction.kReverse).schedule();
+    } else if (m_driverController.getWantsSysIdDynamicForward()) {
+      m_swerve.sysIdDynamic(SysIdRoutine.Direction.kForward).schedule();
+    } else if (m_driverController.getWantsSysIdDynamicBackward()) {
+      m_swerve.sysIdDynamic(SysIdRoutine.Direction.kReverse).schedule();
+    }
   }
 
   private void updateSim() {
