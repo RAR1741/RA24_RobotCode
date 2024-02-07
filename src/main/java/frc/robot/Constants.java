@@ -132,6 +132,7 @@ public final class Constants {
     public static final double k_pivotMotorP = Config.getData("shooterPivotMotorP", 1.0);
     public static final double k_pivotMotorI = Config.getData("shooterPivotMotorI", 0.0);
     public static final double k_pivotMotorD = Config.getData("shooterPivotMotorD", 0.0);
+    public static final double k_pivotMotorIZone = Config.getData("shooterPivotMotorIZone", 0.0);
 
     // TODO: get shooter pivot setpoint angles
     public static final double k_lowPivotAngle = Config.getData("lowPivotAngle", 0.0);

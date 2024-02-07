@@ -9,7 +9,6 @@ import frc.robot.autonomous.tasks.PointForwardTask;
 import frc.robot.autonomous.tasks.WaitTask;
 
 public class TestMode2 extends AutoModeBase {
-
     @Override
     public void queueTasks() {
         // queueTask(new ParallelTask(new DriveTrajectoryTask("pleasework")));
