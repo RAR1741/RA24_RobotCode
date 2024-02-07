@@ -116,7 +116,7 @@ public class SwerveDrive extends Subsystem {
                   .linearVelocity(
                       m_velocity.mut_replace(m_modules[Module.FRONT_LEFT].getDriveVelocity(), MetersPerSecond));
 
-              // Record a frame for the front left
+              // Record a frame for the front right
               log.motor("drive-frontright")
                   .voltage(m_appliedVoltage.mut_replace(
                       m_modules[Module.FRONT_RIGHT].getDriveMotor().getAppliedOutput() * RobotController.getBatteryVoltage(),
@@ -134,7 +134,7 @@ public class SwerveDrive extends Subsystem {
                   .linearVelocity(
                       m_velocity.mut_replace(m_modules[Module.BACK_LEFT].getDriveVelocity(), MetersPerSecond));
 
-              // Record a frame for the front left
+              // Record a frame for the back right
               log.motor("drive-backright")
                   .voltage(m_appliedVoltage.mut_replace(
                       m_modules[Module.BACK_RIGHT].getDriveMotor().getAppliedOutput() * RobotController.getBatteryVoltage(),
