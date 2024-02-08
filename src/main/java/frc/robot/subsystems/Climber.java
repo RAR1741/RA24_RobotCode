@@ -2,6 +2,8 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkPIDController;
+import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -36,48 +38,55 @@ public class Climber extends Subsystem {
     return m_climber;
   }
 
+  public boolean isHoming() {
+    return m_periodicIO.climberState == ClimberState.REHOME || m_periodicIO.climberState == ClimberState.HOMING_RETRACT;
+  }
+
   @Override
-  public void periodic() {
-    if (isLimited()) {
-      m_periodicIO.power = Constants.Climber.k_velocity;
-    }
+  public void periodic() { //home
+    // if(isHoming()) {
+    //   switch(m_periodicIO.climberState) {
+    //     case REHOME:
+      
+    //     case HOMING_RETRACT:
+    //     default:
+    //       break;
+    //   }
+    // } else { // do normal (boring) subsystem stuff
+      
+    // }
+
+    m_periodicIO.speed = 0.01;
   }
 
   @Override
   public void stop() {
-    m_periodicIO.power = 0.0;
+    m_periodicIO.speed = 0.0;
   }
 
   @Override
   public void writePeriodicOutputs() {
-    SmartDashboard.putString("Climber/Direction", m_periodicIO.target_direction.toString());
-    SmartDashboard.putBoolean("Climber/IsFullyRaised", m_periodicIO.fully_raised);
-    SmartDashboard.putNumber("Climber/Power", m_periodicIO.power);
+    m_motor.set(m_periodicIO.speed);
   }
 
   @Override
   public void outputTelemetry() {
-  }
-
-  public boolean isLimited() {
-    return isAtBottom() || isAtTop();
-  }
-
-  public boolean isAtBottom() {
-    return false;
-  }
-
-  public boolean isAtTop() {
-    return false;
+    SmartDashboard.putNumber("Climber/Speed", m_periodicIO.speed);
+    SmartDashboard.putString("Climber/State", m_periodicIO.climberState.toString());
   }
 
   private static class PeriodicIO {
-    boolean fully_raised = false;
-    DirectionTarget target_direction = DirectionTarget.UP;
-    double power = 0.0;
+    ClimberState climberState = ClimberState.HAS_NOT_HOMED;
+    double speed = 0.0; // m/s
   }
 
-  public enum DirectionTarget {
-    UP, DOWN
+  private enum ClimberState {
+    FULLY_EXTENDED,
+    FULLY_RETRACTED,
+    GOING_UP,
+    GOING_DOWN,
+    HAS_NOT_HOMED,
+    REHOME,
+    HOMING_RETRACT
   }
 }

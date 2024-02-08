@@ -159,8 +159,7 @@ public class SwerveModule {
     m_drivePIDController.setReference(desiredState.speedMetersPerSecond, ControlType.kVelocity);
     m_turningPIDController.setReference(m_periodicIO.desiredState.angle.getRadians(), ControlType.kPosition);
 
-    SmartDashboard.putNumber(m_smartDashboardKey + "TurnVoltage",
-        m_turningMotor.getBusVoltage() * m_turningMotor.getAppliedOutput());
+    SmartDashboard.putNumber(m_smartDashboardKey + "TurnVoltage", Helpers.getVoltage(m_turningMotor));
     SmartDashboard.putNumber(m_smartDashboardKey + "DriveTargetVelocity",
         m_periodicIO.desiredState.speedMetersPerSecond);
     SmartDashboard.putNumber(m_smartDashboardKey + "TurnTargetAngleRadians",
