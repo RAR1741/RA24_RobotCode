@@ -12,7 +12,7 @@ public class SequentialTask extends Task {
   private boolean m_finished = false;
 
   public SequentialTask(Task... tasks) {
-    this.m_tasks = tasks;
+    m_tasks = tasks;
     m_currentTask = m_tasks[m_index];
   }
 
@@ -39,6 +39,7 @@ public class SequentialTask extends Task {
       m_currentTask.start();
     } else {
       m_currentTask.update();
+      m_currentTask.updateSim();
     }
   }
 
