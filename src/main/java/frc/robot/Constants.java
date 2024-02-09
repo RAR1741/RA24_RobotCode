@@ -145,6 +145,13 @@ public final class Constants {
     public static final int k_rightMotorID = 19;
 
     public static final double k_velocity = Config.getData("climberVelocity", 0.0);
+
+    public class Setpoints {
+      //TODO: get climber setpoints
+      public static final double k_fullyExtended = 0.0;
+      public static final double k_fullyRetracted = 0.0;
+
+    }
   }
 
   public static class Field {
