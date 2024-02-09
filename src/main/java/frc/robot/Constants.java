@@ -141,7 +141,8 @@ public final class Constants {
   }
 
   public static class Climber {
-    public static final int k_motorID = 18;
+    public static final int k_leftMotorID = 18;
+    public static final int k_rightMotorID = 19;
 
     public static final double k_velocity = Config.getData("climberVelocity", 0.0);
   }
