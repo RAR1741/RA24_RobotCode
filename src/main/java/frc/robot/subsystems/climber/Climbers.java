@@ -17,9 +17,6 @@ public class Climbers extends Subsystem {
       new Climber(Constants.Climber.k_rightMotorID) // RIGHT, 1
   };
 
-  public Climbers() {
-  }
-
   public static Climbers getInstance() {
     if (m_instance == null) {
       m_instance = new Climbers();
