@@ -17,6 +17,19 @@ public final class Constants {
   public static class Auto {
     public static final double k_maxSpeed = Config.getData("autoMaxSpeed", 3.0); // 1 meters per second
     public static final double k_maxAcceleration = Config.getData("autoMaxAcceleration", 3.0);
+
+    public class PIDConstants {
+      public class Translation {
+        public static final double k_P = 0.5;
+        public static final double k_I = 0.0;
+        public static final double k_D = 0.0;
+      }
+      public class Rotation {
+        public static final double k_P = 0.7;
+        public static final double k_I = 0.0;
+        public static final double k_D = 0.0;
+      }
+    }
   }
 
   public class SwerveDrive {
