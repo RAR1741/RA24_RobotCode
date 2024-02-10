@@ -183,6 +183,20 @@ public final class Constants {
     public static final double k_distanceFromCenter = 4.0008;
   }
 
+  public static class Climber {
+    public static final int k_leftMotorID = 18;
+    public static final int k_rightMotorID = 19;
+
+    public static final double k_velocity = 0.0;
+
+    public class Setpoints {
+      // TODO: get climber setpoints
+      public static final double k_fullyExtended = 0.0;
+      public static final double k_fullyRetracted = 0.0;
+
+    }
+  }
+
   public static class Field {
     public static final double k_width = Units.feetToMeters(54.0);
     public static final double k_length = Units.feetToMeters(27.0);
