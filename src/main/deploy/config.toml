@@ -1,6 +1,11 @@
 # THE CONFIG FILE
 # Circa February 2024
 
+enableSwerve = true
+enableShooter = false
+enableIntake = false
+enableClimbers = false
+
 autoMaxSpeed = 1.0
 autoMaxAcceleration = 0.5
 
