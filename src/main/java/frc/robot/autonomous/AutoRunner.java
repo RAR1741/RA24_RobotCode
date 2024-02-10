@@ -23,7 +23,8 @@ public class AutoRunner {
   public enum AutoMode {
     DO_NOTHING,
     DEFAULT,
-    TEST
+    TEST,
+    TEST2
   }
 
   public Task getNextTask() {
@@ -39,6 +40,9 @@ public class AutoRunner {
         m_autoMode = new DefaultMode();
         break;
       case TEST:
+        m_autoMode = new TestMode();
+        break;
+      case TEST2:
         m_autoMode = new TestMode2();
         break;
       default:
