@@ -7,6 +7,9 @@ public abstract class Subsystem {
   public void zeroSensors() {
   }
 
+  public void reloadConfig() {
+  }
+
   public abstract void periodic();
 
   public abstract void stop();

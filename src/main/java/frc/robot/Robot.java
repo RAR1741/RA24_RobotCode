@@ -202,6 +202,7 @@ public class Robot extends TimedRobot {
   public void disabledInit() {
     Config.loadFromFile("config.toml");
     m_allSubsystems.forEach(subsystem -> subsystem.stop());
+    m_allSubsystems.forEach(subsystem -> subsystem.reloadConfig());
     // m_swerve.resetOdometry(new Pose2d(3, 3, new Rotation2d(0)));
   }
 
