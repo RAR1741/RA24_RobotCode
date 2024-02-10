@@ -1,5 +1,10 @@
 package frc.robot.subsystems.drivetrain;
 
+import static edu.wpi.first.units.MutableMeasure.mutable;
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Volts;
+
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkBase.IdleMode;
 
@@ -12,11 +17,19 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.Distance;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.MutableMeasure;
+import edu.wpi.first.units.Velocity;
+import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Subsystem;
@@ -70,8 +83,69 @@ public class SwerveDrive extends Subsystem {
       },
       new Pose2d(0, 0, Rotation2d.fromDegrees(0)));
 
+  // Mutable holder for unit-safe SysID values (to avoid reallocation)
+  private final MutableMeasure<Voltage> m_appliedVoltage = mutable(Volts.of(0));
+  private final MutableMeasure<Distance> m_distance = mutable(Meters.of(0));
+  private final MutableMeasure<Velocity<Distance>> m_velocity = mutable(MetersPerSecond.of(0));
+
+  private final SysIdRoutine m_sysIdRoutine;
+
   private SwerveDrive() {
+    super("SwerveDrive");
+
     reset();
+
+    m_sysIdRoutine = new SysIdRoutine( // i hate this constructor
+      new SysIdRoutine.Config(),
+      new SysIdRoutine.Mechanism(
+            // Tell SysId how to plumb the driving voltage to the motors.
+            (Measure<Voltage> volts) -> {
+              for (SwerveModule module: m_modules) {
+                module.sysidDrive(volts.in(Volts));
+              }
+            },
+            // Tell SysId how to record a frame of data for each motor on the mechanism
+            // being characterized.
+            log -> {
+              // Record a frame for the front left
+              log.motor("drive-frontleft")
+                  .voltage(m_appliedVoltage.mut_replace(
+                      m_modules[Module.FRONT_LEFT].getDriveMotor().getAppliedOutput() * RobotController.getBatteryVoltage(),
+                      Volts))
+                  .linearPosition(m_distance.mut_replace(m_modules[Module.FRONT_LEFT].getDrivePosition(), Meters))
+                  .linearVelocity(
+                      m_velocity.mut_replace(m_modules[Module.FRONT_LEFT].getDriveVelocity(), MetersPerSecond));
+
+              // Record a frame for the front right
+              log.motor("drive-frontright")
+                  .voltage(m_appliedVoltage.mut_replace(
+                      m_modules[Module.FRONT_RIGHT].getDriveMotor().getAppliedOutput() * RobotController.getBatteryVoltage(),
+                      Volts))
+                  .linearPosition(m_distance.mut_replace(m_modules[Module.FRONT_RIGHT].getDrivePosition(), Meters))
+                  .linearVelocity(
+                      m_velocity.mut_replace(m_modules[Module.FRONT_RIGHT].getDriveVelocity(), MetersPerSecond));
+
+              // Record a frame for the back left
+              log.motor("drive-backleft")
+                  .voltage(m_appliedVoltage.mut_replace(
+                      m_modules[Module.BACK_LEFT].getDriveMotor().getAppliedOutput() * RobotController.getBatteryVoltage(),
+                      Volts))
+                  .linearPosition(m_distance.mut_replace(m_modules[Module.BACK_LEFT].getDrivePosition(), Meters))
+                  .linearVelocity(
+                      m_velocity.mut_replace(m_modules[Module.BACK_LEFT].getDriveVelocity(), MetersPerSecond));
+
+              // Record a frame for the back right
+              log.motor("drive-backright")
+                  .voltage(m_appliedVoltage.mut_replace(
+                      m_modules[Module.BACK_RIGHT].getDriveMotor().getAppliedOutput() * RobotController.getBatteryVoltage(),
+                      Volts))
+                  .linearPosition(m_distance.mut_replace(m_modules[Module.BACK_RIGHT].getDrivePosition(), Meters))
+                  .linearVelocity(
+                      m_velocity.mut_replace(m_modules[Module.BACK_RIGHT].getDriveVelocity(), MetersPerSecond));
+            },
+            // Tell SysId to make generated commands require this subsystem, suffix test
+            // state in WPILog with this subsystem's name ("drive")
+            this));
   }
 
   public static SwerveDrive getInstance() {
@@ -120,7 +194,7 @@ public class SwerveDrive extends Subsystem {
 
     double theta = Math.acos(x / distance);
 
-    SmartDashboard.putNumber("SwerveDrive/AutoAimAngle", Math.toDegrees(theta));
+    putNumber("AutoAimAngle", Math.toDegrees(theta));
     // System.out.println(theta);
 
     return degreeMode ? Units.radiansToDegrees(theta) : theta;
@@ -201,11 +275,6 @@ public class SwerveDrive extends Subsystem {
     m_modules[Module.BACK_RIGHT].setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
   }
 
-  public void reset() {
-    setBrakeMode(false);
-    resetPose();
-  }
-
   public AHRS getGyro() {
     return m_gyro;
   }
@@ -224,13 +293,6 @@ public class SwerveDrive extends Subsystem {
   }
 
   @Override
-  public void reloadConfig() {
-    for(SwerveModule module : m_modules) {
-      module.reloadConfig();
-    }
-  }
-
-  @Override
   public void periodic() {
     for (SwerveModule module : m_modules) {
       module.periodic();
@@ -245,6 +307,12 @@ public class SwerveDrive extends Subsystem {
 
   @Override
   public void writePeriodicOutputs() {
+  }
+
+  @Override
+  public void reset() {
+    setBrakeMode(false);
+    resetPose();
   }
 
   private double[] getCurrentStates() {
@@ -306,13 +374,21 @@ public class SwerveDrive extends Subsystem {
       module.outputTelemetry();
     }
 
-    SmartDashboard.putNumberArray("SwerveDrive/CurrentStates", getCurrentStates());
-    SmartDashboard.putNumberArray("SwerveDrive/DesiredStates", getDesiredStates());
+    putNumberArray("CurrentStates", getCurrentStates());
+    putNumberArray("DesiredStates", getDesiredStates());
 
-    SmartDashboard.putNumber("SwerveDrive/Gyro/AngleDegrees", m_gyro.getRotation2d().getDegrees());
-    SmartDashboard.putNumber("SwerveDrive/Gyro/Pitch", m_gyro.getPitch());
-    SmartDashboard.putNumberArray("SwerveDrive/Pose",
+    putNumber("Gyro/AngleDegrees", m_gyro.getRotation2d().getDegrees());
+    putNumber("Gyro/Pitch", m_gyro.getPitch());
+    putNumberArray("Pose",
         new double[] { getPose().getX(), getPose().getY(), getPose().getRotation().getDegrees() });
+  }
+
+  public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+    return m_sysIdRoutine.quasistatic(direction);
+  }
+
+  public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+    return m_sysIdRoutine.dynamic(direction);
   }
 
   public interface Module {

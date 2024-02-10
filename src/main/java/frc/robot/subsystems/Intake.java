@@ -25,6 +25,8 @@ public class Intake extends Subsystem {
   private PeriodicIO m_periodicIO;
 
   private Intake() {
+    super("Intake");
+
     m_pivotMotor = new CANSparkMax(Constants.Intake.k_pivotMotorID, MotorType.kBrushless);
     m_pivotMotor.restoreFactoryDefaults();
     m_pivotMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
@@ -72,9 +74,14 @@ public class Intake extends Subsystem {
 
   @Override
   public void outputTelemetry() {
-    SmartDashboard.putNumber("Intake/Speed", getSpeedFromState(m_periodicIO.intake_state));
-    SmartDashboard.putNumber("Intake/CurrentPivotAngle", getCurrentPivotAngle());
-    SmartDashboard.putNumber("Intake/CurrentSetpoint", getAngleFromTarget(m_periodicIO.pivot_target));
+    putNumber("Speed", getSpeedFromState(m_periodicIO.intake_state));
+    putNumber("CurrentPivotAngle", getCurrentPivotAngle());
+    putNumber("CurrentSetpoint", getAngleFromTarget(m_periodicIO.pivot_target));
+  }
+
+  @Override
+  public void reset() {
+    throw new UnsupportedOperationException("Unimplemented method 'reset'");
   }
 
   private double getAngleFromTarget(IntakePivotTarget target) {
