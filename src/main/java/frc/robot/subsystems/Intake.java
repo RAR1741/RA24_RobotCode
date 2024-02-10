@@ -13,7 +13,7 @@ import frc.robot.Constants;
 import frc.robot.Helpers;
 
 public class Intake extends Subsystem {
-  private static Intake m_manipulation;
+  private static Intake m_intake;
 
   private CANSparkMax m_pivotMotor;
   private CANSparkMax m_intakeMotor;
@@ -44,23 +44,17 @@ public class Intake extends Subsystem {
   }
 
   public static Intake getInstance() {
-    if (m_manipulation == null) {
-      m_manipulation = new Intake();
+    if (m_intake == null) {
+      m_intake = new Intake();
     }
 
-    return m_manipulation;
+    return m_intake;
   }
 
   @Override
   public void periodic() {
-    // m_periodicIO.intake_pivot_voltage = m_pivotPID.calculate(getCurrentPivotAngle(), pivot_angle);
-
     double pivot_angle = getAngleFromTarget(m_periodicIO.pivot_target);
     m_pivotMotorPID.setReference(pivot_angle, ControlType.kPosition);
-
-    // if (m_pivotMotorEncoder.get() == 0.0) {
-    //   m_periodicIO.intake_pivot_voltage = 0.0;
-    // }
 
     m_periodicIO.intake_speed = getSpeedFromState(m_periodicIO.intake_state);
     SmartDashboard.putString("Intake/CurrentState", m_periodicIO.intake_state.toString());
@@ -68,14 +62,11 @@ public class Intake extends Subsystem {
 
   @Override
   public void stop() {
-    // m_periodicIO.intake_pivot_voltage = 0.0;
-
     stopIntake();
   }
 
   @Override
   public void writePeriodicOutputs() {
-    // m_pivotMotor.setVoltage(m_periodicIO.intake_pivot_voltage);
     m_intakeMotor.set(m_periodicIO.intake_speed);
   }
 
@@ -88,21 +79,27 @@ public class Intake extends Subsystem {
 
   private double getAngleFromTarget(IntakePivotTarget target) {
     switch (target) {
-      case INTAKE_PIVOT_GROUND: return Constants.Intake.k_groundPivotAngle;
-      case INTAKE_PIVOT_SOURCE: return Constants.Intake.k_sourcePivotAngle;
-      case INTAKE_PIVOT_AMP: return Constants.Intake.k_ampPivotAngle;
-      case INTAKE_PIVOT_STOW: return Constants.Intake.k_stowPivotAngle;
-
-      default: return 180.0;
+      case INTAKE_PIVOT_GROUND: 
+        return Constants.Intake.k_groundPivotAngle;
+      case INTAKE_PIVOT_SOURCE: 
+        return Constants.Intake.k_sourcePivotAngle;
+      case INTAKE_PIVOT_AMP: 
+        return Constants.Intake.k_ampPivotAngle;
+      case INTAKE_PIVOT_STOW: 
+        return Constants.Intake.k_stowPivotAngle;
+      default: 
+        return 180.0;
     }
   }
 
   private double getSpeedFromState(IntakeState state) {
     switch (state) {
-      case INTAKE_STATE_INTAKE: return Constants.Intake.k_intakeSpeed;
-      case INTAKE_STATE_EJECT: return Constants.Intake.k_ejectSpeed;
-      case INTAKE_STATE_FEED_SHOOTER: return Constants.Intake.k_feedShooterSpeed;
-
+      case INTAKE_STATE_INTAKE: 
+        return Constants.Intake.k_intakeSpeed;
+      case INTAKE_STATE_EJECT: 
+        return Constants.Intake.k_ejectSpeed;
+      case INTAKE_STATE_FEED_SHOOTER: 
+        return Constants.Intake.k_feedShooterSpeed;
       case INTAKE_STATE_PULSE: {
         if (Timer.getFPGATimestamp() % 1.0 < (1.0 / 45.0)) { // TODO: check if this is what we want
           return Constants.Intake.k_intakeSpeed;
@@ -110,8 +107,8 @@ public class Intake extends Subsystem {
 
         return 0.0;
       }
-
-      default: return 0.0;
+      default: 
+        return 0.0;
     }
   }
 
