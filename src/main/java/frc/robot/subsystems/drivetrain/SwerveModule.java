@@ -26,20 +26,6 @@ public class SwerveModule {
   private final SparkPIDController m_turningPIDController;
   private final SparkPIDController m_drivePIDController;
 
-  // private final double k_turnFeedForwardS = 1.0;
-  // private final double k_turnFeedForwardV = 0.5;
-  // private final double k_turnFeedForwardA = 0.0;
-  // private final SimpleMotorFeedforward m_turnFeedforward = new
-  // SimpleMotorFeedforward(k_turnFeedForwardS,
-  // k_turnFeedForwardV, k_turnFeedForwardA);
-
-  // private final double k_driveFeedForwardS = 1.0;
-  // private final double k_driveFeedForwardV = 0.5;
-  // private final double k_driveFeedForwardA = 0.0;
-  // private final SimpleMotorFeedforward m_driveFeedforward = new
-  // SimpleMotorFeedforward(k_driveFeedForwardS,
-  // k_driveFeedForwardV, k_driveFeedForwardA);
-
   private final PeriodicIO m_periodicIO = new PeriodicIO();
 
   private final double m_turningOffset;
@@ -48,6 +34,7 @@ public class SwerveModule {
 
   private static class PeriodicIO {
     SwerveModuleState desiredState = new SwerveModuleState();
+    boolean shouldChangeState = false;
   }
 
   public SwerveModule(int driveMotorChannel, int turningMotorChannel, int turningAbsoluteID, double turningOffset,
@@ -94,9 +81,9 @@ public class SwerveModule {
     m_turningPIDController.setPositionPIDWrappingEnabled(true);
     m_turningPIDController.setPositionPIDWrappingMinInput(0.0);
     m_turningPIDController.setPositionPIDWrappingMaxInput(2.0 * Math.PI);
-    // m_turningPIDController.setOutputRange(
-    // Constants.SwerveDrive.Turn.k_TurningMinOutput,
-    // Constants.SwerveDrive.Turn.k_TurningMaxOutput);
+    m_turningPIDController.setOutputRange(
+      Constants.SwerveDrive.Turn.k_TurningMinOutput,
+      Constants.SwerveDrive.Turn.k_TurningMaxOutput);
 
     m_drivePIDController = m_driveMotor.getPIDController();
     m_drivePIDController.setP(Constants.SwerveDrive.Drive.k_P);
@@ -137,7 +124,7 @@ public class SwerveModule {
   }
 
   public void clearTurnPIDAccumulation() {
-    m_turningPIDController.setIAccum(0); // TODO: Make sure this works
+    m_turningPIDController.setIAccum(0);
   }
 
   public void resetDriveEncoder() {
@@ -148,6 +135,7 @@ public class SwerveModule {
     // Optimize the reference state to avoid spinning further than 90 degrees
     desiredState = SwerveModuleState.optimize(desiredState, Rotation2d.fromRadians(getTurnPosition()));
     desiredState.angle = new Rotation2d(Helpers.modRadians(desiredState.angle.getRadians()));
+    m_periodicIO.shouldChangeState = !desiredState.equals(m_periodicIO.desiredState);
     m_periodicIO.desiredState = desiredState;
   }
 
@@ -163,8 +151,11 @@ public class SwerveModule {
   }
 
   public void periodic() {
-    m_drivePIDController.setReference(m_periodicIO.desiredState.speedMetersPerSecond, ControlType.kVelocity);
-    m_turningPIDController.setReference(m_periodicIO.desiredState.angle.getRadians(), ControlType.kPosition);
+    if(m_periodicIO.shouldChangeState) {
+      m_drivePIDController.setReference(m_periodicIO.desiredState.speedMetersPerSecond, ControlType.kVelocity);
+      m_turningPIDController.setReference(m_periodicIO.desiredState.angle.getRadians(), ControlType.kPosition);
+      m_periodicIO.shouldChangeState = false;
+    }
   }
 
   public void outputTelemetry() {

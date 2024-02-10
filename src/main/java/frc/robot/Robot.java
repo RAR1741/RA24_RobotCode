@@ -55,7 +55,6 @@ public class Robot extends TimedRobot {
 
   // Auto things
   AutoChooser m_autoChooser = new AutoChooser();
-  private boolean m_autoHasRan;
 
   private final Field m_field = Field.getInstance();
 
@@ -78,9 +77,9 @@ public class Robot extends TimedRobot {
     }
 
     m_allSubsystems.add(m_swerve);
-    m_allSubsystems.add(m_intake);
-    m_allSubsystems.add(m_shooter);
-    m_allSubsystems.add(m_climbers);
+    // m_allSubsystems.add(m_intake);
+    // m_allSubsystems.add(m_shooter);
+    // m_allSubsystems.add(m_climbers);
 
     m_swerve.setGyroAngleAdjustment(0);
   }
@@ -99,8 +98,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    m_autoHasRan = true;
-
     m_swerve.setBrakeMode(false);
 
     // m_autoRunner.setAutoMode(m_autoChooser.getSelectedAuto());
