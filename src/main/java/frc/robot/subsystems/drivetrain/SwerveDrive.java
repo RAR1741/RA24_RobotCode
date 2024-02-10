@@ -224,6 +224,13 @@ public class SwerveDrive extends Subsystem {
   }
 
   @Override
+  public void reloadConfig() {
+    for(SwerveModule module : m_modules) {
+      module.reloadConfig();
+    }
+  }
+
+  @Override
   public void periodic() {
     for (SwerveModule module : m_modules) {
       module.periodic();

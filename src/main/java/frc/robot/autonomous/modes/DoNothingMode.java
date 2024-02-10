@@ -6,7 +6,7 @@ import frc.robot.autonomous.tasks.DoNothingTask;
 
 public class DoNothingMode extends AutoModeBase {
   @Override
-  public Pose2d getRedStartingPosition() {
+  public Pose2d getBlueStartingPosition() {
     return new Pose2d(0, 0, Rotation2d.fromDegrees(0));
   }
 

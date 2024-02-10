@@ -14,8 +14,22 @@ public final class Constants {
   }
 
   public static class Auto {
-    public static final double k_maxSpeed = 1; // 1 meters per second
-    public static final double k_maxAcceleration = 0.5;
+    public static final double k_maxSpeed = 3.0; // 1 meters per second
+    public static final double k_maxAcceleration = 3.0;
+
+    public class PIDConstants {
+      public class Translation {
+        public static final double k_P = 0.5;
+        public static final double k_I = 0.0;
+        public static final double k_D = 0.0;
+      }
+
+      public class Rotation {
+        public static final double k_P = 0.7;
+        public static final double k_I = 0.0;
+        public static final double k_D = 0.0;
+      }
+    }
   }
 
   public class SwerveDrive {
@@ -42,7 +56,7 @@ public final class Constants {
       public static final int k_BRMotorId = 10;
       public static final int k_BLMotorId = 12;
 
-      public static final double k_P = 0.0;
+      public static final double k_P = 1.0;
       public static final double k_I = 0.0;
       public static final double k_D = 0.0;
       public static final double k_IZone = 0.0;
@@ -52,10 +66,10 @@ public final class Constants {
     // Drivetrain (turn) constants
     public class Turn {
       // Drivetrain turning offset constants
-      public static final double k_FLOffset = 0.157329;
-      public static final double k_FROffset = 0.345974;
-      public static final double k_BROffset = 0.823048;
-      public static final double k_BLOffset = 0.329460;
+      public static final double k_FLOffset = 0.0;
+      public static final double k_FROffset = 0.0;
+      public static final double k_BROffset = 0.0;
+      public static final double k_BLOffset = 0.0;
 
       public static final int k_FLAbsID = 0;
       public static final int k_FRAbsID = 1;
@@ -71,17 +85,17 @@ public final class Constants {
       public static final double k_turningP = 0.1;
       public static final double k_turningI = 0.0;
       public static final double k_turningD = 0.0;
-      public static final double k_turningIZone = 0;
-      public static final double k_turningFF = 0;
+      public static final double k_turningIZone = 0.0;
+      public static final double k_turningFF = 0.0;
 
-      public static final int k_TurningMinOutput = -1;
-      public static final int k_TurningMaxOutput = 1;
+      public static final double k_TurningMinOutput = -1.0;
+      public static final double k_TurningMaxOutput = 1.0;
     }
 
     public class AutoAim {
-      public static final double k_P = 1;
-      public static final double k_I = 0;
-      public static final double k_D = 0;
+      public static final double k_P = 1.0;
+      public static final double k_I = 0.0;
+      public static final double k_D = 0.0;
     }
   }
 
@@ -105,7 +119,7 @@ public final class Constants {
     public static final double k_feedShooterSpeed = 0.0;
 
     // TODO: get intake pivot PID
-    public static final double k_pivotMotorP = 0.0;
+    public static final double k_pivotMotorP = 1.0;
     public static final double k_pivotMotorI = 0.0;
     public static final double k_pivotMotorD = 0.0;
 
@@ -148,6 +162,7 @@ public final class Constants {
     public static final double k_pivotMotorP = 0.0;
     public static final double k_pivotMotorI = 0.0;
     public static final double k_pivotMotorD = 0.0;
+    public static final double k_pivotMotorIZone = 0.0;
 
     // TODO: get shooter pivot setpoint angles
     public static final double k_lowPivotAngle = 0.0;

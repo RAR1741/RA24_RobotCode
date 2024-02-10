@@ -7,7 +7,6 @@ import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
@@ -23,7 +22,7 @@ public class Shooter extends Subsystem {
 
   private CANSparkFlex m_topShooterMotor;
   private CANSparkFlex m_bottomShooterMotor;
-  private CANSparkMax m_pivotMotor;
+  private CANSparkFlex m_pivotMotor;
 
   private RelativeEncoder m_topMotorEncoder;
   private RelativeEncoder m_bottomMotorEncoder;
@@ -31,8 +30,7 @@ public class Shooter extends Subsystem {
 
   private SparkPIDController m_topShooterMotorPID;
   private SparkPIDController m_bottomShooterMotorPID;
-  private PIDController m_pivotMotorPID = new PIDController(
-      Constants.Shooter.k_pivotMotorP, Constants.Shooter.k_pivotMotorI, Constants.Shooter.k_pivotMotorD);;
+  private final SparkPIDController m_pivotMotorPID;
 
   private SlewRateLimiter m_speedLimiter = new SlewRateLimiter(1000); // TODO Double-check this value
 
@@ -51,7 +49,7 @@ public class Shooter extends Subsystem {
     m_bottomShooterMotor.setIdleMode(CANSparkFlex.IdleMode.kCoast);
     m_bottomShooterMotor.setInverted(true);
 
-    m_pivotMotor = new CANSparkMax(Constants.Shooter.k_pivotMotorId, MotorType.kBrushless);
+    m_pivotMotor = new CANSparkFlex(Constants.Shooter.k_pivotMotorId, MotorType.kBrushless);
     m_pivotMotor.restoreFactoryDefaults();
     m_pivotMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
     m_pivotMotor.setSmartCurrentLimit(10); // TODO: Double check this
@@ -71,6 +69,12 @@ public class Shooter extends Subsystem {
     m_bottomShooterMotorPID.setD(Constants.Shooter.k_shooterMotorD);
     m_bottomShooterMotorPID.setOutputRange(Constants.Shooter.k_shooterMinOutput, Constants.Shooter.k_shooterMaxOutput);
 
+    m_pivotMotorPID = m_pivotMotor.getPIDController();
+    m_pivotMotorPID.setP(Constants.Shooter.k_pivotMotorP);
+    m_pivotMotorPID.setI(Constants.Shooter.k_pivotMotorI);
+    m_pivotMotorPID.setD(Constants.Shooter.k_pivotMotorD);
+    m_pivotMotorPID.setIZone(Constants.Shooter.k_pivotMotorIZone);
+
     m_periodicIO = new PeriodicIO();
   }
 
@@ -84,16 +88,19 @@ public class Shooter extends Subsystem {
 
   @Override
   public void periodic() {
-    m_periodicIO.pivot_voltage = m_pivotMotorPID.calculate(getCurrentPivotAngle(), m_periodicIO.pivot_angle);
+    // m_periodicIO.pivot_voltage =
+    // m_pivotMotorPID.calculate(getCurrentPivotAngle(), m_periodicIO.pivot_angle);
 
-    if (m_pivotAbsEncoder.get() == 0.0) {
-      m_periodicIO.pivot_voltage = 0.0;
-    }
+    m_pivotMotorPID.setReference(m_periodicIO.pivot_angle, ControlType.kPosition);
+
+    // if (m_pivotAbsEncoder.get() == 0.0) {
+    // m_periodicIO.pivot_voltage = 0.0;
+    // }
   }
 
   @Override
   public void stop() {
-    m_periodicIO.pivot_voltage = 0.0;
+    // m_periodicIO.pivot_voltage = 0.0;
 
     stopShooter();
   }
@@ -104,7 +111,7 @@ public class Shooter extends Subsystem {
     m_topShooterMotorPID.setReference(limited_speed, ControlType.kVelocity);
     m_bottomShooterMotorPID.setReference(limited_speed, ControlType.kVelocity);
 
-    m_pivotMotor.setVoltage(m_periodicIO.pivot_voltage);
+    // m_pivotMotor.setVoltage(m_periodicIO.pivot_voltage);
   }
 
   @Override
@@ -180,7 +187,7 @@ public class Shooter extends Subsystem {
     double shooter_rpm = 0.0;
 
     double pivot_angle = 60.0;
-    double pivot_voltage = 0.0;
+    // double pivot_voltage = 0.0;
   }
 
   public enum ShooterPivotTarget {

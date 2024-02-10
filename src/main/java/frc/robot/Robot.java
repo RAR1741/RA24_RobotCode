@@ -7,11 +7,13 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.Preferences;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.autonomous.AutoChooser;
 import frc.robot.autonomous.AutoRunner;
+import frc.robot.autonomous.AutoRunner.AutoMode;
 import frc.robot.autonomous.tasks.Task;
 import frc.robot.controls.controllers.DriverController;
 import frc.robot.controls.controllers.OperatorController;
@@ -19,6 +21,7 @@ import frc.robot.simulation.Field;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Subsystem;
+import frc.robot.subsystems.climber.Climbers;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 
 public class Robot extends TimedRobot {
@@ -38,9 +41,10 @@ public class Robot extends TimedRobot {
 
   // Robot subsystems
   private List<Subsystem> m_allSubsystems = new ArrayList<>();
-  public final SwerveDrive m_swerve = SwerveDrive.getInstance();
-  public final Intake m_intake = Intake.getInstance();
-  public final Shooter m_shooter = Shooter.getInstance();
+  private final SwerveDrive m_swerve = SwerveDrive.getInstance();
+  private final Intake m_intake = Intake.getInstance();
+  private final Shooter m_shooter = Shooter.getInstance();
+  private final Climbers m_climbers = Climbers.getInstance();
 
   // Auto tasks
   private Task m_currentTask;
@@ -68,13 +72,16 @@ public class Robot extends TimedRobot {
     // Camera server
     // m_camera = CameraServer.startAutomaticCapture();
 
-    Preferences.setDouble("SwerveDrive/x", 0);
-    Preferences.setDouble("SwerveDrive/y", 0);
-    Preferences.setDouble("SwerveDrive/rot", 0);
+    if (!RobotBase.isReal()) {
+      Preferences.setDouble("SwerveDrive/x", 0);
+      Preferences.setDouble("SwerveDrive/y", 0);
+      Preferences.setDouble("SwerveDrive/rot", 0);
+    }
 
     m_allSubsystems.add(m_swerve);
     m_allSubsystems.add(m_intake);
     m_allSubsystems.add(m_shooter);
+    m_allSubsystems.add(m_climbers);
 
     m_swerve.setGyroAngleAdjustment(0);
   }
@@ -95,7 +102,8 @@ public class Robot extends TimedRobot {
 
     m_swerve.setBrakeMode(false);
 
-    m_autoRunner.setAutoMode(m_autoChooser.getSelectedAuto());
+    // m_autoRunner.setAutoMode(m_autoChooser.getSelectedAuto());
+    m_autoRunner.setAutoMode(AutoMode.TEST);
     m_currentTask = m_autoRunner.getNextTask();
 
     // Start the first task
@@ -195,8 +203,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledInit() {
-    m_allSubsystems.forEach(subsystem -> subsystem.stop());
-    // m_swerve.resetOdometry(new Pose2d(3, 3, new Rotation2d(0)));
   }
 
   @Override

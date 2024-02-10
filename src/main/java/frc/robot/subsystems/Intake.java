@@ -1,9 +1,10 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.SparkPIDController;
+import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Timer;
@@ -22,8 +23,7 @@ public class Intake extends Subsystem {
 
   private final DutyCycleEncoder m_pivotMotorEncoder = new DutyCycleEncoder(Constants.Intake.k_pivotEncoderId);
 
-  private final PIDController m_pivotPID = new PIDController(
-      Constants.Intake.k_pivotMotorP, Constants.Intake.k_pivotMotorI, Constants.Intake.k_pivotMotorD);
+  private final SparkPIDController m_pivotMotorPID;
 
   private PeriodicIO m_periodicIO;
 
@@ -39,6 +39,12 @@ public class Intake extends Subsystem {
     m_intakeMotor.restoreFactoryDefaults();
     m_intakeMotor.setIdleMode(CANSparkMax.IdleMode.kCoast);
 
+    m_pivotMotorPID = m_pivotMotor.getPIDController();
+    m_pivotMotorPID.setP(Constants.Intake.k_pivotMotorP);
+    m_pivotMotorPID.setI(Constants.Intake.k_pivotMotorI);
+    m_pivotMotorPID.setD(Constants.Intake.k_pivotMotorD);
+    m_pivotMotorPID.setIZone(Constants.Intake.k_pivotMotorIZone);
+
     m_periodicIO = new PeriodicIO();
   }
 
@@ -53,11 +59,7 @@ public class Intake extends Subsystem {
   @Override
   public void periodic() {
     double pivot_angle = getAngleFromTarget(m_periodicIO.pivot_target);
-    m_periodicIO.intake_pivot_voltage = m_pivotPID.calculate(getCurrentPivotAngle(), pivot_angle);
-
-    if (m_pivotMotorEncoder.get() == 0.0) {
-      m_periodicIO.intake_pivot_voltage = 0.0;
-    }
+    m_pivotMotorPID.setReference(pivot_angle, ControlType.kPosition);
 
     m_periodicIO.intake_speed = getSpeedFromState(m_periodicIO.intake_state);
     SmartDashboard.putString("Intake/CurrentState", m_periodicIO.intake_state.toString());
@@ -65,14 +67,11 @@ public class Intake extends Subsystem {
 
   @Override
   public void stop() {
-    m_periodicIO.intake_pivot_voltage = 0.0;
-
     stopIntake();
   }
 
   @Override
   public void writePeriodicOutputs() {
-    m_pivotMotor.setVoltage(m_periodicIO.intake_pivot_voltage);
     m_intakeMotor.set(m_periodicIO.intake_speed);
   }
 
@@ -93,7 +92,6 @@ public class Intake extends Subsystem {
         return Constants.Intake.k_ampPivotAngle;
       case INTAKE_PIVOT_STOW:
         return Constants.Intake.k_stowPivotAngle;
-
       default:
         return 180.0;
     }
@@ -107,15 +105,6 @@ public class Intake extends Subsystem {
         return Constants.Intake.k_ejectSpeed;
       case INTAKE_STATE_FEED_SHOOTER:
         return Constants.Intake.k_feedShooterSpeed;
-
-      case INTAKE_STATE_PULSE: {
-        if (Timer.getFPGATimestamp() % 1.0 < (1.0 / 45.0)) { // TODO: check if this is what we want
-          return Constants.Intake.k_intakeSpeed;
-        }
-
-        return 0.0;
-      }
-
       default:
         return 0.0;
     }
@@ -175,7 +164,7 @@ public class Intake extends Subsystem {
     IntakePivotTarget pivot_target = IntakePivotTarget.INTAKE_PIVOT_STOW;
     IntakeState intake_state = IntakeState.INTAKE_STATE_NONE;
 
-    double intake_pivot_voltage = 0.0;
+    // double intake_pivot_voltage = 0.0;
     double intake_speed = 0.0;
   }
 

@@ -47,7 +47,7 @@ public class SwerveModule {
   private final String m_smartDashboardKey;
 
   private static class PeriodicIO {
-    SwerveModuleState desiredState;
+    SwerveModuleState desiredState = new SwerveModuleState();
   }
 
   public SwerveModule(int driveMotorChannel, int turningMotorChannel, int turningAbsoluteID, double turningOffset,
@@ -86,24 +86,7 @@ public class SwerveModule {
         Helpers.modRadians(Units.rotationsToRadians(m_turningAbsEncoder.get() - m_turningOffset)));
 
     m_turningPIDController = m_turningMotor.getPIDController();
-    m_turningPIDController.setP(Constants.SwerveDrive.Turn.k_turningP);
-    m_turningPIDController.setI(Constants.SwerveDrive.Turn.k_turningI);
-    m_turningPIDController.setD(Constants.SwerveDrive.Turn.k_turningD);
-    m_turningPIDController.setIZone(Constants.SwerveDrive.Turn.k_turningIZone);
-    m_turningPIDController.setFF(Constants.SwerveDrive.Turn.k_turningFF);
-    m_turningPIDController.setPositionPIDWrappingEnabled(true);
-    m_turningPIDController.setPositionPIDWrappingMinInput(0.0);
-    m_turningPIDController.setPositionPIDWrappingMaxInput(2.0 * Math.PI);
-    // m_turningPIDController.setOutputRange(
-    // Constants.SwerveDrive.Turn.k_TurningMinOutput,
-    // Constants.SwerveDrive.Turn.k_TurningMaxOutput);
-
     m_drivePIDController = m_driveMotor.getPIDController();
-    m_drivePIDController.setP(Constants.SwerveDrive.Drive.k_P);
-    m_drivePIDController.setI(Constants.SwerveDrive.Drive.k_I);
-    m_drivePIDController.setD(Constants.SwerveDrive.Drive.k_D);
-    m_drivePIDController.setIZone(Constants.SwerveDrive.Drive.k_IZone);
-    m_drivePIDController.setFF(Constants.SwerveDrive.Drive.k_FF);
   }
 
   public SwerveModuleState getState() {
@@ -155,19 +138,11 @@ public class SwerveModule {
     desiredState = SwerveModuleState.optimize(desiredState, Rotation2d.fromRadians(getTurnPosition()));
     desiredState.angle = new Rotation2d(Helpers.modRadians(desiredState.angle.getRadians()));
     m_periodicIO.desiredState = desiredState;
-
-    // If the turn position changes, set turn motor accordingly
-    // if (m_turningEncoder.getPosition() !=
-    // m_periodicIO.desiredState.angle.getRotations()) {
-    // m_turnPIDController.setReference(m_periodicIO.desiredState.angle.getRotations(),
-    // ControlType.kPosition);
-    // }
-
+    
     m_drivePIDController.setReference(desiredState.speedMetersPerSecond, ControlType.kVelocity);
     m_turningPIDController.setReference(m_periodicIO.desiredState.angle.getRadians(), ControlType.kPosition);
 
-    SmartDashboard.putNumber(m_smartDashboardKey + "TurnVoltage",
-        m_turningMotor.getBusVoltage() * m_turningMotor.getAppliedOutput());
+    SmartDashboard.putNumber(m_smartDashboardKey + "TurnVoltage", Helpers.getVoltage(m_turningMotor));
     SmartDashboard.putNumber(m_smartDashboardKey + "DriveTargetVelocity",
         m_periodicIO.desiredState.speedMetersPerSecond);
     SmartDashboard.putNumber(m_smartDashboardKey + "TurnTargetAngleRadians",
@@ -179,6 +154,26 @@ public class SwerveModule {
   }
 
   public void periodic() {
+  }
+
+  public void reloadConfig() {
+    m_turningPIDController.setP(Constants.SwerveDrive.Turn.k_turningP);
+    m_turningPIDController.setI(Constants.SwerveDrive.Turn.k_turningI);
+    m_turningPIDController.setD(Constants.SwerveDrive.Turn.k_turningD);
+    m_turningPIDController.setIZone(Constants.SwerveDrive.Turn.k_turningIZone);
+    m_turningPIDController.setFF(Constants.SwerveDrive.Turn.k_turningFF);
+    m_turningPIDController.setPositionPIDWrappingEnabled(true);
+    m_turningPIDController.setPositionPIDWrappingMinInput(0.0);
+    m_turningPIDController.setPositionPIDWrappingMaxInput(2.0 * Math.PI);
+    // m_turningPIDController.setOutputRange(
+    // Constants.SwerveDrive.Turn.k_TurningMinOutput,
+    // Constants.SwerveDrive.Turn.k_TurningMaxOutput);
+
+    m_drivePIDController.setP(Constants.SwerveDrive.Drive.k_P);
+    m_drivePIDController.setI(Constants.SwerveDrive.Drive.k_I);
+    m_drivePIDController.setD(Constants.SwerveDrive.Drive.k_D);
+    m_drivePIDController.setIZone(Constants.SwerveDrive.Drive.k_IZone);
+    m_drivePIDController.setFF(Constants.SwerveDrive.Drive.k_FF);
   }
 
   public void outputTelemetry() {
