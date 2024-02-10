@@ -122,6 +122,7 @@ public final class Constants {
     public static final double k_pivotMotorP = 1.0;
     public static final double k_pivotMotorI = 0.0;
     public static final double k_pivotMotorD = 0.0;
+    public static final double k_pivotMotorIZone = 0.0;
 
     // TODO Get values
     public static final double k_length = 14.319626; // In inches
