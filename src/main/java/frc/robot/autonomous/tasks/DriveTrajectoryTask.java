@@ -48,8 +48,14 @@ public class DriveTrajectoryTask extends Task {
     }
 
     m_driveController = new PPHolonomicDriveController (
-      new PIDConstants(Constants.Auto.PIDConstants.Translation.k_P,Constants.Auto.PIDConstants.Translation.k_I,Constants.Auto.PIDConstants.Translation.k_D),
-      new PIDConstants(Constants.Auto.PIDConstants.Rotation.k_P,Constants.Auto.PIDConstants.Rotation.k_I,Constants.Auto.PIDConstants.Rotation.k_D),
+      new PIDConstants(
+        Constants.Auto.PIDConstants.Translation.k_P,
+        Constants.Auto.PIDConstants.Translation.k_I,
+        Constants.Auto.PIDConstants.Translation.k_D),
+      new PIDConstants(
+        Constants.Auto.PIDConstants.Rotation.k_P,
+        Constants.Auto.PIDConstants.Rotation.k_I,
+        Constants.Auto.PIDConstants.Rotation.k_D),
       Constants.SwerveDrive.k_maxSpeed,
       Constants.Robot.k_width/2);
   }
