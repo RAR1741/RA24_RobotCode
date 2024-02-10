@@ -47,7 +47,7 @@ public class SwerveModule {
   private final String m_smartDashboardKey;
 
   private static class PeriodicIO {
-    SwerveModuleState desiredState;
+    SwerveModuleState desiredState = new SwerveModuleState();
   }
 
   public SwerveModule(int driveMotorChannel, int turningMotorChannel, int turningAbsoluteID, double turningOffset,

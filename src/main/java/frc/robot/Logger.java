@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
 
 public class Logger {
-
   private static Logger m_logger;
   private static DataLog m_log;
 

@@ -75,18 +75,10 @@ public class Robot extends TimedRobot {
       Preferences.setDouble("SwerveDrive/rot", 0);
     }
 
-    if(Config.getData("enableSwerve", false)) {
-      m_allSubsystems.add(m_swerve);
-    }
-    if(Config.getData("enableIntake", false)) {
-      m_allSubsystems.add(m_intake);
-    }
-    if(Config.getData("enableIntake", false)) {
-      m_allSubsystems.add(m_shooter);
-    }
-    if(Config.getData("enableClimbers", false)) {
-      m_allSubsystems.add(m_climbers);
-    }
+    m_allSubsystems.add(m_swerve);
+    m_allSubsystems.add(m_intake);
+    m_allSubsystems.add(m_shooter);
+    m_allSubsystems.add(m_climbers);
 
     m_swerve.setGyroAngleAdjustment(0);
   }
@@ -200,10 +192,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledInit() {
-    Config.loadFromFile("config.toml");
-    m_allSubsystems.forEach(subsystem -> subsystem.stop());
-    m_allSubsystems.forEach(subsystem -> subsystem.reloadConfig());
-    // m_swerve.resetOdometry(new Pose2d(3, 3, new Rotation2d(0)));
   }
 
   @Override

@@ -63,6 +63,7 @@ public class Climbers extends Subsystem {
       m_motor = new CANSparkMax(motorID, MotorType.kBrushless);
       m_motor.restoreFactoryDefaults();
       m_motor.setIdleMode(CANSparkMax.IdleMode.kBrake);
+      m_periodicIO = new PeriodicIO();
 
       m_encoder = m_motor.getEncoder();
       m_encoder.setPositionConversionFactor(1 / 16); // TODO: Fix this to account for whinch circumference (approx.
