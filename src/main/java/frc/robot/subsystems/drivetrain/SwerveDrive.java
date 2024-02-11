@@ -267,13 +267,6 @@ public class SwerveDrive extends Subsystem {
     }
   }
 
-  public void pointInwards() {
-    m_modules[Module.FRONT_LEFT].setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
-    m_modules[Module.FRONT_RIGHT].setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
-    m_modules[Module.BACK_LEFT].setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
-    m_modules[Module.BACK_RIGHT].setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
-  }
-
   public AHRS getGyro() {
     return m_gyro;
   }

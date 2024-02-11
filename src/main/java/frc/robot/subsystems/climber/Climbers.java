@@ -17,8 +17,8 @@ public class Climbers extends Subsystem {
 
   private static Climbers m_instance;
   private Climber[] m_climbers = {
-      new Climber(Constants.Climber.k_leftMotorID), // LEFT, 0
-      new Climber(Constants.Climber.k_rightMotorID) // RIGHT, 1
+      new Climber(Constants.Climber.k_leftMotorID),
+      new Climber(Constants.Climber.k_rightMotorID)
   };
 
   public static Climbers getInstance() {

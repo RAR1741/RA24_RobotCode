@@ -100,7 +100,7 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     m_swerve.setBrakeMode(false);
 
-    // m_autoRunner.setAutoMode(m_autoChooser.getSelectedAuto());
+    m_autoRunner.setAutoMode(m_autoChooser.getSelectedAuto());
     m_autoRunner.setAutoMode(AutoMode.TEST);
     m_currentTask = m_autoRunner.getNextTask();
 
@@ -174,10 +174,6 @@ public class Robot extends TimedRobot {
 
     if (m_driverController.getWantsResetGyro()) {
       m_swerve.resetGyro();
-    }
-
-    if (m_driverController.getWantsBrake()) {
-      m_swerve.pointInwards();
     }
 
     if (m_driverController.getWantsAutoAim()) {
