@@ -80,7 +80,7 @@ public class Robot extends TimedRobot {
     Preferences.initString("Test Mode", "NONE");
 
     m_allSubsystems.add(m_swerve);
-    // m_allSubsystems.add(m_intake);
+    m_allSubsystems.add(m_intake);
     // m_allSubsystems.add(m_shooter);
     // m_allSubsystems.add(m_climbers);
 

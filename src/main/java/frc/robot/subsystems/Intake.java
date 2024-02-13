@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
+import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.util.Units;
@@ -37,6 +38,7 @@ public class Intake extends Subsystem {
     m_pivotMotor.restoreFactoryDefaults();
     m_pivotMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
     m_pivotMotor.setSmartCurrentLimit(5); // TODO: Double check this
+    m_pivotMotor.setInverted(true);
 
     m_intakeMotor = new CANSparkMax(Constants.Intake.k_intakeMotorId, MotorType.kBrushless);
     m_intakeMotor.restoreFactoryDefaults();
@@ -47,6 +49,8 @@ public class Intake extends Subsystem {
     m_pivotMotorPID.setI(Constants.Intake.k_pivotMotorI);
     m_pivotMotorPID.setD(Constants.Intake.k_pivotMotorD);
     m_pivotMotorPID.setIZone(Constants.Intake.k_pivotMotorIZone);
+
+    m_pivotMotor.setIdleMode(IdleMode.kBrake);
 
     m_periodicIO = new PeriodicIO();
   }
@@ -79,14 +83,15 @@ public class Intake extends Subsystem {
 
   @Override
   public void writePeriodicOutputs() {
-    m_intakeMotor.set(m_periodicIO.intake_speed);
+    m_pivotMotor.set(m_periodicIO.pivot_speed);
   }
 
   @Override
   public void outputTelemetry() {
-    putNumber("Speed", getSpeedFromState(m_periodicIO.intake_state));
+    putNumber("IntakeSpeed", getSpeedFromState(m_periodicIO.intake_state));
     putNumber("CurrentPivotAngle", getCurrentPivotAngle());
     putNumber("CurrentSetpoint", getAngleFromTarget(m_periodicIO.pivot_target));
+    putNumber("PivotSpeed", m_periodicIO.pivot_speed);
   }
 
   @Override
@@ -136,7 +141,7 @@ public class Intake extends Subsystem {
   }
 
   public double getCurrentPivotAngle() {
-    double value = m_pivotMotorEncoder.getAbsolutePosition() - Constants.Intake.k_pivotEncoderOffset + 0.5;
+    double value = m_pivotMotorEncoder.getAbsolutePosition() - Constants.Intake.k_pivotEncoderOffset;
 
     return Units.rotationsToDegrees(Helpers.modRotations(value));
   }
@@ -168,10 +173,11 @@ public class Intake extends Subsystem {
   }
 
   public void manualPivotControl(double positive, double negative, double limit) {
-    m_pivotMotor.set((positive - negative) * limit);
+    m_periodicIO.pivot_speed = (positive - negative) * limit;
   }
 
   private static class PeriodicIO {
+    double pivot_speed = 0.0;
     IntakePivotTarget pivot_target = IntakePivotTarget.INTAKE_PIVOT_STOW;
     IntakeState intake_state = IntakeState.INTAKE_STATE_NONE;
 

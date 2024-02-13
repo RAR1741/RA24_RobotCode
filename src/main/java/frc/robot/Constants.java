@@ -66,10 +66,10 @@ public final class Constants {
     // Drivetrain (turn) constants
     public class Turn {
       // Drivetrain turning offset constants
-      public static final double k_FLOffset = 0.0;
-      public static final double k_FROffset = 0.0;
-      public static final double k_BROffset = 0.0;
-      public static final double k_BLOffset = 0.0;
+      public static final double k_FLOffset = 0.156013;
+      public static final double k_FROffset = 0.156604;
+      public static final double k_BROffset = 0.820736;
+      public static final double k_BLOffset = 0.161767;
 
       public static final int k_FLAbsID = 0;
       public static final int k_FRAbsID = 1;
