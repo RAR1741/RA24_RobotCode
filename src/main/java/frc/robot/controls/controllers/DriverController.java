@@ -52,6 +52,30 @@ public class DriverController extends FilteredController {
     return this.getRawButtonPressed(RawButton.START);
   }
 
+  public boolean getWantsSysIdQuasistaticForward() {
+    return this.getRawButtonPressed(RawButton.A);
+  }
+
+  public boolean getWantsSysIdQuasistaticBackward() {
+    return this.getRawButtonPressed(RawButton.B);
+  }
+
+  public boolean getWantsSysIdDynamicBackward() {
+    return this.getRawButtonPressed(RawButton.X);
+  }
+
+  public boolean getWantsSysIdDynamicForward() {
+    return this.getRawButtonPressed(RawButton.Y);
+  }
+
+  public double intakeTestAxisPositive() {
+    return this.getFilteredAxis(RawAxis.LEFT_TRIGGER);
+  }
+  
+  public double intakeTestAxisNegative() {
+    return this.getFilteredAxis(RawAxis.RIGHT_TRIGGER);
+  }
+
   public void outputTelemetry() {
     SmartDashboard.putNumber(m_smartDashboardKey + "Forward", getForwardAxis());
     SmartDashboard.putNumber(m_smartDashboardKey + "Strafe", getStrafeAxis());

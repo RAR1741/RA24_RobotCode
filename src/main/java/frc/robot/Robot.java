@@ -11,6 +11,8 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.autonomous.AutoChooser;
 import frc.robot.autonomous.AutoRunner;
 import frc.robot.autonomous.AutoRunner.AutoMode;
@@ -56,7 +58,6 @@ public class Robot extends TimedRobot {
 
   // Auto things
   AutoChooser m_autoChooser = new AutoChooser();
-  private boolean m_autoHasRan;
 
   private final Field m_field = Field.getInstance();
 
@@ -78,10 +79,12 @@ public class Robot extends TimedRobot {
       Preferences.setDouble("SwerveDrive/rot", 0);
     }
 
+    Preferences.initString("Test Mode", "NONE");
+
     m_allSubsystems.add(m_swerve);
-    m_allSubsystems.add(m_intake);
-    m_allSubsystems.add(m_shooter);
-    m_allSubsystems.add(m_climbers);
+    // m_allSubsystems.add(m_intake);
+    // m_allSubsystems.add(m_shooter);
+    // m_allSubsystems.add(m_climbers);
 
     m_swerve.setGyroAngleAdjustment(0);
   }
@@ -94,15 +97,15 @@ public class Robot extends TimedRobot {
     m_allSubsystems.forEach(subsystem -> subsystem.writeToLog());
 
     updateSim();
+
+    CommandScheduler.getInstance().run(); // used by sysid
   }
 
   @Override
   public void autonomousInit() {
-    m_autoHasRan = true;
-
     m_swerve.setBrakeMode(false);
 
-    // m_autoRunner.setAutoMode(m_autoChooser.getSelectedAuto());
+    m_autoRunner.setAutoMode(m_autoChooser.getSelectedAuto());
     m_autoRunner.setAutoMode(AutoMode.TEST);
     m_currentTask = m_autoRunner.getNextTask();
 
@@ -178,10 +181,6 @@ public class Robot extends TimedRobot {
       m_swerve.resetGyro();
     }
 
-    if (m_driverController.getWantsBrake()) {
-      m_swerve.pointInwards();
-    }
-
     if (m_driverController.getWantsAutoAim()) {
       m_autoAimEnabled = !m_autoAimEnabled;
     }
@@ -216,11 +215,32 @@ public class Robot extends TimedRobot {
 
   @Override
   public void testInit() {
+    CommandScheduler.getInstance().cancelAll();
   }
 
   @Override
   public void testPeriodic() {
-    m_swerve.drive(0, 0, 0, false);
+    // m_swerve.drive(0, 0, 0, false);
+
+    switch(Preferences.getString("Test Mode","NONE")) {
+      case "SYSID_SWERVE":
+        if (m_driverController.getWantsSysIdQuasistaticForward()) {
+          m_swerve.sysIdQuasistatic(SysIdRoutine.Direction.kForward).schedule();
+        } else if (m_driverController.getWantsSysIdQuasistaticBackward()) {
+          m_swerve.sysIdQuasistatic(SysIdRoutine.Direction.kReverse).schedule();
+        } else if (m_driverController.getWantsSysIdDynamicForward()) {
+          m_swerve.sysIdDynamic(SysIdRoutine.Direction.kForward).schedule();
+        } else if (m_driverController.getWantsSysIdDynamicBackward()) {
+          m_swerve.sysIdDynamic(SysIdRoutine.Direction.kReverse).schedule();
+        }
+        break;
+      case "INTAKE_TEST_MODE":
+        m_intake.manualPivotControl(m_driverController.intakeTestAxisPositive(), m_driverController.intakeTestAxisNegative(), 0.25);
+        break;
+      default:
+        System.out.println("you lost the game");
+        break;
+    }
   }
 
   private void updateSim() {

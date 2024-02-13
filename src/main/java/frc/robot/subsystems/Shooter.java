@@ -10,7 +10,6 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.Helpers;
 import frc.robot.simulation.ShooterSim;
@@ -37,9 +36,12 @@ public class Shooter extends Subsystem {
   private PeriodicIO m_periodicIO;
 
   private Shooter() {
+    super("Shooter");
+    
     m_shooterSim = SimMaster.getInstance().getShooterSim();
 
-    m_topShooterMotor = new CANSparkFlex(Constants.Shooter.k_topMotorId, MotorType.kBrushless);
+    m_topShooterMotor = new CANSparkFlex(Constants.Shooter.k_topMotorId, MotorType.kBrushless);    
+
     m_topShooterMotor.restoreFactoryDefaults();
     m_topShooterMotor.setIdleMode(CANSparkFlex.IdleMode.kCoast);
     m_topShooterMotor.setInverted(false);
@@ -52,7 +54,7 @@ public class Shooter extends Subsystem {
     m_pivotMotor = new CANSparkFlex(Constants.Shooter.k_pivotMotorId, MotorType.kBrushless);
     m_pivotMotor.restoreFactoryDefaults();
     m_pivotMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
-    m_pivotMotor.setSmartCurrentLimit(10); // TODO: Double check this
+    m_pivotMotor.setSmartCurrentLimit(5); // TODO: Double check this
 
     m_topMotorEncoder = m_topShooterMotor.getEncoder();
     m_bottomMotorEncoder = m_bottomShooterMotor.getEncoder();
@@ -116,9 +118,14 @@ public class Shooter extends Subsystem {
 
   @Override
   public void outputTelemetry() {
-    SmartDashboard.putNumber("Shooter/Speed", m_periodicIO.shooter_rpm);
-    SmartDashboard.putNumber("Shooter/TopMotorSpeed", m_topMotorEncoder.getVelocity());
-    SmartDashboard.putNumber("Shooter/BottomMotorSpeed", m_bottomMotorEncoder.getVelocity());
+    putNumber("Speed", m_periodicIO.shooter_rpm);
+    putNumber("TopMotorSpeed", m_topMotorEncoder.getVelocity());
+    putNumber("BottomMotorSpeed", m_bottomMotorEncoder.getVelocity());
+  }
+
+  @Override
+  public void reset() {
+    throw new UnsupportedOperationException("Unimplemented method 'reset'");
   }
 
   public void setAngle(double angle) {

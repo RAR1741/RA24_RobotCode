@@ -5,14 +5,12 @@ import frc.robot.subsystems.Intake.IntakePivotTarget;
 import frc.robot.subsystems.Intake.IntakeState;
 
 public class IntakeTask extends Task {
-	private Intake m_intake;
+	private Intake m_intake = Intake.getInstance();
 
 	private IntakePivotTarget m_pivotTarget;
 	private IntakeState m_intakeState;
 
 	public IntakeTask(IntakePivotTarget target, IntakeState state) {
-		m_intake = Intake.getInstance();
-
 		m_pivotTarget = target;
 		m_intakeState = state;
 	}

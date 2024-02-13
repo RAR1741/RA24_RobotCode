@@ -11,15 +11,19 @@ import frc.robot.Constants;
 import frc.robot.subsystems.Subsystem;
 
 public class Climbers extends Subsystem {
+  public Climbers(String baseSmartDashboardKey) {
+    super(baseSmartDashboardKey);
+  }
+
   private static Climbers m_instance;
   private Climber[] m_climbers = {
-      new Climber(Constants.Climber.k_leftMotorID), // LEFT, 0
-      new Climber(Constants.Climber.k_rightMotorID) // RIGHT, 1
+      new Climber(Constants.Climber.k_leftMotorID),
+      new Climber(Constants.Climber.k_rightMotorID)
   };
 
   public static Climbers getInstance() {
     if (m_instance == null) {
-      m_instance = new Climbers();
+      m_instance = new Climbers("Climbers");
     }
 
     return m_instance;
@@ -157,5 +161,11 @@ public class Climbers extends Subsystem {
       REHOME,
       HOMING_RETRACT
     }
+  }
+
+  @Override
+  public void reset() {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'reset'");
   }
 }
