@@ -52,8 +52,6 @@ public class Robot extends TimedRobot {
   private Task m_currentTask;
   private AutoRunner m_autoRunner = AutoRunner.getInstance();
 
-  private Timer m_timer = new Timer();
-
   private boolean m_autoAimEnabled = false;
 
   // Auto things
@@ -186,14 +184,6 @@ public class Robot extends TimedRobot {
     }
 
     m_driverController.outputTelemetry();
-
-    if (m_timer.get() == 0) {
-      m_timer.start();
-    }
-
-    double a = Helpers.modDegrees(m_timer.get() * 5);
-    m_intake.setSimPosition(a);
-    m_shooter.setSimPosition(a);
   }
 
   @Override
@@ -222,7 +212,7 @@ public class Robot extends TimedRobot {
   public void testPeriodic() {
     // m_swerve.drive(0, 0, 0, false);
 
-    switch(Preferences.getString("Test Mode","NONE")) {
+    switch (Preferences.getString("Test Mode", "NONE")) {
       case "SYSID_SWERVE":
         if (m_driverController.getWantsSysIdQuasistaticForward()) {
           m_swerve.sysIdQuasistatic(SysIdRoutine.Direction.kForward).schedule();
@@ -235,7 +225,8 @@ public class Robot extends TimedRobot {
         }
         break;
       case "INTAKE_TEST_MODE":
-        m_intake.manualPivotControl(m_driverController.intakeTestAxisPositive(), m_driverController.intakeTestAxisNegative(), 0.25);
+        m_intake.manualPivotControl(m_driverController.intakeTestAxisPositive(),
+            m_driverController.intakeTestAxisNegative(), 0.25);
         break;
       default:
         System.out.println("you lost the game");

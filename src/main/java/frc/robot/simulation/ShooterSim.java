@@ -15,7 +15,7 @@ import frc.robot.Constants;
 public class ShooterSim {
   private static ShooterSim m_sim = null;
 
-  private final double k_simOffset = 0.0;
+  private final double k_simOffset = 30.0;
 
   private final DCMotor k_pivotMotor = DCMotor.getNeoVortex(1);
   private final double k_pivotGearRatio = 1.0;
@@ -70,7 +70,7 @@ public class ShooterSim {
             new Color8Bit(Color.kYellow)));
   }
 
-  public void updateIntakePosition(double shooterAngle) {
+  public void updateAngle(double shooterAngle) {
     double a = -1 * (k_simOffset + shooterAngle);
     m_shooter.setAngle(a);
 

@@ -17,7 +17,7 @@ import frc.robot.simulation.SimMaster;
 
 public class Shooter extends Subsystem {
   private static Shooter m_shooter;
-  private static ShooterSim m_shooterSim;
+  private static ShooterSim m_sim;
 
   private CANSparkFlex m_topShooterMotor;
   private CANSparkFlex m_bottomShooterMotor;
@@ -37,10 +37,10 @@ public class Shooter extends Subsystem {
 
   private Shooter() {
     super("Shooter");
-    
-    m_shooterSim = SimMaster.getInstance().getShooterSim();
 
-    m_topShooterMotor = new CANSparkFlex(Constants.Shooter.k_topMotorId, MotorType.kBrushless);    
+    m_sim = SimMaster.getInstance().getShooterSim();
+
+    m_topShooterMotor = new CANSparkFlex(Constants.Shooter.k_topMotorId, MotorType.kBrushless);
 
     m_topShooterMotor.restoreFactoryDefaults();
     m_topShooterMotor.setIdleMode(CANSparkFlex.IdleMode.kCoast);
@@ -98,6 +98,8 @@ public class Shooter extends Subsystem {
     // if (m_pivotAbsEncoder.get() == 0.0) {
     // m_periodicIO.pivot_voltage = 0.0;
     // }
+
+    m_sim.updateAngle(getCurrentPivotAngle());
   }
 
   @Override
@@ -150,7 +152,7 @@ public class Shooter extends Subsystem {
 
   // TODO Get rid of this and make it part of the actual functionality
   public void setSimPosition(double a) {
-    m_shooterSim.updateIntakePosition(a);
+    m_sim.updateAngle(a);
   }
 
   public void setSpeed(double rpm) {

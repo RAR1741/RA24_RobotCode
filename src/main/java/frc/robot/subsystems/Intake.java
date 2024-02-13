@@ -17,7 +17,7 @@ import frc.robot.simulation.SimMaster;
 
 public class Intake extends Subsystem {
   private static Intake m_intake;
-  private static IntakeSim m_intakeSim;
+  private static IntakeSim m_sim;
 
   private CANSparkMax m_pivotMotor;
   private CANSparkMax m_intakeMotor;
@@ -30,8 +30,8 @@ public class Intake extends Subsystem {
 
   private Intake() {
     super("Intake");
-    
-    m_intakeSim = SimMaster.getInstance().getIntakeSim();
+
+    m_sim = SimMaster.getInstance().getIntakeSim();
 
     m_pivotMotor = new CANSparkMax(Constants.Intake.k_pivotMotorId, MotorType.kBrushless);
     m_pivotMotor.restoreFactoryDefaults();
@@ -61,13 +61,15 @@ public class Intake extends Subsystem {
 
   @Override
   public void periodic() {
-    if(!(Preferences.getString("Test Mode", "NONE").equals("INTAKE_TEST_MODE") && DriverStation.isTest())) {
+    if (!(Preferences.getString("Test Mode", "NONE").equals("INTAKE_TEST_MODE") && DriverStation.isTest())) {
       double pivot_angle = getAngleFromTarget(m_periodicIO.pivot_target);
       m_pivotMotorPID.setReference(pivot_angle, ControlType.kPosition);
 
       m_periodicIO.intake_speed = getSpeedFromState(m_periodicIO.intake_state);
       SmartDashboard.putString("Intake/CurrentState", m_periodicIO.intake_state.toString());
     }
+
+    m_sim.updateAngle(getCurrentPivotAngle());
   }
 
   @Override
@@ -139,11 +141,6 @@ public class Intake extends Subsystem {
     return Units.rotationsToDegrees(Helpers.modRotations(value));
   }
 
-  // TODO Get rid of this and make it part of the actual functionality
-  public void setSimPosition(double a) {
-    m_intakeSim.updateIntakePosition(a);
-  }
-
   public double getCurrentSpeed() {
     return m_intakeMotor.getEncoder().getVelocity();
   }
@@ -171,7 +168,7 @@ public class Intake extends Subsystem {
   }
 
   public void manualPivotControl(double positive, double negative, double limit) {
-    m_pivotMotor.set((positive + negative) * limit);
+    m_pivotMotor.set((positive - negative) * limit);
   }
 
   private static class PeriodicIO {

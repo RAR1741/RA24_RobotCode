@@ -18,7 +18,7 @@ public class IntakeSim {
   private final DCMotor k_pivotMotor = DCMotor.getNEO(1);
   private final double k_pivotGearRatio = 125.0;
 
-  private final double k_simOffset = 0.0;
+  private final double k_simOffset = 90.0;
 
   @SuppressWarnings("unused")
   private final SingleJointedArmSim m_joint = new SingleJointedArmSim(
@@ -69,7 +69,7 @@ public class IntakeSim {
             new Color8Bit(Color.kBlue)));
   }
 
-  public void updateIntakePosition(double intakeAngle) {
+  public void updateAngle(double intakeAngle) {
     m_intake.setAngle(k_simOffset + intakeAngle);
 
     // Translation2d setpoint = m_origin.plus(new Translation2d(x, y));
