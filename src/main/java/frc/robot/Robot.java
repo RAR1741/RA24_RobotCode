@@ -76,6 +76,8 @@ public class Robot extends TimedRobot {
       Preferences.setDouble("SwerveDrive/rot", 0);
     }
 
+    Preferences.initString("Test Mode", "NONE");
+
     m_allSubsystems.add(m_swerve);
     // m_allSubsystems.add(m_intake);
     // m_allSubsystems.add(m_shooter);
@@ -209,7 +211,7 @@ public class Robot extends TimedRobot {
   public void testPeriodic() {
     // m_swerve.drive(0, 0, 0, false);
 
-    switch(Preferences.getString("Test Mode",null)) {
+    switch(Preferences.getString("Test Mode","NONE")) {
       case "SYSID_SWERVE":
         if (m_driverController.getWantsSysIdQuasistaticForward()) {
           m_swerve.sysIdQuasistatic(SysIdRoutine.Direction.kForward).schedule();

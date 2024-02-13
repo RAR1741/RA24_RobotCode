@@ -57,7 +57,7 @@ public class Intake extends Subsystem {
 
   @Override
   public void periodic() {
-    if(!(Preferences.getString("Test Mode", null).equals("INTAKE_TEST_MODE") && DriverStation.isTest())) {
+    if(!(Preferences.getString("Test Mode", "NONE").equals("INTAKE_TEST_MODE") && DriverStation.isTest())) {
       double pivot_angle = getAngleFromTarget(m_periodicIO.pivot_target);
       m_pivotMotorPID.setReference(pivot_angle, ControlType.kPosition);
 
