@@ -224,9 +224,14 @@ public class Robot extends TimedRobot {
           m_swerve.sysIdDynamic(SysIdRoutine.Direction.kReverse).schedule();
         }
         break;
-      case "INTAKE_TEST_MODE":
-        m_intake.manualPivotControl(m_driverController.intakeTestAxisPositive(),
-            m_driverController.intakeTestAxisNegative(), 0.25);
+      case "INTAKE_PIVOT":
+        m_intake.manualPivotControl(m_driverController.intakeTestAxisPositive(), m_driverController.intakeTestAxisNegative(), 0.25);
+        break;
+      case "SHOOTER_PIVOT":
+        // m_shooter.manualPivotControl(m_driverController.intakeTestAxisPositive(), m_driverController.intakeTestAxisNegative(), 0.25);
+        break;
+      case "CLIMBER":
+        // m_climber.manualControl();
         break;
       default:
         System.out.println("you lost the game");
