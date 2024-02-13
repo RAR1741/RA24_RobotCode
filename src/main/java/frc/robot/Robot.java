@@ -209,14 +209,24 @@ public class Robot extends TimedRobot {
   public void testPeriodic() {
     // m_swerve.drive(0, 0, 0, false);
 
-    if (m_driverController.getWantsSysIdQuasistaticForward()) {
-      m_swerve.sysIdQuasistatic(SysIdRoutine.Direction.kForward).schedule();
-    } else if (m_driverController.getWantsSysIdQuasistaticBackward()) {
-      m_swerve.sysIdQuasistatic(SysIdRoutine.Direction.kReverse).schedule();
-    } else if (m_driverController.getWantsSysIdDynamicForward()) {
-      m_swerve.sysIdDynamic(SysIdRoutine.Direction.kForward).schedule();
-    } else if (m_driverController.getWantsSysIdDynamicBackward()) {
-      m_swerve.sysIdDynamic(SysIdRoutine.Direction.kReverse).schedule();
+    switch(Preferences.getString("Test Mode",null)) {
+      case "SYSID_SWERVE":
+        if (m_driverController.getWantsSysIdQuasistaticForward()) {
+          m_swerve.sysIdQuasistatic(SysIdRoutine.Direction.kForward).schedule();
+        } else if (m_driverController.getWantsSysIdQuasistaticBackward()) {
+          m_swerve.sysIdQuasistatic(SysIdRoutine.Direction.kReverse).schedule();
+        } else if (m_driverController.getWantsSysIdDynamicForward()) {
+          m_swerve.sysIdDynamic(SysIdRoutine.Direction.kForward).schedule();
+        } else if (m_driverController.getWantsSysIdDynamicBackward()) {
+          m_swerve.sysIdDynamic(SysIdRoutine.Direction.kReverse).schedule();
+        }
+        break;
+      case "INTAKE_TEST_MODE":
+        m_intake.manualPivotControl(m_driverController.intakeTestAxisPositive(), m_driverController.intakeTestAxisNegative(), 0.25);
+        break;
+      default:
+        System.out.println("you lost the game");
+        break;
     }
   }
 

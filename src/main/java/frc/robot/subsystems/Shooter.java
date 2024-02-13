@@ -48,7 +48,7 @@ public class Shooter extends Subsystem {
     m_pivotMotor = new CANSparkFlex(Constants.Shooter.k_pivotMotorID, MotorType.kBrushless);
     m_pivotMotor.restoreFactoryDefaults();
     m_pivotMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
-    m_pivotMotor.setSmartCurrentLimit(10); // TODO: Double check this
+    m_pivotMotor.setSmartCurrentLimit(5); // TODO: Double check this
 
     m_topMotorEncoder = m_topShooterMotor.getEncoder();
     m_bottomMotorEncoder = m_bottomShooterMotor.getEncoder();

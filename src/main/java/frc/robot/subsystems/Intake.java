@@ -6,7 +6,9 @@ import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
@@ -30,7 +32,7 @@ public class Intake extends Subsystem {
     m_pivotMotor = new CANSparkMax(Constants.Intake.k_pivotMotorID, MotorType.kBrushless);
     m_pivotMotor.restoreFactoryDefaults();
     m_pivotMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
-    m_pivotMotor.setSmartCurrentLimit(10); // TODO: Double check this
+    m_pivotMotor.setSmartCurrentLimit(5); // TODO: Double check this
 
     m_intakeMotor = new CANSparkMax(Constants.Intake.k_intakeMotorID, MotorType.kBrushless);
     m_intakeMotor.restoreFactoryDefaults();
@@ -55,11 +57,13 @@ public class Intake extends Subsystem {
 
   @Override
   public void periodic() {
-    double pivot_angle = getAngleFromTarget(m_periodicIO.pivot_target);
-    m_pivotMotorPID.setReference(pivot_angle, ControlType.kPosition);
+    if(!(Preferences.getString("Test Mode", null).equals("INTAKE_TEST_MODE") && DriverStation.isTest())) {
+      double pivot_angle = getAngleFromTarget(m_periodicIO.pivot_target);
+      m_pivotMotorPID.setReference(pivot_angle, ControlType.kPosition);
 
-    m_periodicIO.intake_speed = getSpeedFromState(m_periodicIO.intake_state);
-    SmartDashboard.putString("Intake/CurrentState", m_periodicIO.intake_state.toString());
+      m_periodicIO.intake_speed = getSpeedFromState(m_periodicIO.intake_state);
+      SmartDashboard.putString("Intake/CurrentState", m_periodicIO.intake_state.toString());
+    }
   }
 
   @Override
@@ -162,6 +166,10 @@ public class Intake extends Subsystem {
     double target_speed = getSpeedFromState(state);
 
     return current_speed <= target_speed+0.1 && current_speed >= target_speed-0.1;
+  }
+
+  public void manualPivotControl(double positive, double negative, double limit) {
+    m_pivotMotor.set((positive + negative) * limit);
   }
 
   private static class PeriodicIO {
