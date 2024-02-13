@@ -3,6 +3,10 @@ package frc.robot;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.photonvision.PhotonCamera;
+import org.photonvision.targeting.PhotonPipelineResult;
+import org.photonvision.targeting.PhotonTrackedTarget;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.DataLogManager;
@@ -47,6 +51,9 @@ public class Robot extends TimedRobot {
   private final Shooter m_shooter = Shooter.getInstance();
   private final Climbers m_climbers = Climbers.getInstance();
 
+  private final PhotonCamera m_limelight = new PhotonCamera("limelight");
+  private PhotonPipelineResult m_limelightResult;
+
   // Auto tasks
   private Task m_currentTask;
   private AutoRunner m_autoRunner = AutoRunner.getInstance();
@@ -90,6 +97,14 @@ public class Robot extends TimedRobot {
     m_allSubsystems.forEach(subsystem -> subsystem.writePeriodicOutputs());
     m_allSubsystems.forEach(subsystem -> subsystem.outputTelemetry());
     m_allSubsystems.forEach(subsystem -> subsystem.writeToLog());
+
+    m_limelightResult = m_limelight.getLatestResult();
+    PhotonTrackedTarget bestTarget = m_limelightResult.getBestTarget();
+
+    SmartDashboard.putBoolean("Limelight/SeesAprilTag", m_limelightResult.hasTargets());
+    SmartDashboard.putNumber("Limelight/CurrentVisibleTag", bestTarget.getFiducialId());
+    SmartDashboard.putNumber("Limelight/X", bestTarget.getBestCameraToTarget().getX());
+    SmartDashboard.putNumber("Limelight/Y", bestTarget.getBestCameraToTarget().getY());
 
     updateSim();
 
