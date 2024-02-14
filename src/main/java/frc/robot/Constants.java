@@ -56,7 +56,7 @@ public final class Constants {
       public static final int k_BRMotorId = 10;
       public static final int k_BLMotorId = 12;
 
-      public static final double k_P = 1.0;
+      public static final double k_P = 0.0;
       public static final double k_I = 0.0;
       public static final double k_D = 0.0;
       public static final double k_IZone = 0.0;
@@ -107,18 +107,18 @@ public final class Constants {
     public static final double k_pivotEncoderOffset = 0.0;
 
     // TODO: get pivot angles
-    public static final double k_groundPivotAngle = 0.0;
-    public static final double k_sourcePivotAngle = 0.0;
-    public static final double k_ampPivotAngle = 0.0;
-    public static final double k_stowPivotAngle = 0.0;
+    public static final double k_stowPivotAngle = 266.968537;
+    public static final double k_groundPivotAngle = 40.753135;
+    public static final double k_sourcePivotAngle = k_stowPivotAngle;
+    public static final double k_ampPivotAngle = k_stowPivotAngle;
 
     // TODO: get intake speeds
-    public static final double k_intakeSpeed = 0.0;
-    public static final double k_ejectSpeed = 0.0;
-    public static final double k_feedShooterSpeed = 0.0;
+    public static final double k_intakeSpeed = 0.7;
+    public static final double k_ejectSpeed = -0.45;
+    public static final double k_feedShooterSpeed = -0.5;
 
     // TODO: get intake pivot PID
-    public static final double k_pivotMotorP = 1.0;
+    public static final double k_pivotMotorP = 0.5;
     public static final double k_pivotMotorI = 0.0;
     public static final double k_pivotMotorD = 0.0;
     public static final double k_pivotMotorIZone = 0.0;

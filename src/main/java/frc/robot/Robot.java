@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -23,6 +22,8 @@ import frc.robot.simulation.Field;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Subsystem;
+import frc.robot.subsystems.Intake.IntakePivotTarget;
+import frc.robot.subsystems.Intake.IntakeState;
 import frc.robot.subsystems.climber.Climbers;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 
@@ -80,8 +81,8 @@ public class Robot extends TimedRobot {
     Preferences.initString("Test Mode", "NONE");
 
     m_allSubsystems.add(m_swerve);
-    m_allSubsystems.add(m_intake);
-    // m_allSubsystems.add(m_shooter);
+    // m_allSubsystems.add(m_intake);
+    m_allSubsystems.add(m_shooter);
     // m_allSubsystems.add(m_climbers);
 
     m_swerve.setGyroAngleAdjustment(0);
@@ -183,6 +184,24 @@ public class Robot extends TimedRobot {
       m_autoAimEnabled = !m_autoAimEnabled;
     }
 
+    if (m_driverController.getWantsIntakeStow()) {
+      m_intake.setPivotTarget(IntakePivotTarget.INTAKE_PIVOT_STOW);
+    }
+
+    if (m_driverController.getWantsIntakeGround()) {
+      m_intake.setPivotTarget(IntakePivotTarget.INTAKE_PIVOT_GROUND);
+    }
+
+    if(m_driverController.getWantsIntake()) {
+      m_intake.setState(IntakeState.INTAKE_STATE_INTAKE);
+    } else if(m_driverController.getWantsEject()) {
+      m_intake.setState(IntakeState.INTAKE_STATE_EJECT);
+    } else {
+      m_intake.setState(IntakeState.INTAKE_STATE_NONE);
+    }
+
+    
+
     m_driverController.outputTelemetry();
   }
 
@@ -225,10 +244,16 @@ public class Robot extends TimedRobot {
         }
         break;
       case "INTAKE_PIVOT":
-        m_intake.manualPivotControl(m_driverController.intakeTestAxisPositive(), m_driverController.intakeTestAxisNegative(), 0.25);
+        m_intake.manualPivotControl(m_driverController.testPositive(), m_driverController.testNegative(), 0.25);
+        break;
+      case "INTAKE_INTAKE":
+        m_intake.manualIntakeControl(m_driverController.testPositive(), m_driverController.testNegative(), 0.25);
         break;
       case "SHOOTER_PIVOT":
-        // m_shooter.manualPivotControl(m_driverController.intakeTestAxisPositive(), m_driverController.intakeTestAxisNegative(), 0.25);
+        m_shooter.manualPivotControl(m_driverController.testPositive(), m_driverController.testNegative(), 0.25);
+        break;
+      case "SHOOTER_SHOOT":
+        m_shooter.manualShootControl(m_driverController.testPositive(), m_driverController.testNegative(), 0.85);
         break;
       case "CLIMBER":
         // m_climber.manualControl();

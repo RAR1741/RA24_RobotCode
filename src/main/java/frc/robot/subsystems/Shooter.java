@@ -9,7 +9,9 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.Preferences;
 import frc.robot.Constants;
 import frc.robot.Helpers;
 import frc.robot.simulation.ShooterSim;
@@ -44,12 +46,12 @@ public class Shooter extends Subsystem {
 
     m_topShooterMotor.restoreFactoryDefaults();
     m_topShooterMotor.setIdleMode(CANSparkFlex.IdleMode.kCoast);
-    m_topShooterMotor.setInverted(false);
+    m_topShooterMotor.setInverted(true);
 
     m_bottomShooterMotor = new CANSparkFlex(Constants.Shooter.k_bottomMotorId, MotorType.kBrushless);
     m_bottomShooterMotor.restoreFactoryDefaults();
     m_bottomShooterMotor.setIdleMode(CANSparkFlex.IdleMode.kCoast);
-    m_bottomShooterMotor.setInverted(true);
+    m_bottomShooterMotor.setInverted(false);
 
     m_pivotMotor = new CANSparkFlex(Constants.Shooter.k_pivotMotorId, MotorType.kBrushless);
     m_pivotMotor.restoreFactoryDefaults();
@@ -90,16 +92,18 @@ public class Shooter extends Subsystem {
 
   @Override
   public void periodic() {
-    // m_periodicIO.pivot_voltage =
-    // m_pivotMotorPID.calculate(getCurrentPivotAngle(), m_periodicIO.pivot_angle);
+    if(!(Preferences.getString("Test Mode", "NONE").contains("SHOOTER_") && DriverStation.isTest())) {
+      // m_periodicIO.pivot_voltage =
+      // m_pivotMotorPID.calculate(getCurrentPivotAngle(), m_periodicIO.pivot_angle);
 
-    m_pivotMotorPID.setReference(m_periodicIO.pivot_angle, ControlType.kPosition);
+      m_pivotMotorPID.setReference(m_periodicIO.pivot_angle, ControlType.kPosition);
 
-    // if (m_pivotAbsEncoder.get() == 0.0) {
-    // m_periodicIO.pivot_voltage = 0.0;
-    // }
+      // if (m_pivotAbsEncoder.get() == 0.0) {
+      // m_periodicIO.pivot_voltage = 0.0;
+      // }
 
-    m_sim.updateAngle(getCurrentPivotAngle());
+      m_sim.updateAngle(getCurrentPivotAngle());
+    }
   }
 
   @Override
@@ -111,9 +115,19 @@ public class Shooter extends Subsystem {
 
   @Override
   public void writePeriodicOutputs() {
-    double limited_speed = m_speedLimiter.calculate(m_periodicIO.shooter_rpm);
-    m_topShooterMotorPID.setReference(limited_speed, ControlType.kVelocity);
-    m_bottomShooterMotorPID.setReference(limited_speed, ControlType.kVelocity);
+    if(!(Preferences.getString("Test Mode", "NONE").contains("SHOOTER_") && DriverStation.isTest())) {
+      double limited_speed = m_speedLimiter.calculate(m_periodicIO.shooter_rpm);
+      m_topShooterMotorPID.setReference(limited_speed, ControlType.kVelocity);
+      m_bottomShooterMotorPID.setReference(limited_speed, ControlType.kVelocity);
+    } else {
+      if(Preferences.getString("Test Mode", "NONE").equals("SHOOTER_PIVOT")) {
+        m_pivotMotor.set(m_periodicIO.pivot_speed);
+      }
+      if(Preferences.getString("Test Mode", "NONE").equals("SHOOTER_SHOOT")) {
+        m_topShooterMotor.set(m_periodicIO.shoot_speed);
+        m_bottomShooterMotor.set(m_periodicIO.shoot_speed);
+      }
+    }
 
     // m_pivotMotor.setVoltage(m_periodicIO.pivot_voltage);
   }
@@ -163,6 +177,14 @@ public class Shooter extends Subsystem {
     m_periodicIO.shooter_rpm = 0.0;
   }
 
+  public void manualPivotControl(double positive, double negative, double limit) {
+    m_periodicIO.pivot_speed = (positive - negative) * limit;
+  }
+
+  public void manualShootControl(double positive, double negative, double limit) {
+    m_periodicIO.shoot_speed = (positive - negative) * limit;
+  }
+
   public double getCurrentPivotAngle() {
     return Units.rotationsToDegrees(Helpers.modRotations(m_pivotAbsEncoder.get()));
   }
@@ -196,6 +218,10 @@ public class Shooter extends Subsystem {
     double shooter_rpm = 0.0;
 
     double pivot_angle = 60.0;
+
+    double pivot_speed = 0.0;
+    double shoot_speed = 0.0;
+    
     // double pivot_voltage = 0.0;
   }
 

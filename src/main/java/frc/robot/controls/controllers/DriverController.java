@@ -52,6 +52,7 @@ public class DriverController extends FilteredController {
     return this.getRawButtonPressed(RawButton.START);
   }
 
+  // SysId test mode //
   public boolean getWantsSysIdQuasistaticForward() {
     return this.getRawButtonPressed(RawButton.A);
   }
@@ -67,13 +68,32 @@ public class DriverController extends FilteredController {
   public boolean getWantsSysIdDynamicForward() {
     return this.getRawButtonPressed(RawButton.Y);
   }
+  /////
 
-  public double intakeTestAxisPositive() {
+  // Intake test mode //
+  public double testPositive() {
     return this.getFilteredAxis(RawAxis.LEFT_TRIGGER);
   }
   
-  public double intakeTestAxisNegative() {
+  public double testNegative() {
     return this.getFilteredAxis(RawAxis.RIGHT_TRIGGER);
+  }
+  /////
+
+  public boolean getWantsIntakeStow() {
+    return this.getRawButtonPressed(RawButton.LEFT_BUMPER);
+  }
+
+  public boolean getWantsIntakeGround() {
+    return this.getRawButtonPressed(RawButton.RIGHT_BUMPER);
+  }
+
+  public boolean getWantsIntake() {
+    return this.getRawButton(RawButton.X);
+  }
+
+  public boolean getWantsEject() {
+    return this.getRawButton(RawButton.B);
   }
 
   public void outputTelemetry() {

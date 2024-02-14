@@ -6,6 +6,7 @@ import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.apriltag.jni.AprilTagJNI.Helper;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
@@ -43,6 +44,7 @@ public class Intake extends Subsystem {
     m_intakeMotor = new CANSparkMax(Constants.Intake.k_intakeMotorId, MotorType.kBrushless);
     m_intakeMotor.restoreFactoryDefaults();
     m_intakeMotor.setIdleMode(CANSparkMax.IdleMode.kCoast);
+    m_intakeMotor.setInverted(true);
 
     m_pivotMotorPID = m_pivotMotor.getPIDController();
     m_pivotMotorPID.setP(Constants.Intake.k_pivotMotorP);
@@ -65,8 +67,8 @@ public class Intake extends Subsystem {
 
   @Override
   public void periodic() {
-    if(!(Preferences.getString("Test Mode", "NONE").equals("INTAKE_PIVOT") && DriverStation.isTest())) {
-      double pivot_angle = getAngleFromTarget(m_periodicIO.pivot_target);
+    if(!(Preferences.getString("Test Mode", "NONE").contains("INTAKE_") && DriverStation.isTest())) {
+      double pivot_angle = Units.degreesToRotations(getAngleFromTarget(m_periodicIO.pivot_target));
       m_pivotMotorPID.setReference(pivot_angle, ControlType.kPosition);
 
       m_periodicIO.intake_speed = getSpeedFromState(m_periodicIO.intake_state);
@@ -83,15 +85,23 @@ public class Intake extends Subsystem {
 
   @Override
   public void writePeriodicOutputs() {
-    m_pivotMotor.set(m_periodicIO.pivot_speed);
+    if(Preferences.getString("Test Mode", "NONE").contains("INTAKE_") && DriverStation.isTest()) {
+      m_pivotMotor.set(m_periodicIO.pivot_speed);
+    }
+    m_intakeMotor.set(m_periodicIO.intake_speed);
   }
 
   @Override
   public void outputTelemetry() {
+    putString("PivotTarget",m_periodicIO.pivot_target.toString());
     putNumber("IntakeSpeed", getSpeedFromState(m_periodicIO.intake_state));
     putNumber("CurrentPivotAngle", getCurrentPivotAngle());
-    putNumber("CurrentSetpoint", getAngleFromTarget(m_periodicIO.pivot_target));
+    putNumber("CurrentPivotSetpoint", getAngleFromTarget(m_periodicIO.pivot_target));
     putNumber("PivotSpeed", m_periodicIO.pivot_speed);
+    putNumber("PivotPower", Helpers.getVoltage(m_pivotMotor));
+    putNumber("IntakeSpeed_PERIODIC", m_periodicIO.intake_speed);
+    putNumber("IntakePower", Helpers.getVoltage(m_intakeMotor));
+    putBoolean("AtTarget", isAtPivotTarget(m_periodicIO.pivot_target));
   }
 
   @Override
@@ -110,7 +120,7 @@ public class Intake extends Subsystem {
       case INTAKE_PIVOT_STOW:
         return Constants.Intake.k_stowPivotAngle;
       default:
-        return 180.0;
+        return Constants.Intake.k_stowPivotAngle;
     }
   }
 
@@ -174,6 +184,10 @@ public class Intake extends Subsystem {
 
   public void manualPivotControl(double positive, double negative, double limit) {
     m_periodicIO.pivot_speed = (positive - negative) * limit;
+  }
+
+  public void manualIntakeControl(double positive, double negative, double limit) {
+    m_periodicIO.intake_speed = (positive - negative) * limit;
   }
 
   private static class PeriodicIO {
