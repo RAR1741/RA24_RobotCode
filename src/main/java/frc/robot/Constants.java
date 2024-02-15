@@ -99,17 +99,22 @@ public final class Constants {
   }
 
   public class Intake {
-    // TODO: Get intake motor id's
+    // TODO: Get intake motor IDs
     public static final int k_pivotMotorId = 13;
     public static final int k_intakeMotorId = 14;
 
+    public static final double k_pivotMotorMaxOutput = 0.2;
+
     public static final int k_pivotEncoderId = 4;
-    public static final double k_pivotEncoderOffset = 0.0;
+    public static final double k_pivotEncoderOffset = 0.451790 - 0.5;
+
+    public static final double k_pivotConversionFactor = (1.0 / 125.0) * 360.0;
 
     // TODO: get pivot angles
-    public static final double k_stowPivotAngle = 266.968537;
-    public static final double k_groundPivotAngle = 40.753135;
-    public static final double k_sourcePivotAngle = k_stowPivotAngle;
+    public static final double k_stowPivotAngle = 265.0;
+    public static final double k_groundPivotAngle = 60.0;
+    public static final double k_sourcePivotAngle = 180.0;
+    // public static final double k_sourcePivotAngle = k_stowPivotAngle;
     public static final double k_ampPivotAngle = k_stowPivotAngle;
 
     // TODO: get intake speeds
@@ -118,7 +123,7 @@ public final class Constants {
     public static final double k_feedShooterSpeed = -0.5;
 
     // TODO: get intake pivot PID
-    public static final double k_pivotMotorP = 0.5;
+    public static final double k_pivotMotorP = 0.1;
     public static final double k_pivotMotorI = 0.0;
     public static final double k_pivotMotorD = 0.0;
     public static final double k_pivotMotorIZone = 0.0;

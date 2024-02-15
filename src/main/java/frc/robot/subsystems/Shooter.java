@@ -1,11 +1,11 @@
 package frc.robot.subsystems;
 
+import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkFlex;
+import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
-import com.revrobotics.CANSparkBase.ControlType;
-import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.util.Units;
@@ -92,7 +92,7 @@ public class Shooter extends Subsystem {
 
   @Override
   public void periodic() {
-    if(!(Preferences.getString("Test Mode", "NONE").contains("SHOOTER_") && DriverStation.isTest())) {
+    if (!(Preferences.getString("Test Mode", "NONE").contains("SHOOTER_") && DriverStation.isTest())) {
       // m_periodicIO.pivot_voltage =
       // m_pivotMotorPID.calculate(getCurrentPivotAngle(), m_periodicIO.pivot_angle);
 
@@ -115,15 +115,15 @@ public class Shooter extends Subsystem {
 
   @Override
   public void writePeriodicOutputs() {
-    if(!(Preferences.getString("Test Mode", "NONE").contains("SHOOTER_") && DriverStation.isTest())) {
+    if (!(Preferences.getString("Test Mode", "NONE").contains("SHOOTER_") && DriverStation.isTest())) {
       double limited_speed = m_speedLimiter.calculate(m_periodicIO.shooter_rpm);
       m_topShooterMotorPID.setReference(limited_speed, ControlType.kVelocity);
       m_bottomShooterMotorPID.setReference(limited_speed, ControlType.kVelocity);
     } else {
-      if(Preferences.getString("Test Mode", "NONE").equals("SHOOTER_PIVOT")) {
+      if (Preferences.getString("Test Mode", "NONE").equals("SHOOTER_PIVOT")) {
         m_pivotMotor.set(m_periodicIO.pivot_speed);
       }
-      if(Preferences.getString("Test Mode", "NONE").equals("SHOOTER_SHOOT")) {
+      if (Preferences.getString("Test Mode", "NONE").equals("SHOOTER_SHOOT")) {
         m_topShooterMotor.set(m_periodicIO.shoot_speed);
         m_bottomShooterMotor.set(m_periodicIO.shoot_speed);
       }
@@ -150,13 +150,13 @@ public class Shooter extends Subsystem {
 
   public void setAngle(ShooterPivotTarget target) {
     switch (target) {
-      case SHOOTER_LOW:
+      case LOW:
         m_periodicIO.pivot_angle = Constants.Shooter.k_lowPivotAngle;
         break;
-      case SHOOTER_AMP:
+      case AMP:
         m_periodicIO.pivot_angle = Constants.Shooter.k_ampPivotAngle;
         break;
-      case SHOOTER_SPEAKER:
+      case SPEAKER:
         m_periodicIO.pivot_angle = Constants.Shooter.k_speakerPivotAngle;
         break;
       default:
@@ -191,11 +191,11 @@ public class Shooter extends Subsystem {
 
   public double getAngleFromTarget(ShooterPivotTarget target) {
     switch (target) {
-      case SHOOTER_LOW:
+      case LOW:
         return Constants.Shooter.k_lowPivotAngle;
-      case SHOOTER_AMP:
+      case AMP:
         return Constants.Shooter.k_ampPivotAngle;
-      case SHOOTER_SPEAKER:
+      case SPEAKER:
         return Constants.Shooter.k_speakerPivotAngle;
 
       default:
@@ -204,7 +204,7 @@ public class Shooter extends Subsystem {
   }
 
   public boolean isAtTarget(ShooterPivotTarget target) {
-    if (target == ShooterPivotTarget.SHOOTER_NONE) {
+    if (target == ShooterPivotTarget.NONE) {
       return true;
     }
 
@@ -221,11 +221,14 @@ public class Shooter extends Subsystem {
 
     double pivot_speed = 0.0;
     double shoot_speed = 0.0;
-    
+
     // double pivot_voltage = 0.0;
   }
 
   public enum ShooterPivotTarget {
-    SHOOTER_LOW, SHOOTER_AMP, SHOOTER_SPEAKER, SHOOTER_NONE
+    LOW,
+    AMP,
+    SPEAKER,
+    NONE
   }
 }

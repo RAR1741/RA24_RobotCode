@@ -1,5 +1,6 @@
 package frc.robot;
 
+import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkMax;
 
 public class Helpers {
@@ -32,6 +33,10 @@ public class Helpers {
   }
 
   public static double getVoltage(CANSparkMax motor) {
+    return motor.getBusVoltage() * motor.getAppliedOutput();
+  }
+
+  public static double getVoltage(CANSparkFlex motor) {
     return motor.getBusVoltage() * motor.getAppliedOutput();
   }
 }

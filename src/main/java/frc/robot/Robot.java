@@ -20,10 +20,10 @@ import frc.robot.controls.controllers.DriverController;
 import frc.robot.controls.controllers.OperatorController;
 import frc.robot.simulation.Field;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Shooter;
-import frc.robot.subsystems.Subsystem;
 import frc.robot.subsystems.Intake.IntakePivotTarget;
 import frc.robot.subsystems.Intake.IntakeState;
+import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Subsystem;
 import frc.robot.subsystems.climber.Climbers;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 
@@ -81,11 +81,16 @@ public class Robot extends TimedRobot {
     Preferences.initString("Test Mode", "NONE");
 
     m_allSubsystems.add(m_swerve);
-    // m_allSubsystems.add(m_intake);
+    m_allSubsystems.add(m_intake);
     m_allSubsystems.add(m_shooter);
     // m_allSubsystems.add(m_climbers);
 
     m_swerve.setGyroAngleAdjustment(0);
+
+    // This has to be done later, so the absolute encoders are initialized
+    m_intake.setPivotAbsOffset();
+
+    // TODO: do the above with the shooter pivot as well also too
   }
 
   @Override
@@ -185,22 +190,20 @@ public class Robot extends TimedRobot {
     }
 
     if (m_driverController.getWantsIntakeStow()) {
-      m_intake.setPivotTarget(IntakePivotTarget.INTAKE_PIVOT_STOW);
+      m_intake.setPivotTarget(IntakePivotTarget.STOW);
     }
 
     if (m_driverController.getWantsIntakeGround()) {
-      m_intake.setPivotTarget(IntakePivotTarget.INTAKE_PIVOT_GROUND);
+      m_intake.setPivotTarget(IntakePivotTarget.GROUND);
     }
 
-    if(m_driverController.getWantsIntake()) {
-      m_intake.setState(IntakeState.INTAKE_STATE_INTAKE);
-    } else if(m_driverController.getWantsEject()) {
-      m_intake.setState(IntakeState.INTAKE_STATE_EJECT);
+    if (m_driverController.getWantsIntake()) {
+      m_intake.setState(IntakeState.INTAKE);
+    } else if (m_driverController.getWantsEject()) {
+      m_intake.setState(IntakeState.EJECT);
     } else {
-      m_intake.setState(IntakeState.INTAKE_STATE_NONE);
+      m_intake.setState(IntakeState.NONE);
     }
-
-    
 
     m_driverController.outputTelemetry();
   }
@@ -219,7 +222,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledPeriodic() {
-    m_allSubsystems.forEach(subsystem -> subsystem.outputTelemetry());
   }
 
   @Override
@@ -250,7 +252,7 @@ public class Robot extends TimedRobot {
         m_intake.manualIntakeControl(m_driverController.testPositive(), m_driverController.testNegative(), 0.25);
         break;
       case "SHOOTER_PIVOT":
-        m_shooter.manualPivotControl(m_driverController.testPositive(), m_driverController.testNegative(), 0.25);
+        m_shooter.manualPivotControl(m_driverController.testPositive(), m_driverController.testNegative(), 0.1);
         break;
       case "SHOOTER_SHOOT":
         m_shooter.manualShootControl(m_driverController.testPositive(), m_driverController.testNegative(), 0.85);

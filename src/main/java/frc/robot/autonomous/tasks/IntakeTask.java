@@ -28,7 +28,7 @@ public class IntakeTask extends Task {
 
 	@Override
 	public boolean isFinished() {
-		if (m_pivotTarget == IntakePivotTarget.INTAKE_PIVOT_NONE && m_intakeState == IntakeState.INTAKE_STATE_NONE) {
+		if (m_pivotTarget == IntakePivotTarget.NONE && m_intakeState == IntakeState.NONE) {
 			return true;
 		}
 

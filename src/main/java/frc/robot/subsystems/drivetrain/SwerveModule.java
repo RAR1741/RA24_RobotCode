@@ -48,10 +48,11 @@ public class SwerveModule {
     m_driveMotor.restoreFactoryDefaults();
     m_driveMotor.setIdleMode(IdleMode.kCoast);
     m_driveEncoder = m_driveMotor.getEncoder();
-    m_driveEncoder.setPositionConversionFactor(Units.inchesToMeters(Constants.SwerveDrive.k_wheelRadiusIn * 2 * Math.PI)
-        / Constants.SwerveDrive.k_driveGearRatio);
+    m_driveEncoder
+        .setPositionConversionFactor(Units.inchesToMeters(Constants.SwerveDrive.k_wheelRadiusIn * 2.0 * Math.PI)
+            / Constants.SwerveDrive.k_driveGearRatio);
     m_driveEncoder.setVelocityConversionFactor(Units.inchesToMeters(
-        (Constants.SwerveDrive.k_wheelRadiusIn * 2 * Math.PI) / Constants.SwerveDrive.k_driveGearRatio) / 60);
+        (Constants.SwerveDrive.k_wheelRadiusIn * 2.0 * Math.PI) / Constants.SwerveDrive.k_driveGearRatio) / 60.0);
 
     m_turningMotor = new CANSparkMax(turningMotorChannel, MotorType.kBrushless);
     m_turningMotor.restoreFactoryDefaults();
@@ -82,8 +83,8 @@ public class SwerveModule {
     m_turningPIDController.setPositionPIDWrappingMinInput(0.0);
     m_turningPIDController.setPositionPIDWrappingMaxInput(2.0 * Math.PI);
     m_turningPIDController.setOutputRange(
-      Constants.SwerveDrive.Turn.k_TurningMinOutput,
-      Constants.SwerveDrive.Turn.k_TurningMaxOutput);
+        Constants.SwerveDrive.Turn.k_TurningMinOutput,
+        Constants.SwerveDrive.Turn.k_TurningMaxOutput);
 
     m_drivePIDController = m_driveMotor.getPIDController();
     m_drivePIDController.setP(Constants.SwerveDrive.Drive.k_P);
@@ -151,7 +152,7 @@ public class SwerveModule {
   }
 
   public void periodic() {
-    if(m_periodicIO.shouldChangeState) {
+    if (m_periodicIO.shouldChangeState) {
       m_drivePIDController.setReference(m_periodicIO.desiredState.speedMetersPerSecond, ControlType.kVelocity);
       m_turningPIDController.setReference(m_periodicIO.desiredState.angle.getRadians(), ControlType.kPosition);
       m_periodicIO.shouldChangeState = false;
