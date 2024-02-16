@@ -27,5 +27,6 @@
   ],
   "java.test.defaultConfig": "WPIlibUnitTests",
   "wpilib.selectDefaultSimulateExtension": true,
-  "wpilib.stopSimulationOnEntry": false
+  "wpilib.stopSimulationOnEntry": false,
+  "cSpell.words": ["REHOME", "Setpoints"]
 }
