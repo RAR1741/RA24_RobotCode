@@ -279,6 +279,7 @@ public class Robot extends LoggedRobot {
   public void setLEDs() {
   }
 
+  @SuppressWarnings("resource")
   private void setupLogging() {
     Logger.recordMetadata("ProjectName", "TBD Robot Name");
     Logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
