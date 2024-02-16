@@ -16,6 +16,13 @@ public final class Constants {
   public static class Auto {
     public static final double k_maxSpeed = 1; // 1 meters per second
     public static final double k_maxAcceleration = 0.5;
+
+    // TODO: Add left and right subwoofer starting poses
+    public static final Pose2d k_redCenterPose2d = new Pose2d(15.19, 5.50,
+        new Rotation2d(Units.degreesToRadians(180.0)));
+
+    public static final Pose2d k_blueCenterPose2d = new Pose2d(1.27, 5.50,
+        new Rotation2d(0));
   }
 
   public class SwerveDrive {
