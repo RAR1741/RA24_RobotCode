@@ -211,7 +211,8 @@ public class Robot extends LoggedRobot {
   }
 
   private void setupLogging() {
-    Logger.recordMetadata("ProjectName", "Flipside"); // Set a metadata value
+    Logger.recordMetadata("ProjectName", "TBD Robot Name");
+    Logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
 
     if (isReal()) {
       Logger.addDataReceiver(new WPILOGWriter()); // Log to a USB stick ("/U/logs")

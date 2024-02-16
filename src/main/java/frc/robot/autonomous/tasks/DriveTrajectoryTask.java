@@ -17,6 +17,7 @@ public class DriveTrajectoryTask extends Task {
   private SwerveDrive m_swerve = SwerveDrive.getInstance();;
   private PathPlannerTrajectory m_autoTrajectory;
   private boolean m_isFinished = false;
+  private PathPlannerPath m_autoPath = null;
   private String m_smartDashboardKey = "DriveTrajectoryTask/";
 
   private final Timer m_runningTimer = new Timer();
@@ -24,8 +25,9 @@ public class DriveTrajectoryTask extends Task {
 
   public DriveTrajectoryTask(String pathName, double maxSpeed, double maxAcceleration) {
     try {
-      PathPlannerPath m_autoPath = PathPlannerPath.fromPathFile(pathName);
+      m_autoPath = PathPlannerPath.fromPathFile(pathName);
 
+      // TODO: figure out flipping the path for the other side of the field
       m_autoTrajectory = new PathPlannerTrajectory(
           m_autoPath,
           new ChassisSpeeds(),
@@ -79,6 +81,10 @@ public class DriveTrajectoryTask extends Task {
 
       m_swerve.setPose(targetPose2d);
     }
+  }
+
+  public Pose2d getStartingPose() {
+    return m_autoPath.getStartingDifferentialPose();
   }
 
   @Override

@@ -1,1 +1,18 @@
-[]
+[
+  {
+    "name": "/Preferences/demoMode",
+    "type": "boolean",
+    "value": false,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/demoLEDMode",
+    "type": "double",
+    "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
+  }
+]
