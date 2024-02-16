@@ -18,7 +18,7 @@ public class IntakeSim {
   private final DCMotor k_pivotMotor = DCMotor.getNEO(1);
   private final double k_pivotGearRatio = 125.0;
 
-  private final double k_simOffset = -186.525574;
+  private final double k_simOffset = -160.864870;
 
   @SuppressWarnings("unused")
   private final SingleJointedArmSim m_joint = new SingleJointedArmSim(

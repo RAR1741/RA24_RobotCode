@@ -106,13 +106,10 @@ public final class Constants {
     public static final double k_pivotMotorMaxOutput = 0.2;
 
     public static final int k_pivotEncoderId = 4;
-    public static final double k_pivotEncoderOffset = 0.451790 - 0.5;
-
-    public static final double k_pivotConversionFactor = (1.0 / 125.0) * 360.0;
 
     // TODO: get pivot angles
-    public static final double k_stowPivotAngle = 265.0;
-    public static final double k_groundPivotAngle = 60.0;
+    public static final double k_stowPivotAngle = 267.0;
+    public static final double k_groundPivotAngle = 41.0;
     public static final double k_sourcePivotAngle = 180.0;
     // public static final double k_sourcePivotAngle = k_stowPivotAngle;
     public static final double k_ampPivotAngle = k_stowPivotAngle;
@@ -123,7 +120,7 @@ public final class Constants {
     public static final double k_feedShooterSpeed = -0.5;
 
     // TODO: get intake pivot PID
-    public static final double k_pivotMotorP = 0.1;
+    public static final double k_pivotMotorP = 0.035;
     public static final double k_pivotMotorI = 0.0;
     public static final double k_pivotMotorD = 0.0;
     public static final double k_pivotMotorIZone = 0.0;

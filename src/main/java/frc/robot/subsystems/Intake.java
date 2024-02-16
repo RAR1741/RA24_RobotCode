@@ -4,6 +4,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import frc.robot.Constants;
@@ -36,7 +37,7 @@ public class Intake extends Subsystem {
     m_pivotMotor = new CANSparkMax(Constants.Intake.k_pivotMotorId, MotorType.kBrushless);
     m_pivotMotor.restoreFactoryDefaults();
     m_pivotMotor.setIdleMode(CANSparkMax.IdleMode.kCoast);
-    m_pivotMotor.setSmartCurrentLimit(5); // TODO: Double check this
+    m_pivotMotor.setSmartCurrentLimit(10); // TODO: Double check this
     m_pivotMotor.setInverted(true);
 
     // Intake motor setup
@@ -46,7 +47,9 @@ public class Intake extends Subsystem {
     m_intakeMotor.setInverted(true);
 
     // Pivot PID
-    m_pivotMotorPID = new PIDController(Constants.Intake.k_pivotMotorP, Constants.Intake.k_pivotMotorI,
+    m_pivotMotorPID = new PIDController(
+        Constants.Intake.k_pivotMotorP,
+        Constants.Intake.k_pivotMotorI,
         Constants.Intake.k_pivotMotorD);
 
     m_periodicIO = new PeriodicIO();
@@ -62,6 +65,14 @@ public class Intake extends Subsystem {
 
   @Override
   public void periodic() {
+    if (!DriverStation.isTest()) {
+      double target_pivot_angle = getAngleFromTarget(m_periodicIO.pivot_target);
+      m_periodicIO.pivot_voltage = m_pivotMotorPID.calculate(getPivotAngle(), target_pivot_angle);
+
+      m_periodicIO.intake_speed = getSpeedFromState(m_periodicIO.intake_state);
+      putString("IntakeState", m_periodicIO.intake_state.toString());
+    }
+
     m_sim.updateAngle(getPivotAngle());
   }
 
@@ -72,15 +83,7 @@ public class Intake extends Subsystem {
 
   @Override
   public void writePeriodicOutputs() {
-    if (!DriverStation.isTest()) {
-      double pivot_angle = getAngleFromTarget(m_periodicIO.pivot_target);
-      m_periodicIO.pivot_speed = m_pivotMotorPID.calculate(getPivotAngle(), pivot_angle);
-
-      m_periodicIO.intake_speed = getSpeedFromState(m_periodicIO.intake_state);
-      putString("IntakeState", m_periodicIO.intake_state.toString());
-    }
-
-    m_pivotMotor.set(m_periodicIO.pivot_speed);
+    m_pivotMotor.set(m_periodicIO.pivot_voltage);
     m_intakeMotor.set(m_periodicIO.intake_speed);
   }
 
@@ -93,7 +96,7 @@ public class Intake extends Subsystem {
     putString("PivotTarget", m_periodicIO.pivot_target.toString());
     putNumber("PivotAbsPos", m_pivotAbsEncoder.getAbsolutePosition());
     putNumber("PivotSetpoint", getAngleFromTarget(m_periodicIO.pivot_target));
-    putNumber("PivotSpeed", m_periodicIO.pivot_speed);
+    putNumber("PivotSpeed", m_periodicIO.pivot_voltage);
     putNumber("PivotPower", Helpers.getVoltage(m_pivotMotor));
     putNumber("PivotRelAngle", getPivotAngle());
     putBoolean("PivotAtTarget", isAtPivotTarget(m_periodicIO.pivot_target));
@@ -132,12 +135,6 @@ public class Intake extends Subsystem {
     }
   }
 
-  // public void setPivotAbsOffset() {
-  // m_pivotRelEncoder.setPosition(Units.rotationsToDegrees(
-  // Helpers.modRotations(m_pivotAbsEncoder.getAbsolutePosition() -
-  // Constants.Intake.k_pivotEncoderOffset)));
-  // }
-
   public void stopIntake() {
     m_periodicIO.intake_speed = 0.0;
     m_periodicIO.intake_state = IntakeState.NONE;
@@ -152,7 +149,7 @@ public class Intake extends Subsystem {
   }
 
   public double getPivotAngle() {
-    return m_pivotAbsEncoder.getAbsolutePosition();
+    return Units.rotationsToDegrees(m_pivotAbsEncoder.getAbsolutePosition());
   }
 
   public double getCurrentSpeed() {
@@ -182,7 +179,7 @@ public class Intake extends Subsystem {
   }
 
   public void manualPivotControl(double positive, double negative, double limit) {
-    m_periodicIO.pivot_speed = (positive - negative) * limit;
+    m_periodicIO.pivot_voltage = (positive - negative) * limit;
   }
 
   public void manualIntakeControl(double positive, double negative, double limit) {
@@ -190,7 +187,7 @@ public class Intake extends Subsystem {
   }
 
   private static class PeriodicIO {
-    double pivot_speed = 0.0;
+    double pivot_voltage = 0.0;
     IntakePivotTarget pivot_target = IntakePivotTarget.STOW;
     IntakeState intake_state = IntakeState.NONE;
 
