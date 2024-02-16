@@ -14,5 +14,29 @@
     "properties": {
       "persistent": true
     }
+  },
+  {
+    "name": "/Preferences/SwerveDrive/x",
+    "type": "double",
+    "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/SwerveDrive/y",
+    "type": "double",
+    "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/SwerveDrive/rot",
+    "type": "double",
+    "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
   }
 ]

@@ -5,6 +5,8 @@ import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
+import org.littletonrobotics.junction.AutoLogOutput;
+
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkBase.IdleMode;
 
@@ -71,6 +73,7 @@ public class SwerveDrive extends Subsystem {
       m_moduleLocations[Module.BACK_LEFT],
       m_moduleLocations[Module.BACK_RIGHT]);
 
+  // TODO: we might be able to have a better default pose here
   private SwerveDrivePoseEstimator m_poseEstimator = new SwerveDrivePoseEstimator(
       m_kinematics,
       m_gyro.getRotation2d(),
@@ -227,6 +230,7 @@ public class SwerveDrive extends Subsystem {
     setPose(pose);
   }
 
+  @AutoLogOutput
   public Rotation2d getRotation2d() {
     return m_poseEstimator.getEstimatedPosition().getRotation();
   }
@@ -271,6 +275,7 @@ public class SwerveDrive extends Subsystem {
     return m_gyro;
   }
 
+  @AutoLogOutput
   public Pose2d getPose() {
     return m_poseEstimator.getEstimatedPosition();
   }
@@ -307,6 +312,7 @@ public class SwerveDrive extends Subsystem {
     resetPose();
   }
 
+  @AutoLogOutput
   private double[] getCurrentStates() {
     double[] currentStates = {
         m_modules[Module.FRONT_LEFT].getTurnPosition() * 360, m_modules[Module.FRONT_LEFT].getDriveVelocity(),
@@ -318,6 +324,7 @@ public class SwerveDrive extends Subsystem {
     return currentStates;
   }
 
+  @AutoLogOutput
   private double[] getDesiredStates() {
     double[] desiredStates = {
         m_modules[Module.FRONT_LEFT].getDesiredState().angle.getDegrees(),

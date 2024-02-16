@@ -14,8 +14,8 @@ public final class Constants {
   }
 
   public static class Auto {
-    public static final double k_maxSpeed = 3.0; // 1 meters per second
-    public static final double k_maxAcceleration = 3.0;
+    public static final double k_maxSpeed = 3.0; // 3 meters per second
+    public static final double k_maxAcceleration = 1.0;
 
     public class PIDConstants {
       public class Translation {
@@ -30,6 +30,13 @@ public final class Constants {
         public static final double k_D = 0.0;
       }
     }
+
+    // TODO: Add left and right subwoofer starting poses
+    public static final Pose2d k_redCenterPose2d = new Pose2d(15.19, 5.50,
+        new Rotation2d(Units.degreesToRadians(180.0)));
+
+    public static final Pose2d k_blueCenterPose2d = new Pose2d(1.27, 5.50,
+        new Rotation2d(0));
   }
 
   public class SwerveDrive {

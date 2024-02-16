@@ -52,6 +52,7 @@ public class AutoRunner {
     }
 
     m_autoMode.queueTasks();
-    m_swerve.setPose(m_autoMode.getStartingPosition());
+
+    m_autoMode.setStartingPose();
   }
 }

@@ -185,3 +185,6 @@ ctre_sim/
 networktables.json
 networktables.json.bck
 simgui.json
+
+# gversion build constants file
+src/main/java/frc/robot/BuildConstants.java

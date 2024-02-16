@@ -4,9 +4,8 @@ import java.util.ArrayList;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.DriverStation;
-import frc.robot.Constants;
+import frc.robot.Constants.Field;
+import frc.robot.autonomous.tasks.DriveTrajectoryTask;
 import frc.robot.autonomous.tasks.Task;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 
@@ -15,12 +14,6 @@ public abstract class AutoModeBase {
 
   public AutoModeBase() {
     m_tasks = new ArrayList<>();
-
-    // Reset the gyro and set the starting position
-    Pose2d startingPosition = getStartingPosition();
-    SwerveDrive m_drive = SwerveDrive.getInstance();
-    // m_drive.setGyroAngleAdjustment(startingPosition.getRotation().getDegrees());
-    m_drive.resetOdometry(startingPosition);
   }
 
   public Task getNextTask() {
@@ -38,28 +31,26 @@ public abstract class AutoModeBase {
 
   public abstract void queueTasks();
 
-  public abstract Pose2d getBlueStartingPosition();
+  public void setStartingPose() {
+    // Figure out the first PathPlanner path
+    Pose2d startingPose = null;
 
-  private Pose2d getRedStartingPosition() {
-    Rotation2d redStartingRotation = Rotation2d.fromDegrees(getBlueStartingPosition().getRotation().getDegrees() - 180);
+    // Loop over the m_tasks and find the first DriveTrajectoryTask
+    for (Task task : m_tasks) {
+      if (task instanceof DriveTrajectoryTask) {
+        // Set the starting pose to the starting pose of the first DriveTrajectoryTask
+        startingPose = ((DriveTrajectoryTask) task).getStartingPose();
+        break;
+      }
+    }
 
-    Translation2d redStartingTranslation = new Translation2d(
-        Constants.Field.k_width - getBlueStartingPosition().getX(),
-        getBlueStartingPosition().getY());
+    // If there isn't one, default to something visible
+    if (startingPose == null) {
+      // Default to the center of the field
+      startingPose = new Pose2d(Field.k_width / 2, Field.k_length / 2, new Rotation2d(0));
+    }
 
-    return new Pose2d(redStartingTranslation, redStartingRotation);
+    SwerveDrive m_drive = SwerveDrive.getInstance();
+    m_drive.resetOdometry(startingPose);
   };
-
-  public Pose2d getStartingPosition() {
-    DriverStation.Alliance alliance = DriverStation.Alliance.Red; // Default to RED
-    if (DriverStation.getAlliance().isPresent()) {
-      alliance = DriverStation.getAlliance().get();
-    }
-
-    if (alliance == DriverStation.Alliance.Blue) {
-      return getBlueStartingPosition();
-    } else {
-      return getRedStartingPosition();
-    }
-  }
 }
