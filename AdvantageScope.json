@@ -1,0 +1,36 @@
+{
+  "version": "3.0.2",
+  "layout": [
+    {
+      "type": 5,
+      "fields": [],
+      "listFields": [
+        [
+          {
+            "type": "Robot",
+            "key": "NT:/AdvantageKit/RealOutputs/SwerveDrive/Pose",
+            "sourceTypeIndex": 1,
+            "sourceType": "Pose2d"
+          }
+        ]
+      ],
+      "options": {
+        "game": "2024 Field",
+        "unitDistance": "meters",
+        "unitRotation": "radians",
+        "origin": "right",
+        "size": 0.762,
+        "allianceBumpers": "auto",
+        "allianceOrigin": "blue",
+        "orientation": "blue left, red right"
+      },
+      "configHidden": false,
+      "title": "Field"
+    },
+    {
+      "type": 3,
+      "field": "NT:/AdvantageKit/RealOutputs/Console",
+      "title": "Console"
+    }
+  ]
+}

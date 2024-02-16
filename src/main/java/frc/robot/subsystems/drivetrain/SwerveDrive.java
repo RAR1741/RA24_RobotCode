@@ -1,5 +1,7 @@
 package frc.robot.subsystems.drivetrain;
 
+import org.littletonrobotics.junction.AutoLogOutput;
+
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkBase.IdleMode;
 
@@ -210,6 +212,7 @@ public class SwerveDrive extends Subsystem {
     return m_gyro;
   }
 
+  @AutoLogOutput
   public Pose2d getPose() {
     return m_poseEstimator.getEstimatedPosition();
   }
