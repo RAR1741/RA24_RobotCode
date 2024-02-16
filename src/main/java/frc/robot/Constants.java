@@ -177,11 +177,18 @@ public final class Constants {
 
     public static final double k_pivotHeight = 4.0;
 
-    public static final double k_minAngle = 18.0;
-    public static final double k_maxAngle = 63.75;
+    public static final double k_minAngle = 20.0;
+    public static final double k_maxAngle = 60.0;
     public static final double k_startingAngle = 0.0;
 
     public static final double k_distanceFromCenter = 4.0008;
+
+    // Shooter angle lookup table
+    // Plate, Abs, Rel
+    // 20 deg, 135.9, 0.0
+    // 45 deg, 161.9, -14.72
+    // 60 deg, 176.7, -22.13
+    // 90 deg, 204.5, -33.31
   }
 
   public static class Climber {

@@ -7,6 +7,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -56,7 +57,8 @@ public class Shooter extends Subsystem {
     m_pivotMotor = new CANSparkFlex(Constants.Shooter.k_pivotMotorId, MotorType.kBrushless);
     m_pivotMotor.restoreFactoryDefaults();
     m_pivotMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
-    m_pivotMotor.setSmartCurrentLimit(5); // TODO: Double check this
+    m_pivotMotor.setSmartCurrentLimit(20); // TODO: Double check this
+    m_pivotMotor.setInverted(true);
 
     m_topMotorEncoder = m_topShooterMotor.getEncoder();
     m_bottomMotorEncoder = m_bottomShooterMotor.getEncoder();
@@ -134,9 +136,15 @@ public class Shooter extends Subsystem {
 
   @Override
   public void outputTelemetry() {
-    putNumber("Speed", m_periodicIO.shooter_rpm);
+    putNumber("TargetSpeed", m_periodicIO.shooter_rpm);
     putNumber("TopMotorSpeed", m_topMotorEncoder.getVelocity());
     putNumber("BottomMotorSpeed", m_bottomMotorEncoder.getVelocity());
+    putNumber("PivotMotorVoltage", Helpers.getVoltage(m_pivotMotor));
+    putNumber("PivotAngle", getCurrentPivotAngle());
+
+    putNumber("pivot_relative_position", m_pivotMotor.getEncoder().getPosition());
+    putNumber("pivot_speed", m_periodicIO.pivot_speed);
+    putNumber("pivot_current", m_pivotMotor.getOutputCurrent());
   }
 
   @Override
@@ -162,6 +170,10 @@ public class Shooter extends Subsystem {
       default:
         break;
     }
+  }
+
+  public void pivotAbsAngleToRel(double angle) {
+    MathUtil.interpolate(angle, angle, angle);
   }
 
   // TODO Get rid of this and make it part of the actual functionality

@@ -137,6 +137,7 @@ public class Intake extends Subsystem {
 
   public void stopIntake() {
     m_periodicIO.intake_speed = 0.0;
+    m_periodicIO.pivot_voltage = 0.0;
     m_periodicIO.intake_state = IntakeState.NONE;
   }
 

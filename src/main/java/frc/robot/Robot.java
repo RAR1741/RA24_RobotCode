@@ -214,6 +214,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledInit() {
+    m_allSubsystems.forEach(subsystem -> subsystem.stop());
   }
 
   @Override
@@ -252,7 +253,7 @@ public class Robot extends TimedRobot {
         m_intake.manualIntakeControl(m_driverController.testPositive(), m_driverController.testNegative(), 0.25);
         break;
       case "SHOOTER_PIVOT":
-        m_shooter.manualPivotControl(m_driverController.testPositive(), m_driverController.testNegative(), 0.04);
+        m_shooter.manualPivotControl(m_driverController.testPositive(), m_driverController.testNegative(), 0.4);
         break;
       case "SHOOTER_SHOOT":
         m_shooter.manualShootControl(m_driverController.testPositive(), m_driverController.testNegative(), 0.85);
