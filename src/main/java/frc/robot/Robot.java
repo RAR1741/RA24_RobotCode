@@ -88,7 +88,7 @@ public class Robot extends TimedRobot {
     m_swerve.setGyroAngleAdjustment(0);
 
     // This has to be done later, so the absolute encoders are initialized
-    m_intake.setPivotAbsOffset();
+    // m_intake.setPivotAbsOffset();
 
     // TODO: do the above with the shooter pivot as well also too
   }

@@ -1,12 +1,9 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkPIDController;
 
-import edu.wpi.first.math.util.Units;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import frc.robot.Constants;
@@ -23,9 +20,7 @@ public class Intake extends Subsystem {
 
   private final DutyCycleEncoder m_pivotAbsEncoder = new DutyCycleEncoder(Constants.Intake.k_pivotEncoderId);
 
-  private final RelativeEncoder m_pivotRelEncoder;
-
-  private final SparkPIDController m_pivotMotorPID;
+  private final PIDController m_pivotMotorPID;
 
   private final double k_pivotThreshold = 2.0;
   private final double k_intakeSpeedThreshold = 0.1;
@@ -50,18 +45,9 @@ public class Intake extends Subsystem {
     m_intakeMotor.setIdleMode(CANSparkMax.IdleMode.kCoast);
     m_intakeMotor.setInverted(true);
 
-    // Pivot Encoder
-    m_pivotRelEncoder = m_pivotMotor.getEncoder();
-    m_pivotRelEncoder.setPositionConversionFactor(Constants.Intake.k_pivotConversionFactor);
-    m_pivotRelEncoder.setVelocityConversionFactor(Constants.Intake.k_pivotConversionFactor / 60.0);
-
     // Pivot PID
-    m_pivotMotorPID = m_pivotMotor.getPIDController();
-    m_pivotMotorPID.setP(Constants.Intake.k_pivotMotorP);
-    m_pivotMotorPID.setI(Constants.Intake.k_pivotMotorI);
-    m_pivotMotorPID.setD(Constants.Intake.k_pivotMotorD);
-    m_pivotMotorPID.setIZone(Constants.Intake.k_pivotMotorIZone);
-    m_pivotMotorPID.setOutputRange(-Constants.Intake.k_pivotMotorMaxOutput, Constants.Intake.k_pivotMotorMaxOutput);
+    m_pivotMotorPID = new PIDController(Constants.Intake.k_pivotMotorP, Constants.Intake.k_pivotMotorI,
+        Constants.Intake.k_pivotMotorD);
 
     m_periodicIO = new PeriodicIO();
   }
@@ -88,14 +74,13 @@ public class Intake extends Subsystem {
   public void writePeriodicOutputs() {
     if (!DriverStation.isTest()) {
       double pivot_angle = getAngleFromTarget(m_periodicIO.pivot_target);
-      m_pivotMotorPID.setReference(pivot_angle, ControlType.kPosition);
+      m_periodicIO.pivot_speed = m_pivotMotorPID.calculate(getPivotAngle(), pivot_angle);
 
       m_periodicIO.intake_speed = getSpeedFromState(m_periodicIO.intake_state);
       putString("IntakeState", m_periodicIO.intake_state.toString());
-    } else if (DriverStation.isTest()) {
-      m_pivotMotor.set(m_periodicIO.pivot_speed);
     }
 
+    m_pivotMotor.set(m_periodicIO.pivot_speed);
     m_intakeMotor.set(m_periodicIO.intake_speed);
   }
 
@@ -147,10 +132,11 @@ public class Intake extends Subsystem {
     }
   }
 
-  public void setPivotAbsOffset() {
-    m_pivotRelEncoder.setPosition(Units.rotationsToDegrees(
-        Helpers.modRotations(m_pivotAbsEncoder.getAbsolutePosition() - Constants.Intake.k_pivotEncoderOffset)));
-  }
+  // public void setPivotAbsOffset() {
+  // m_pivotRelEncoder.setPosition(Units.rotationsToDegrees(
+  // Helpers.modRotations(m_pivotAbsEncoder.getAbsolutePosition() -
+  // Constants.Intake.k_pivotEncoderOffset)));
+  // }
 
   public void stopIntake() {
     m_periodicIO.intake_speed = 0.0;
@@ -166,7 +152,7 @@ public class Intake extends Subsystem {
   }
 
   public double getPivotAngle() {
-    return m_pivotRelEncoder.getPosition();
+    return m_pivotAbsEncoder.getAbsolutePosition();
   }
 
   public double getCurrentSpeed() {
