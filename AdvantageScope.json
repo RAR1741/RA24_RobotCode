@@ -24,8 +24,39 @@
         "allianceOrigin": "blue",
         "orientation": "blue left, red right"
       },
-      "configHidden": false,
+      "configHidden": true,
       "title": "Field"
+    },
+    {
+      "type": 9,
+      "fields": [
+        {
+          "key": "NT:/AdvantageKit/RealOutputs/SwerveDrive/CurrentStates",
+          "sourceTypeIndex": 0,
+          "sourceType": 5
+        },
+        {
+          "key": "NT:/AdvantageKit/RealOutputs/SwerveDrive/DesiredStates",
+          "sourceTypeIndex": 0,
+          "sourceType": 5
+        },
+        {
+          "key": "NT:/AdvantageKit/RealOutputs/SwerveDrive/Rotation2d",
+          "sourceTypeIndex": 1,
+          "sourceType": "Rotation2d"
+        }
+      ],
+      "listFields": [],
+      "options": {
+        "maxSpeed": 3,
+        "rotationUnits": "degrees",
+        "arrangement": "0,1,2,3",
+        "sizeLeftRight": 0.762,
+        "sizeFrontBack": 0.762,
+        "forwardDirection": "up"
+      },
+      "configHidden": true,
+      "title": "Swerve"
     },
     {
       "type": 3,
