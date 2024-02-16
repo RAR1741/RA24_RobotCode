@@ -3,11 +3,16 @@ package frc.robot;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.littletonrobotics.junction.LoggedRobot;
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.NT4Publisher;
+import org.littletonrobotics.junction.wpilog.WPILOGWriter;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.Preferences;
-import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.autonomous.AutoChooser;
 import frc.robot.autonomous.AutoRunner;
@@ -18,7 +23,7 @@ import frc.robot.simulation.Field;
 import frc.robot.subsystems.Subsystem;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 
-public class Robot extends TimedRobot {
+public class Robot extends LoggedRobot {
   private final DriverController m_driverController = new DriverController(0, true, true);
   private final OperatorController m_operatorController = new OperatorController(1, true, true);
 
@@ -50,8 +55,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     // Initialize on-board logging
-    DataLogManager.start();
-    System.out.println("Logging initialized. Fard.");
+    setupLogging();
 
     // Set up the Field2d object for simulation
     SmartDashboard.putData("Field", m_field);
@@ -204,5 +208,29 @@ public class Robot extends TimedRobot {
   }
 
   public void setLEDs() {
+  }
+
+  private void setupLogging() {
+    Logger.recordMetadata("ProjectName", "Flipside"); // Set a metadata value
+
+    if (isReal()) {
+      Logger.addDataReceiver(new WPILOGWriter()); // Log to a USB stick ("/U/logs")
+      Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
+
+      new PowerDistribution(1, ModuleType.kRev); // Enables power distribution logging
+    }
+    // TODO: figure out log replaying, as this is super powerful
+    // else {
+    // setUseTiming(false); // Run as fast as possible
+    // String logPath = LogFileUtil.findReplayLog(); // Pull the replay log from
+    // AdvantageScope (or prompt the user)
+    // Logger.setReplaySource(new WPILOGReader(logPath)); // Read replay log
+    // Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath,
+    // "_sim"))); // Save outputs to a new log
+    // }
+
+    Logger.start();
+
+    System.out.println("Logging initialized. Fard.");
   }
 }
