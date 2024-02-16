@@ -6,7 +6,7 @@ import edu.wpi.first.math.util.Units;
 
 public final class Constants {
   public static class Robot {
-    public static final double k_width = 27; // Inches
+    public static final double k_width = 30; // Inches
     public static final double k_length = 30; // Inches
 
     public static final double k_bumperStart = 1; // Inches
@@ -14,8 +14,22 @@ public final class Constants {
   }
 
   public static class Auto {
-    public static final double k_maxSpeed = 1; // 1 meters per second
-    public static final double k_maxAcceleration = 0.5;
+    public static final double k_maxSpeed = 3.0; // 3 meters per second
+    public static final double k_maxAcceleration = 1.0;
+
+    public class PIDConstants {
+      public class Translation {
+        public static final double k_P = 0.5;
+        public static final double k_I = 0.0;
+        public static final double k_D = 0.0;
+      }
+
+      public class Rotation {
+        public static final double k_P = 0.7;
+        public static final double k_I = 0.0;
+        public static final double k_D = 0.0;
+      }
+    }
 
     // TODO: Add left and right subwoofer starting poses
     public static final Pose2d k_redCenterPose2d = new Pose2d(15.19, 5.50,
@@ -59,10 +73,10 @@ public final class Constants {
     // Drivetrain (turn) constants
     public class Turn {
       // Drivetrain turning offset constants
-      public static final double k_FLOffset = 0.157329;
-      public static final double k_FROffset = 0.345974;
-      public static final double k_BROffset = 0.823048;
-      public static final double k_BLOffset = 0.329460;
+      public static final double k_FLOffset = 0.156013;
+      public static final double k_FROffset = 0.156604;
+      public static final double k_BROffset = 0.820736;
+      public static final double k_BLOffset = 0.161767;
 
       public static final int k_FLAbsID = 0;
       public static final int k_FRAbsID = 1;
@@ -74,57 +88,140 @@ public final class Constants {
       public static final int k_BRMotorId = 9;
       public static final int k_BLMotorId = 11;
 
-      // TODO: Tweak these as necessary
       public static final double k_turningP = 0.1;
       public static final double k_turningI = 0.0;
       public static final double k_turningD = 0.0;
-      public static final double k_turningIZone = 0;
-      public static final double k_turningFF = 0;
+      public static final double k_turningIZone = 0.0;
+      public static final double k_turningFF = 0.0;
 
-      public static final int k_TurningMinOutput = -1;
-      public static final int k_TurningMaxOutput = 1;
+      public static final double k_TurningMinOutput = -1.0;
+      public static final double k_TurningMaxOutput = 1.0;
     }
 
     public class AutoAim {
-      public static final double k_P = 1;
-      public static final double k_I = 0;
-      public static final double k_D = 0;
+      public static final double k_P = 1.0;
+      public static final double k_I = 0.0;
+      public static final double k_D = 0.0;
     }
   }
 
   public class Intake {
-    public static final int k_pivotMotorID = 98;
-    public static final int k_intakeMotorID = 99;
+    // TODO: Get intake motor IDs
+    public static final int k_pivotMotorId = 13;
+    public static final int k_intakeMotorId = 14;
 
-    public static final int k_pivotEncoderId = 0;
-    public static final double k_pivotEncoderOffset = 0.0;
+    public static final double k_pivotMotorMaxOutput = 0.2;
+
+    public static final int k_pivotEncoderId = 4;
 
     // TODO: get pivot angles
-    public static final double k_groundPivotAngle = 0.0;
-    public static final double k_sourcePivotAngle = 0.0;
-    public static final double k_ampPivotAngle = 0.0;
-    public static final double k_stowPivotAngle = 0.0;
+    public static final double k_stowPivotAngle = 267.0;
+    public static final double k_groundPivotAngle = 41.0;
+    public static final double k_sourcePivotAngle = 180.0;
+    // public static final double k_sourcePivotAngle = k_stowPivotAngle;
+    public static final double k_ampPivotAngle = k_stowPivotAngle;
 
     // TODO: get intake speeds
-    public static double k_intakeSpeed = 0.0;
-    public static double k_ejectSpeed = 0.0;
-    public static double k_feedShooterSpeed = 0.0;
+    public static final double k_intakeSpeed = 0.7;
+    public static final double k_ejectSpeed = -0.45;
+    public static final double k_feedShooterSpeed = -0.5;
 
+    // TODO: get intake pivot PID
+    public static final double k_pivotMotorP = 0.035;
+    public static final double k_pivotMotorI = 0.0;
+    public static final double k_pivotMotorD = 0.0;
+    public static final double k_pivotMotorIZone = 0.0;
+
+    // TODO Get values
+    public static final double k_length = 14.319626; // In inches
+    public static final double k_mass = 5.8967; // In kg
+
+    public static final double k_pivotHeight = 5.75;
+
+    public static final double k_minAngle = 0.0;
+    public static final double k_maxAngle = 0.0;
+    public static final double k_startingAngle = 0.0;
+
+    public static final double k_distanceFromCenter = 12.5;
+  }
+
+  public static class Simulation {
+    // TODO Get values
+    public static final double k_width = 150; // Inches
+    public static final double k_height = 100; // Inches
+  }
+
+  public class Shooter {
+    public static final int k_pivotMotorId = 15;
+    public static final int k_topMotorId = 16;
+    public static final int k_bottomMotorId = 17;
+
+    // TODO: Get shooter motor PID
+    public static final double k_shooterMotorP = 0.0;
+    public static final double k_shooterMotorI = 0.0;
+    public static final double k_shooterMotorD = 0.0;
+
+    // TODO: Check these
+    public static final double k_shooterMinOutput = 0.0;
+    public static final double k_shooterMaxOutput = 1.0;
+
+    public static final int k_pivotEncoderId = 5;
+
+    // TODO: get shooter pivot PID
     public static final double k_pivotMotorP = 0.0;
     public static final double k_pivotMotorI = 0.0;
     public static final double k_pivotMotorD = 0.0;
+    public static final double k_pivotMotorIZone = 0.0;
+
+    // TODO: get shooter pivot setpoint angles
+    public static final double k_lowPivotAngle = 0.0;
+    public static final double k_ampPivotAngle = 0.0;
+    public static final double k_speakerPivotAngle = 0.0;
+
+    // TODO get values
+    public static final double k_length = 11.94335; // in inches
+    public static final double k_mass = 5.44311; // in kg
+
+    public static final double k_pivotHeight = 4.0;
+
+    public static final double k_minAngle = 20.0;
+    public static final double k_maxAngle = 60.0;
+    public static final double k_startingAngle = 0.0;
+
+    public static final double k_distanceFromCenter = 4.0008;
+
+    // Shooter angle lookup table
+    // Plate, Abs, Rel
+    // 20 deg, 135.9, 0.0
+    // 45 deg, 161.9, -14.72
+    // 60 deg, 176.7, -22.13
+    // 90 deg, 204.5, -33.31
+  }
+
+  public static class Climber {
+    public static final int k_leftMotorID = 18;
+    public static final int k_rightMotorID = 19;
+
+    public static final double k_velocity = 0.0;
+
+    public class Setpoints {
+      // TODO: get climber setpoints
+      public static final double k_fullyExtended = 0.0;
+      public static final double k_fullyRetracted = 0.0;
+
+    }
   }
 
   public static class Field {
-    // All dimensions from Figure 5-16 in the manual
-    public static final double k_lowGoalX = 22.75; // Inches
-    public static final double k_lowGoalHeight = 34; // Inches
-
-    public static final double k_highGoalX = 39.75; // Inches
-    public static final double k_highGoalHeight = 46; // Inches
-
     public static final double k_width = Units.feetToMeters(54.0);
     public static final double k_length = Units.feetToMeters(27.0);
+
+    public static final double k_ampBottom = 26;
+    public static final double k_ampTop = 44;
+
+    public static final double k_speakerBottom = 78;
+    public static final double k_speakerTop = 82.875;
+    public static final double k_speakerAngle = 14.0;
 
     public static final double k_autoAimThreshold = 1; // in meters
 

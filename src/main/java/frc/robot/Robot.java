@@ -13,14 +13,23 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.Preferences;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.autonomous.AutoChooser;
 import frc.robot.autonomous.AutoRunner;
+import frc.robot.autonomous.AutoRunner.AutoMode;
 import frc.robot.autonomous.tasks.Task;
 import frc.robot.controls.controllers.DriverController;
 import frc.robot.controls.controllers.OperatorController;
 import frc.robot.simulation.Field;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Intake.IntakePivotTarget;
+import frc.robot.subsystems.Intake.IntakeState;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Subsystem;
+import frc.robot.subsystems.climber.Climbers;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 
 public class Robot extends LoggedRobot {
@@ -40,7 +49,12 @@ public class Robot extends LoggedRobot {
 
   // Robot subsystems
   private List<Subsystem> m_allSubsystems = new ArrayList<>();
-  public final SwerveDrive m_swerve = SwerveDrive.getInstance();
+  private final SwerveDrive m_swerve = SwerveDrive.getInstance();
+  private final Intake m_intake = Intake.getInstance();
+  private final Shooter m_shooter = Shooter.getInstance();
+  private final Climbers m_climbers = Climbers.getInstance();
+
+  // Auto tasks
   private Task m_currentTask;
   private AutoRunner m_autoRunner = AutoRunner.getInstance();
 
@@ -48,7 +62,6 @@ public class Robot extends LoggedRobot {
 
   // Auto things
   AutoChooser m_autoChooser = new AutoChooser();
-  private boolean m_autoHasRan;
 
   private final Field m_field = Field.getInstance();
 
@@ -63,13 +76,25 @@ public class Robot extends LoggedRobot {
     // Camera server
     // m_camera = CameraServer.startAutomaticCapture();
 
-    Preferences.setDouble("SwerveDrive/x", 0);
-    Preferences.setDouble("SwerveDrive/y", 0);
-    Preferences.setDouble("SwerveDrive/rot", 0);
+    if (!RobotBase.isReal()) {
+      Preferences.setDouble("SwerveDrive/x", 0);
+      Preferences.setDouble("SwerveDrive/y", 0);
+      Preferences.setDouble("SwerveDrive/rot", 0);
+    }
+
+    Preferences.initString("Test Mode", "NONE");
 
     m_allSubsystems.add(m_swerve);
+    m_allSubsystems.add(m_intake);
+    m_allSubsystems.add(m_shooter);
+    // m_allSubsystems.add(m_climbers);
 
     m_swerve.setGyroAngleAdjustment(0);
+
+    // This has to be done later, so the absolute encoders are initialized
+    // m_intake.setPivotAbsOffset();
+
+    // TODO: do the above with the shooter pivot as well also too
   }
 
   @Override
@@ -80,15 +105,16 @@ public class Robot extends LoggedRobot {
     m_allSubsystems.forEach(subsystem -> subsystem.writeToLog());
 
     updateSim();
+
+    CommandScheduler.getInstance().run(); // used by sysid
   }
 
   @Override
   public void autonomousInit() {
-    m_autoHasRan = true;
-
     m_swerve.setBrakeMode(false);
 
     m_autoRunner.setAutoMode(m_autoChooser.getSelectedAuto());
+    m_autoRunner.setAutoMode(AutoMode.TEST);
     m_currentTask = m_autoRunner.getNextTask();
 
     // Start the first task
@@ -163,12 +189,24 @@ public class Robot extends LoggedRobot {
       m_swerve.resetGyro();
     }
 
-    if (m_driverController.getWantsBrake()) {
-      m_swerve.pointInwards();
-    }
-
     if (m_driverController.getWantsAutoAim()) {
       m_autoAimEnabled = !m_autoAimEnabled;
+    }
+
+    if (m_driverController.getWantsIntakeStow()) {
+      m_intake.setPivotTarget(IntakePivotTarget.STOW);
+    }
+
+    if (m_driverController.getWantsIntakeGround()) {
+      m_intake.setPivotTarget(IntakePivotTarget.GROUND);
+    }
+
+    if (m_driverController.getWantsIntake()) {
+      m_intake.setState(IntakeState.INTAKE);
+    } else if (m_driverController.getWantsEject()) {
+      m_intake.setState(IntakeState.EJECT);
+    } else {
+      m_intake.setState(IntakeState.NONE);
     }
 
     m_driverController.outputTelemetry();
@@ -181,7 +219,6 @@ public class Robot extends LoggedRobot {
   @Override
   public void disabledInit() {
     m_allSubsystems.forEach(subsystem -> subsystem.stop());
-    // m_swerve.resetOdometry(new Pose2d(3, 3, new Rotation2d(0)));
   }
 
   @Override
@@ -190,16 +227,48 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void disabledPeriodic() {
-    m_allSubsystems.forEach(subsystem -> subsystem.outputTelemetry());
   }
 
   @Override
   public void testInit() {
+    CommandScheduler.getInstance().cancelAll();
   }
 
   @Override
   public void testPeriodic() {
-    m_swerve.drive(0, 0, 0, false);
+    // m_swerve.drive(0, 0, 0, false);
+
+    switch (Preferences.getString("Test Mode", "NONE")) {
+      case "SYSID_SWERVE":
+        if (m_driverController.getWantsSysIdQuasistaticForward()) {
+          m_swerve.sysIdQuasistatic(SysIdRoutine.Direction.kForward).schedule();
+        } else if (m_driverController.getWantsSysIdQuasistaticBackward()) {
+          m_swerve.sysIdQuasistatic(SysIdRoutine.Direction.kReverse).schedule();
+        } else if (m_driverController.getWantsSysIdDynamicForward()) {
+          m_swerve.sysIdDynamic(SysIdRoutine.Direction.kForward).schedule();
+        } else if (m_driverController.getWantsSysIdDynamicBackward()) {
+          m_swerve.sysIdDynamic(SysIdRoutine.Direction.kReverse).schedule();
+        }
+        break;
+      case "INTAKE_PIVOT":
+        m_intake.manualPivotControl(m_driverController.testPositive(), m_driverController.testNegative(), 0.25);
+        break;
+      case "INTAKE_INTAKE":
+        m_intake.manualIntakeControl(m_driverController.testPositive(), m_driverController.testNegative(), 0.25);
+        break;
+      case "SHOOTER_PIVOT":
+        m_shooter.manualPivotControl(m_driverController.testPositive(), m_driverController.testNegative(), 0.4);
+        break;
+      case "SHOOTER_SHOOT":
+        m_shooter.manualShootControl(m_driverController.testPositive(), m_driverController.testNegative(), 0.85);
+        break;
+      case "CLIMBER":
+        // m_climber.manualControl();
+        break;
+      default:
+        System.out.println("you lost the game");
+        break;
+    }
   }
 
   private void updateSim() {
@@ -210,6 +279,7 @@ public class Robot extends LoggedRobot {
   public void setLEDs() {
   }
 
+  @SuppressWarnings("resource")
   private void setupLogging() {
     Logger.recordMetadata("ProjectName", "TBD Robot Name");
     Logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);

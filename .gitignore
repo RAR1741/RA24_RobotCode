@@ -1,10 +1,6 @@
 # This gitignore has been specially created by the WPILib team.
 # If you remove items from this file, intellisense might break.
 
-### Our custom things ###
-simgui.json
-simgui-ds.json
-
 ### C++ ###
 # Prerequisites
 *.d
@@ -180,6 +176,13 @@ logs/
 
 # Folder that has CTRE Phoenix Sim device config storage
 ctre_sim/
+
+# Sim stuff
+networktables.json
+networktables.json.bck
+simgui.json
+simgui-ds.json
+simgui-window.json
 
 # gversion build constants file
 src/main/java/frc/robot/BuildConstants.java

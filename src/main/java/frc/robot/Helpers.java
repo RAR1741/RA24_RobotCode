@@ -1,5 +1,8 @@
 package frc.robot;
 
+import com.revrobotics.CANSparkFlex;
+import com.revrobotics.CANSparkMax;
+
 public class Helpers {
   public static double modRotations(double input) {
     input %= 1.0;
@@ -27,5 +30,13 @@ public class Helpers {
 
   public static int clamp(int val, int min, int max) {
     return Math.max(min, Math.min(max, val));
+  }
+
+  public static double getVoltage(CANSparkMax motor) {
+    return motor.getBusVoltage() * motor.getAppliedOutput();
+  }
+
+  public static double getVoltage(CANSparkFlex motor) {
+    return motor.getBusVoltage() * motor.getAppliedOutput();
   }
 }
