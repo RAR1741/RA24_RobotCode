@@ -168,7 +168,7 @@ public final class Constants {
     public static final int k_pivotEncoderId = 5;
 
     // TODO: get shooter pivot PID
-    public static final double k_pivotMotorP = 0.0;
+    public static final double k_pivotMotorP = 0.4;
     public static final double k_pivotMotorI = 0.0;
     public static final double k_pivotMotorD = 0.0;
     public static final double k_pivotMotorIZone = 0.0;

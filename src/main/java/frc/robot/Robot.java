@@ -204,7 +204,7 @@ public class Robot extends LoggedRobot {
       m_intake.setState(IntakeState.NONE);
     }
 
-    m_shooter.changeAngle(m_operatorController.getWantsManualShooterPivot(0.5));
+    m_shooter.changePivotByAngle(m_operatorController.getWantsManualShooterPivot(0.5));
 
     m_driverController.outputTelemetry();
   }

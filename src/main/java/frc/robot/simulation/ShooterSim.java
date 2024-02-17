@@ -71,7 +71,7 @@ public class ShooterSim {
   }
 
   public void updateAngle(double angle) {
-    m_shooter.setAngle(-(k_simOffset + angle));
+    m_shooter.setAngle((k_simOffset + angle));
 
     // Translation2d setpoint = m_origin.plus(new Translation2d(x, y));
     // m_crosshair.setPosition(setpoint.getX(), setpoint.getY());

@@ -59,7 +59,7 @@ public class Shooter extends Subsystem {
     m_pivotMotor = new CANSparkFlex(Constants.Shooter.k_pivotMotorId, MotorType.kBrushless);
     m_pivotMotor.restoreFactoryDefaults();
     m_pivotMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
-    m_pivotMotor.setSmartCurrentLimit(20); // TODO: Double check this
+    m_pivotMotor.setSmartCurrentLimit(30); // TODO: Double check this
     m_pivotMotor.setInverted(true);
 
     m_topMotorEncoder = m_topShooterMotor.getEncoder();
@@ -101,20 +101,6 @@ public class Shooter extends Subsystem {
     if (!m_hasSetPivotRelEncoder && getIsPivotAsbConnected()) {
       setPivotAbsOffset();
     }
-
-    if (!(Preferences.getString("Test Mode", "NONE").contains("SHOOTER_") && DriverStation.isTest())) {
-      // m_periodicIO.pivot_voltage =
-      // m_pivotMotorPID.calculate(getPivotAngle(), m_periodicIO.pivot_angle);
-
-      m_pivotMotorPID.setReference(m_periodicIO.pivot_angle, ControlType.kPosition);
-
-      // TODO: actually implement this safety
-      // if (m_pivotAbsEncoder.get() == 0.0) {
-      // m_periodicIO.pivot_voltage = 0.0;
-      // }
-
-      m_sim.updateAngle(getPivotAngle());
-    }
   }
 
   @Override
@@ -126,10 +112,16 @@ public class Shooter extends Subsystem {
 
   @Override
   public void writePeriodicOutputs() {
+    m_periodicIO.pivot_angle = MathUtil.clamp(m_periodicIO.pivot_angle, Constants.Shooter.k_minAngle,
+        Constants.Shooter.k_maxAngle);
+
     if (!(Preferences.getString("Test Mode", "NONE").contains("SHOOTER_") && DriverStation.isTest())) {
       double limited_speed = m_speedLimiter.calculate(m_periodicIO.shooter_rpm);
       m_topShooterMotorPID.setReference(limited_speed, ControlType.kVelocity);
       m_bottomShooterMotorPID.setReference(limited_speed, ControlType.kVelocity);
+
+      double pivotRelRotations = targetAngleToRelRotations(m_periodicIO.pivot_angle);
+      m_pivotMotorPID.setReference(pivotRelRotations, ControlType.kPosition);
     } else {
       if (Preferences.getString("Test Mode", "NONE").equals("SHOOTER_PIVOT")) {
         m_pivotMotor.set(m_periodicIO.pivot_speed);
@@ -140,6 +132,12 @@ public class Shooter extends Subsystem {
       }
     }
 
+    // If the pivot absolute encoder isn't connected
+    if (!m_pivotAbsEncoder.isConnected()) {
+      // SAFETY
+    }
+
+    m_sim.updateAngle(getPivotAngle());
     // m_pivotMotor.setVoltage(m_periodicIO.pivot_voltage);
   }
 
@@ -154,6 +152,7 @@ public class Shooter extends Subsystem {
     putNumber("pivot_relative_position", m_pivotMotor.getEncoder().getPosition());
     putNumber("pivot_speed", m_periodicIO.pivot_speed);
     putNumber("current_pivot_current", m_pivotMotor.getOutputCurrent());
+    putNumber("current_pivot_voltage", Helpers.getVoltage(m_pivotMotor));
   }
 
   @Override
@@ -165,7 +164,7 @@ public class Shooter extends Subsystem {
     m_periodicIO.pivot_angle = angle;
   }
 
-  public void changeAngle(double alpha) {
+  public void changePivotByAngle(double alpha) {
     m_periodicIO.pivot_angle += alpha;
   }
 
@@ -191,6 +190,16 @@ public class Shooter extends Subsystem {
   @AutoLogOutput
   public int getPivotAbsFrequency() {
     return m_pivotAbsEncoder.getFrequency();
+  }
+
+  @AutoLogOutput
+  public double getPivotRelTarget() {
+    return targetAngleToRelRotations(m_periodicIO.pivot_angle);
+  }
+
+  @AutoLogOutput
+  public double getPivotMotorCurrent() {
+    return m_pivotMotor.getOutputCurrent();
   }
 
   public double targetAngleToRelRotations(double angle) {
@@ -271,10 +280,10 @@ public class Shooter extends Subsystem {
       return true;
     }
 
-    double _angle = getPivotAngle();
+    double angle = getPivotAngle();
     double target_angle = getAngleFromTarget(target);
 
-    return _angle <= target_angle + 2 && _angle >= target_angle - 2;
+    return angle <= target_angle + 2 && angle >= target_angle - 2;
   }
 
   private static class PeriodicIO {
