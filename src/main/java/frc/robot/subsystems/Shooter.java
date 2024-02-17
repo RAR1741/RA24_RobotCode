@@ -34,7 +34,7 @@ public class Shooter extends Subsystem {
 
   private SparkPIDController m_topShooterMotorPID;
   private SparkPIDController m_bottomShooterMotorPID;
-  private final SparkPIDController m_pivotMotorPID;
+  private SparkPIDController m_pivotMotorPID;
 
   private SlewRateLimiter m_speedLimiter = new SlewRateLimiter(1000); // TODO Double-check this value
 
@@ -49,12 +49,12 @@ public class Shooter extends Subsystem {
     m_topShooterMotor = new CANSparkFlex(Constants.Shooter.k_topMotorId, MotorType.kBrushless);
     m_topShooterMotor.restoreFactoryDefaults();
     m_topShooterMotor.setIdleMode(CANSparkFlex.IdleMode.kCoast);
-    m_topShooterMotor.setInverted(true);
+    m_topShooterMotor.setInverted(false);
 
     m_bottomShooterMotor = new CANSparkFlex(Constants.Shooter.k_bottomMotorId, MotorType.kBrushless);
     m_bottomShooterMotor.restoreFactoryDefaults();
     m_bottomShooterMotor.setIdleMode(CANSparkFlex.IdleMode.kCoast);
-    m_bottomShooterMotor.setInverted(false);
+    m_bottomShooterMotor.setInverted(true);
 
     m_pivotMotor = new CANSparkFlex(Constants.Shooter.k_pivotMotorId, MotorType.kBrushless);
     m_pivotMotor.restoreFactoryDefaults();
@@ -69,12 +69,14 @@ public class Shooter extends Subsystem {
     m_topShooterMotorPID.setP(Constants.Shooter.k_shooterMotorP);
     m_topShooterMotorPID.setI(Constants.Shooter.k_shooterMotorI);
     m_topShooterMotorPID.setD(Constants.Shooter.k_shooterMotorD);
+    m_topShooterMotorPID.setFF(Constants.Shooter.k_shooterMotorFF);
     m_topShooterMotorPID.setOutputRange(Constants.Shooter.k_shooterMinOutput, Constants.Shooter.k_shooterMaxOutput);
 
     m_bottomShooterMotorPID = m_bottomShooterMotor.getPIDController();
     m_bottomShooterMotorPID.setP(Constants.Shooter.k_shooterMotorP);
     m_bottomShooterMotorPID.setI(Constants.Shooter.k_shooterMotorI);
     m_bottomShooterMotorPID.setD(Constants.Shooter.k_shooterMotorD);
+    m_bottomShooterMotorPID.setFF(Constants.Shooter.k_shooterMotorFF);
     m_bottomShooterMotorPID.setOutputRange(Constants.Shooter.k_shooterMinOutput, Constants.Shooter.k_shooterMaxOutput);
 
     m_pivotMotorPID = m_pivotMotor.getPIDController();
@@ -116,6 +118,7 @@ public class Shooter extends Subsystem {
         Constants.Shooter.k_maxAngle);
 
     if (!(Preferences.getString("Test Mode", "NONE").contains("SHOOTER_") && DriverStation.isTest())) {
+      // TeleOp mode
       double limited_speed = m_speedLimiter.calculate(m_periodicIO.shooter_rpm);
       m_topShooterMotorPID.setReference(limited_speed, ControlType.kVelocity);
       m_bottomShooterMotorPID.setReference(limited_speed, ControlType.kVelocity);
@@ -123,6 +126,7 @@ public class Shooter extends Subsystem {
       double pivotRelRotations = targetAngleToRelRotations(m_periodicIO.pivot_angle);
       m_pivotMotorPID.setReference(pivotRelRotations, ControlType.kPosition);
     } else {
+      // Test mode
       if (Preferences.getString("Test Mode", "NONE").equals("SHOOTER_PIVOT")) {
         m_pivotMotor.set(m_periodicIO.pivot_speed);
       }
@@ -155,17 +159,24 @@ public class Shooter extends Subsystem {
     putNumber("current_pivot_voltage", Helpers.getVoltage(m_pivotMotor));
   }
 
+  @AutoLogOutput
+  public double getTopMotorSpeed() {
+    return m_topMotorEncoder.getVelocity();
+  }
+
+  @AutoLogOutput
+  public double getBottomMotorSpeed() {
+    return m_bottomMotorEncoder.getVelocity();
+  }
+
+  @AutoLogOutput
+  public double getShooterTargetSpeed() {
+    return m_periodicIO.shooter_rpm;
+  }
+
   @Override
   public void reset() {
     throw new UnsupportedOperationException("Unimplemented method 'reset'");
-  }
-
-  public void setAngle(double angle) {
-    m_periodicIO.pivot_angle = angle;
-  }
-
-  public void changePivotByAngle(double alpha) {
-    m_periodicIO.pivot_angle += alpha;
   }
 
   public void setPivotAbsOffset() {
@@ -215,20 +226,16 @@ public class Shooter extends Subsystem {
     return Constants.Shooter.k_relRotationsToMaxExtension - (distanceInches * Constants.Shooter.k_rotationsPerInch);
   }
 
+  public void changePivotByAngle(double alpha) {
+    m_periodicIO.pivot_angle += alpha;
+  }
+
+  public void setAngle(double angle) {
+    m_periodicIO.pivot_angle = angle;
+  }
+
   public void setAngle(ShooterPivotTarget target) {
-    switch (target) {
-      case LOW:
-        m_periodicIO.pivot_angle = Constants.Shooter.k_lowPivotAngle;
-        break;
-      case AMP:
-        m_periodicIO.pivot_angle = Constants.Shooter.k_ampPivotAngle;
-        break;
-      case SPEAKER:
-        m_periodicIO.pivot_angle = Constants.Shooter.k_speakerPivotAngle;
-        break;
-      default:
-        break;
-    }
+    m_periodicIO.pivot_angle = getAngleFromTarget(target);
   }
 
   public void pivotAbsAngleToRel(double angle) {
@@ -242,6 +249,26 @@ public class Shooter extends Subsystem {
 
   public void setSpeed(double rpm) {
     m_periodicIO.shooter_rpm = rpm;
+  }
+
+  public void setSpeed(ShooterSpeedTarget target) {
+    switch (target) {
+      case MAX:
+        m_periodicIO.shooter_rpm = Constants.Shooter.k_maxRPM;
+        break;
+      case HALF:
+        m_periodicIO.shooter_rpm = Constants.Shooter.k_maxRPM / 2;
+        break;
+      case QUARTER:
+        m_periodicIO.shooter_rpm = Constants.Shooter.k_maxRPM / 4;
+        break;
+      case OFF:
+        stopShooter();
+        break;
+      default:
+        stopShooter();
+        break;
+    }
   }
 
   public void stopShooter() {
@@ -264,17 +291,20 @@ public class Shooter extends Subsystem {
 
   public double getAngleFromTarget(ShooterPivotTarget target) {
     switch (target) {
-      case LOW:
-        return Constants.Shooter.k_lowPivotAngle;
+      case MAX:
+        return Constants.Shooter.k_maxAngle;
+      case MIN:
+        return Constants.Shooter.k_minAngle;
       case AMP:
         return Constants.Shooter.k_ampPivotAngle;
       case SPEAKER:
         return Constants.Shooter.k_speakerPivotAngle;
       default:
-        return Constants.Shooter.k_lowPivotAngle;
+        return m_periodicIO.pivot_angle;
     }
   }
 
+  @AutoLogOutput
   public boolean isAtTarget(ShooterPivotTarget target) {
     if (target == ShooterPivotTarget.NONE) {
       return true;
@@ -297,8 +327,16 @@ public class Shooter extends Subsystem {
     // double pivot_voltage = 0.0;
   }
 
+  public enum ShooterSpeedTarget {
+    MAX,
+    HALF,
+    QUARTER,
+    OFF
+  }
+
   public enum ShooterPivotTarget {
-    LOW,
+    MAX,
+    MIN,
     AMP,
     SPEAKER,
     NONE

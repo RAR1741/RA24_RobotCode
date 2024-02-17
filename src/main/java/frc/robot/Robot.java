@@ -27,6 +27,8 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Intake.IntakePivotTarget;
 import frc.robot.subsystems.Intake.IntakeState;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Shooter.ShooterPivotTarget;
+import frc.robot.subsystems.Shooter.ShooterSpeedTarget;
 import frc.robot.subsystems.Subsystem;
 import frc.robot.subsystems.climber.Climbers;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
@@ -198,7 +200,7 @@ public class Robot extends LoggedRobot {
       m_intake.setState(IntakeState.INTAKE);
     } else if (m_driverController.getWantsEject()) {
       m_intake.setState(IntakeState.EJECT);
-    } else if (m_operatorController.getWantsShoot()) {
+    } else if (m_operatorController.getWantsShoot() && m_intake.isAtPivotTarget(IntakePivotTarget.STOW)) {
       m_intake.setState(IntakeState.FEED_SHOOTER);
     } else {
       m_intake.setState(IntakeState.NONE);
@@ -206,7 +208,32 @@ public class Robot extends LoggedRobot {
 
     m_shooter.changePivotByAngle(m_operatorController.getWantsManualShooterPivot(0.5));
 
-    m_driverController.outputTelemetry();
+    if (m_operatorController.getWantsAmpAngle()) {
+      m_shooter.setAngle(ShooterPivotTarget.AMP);
+    }
+
+    if (m_operatorController.getWantsSpeakerAngle()) {
+      m_shooter.setAngle(ShooterPivotTarget.SPEAKER);
+    }
+
+    if (m_operatorController.getWantsShooterMaxAngle()) {
+      m_shooter.setAngle(ShooterPivotTarget.MAX);
+    }
+
+    if (m_operatorController.getWantsShooterMinAngle()) {
+      m_shooter.setAngle(ShooterPivotTarget.MIN);
+    }
+
+    if (m_operatorController.getWantsMaxSpeed()) {
+      m_shooter.setSpeed(ShooterSpeedTarget.MAX);
+    } else if (m_operatorController.getWantsHalfSpeed()) {
+      m_shooter.setSpeed(ShooterSpeedTarget.HALF);
+    } else if (m_operatorController.getWantsQuarterSpeed()) {
+      m_shooter.setSpeed(ShooterSpeedTarget.QUARTER);
+    } else if(m_operatorController.getWantsStopped()) {
+      m_shooter.setSpeed(ShooterSpeedTarget.OFF);
+    }
+
   }
 
   @Override

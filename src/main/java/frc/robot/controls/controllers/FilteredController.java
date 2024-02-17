@@ -60,8 +60,8 @@ public class FilteredController extends GenericHID {
     int Y = 4;
     int LEFT_BUMPER = 5;
     int RIGHT_BUMPER = 6;
-    int START = 7;
-    int BACK = 8;
+    int BACK = 7;
+    int START = 8;
     int LEFT_JOYSTICK = 9;
     int RIGHT_JOYSTICK = 10;
   }

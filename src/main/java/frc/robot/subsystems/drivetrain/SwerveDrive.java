@@ -45,12 +45,12 @@ public class SwerveDrive extends Subsystem {
       new SwerveModule(Constants.SwerveDrive.Drive.k_FRMotorId, Constants.SwerveDrive.Turn.k_FRMotorId,
           Constants.SwerveDrive.Turn.k_FRAbsID,
           Constants.SwerveDrive.Turn.k_FROffset, "FR"), // 1
-      new SwerveModule(Constants.SwerveDrive.Drive.k_BLMotorId, Constants.SwerveDrive.Turn.k_BLMotorId,
-          Constants.SwerveDrive.Turn.k_BLAbsID,
-          Constants.SwerveDrive.Turn.k_BLOffset, "BL"), // 2
       new SwerveModule(Constants.SwerveDrive.Drive.k_BRMotorId, Constants.SwerveDrive.Turn.k_BRMotorId,
           Constants.SwerveDrive.Turn.k_BRAbsID,
-          Constants.SwerveDrive.Turn.k_BROffset, "BR") // 3
+          Constants.SwerveDrive.Turn.k_BROffset, "BR"), // 2
+      new SwerveModule(Constants.SwerveDrive.Drive.k_BLMotorId, Constants.SwerveDrive.Turn.k_BLMotorId,
+          Constants.SwerveDrive.Turn.k_BLAbsID,
+          Constants.SwerveDrive.Turn.k_BLOffset, "BL") // 3
   };
 
   // Robot "forward" is +x
@@ -59,8 +59,8 @@ public class SwerveDrive extends Subsystem {
   private final Translation2d[] m_moduleLocations = {
       new Translation2d(Constants.SwerveDrive.k_xCenterDistance, Constants.SwerveDrive.k_yCenterDistance),
       new Translation2d(Constants.SwerveDrive.k_xCenterDistance, -Constants.SwerveDrive.k_yCenterDistance),
-      new Translation2d(-Constants.SwerveDrive.k_xCenterDistance, Constants.SwerveDrive.k_yCenterDistance),
-      new Translation2d(-Constants.SwerveDrive.k_xCenterDistance, -Constants.SwerveDrive.k_yCenterDistance)
+      new Translation2d(-Constants.SwerveDrive.k_xCenterDistance, -Constants.SwerveDrive.k_yCenterDistance),
+      new Translation2d(-Constants.SwerveDrive.k_xCenterDistance, Constants.SwerveDrive.k_yCenterDistance)
   };
 
   private final AHRS m_gyro = new AHRS(SPI.Port.kMXP);
@@ -70,8 +70,8 @@ public class SwerveDrive extends Subsystem {
   private SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
       m_moduleLocations[Module.FRONT_LEFT],
       m_moduleLocations[Module.FRONT_RIGHT],
-      m_moduleLocations[Module.BACK_LEFT],
-      m_moduleLocations[Module.BACK_RIGHT]);
+      m_moduleLocations[Module.BACK_RIGHT],
+      m_moduleLocations[Module.BACK_LEFT]);
 
   // TODO: we might be able to have a better default pose here
   private SwerveDrivePoseEstimator m_poseEstimator = new SwerveDrivePoseEstimator(
@@ -80,8 +80,8 @@ public class SwerveDrive extends Subsystem {
       new SwerveModulePosition[] {
           m_modules[Module.FRONT_LEFT].getPosition(),
           m_modules[Module.FRONT_RIGHT].getPosition(),
-          m_modules[Module.BACK_LEFT].getPosition(),
-          m_modules[Module.BACK_RIGHT].getPosition()
+          m_modules[Module.BACK_RIGHT].getPosition(),
+          m_modules[Module.BACK_LEFT].getPosition()
       },
       new Pose2d(0, 0, Rotation2d.fromDegrees(0)));
 
@@ -98,11 +98,11 @@ public class SwerveDrive extends Subsystem {
     reset();
 
     m_sysIdRoutine = new SysIdRoutine( // i hate this constructor
-      new SysIdRoutine.Config(),
-      new SysIdRoutine.Mechanism(
+        new SysIdRoutine.Config(),
+        new SysIdRoutine.Mechanism(
             // Tell SysId how to plumb the driving voltage to the motors.
             (Measure<Voltage> volts) -> {
-              for (SwerveModule module: m_modules) {
+              for (SwerveModule module : m_modules) {
                 module.sysidDrive(volts.in(Volts));
               }
             },
@@ -112,7 +112,8 @@ public class SwerveDrive extends Subsystem {
               // Record a frame for the front left
               log.motor("drive-frontleft")
                   .voltage(m_appliedVoltage.mut_replace(
-                      m_modules[Module.FRONT_LEFT].getDriveMotor().getAppliedOutput() * RobotController.getBatteryVoltage(),
+                      m_modules[Module.FRONT_LEFT].getDriveMotor().getAppliedOutput()
+                          * RobotController.getBatteryVoltage(),
                       Volts))
                   .linearPosition(m_distance.mut_replace(m_modules[Module.FRONT_LEFT].getDrivePosition(), Meters))
                   .linearVelocity(
@@ -121,29 +122,33 @@ public class SwerveDrive extends Subsystem {
               // Record a frame for the front right
               log.motor("drive-frontright")
                   .voltage(m_appliedVoltage.mut_replace(
-                      m_modules[Module.FRONT_RIGHT].getDriveMotor().getAppliedOutput() * RobotController.getBatteryVoltage(),
+                      m_modules[Module.FRONT_RIGHT].getDriveMotor().getAppliedOutput()
+                          * RobotController.getBatteryVoltage(),
                       Volts))
                   .linearPosition(m_distance.mut_replace(m_modules[Module.FRONT_RIGHT].getDrivePosition(), Meters))
                   .linearVelocity(
                       m_velocity.mut_replace(m_modules[Module.FRONT_RIGHT].getDriveVelocity(), MetersPerSecond));
 
+              // Record a frame for the back right
+              log.motor("drive-backright")
+                  .voltage(m_appliedVoltage.mut_replace(
+                      m_modules[Module.BACK_RIGHT].getDriveMotor().getAppliedOutput()
+                          * RobotController.getBatteryVoltage(),
+                      Volts))
+                  .linearPosition(m_distance.mut_replace(m_modules[Module.BACK_RIGHT].getDrivePosition(), Meters))
+                  .linearVelocity(
+                      m_velocity.mut_replace(m_modules[Module.BACK_RIGHT].getDriveVelocity(), MetersPerSecond));
+
               // Record a frame for the back left
               log.motor("drive-backleft")
                   .voltage(m_appliedVoltage.mut_replace(
-                      m_modules[Module.BACK_LEFT].getDriveMotor().getAppliedOutput() * RobotController.getBatteryVoltage(),
+                      m_modules[Module.BACK_LEFT].getDriveMotor().getAppliedOutput()
+                          * RobotController.getBatteryVoltage(),
                       Volts))
                   .linearPosition(m_distance.mut_replace(m_modules[Module.BACK_LEFT].getDrivePosition(), Meters))
                   .linearVelocity(
                       m_velocity.mut_replace(m_modules[Module.BACK_LEFT].getDriveVelocity(), MetersPerSecond));
 
-              // Record a frame for the back right
-              log.motor("drive-backright")
-                  .voltage(m_appliedVoltage.mut_replace(
-                      m_modules[Module.BACK_RIGHT].getDriveMotor().getAppliedOutput() * RobotController.getBatteryVoltage(),
-                      Volts))
-                  .linearPosition(m_distance.mut_replace(m_modules[Module.BACK_RIGHT].getDrivePosition(), Meters))
-                  .linearVelocity(
-                      m_velocity.mut_replace(m_modules[Module.BACK_RIGHT].getDriveVelocity(), MetersPerSecond));
             },
             // Tell SysId to make generated commands require this subsystem, suffix test
             // state in WPILog with this subsystem's name ("drive")
@@ -175,8 +180,8 @@ public class SwerveDrive extends Subsystem {
         new SwerveModulePosition[] {
             m_modules[Module.FRONT_LEFT].getPosition(),
             m_modules[Module.FRONT_RIGHT].getPosition(),
-            m_modules[Module.BACK_LEFT].getPosition(),
-            m_modules[Module.BACK_RIGHT].getPosition()
+            m_modules[Module.BACK_RIGHT].getPosition(),
+            m_modules[Module.BACK_LEFT].getPosition()
         },
         pose);
   }
@@ -221,7 +226,7 @@ public class SwerveDrive extends Subsystem {
             new SwerveModulePosition(0.0,
                 Rotation2d.fromRotations(m_modules[Module.FRONT_RIGHT].getTurnPosition())),
             new SwerveModulePosition(0.0,
-                Rotation2d.fromRotations(m_modules[Module.BACK_LEFT].getTurnPosition())),
+                Rotation2d.fromRotations(m_modules[Module.BACK_RIGHT].getTurnPosition())),
             new SwerveModulePosition(0.0,
                 Rotation2d.fromRotations(m_modules[Module.BACK_LEFT].getTurnPosition()))
         },
@@ -313,28 +318,24 @@ public class SwerveDrive extends Subsystem {
   }
 
   @AutoLogOutput
-  private double[] getCurrentStates() {
-    double[] currentStates = {
-        m_modules[Module.FRONT_LEFT].getTurnPosition() * 360, m_modules[Module.FRONT_LEFT].getDriveVelocity(),
-        m_modules[Module.FRONT_RIGHT].getTurnPosition() * 360, m_modules[Module.FRONT_RIGHT].getDriveVelocity(),
-        m_modules[Module.BACK_LEFT].getTurnPosition() * 360, m_modules[Module.BACK_LEFT].getDriveVelocity(),
-        m_modules[Module.FRONT_RIGHT].getTurnPosition() * 360, m_modules[Module.BACK_RIGHT].getDriveVelocity()
+  private SwerveModuleState[] getCurrentStates() {
+    SwerveModuleState[] currentStates = {
+        m_modules[Module.FRONT_LEFT].getState(),
+        m_modules[Module.FRONT_RIGHT].getState(),
+        m_modules[Module.BACK_RIGHT].getState(),
+        m_modules[Module.BACK_LEFT].getState()
     };
 
     return currentStates;
   }
 
   @AutoLogOutput
-  private double[] getDesiredStates() {
-    double[] desiredStates = {
-        m_modules[Module.FRONT_LEFT].getDesiredState().angle.getDegrees(),
-        m_modules[Module.FRONT_LEFT].getDesiredState().speedMetersPerSecond,
-        m_modules[Module.FRONT_RIGHT].getDesiredState().angle.getDegrees(),
-        m_modules[Module.FRONT_RIGHT].getDesiredState().speedMetersPerSecond,
-        m_modules[Module.BACK_LEFT].getDesiredState().angle.getDegrees(),
-        m_modules[Module.FRONT_LEFT].getDesiredState().speedMetersPerSecond,
-        m_modules[Module.BACK_RIGHT].getDesiredState().angle.getDegrees(),
-        m_modules[Module.BACK_RIGHT].getDesiredState().speedMetersPerSecond
+  private SwerveModuleState[] getDesiredStates() {
+    SwerveModuleState[] desiredStates = {
+        m_modules[Module.FRONT_LEFT].getDesiredState(),
+        m_modules[Module.FRONT_RIGHT].getDesiredState(),
+        m_modules[Module.BACK_RIGHT].getDesiredState(),
+        m_modules[Module.BACK_LEFT].getDesiredState()
     };
 
     return desiredStates;
@@ -359,8 +360,8 @@ public class SwerveDrive extends Subsystem {
           new SwerveModulePosition[] {
               m_modules[Module.FRONT_LEFT].getPosition(),
               m_modules[Module.FRONT_RIGHT].getPosition(),
-              m_modules[Module.BACK_LEFT].getPosition(),
-              m_modules[Module.BACK_RIGHT].getPosition()
+              m_modules[Module.BACK_RIGHT].getPosition(),
+              m_modules[Module.BACK_LEFT].getPosition()
           });
     } else {
       setPose(new Pose2d(
@@ -372,9 +373,6 @@ public class SwerveDrive extends Subsystem {
     for (SwerveModule module : m_modules) {
       module.outputTelemetry();
     }
-
-    putNumberArray("CurrentStates", getCurrentStates());
-    putNumberArray("DesiredStates", getDesiredStates());
 
     putNumber("Gyro/AngleDegrees", m_gyro.getRotation2d().getDegrees());
     putNumber("Gyro/Pitch", m_gyro.getPitch());
@@ -393,7 +391,7 @@ public class SwerveDrive extends Subsystem {
   public interface Module {
     int FRONT_LEFT = 0;
     int FRONT_RIGHT = 1;
-    int BACK_LEFT = 2;
-    int BACK_RIGHT = 3;
+    int BACK_RIGHT = 2;
+    int BACK_LEFT = 3;
   }
 }

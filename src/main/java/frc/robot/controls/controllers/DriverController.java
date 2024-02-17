@@ -1,9 +1,7 @@
 package frc.robot.controls.controllers;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 public class DriverController extends FilteredController {
-  private String m_smartDashboardKey = "DriverInput/";
+  public double k_triggerActivationThreshold = 0.5;
 
   public DriverController(int port) {
     super(port, false, false);
@@ -12,8 +10,6 @@ public class DriverController extends FilteredController {
   public DriverController(int port, boolean useDeadband, boolean useSquaredInput) {
     super(port, useDeadband, useSquaredInput);
   }
-
-  private final double k_triggerActivationThreshold = 0.5;
 
   // Drive
   public double getForwardAxis() {
@@ -94,11 +90,5 @@ public class DriverController extends FilteredController {
 
   public boolean getWantsEject() {
     return this.getRawButton(RawButton.B);
-  }
-
-  public void outputTelemetry() {
-    SmartDashboard.putNumber(m_smartDashboardKey + "Forward", getForwardAxis());
-    SmartDashboard.putNumber(m_smartDashboardKey + "Strafe", getStrafeAxis());
-    SmartDashboard.putNumber(m_smartDashboardKey + "Turn", getTurnAxis());
   }
 }

@@ -122,8 +122,8 @@ public final class Constants {
     public static final double k_ampPivotAngle = k_stowPivotAngle;
 
     // TODO: get intake speeds
-    public static final double k_intakeSpeed = 0.7;
-    public static final double k_ejectSpeed = -0.45;
+    public static final double k_intakeSpeed = 0.4;
+    public static final double k_ejectSpeed = -0.25;
     public static final double k_feedShooterSpeed = -0.5;
 
     // TODO: get intake pivot PID
@@ -152,14 +152,17 @@ public final class Constants {
   }
 
   public class Shooter {
+    public static final double k_maxRPM = 6000.0; // but that's just a theory
+
     public static final int k_pivotMotorId = 15;
     public static final int k_topMotorId = 16;
     public static final int k_bottomMotorId = 17;
 
     // TODO: Get shooter motor PID
-    public static final double k_shooterMotorP = 0.0;
+    public static final double k_shooterMotorP = 0.00008;
     public static final double k_shooterMotorI = 0.0;
     public static final double k_shooterMotorD = 0.0;
+    public static final double k_shooterMotorFF = 0.00015;
 
     // TODO: Check these
     public static final double k_shooterMinOutput = 0.0;
@@ -174,9 +177,8 @@ public final class Constants {
     public static final double k_pivotMotorIZone = 0.0;
 
     // TODO: get shooter pivot setpoint angles
-    public static final double k_lowPivotAngle = 0.0;
-    public static final double k_ampPivotAngle = 0.0;
-    public static final double k_speakerPivotAngle = 0.0;
+    public static final double k_ampPivotAngle = 45.0;
+    public static final double k_speakerPivotAngle = 60.0;
 
     // TODO get values
     public static final double k_length = 11.94335; // in inches
@@ -185,7 +187,7 @@ public final class Constants {
     public static final double k_pivotHeight = 4.0;
 
     public static final double k_minAngle = 20.0;
-    public static final double k_maxAngle = 60.0;
+    public static final double k_maxAngle = 60.0; // TODO: Increase at some point
     public static final double k_startingAngle = 0.0;
 
     public static final double k_distanceFromCenter = 4.0008;
