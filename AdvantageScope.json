@@ -9,13 +9,13 @@
         "sidebar": {
           "width": 300,
           "expanded": [
-            "/RealOutputs",
-            "/RealOutputs/SwerveDrive/Rotation2d",
-            "/RealOutputs/SwerveDrive"
+            "/RealOutputs/Shooter",
+            "/DriverStation/Joystick0/AxisValues",
+            "/SystemStats"
           ]
         },
         "tabs": {
-          "selected": 2,
+          "selected": 3,
           "tabs": [
             {
               "type": 0,
@@ -83,6 +83,49 @@
               "title": "Swerve"
             },
             {
+              "type": 1,
+              "legends": {
+                "left": {
+                  "lockedRange": null,
+                  "unitConversion": {
+                    "type": null,
+                    "factor": 1
+                  },
+                  "fields": [
+                    {
+                      "key": "/SystemStats/BatteryVoltage",
+                      "color": "#2b66a2",
+                      "show": true
+                    }
+                  ]
+                },
+                "discrete": {
+                  "fields": [
+                    {
+                      "key": "/SystemStats/BrownedOut",
+                      "color": "#af2437",
+                      "show": true
+                    }
+                  ]
+                },
+                "right": {
+                  "lockedRange": null,
+                  "unitConversion": {
+                    "type": null,
+                    "factor": 1
+                  },
+                  "fields": [
+                    {
+                      "key": "/SystemStats/BatteryCurrent",
+                      "color": "#e5b31b",
+                      "show": true
+                    }
+                  ]
+                }
+              },
+              "title": "Battery"
+            },
+            {
               "type": 3,
               "field": "/RealOutputs/Console",
               "title": "Console"
@@ -100,6 +143,11 @@
                     {
                       "key": "/RealOutputs/Shooter/PivotAngle",
                       "color": "#af2437",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/Shooter/PivotMotorCurrent",
+                      "color": "#e48b32",
                       "show": true
                     }
                   ]
@@ -134,6 +182,47 @@
                 }
               },
               "title": "ShooterPivot"
+            },
+            {
+              "type": 1,
+              "legends": {
+                "left": {
+                  "lockedRange": null,
+                  "unitConversion": {
+                    "type": null,
+                    "factor": 1
+                  },
+                  "fields": [
+                    {
+                      "key": "/RealOutputs/Shooter/ShooterTargetSpeed",
+                      "color": "#2b66a2",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/Shooter/TopMotorSpeed",
+                      "color": "#e5b31b",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/Shooter/BottomMotorSpeed",
+                      "color": "#af2437",
+                      "show": true
+                    }
+                  ]
+                },
+                "discrete": {
+                  "fields": []
+                },
+                "right": {
+                  "lockedRange": null,
+                  "unitConversion": {
+                    "type": null,
+                    "factor": 1
+                  },
+                  "fields": []
+                }
+              },
+              "title": "ShooterSpeed"
             }
           ]
         }
