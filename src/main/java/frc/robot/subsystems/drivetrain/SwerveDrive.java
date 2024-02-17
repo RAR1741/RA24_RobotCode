@@ -191,17 +191,17 @@ public class SwerveDrive extends Subsystem {
    *                   return in radians
    */
   public double calculateAutoAimAngle(boolean degreeMode) {
-    double bot_x = m_poseEstimator.getEstimatedPosition().getX();
-    double bot_y = m_poseEstimator.getEstimatedPosition().getY();
-    double speaker_x = Constants.Field.k_redSpeakerPose.getX();
-    double speaker_y = Constants.Field.k_redSpeakerPose.getY();
+    double botX = m_poseEstimator.getEstimatedPosition().getX();
+    double botY = m_poseEstimator.getEstimatedPosition().getY();
+    double speakerX = Constants.Field.k_redSpeakerPose.getX();
+    double speakerY = Constants.Field.k_redSpeakerPose.getY();
 
-    double x = speaker_x - bot_x;
-    double distance = Math.sqrt(Math.pow(x, 2) + Math.pow(speaker_y - bot_y, 2));
+    double x = speakerX - botX;
+    double distance = Math.sqrt(Math.pow(x, 2) + Math.pow(speakerY - botY, 2));
 
     double theta = Math.acos(x / distance);
 
-    putNumber("AutoAimAngle", Math.toDegrees(theta));
+    putNumber("AutoAimAngle", Units.radiansToDegrees(theta));
     // System.out.println(theta);
 
     return degreeMode ? Units.radiansToDegrees(theta) : theta;
@@ -252,7 +252,7 @@ public class SwerveDrive extends Subsystem {
             ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, m_gyro.getRotation2d())
             : new ChassisSpeeds(xSpeed, ySpeed, rot));
 
-    double maxBoostSpeed = Constants.SwerveDrive.k_maxSpeed * Constants.SwerveDrive.k_boostScaler;
+    double maxBoostSpeed = Constants.SwerveDrive.k_maxBoostSpeed;
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, maxBoostSpeed);
 
     for (int i = 0; i < m_modules.length; i++) {

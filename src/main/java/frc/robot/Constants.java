@@ -47,12 +47,18 @@ public final class Constants {
     public static final double k_xCenterDistance = k_xDistance / 2.0;
     public static final double k_yCenterDistance = k_yDistance / 2.0;
 
-    public static final double k_maxSpeed = 3.0; // 3 meters per second
-    public static final double k_maxAngularSpeed = Math.PI; // 1/2 rotation per second
-    public static final double k_slowScaler = 0.2; // 20% reduction in speed
-    public static final double k_boostScaler = 2.0; // 200% increase in speed
+    // Max speeds
+    public static final double k_maxSpeed = 2.5; // Meters per second
+    public static final double k_maxBoostSpeed = 5.0; // Meters per second
+    public static final double k_maxAngularSpeed = Math.PI * 2.0; // Meters per second
 
-    public static final double k_wheelRadiusIn = 2.0; // 2 inches
+    // Max acceleration
+    public static final double k_maxLinearAcceleration = 12.0;
+    public static final double k_maxAngularAcceleration = Math.PI * 8.0;
+
+    public static final double k_slowScaler = 0.2; // % reduction in speed
+
+    public static final double k_wheelRadiusIn = 2.0; // inches
     public static final double k_driveGearRatio = (50.0 / 14.0) * (16.0 / 28.0) * (45.0 / 15.0);
     public static final double k_turnGearRatio = 7.0 / 150.0;
 
@@ -63,11 +69,14 @@ public final class Constants {
       public static final int k_BRMotorId = 10;
       public static final int k_BLMotorId = 12;
 
-      public static final double k_P = 0.0;
+      public static final double k_P = 0.0020187; // value by sysid
       public static final double k_I = 0.0;
       public static final double k_D = 0.0;
       public static final double k_IZone = 0.0;
-      public static final double k_FF = 3.25;
+
+      public static final double k_FFS = 0.32699; // value by sysid
+      public static final double k_FFV = 2.377; // value by sysid
+      public static final double k_FFA = 0.14114; // value by sysid
     }
 
     // Drivetrain (turn) constants

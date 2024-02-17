@@ -38,12 +38,12 @@ public class Robot extends LoggedRobot {
   private final OperatorController m_operatorController = new OperatorController(1, true, true);
 
   // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
-  private final SlewRateLimiter m_xRateLimiter = new SlewRateLimiter(3);
-  private final SlewRateLimiter m_yRateLimiter = new SlewRateLimiter(3);
-  private final SlewRateLimiter m_rotRateLimiter = new SlewRateLimiter(3);
+  private final SlewRateLimiter m_xRateLimiter = new SlewRateLimiter(Constants.SwerveDrive.k_maxLinearAcceleration);
+  private final SlewRateLimiter m_yRateLimiter = new SlewRateLimiter(Constants.SwerveDrive.k_maxLinearAcceleration);
+  private final SlewRateLimiter m_rotRateLimiter = new SlewRateLimiter(Constants.SwerveDrive.k_maxAngularAcceleration);
 
   // PID Controller for Swerve Auto Aim speed
-  private final PIDController m_autoAimPID = new PIDController(
+  private final PIDController m_aimPID = new PIDController(
       Constants.SwerveDrive.AutoAim.k_P,
       Constants.SwerveDrive.AutoAim.k_I,
       Constants.SwerveDrive.AutoAim.k_D);
@@ -95,6 +95,9 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void robotPeriodic() {
+    // if (!(Preferences.getString("Test Mode", "NONE").contains("SYSID") &&
+    // DriverStation.isTest())) {
+    // }
     m_allSubsystems.forEach(subsystem -> subsystem.periodic());
     m_allSubsystems.forEach(subsystem -> subsystem.writePeriodicOutputs());
     m_allSubsystems.forEach(subsystem -> subsystem.outputTelemetry());
@@ -148,6 +151,7 @@ public class Robot extends LoggedRobot {
   @Override
   public void teleopPeriodic() {
     double rot = 0.0;
+    boolean lockHeading = false;
 
     // if (m_driverController.getWantsAutoAim() && m_swerve.getPose().getX() >=
     // Constants.Field.k_autoAimThreshold && !autoAimEnabled) {
@@ -158,25 +162,29 @@ public class Robot extends LoggedRobot {
     // autoAimEnabled = false;
     // }
 
-    if (m_autoAimEnabled) {
-      rot = m_autoAimPID.calculate(m_swerve.getRotation2d().getRadians(), m_swerve.calculateAutoAimAngle(false));
-    } else {
-      rot = m_rotRateLimiter.calculate(m_driverController.getTurnAxis());
+    if (m_driverController.getTurnAxis() == 0.0) {
+      lockHeading = true;
     }
 
-    double xSpeed = m_xRateLimiter.calculate(m_driverController.getForwardAxis());
-    double ySpeed = m_yRateLimiter.calculate(m_driverController.getStrafeAxis());
+    if (m_autoAimEnabled) {
+      rot = m_aimPID.calculate(m_swerve.getRotation2d().getRadians(), m_swerve.calculateAutoAimAngle(false));
+    } else {
+      rot = m_rotRateLimiter.calculate(m_driverController.getTurnAxis() * Constants.SwerveDrive.k_maxAngularSpeed);
+    }
+
+    double maxSpeed = m_driverController.getBoostScaler() > 0.5 ? Constants.SwerveDrive.k_maxBoostSpeed
+        : Constants.SwerveDrive.k_maxSpeed; // TODO: Use axis to be able to dial in boost speed
+
+    double xSpeed = m_xRateLimiter.calculate(m_driverController.getForwardAxis() * maxSpeed);
+    double ySpeed = m_yRateLimiter.calculate(m_driverController.getStrafeAxis() * maxSpeed);
 
     // slowScaler should scale between k_slowScaler and 1
     double slowScaler = Constants.SwerveDrive.k_slowScaler
         + ((1 - m_driverController.getSlowScaler()) * (1 - Constants.SwerveDrive.k_slowScaler));
 
-    // boostScaler should scale between 1 and k_boostScaler
-    double boostScaler = 1 + (m_driverController.getBoostScaler() * (Constants.SwerveDrive.k_boostScaler - 1));
-
-    xSpeed *= slowScaler * boostScaler;
-    ySpeed *= slowScaler * boostScaler;
-    rot *= slowScaler * boostScaler;
+    xSpeed *= slowScaler;
+    ySpeed *= slowScaler;
+    rot *= slowScaler;
 
     m_swerve.drive(xSpeed, ySpeed, rot, true);
 
@@ -230,7 +238,7 @@ public class Robot extends LoggedRobot {
       m_shooter.setSpeed(ShooterSpeedTarget.HALF);
     } else if (m_operatorController.getWantsQuarterSpeed()) {
       m_shooter.setSpeed(ShooterSpeedTarget.QUARTER);
-    } else if(m_operatorController.getWantsStopped()) {
+    } else if (m_operatorController.getWantsStopped()) {
       m_shooter.setSpeed(ShooterSpeedTarget.OFF);
     }
 
@@ -260,10 +268,10 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void testPeriodic() {
-    // m_swerve.drive(0, 0, 0, false);
-
     switch (Preferences.getString("Test Mode", "NONE")) {
-      case "SYSID_SWERVE":
+      case "SYSID":
+        m_intake.stopIntake();
+
         if (m_driverController.getWantsSysIdQuasistaticForward()) {
           m_swerve.sysIdQuasistatic(SysIdRoutine.Direction.kForward).schedule();
         } else if (m_driverController.getWantsSysIdQuasistaticBackward()) {
@@ -272,6 +280,8 @@ public class Robot extends LoggedRobot {
           m_swerve.sysIdDynamic(SysIdRoutine.Direction.kForward).schedule();
         } else if (m_driverController.getWantsSysIdDynamicBackward()) {
           m_swerve.sysIdDynamic(SysIdRoutine.Direction.kReverse).schedule();
+        } else if (m_driverController.getWantSysIdStop()) {
+          CommandScheduler.getInstance().cancelAll();
         }
         break;
       case "INTAKE_PIVOT":

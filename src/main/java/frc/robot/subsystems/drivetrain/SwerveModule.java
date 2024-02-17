@@ -8,6 +8,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -23,6 +24,7 @@ public class SwerveModule {
   private final RelativeEncoder m_driveEncoder;
   private final RelativeEncoder m_turningRelEncoder;
   private final DutyCycleEncoder m_turningAbsEncoder;
+  private final SimpleMotorFeedforward m_drivingFeedForward;
   private final SparkPIDController m_turningPIDController;
   private final SparkPIDController m_drivePIDController;
 
@@ -43,6 +45,11 @@ public class SwerveModule {
     m_moduleName = moduleName;
 
     m_smartDashboardKey = "SwerveDrive/" + m_moduleName + "/";
+
+    m_drivingFeedForward = new SimpleMotorFeedforward(
+        Constants.SwerveDrive.Drive.k_FFS,
+        Constants.SwerveDrive.Drive.k_FFV,
+        Constants.SwerveDrive.Drive.k_FFA);
 
     m_driveMotor = new CANSparkMax(driveMotorChannel, MotorType.kBrushless);
     m_driveMotor.restoreFactoryDefaults();
@@ -91,7 +98,6 @@ public class SwerveModule {
     m_drivePIDController.setI(Constants.SwerveDrive.Drive.k_I);
     m_drivePIDController.setD(Constants.SwerveDrive.Drive.k_D);
     m_drivePIDController.setIZone(Constants.SwerveDrive.Drive.k_IZone);
-    m_drivePIDController.setFF(Constants.SwerveDrive.Drive.k_FF);
   }
 
   public SwerveModuleState getState() {
@@ -140,8 +146,9 @@ public class SwerveModule {
     m_periodicIO.desiredState = desiredState;
   }
 
-  // plumb voltage into drive motor and set turn motor to 0deg
+  // Pass voltage into drive motor and set turn motor to 0 deg
   public void sysidDrive(double volts) {
+
     m_turningPIDController.setReference(0, ControlType.kPosition);
 
     m_driveMotor.setVoltage(volts);
@@ -153,7 +160,10 @@ public class SwerveModule {
 
   public void periodic() {
     if (m_periodicIO.shouldChangeState) {
-      m_drivePIDController.setReference(m_periodicIO.desiredState.speedMetersPerSecond, ControlType.kVelocity);
+      double feedforward = m_drivingFeedForward.calculate(m_periodicIO.desiredState.speedMetersPerSecond);
+
+      m_drivePIDController.setReference(m_periodicIO.desiredState.speedMetersPerSecond, ControlType.kVelocity, 0,
+          feedforward);
       m_turningPIDController.setReference(m_periodicIO.desiredState.angle.getRadians(), ControlType.kPosition);
       m_periodicIO.shouldChangeState = false;
     }

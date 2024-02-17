@@ -64,9 +64,13 @@ public class DriverController extends FilteredController {
   public boolean getWantsSysIdDynamicForward() {
     return this.getRawButtonPressed(RawButton.Y);
   }
+
+  public boolean getWantSysIdStop() {
+    return this.getRawButtonPressed(RawButton.START);
+  }
   /////
 
-  // Intake test mode //
+  // Manual system test modes //
   public double testPositive() {
     return this.getFilteredAxis(Axis.LEFT_TRIGGER);
   }
