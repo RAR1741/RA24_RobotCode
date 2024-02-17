@@ -6,11 +6,9 @@ import frc.robot.autonomous.modes.DoNothingMode;
 import frc.robot.autonomous.modes.TestMode;
 import frc.robot.autonomous.modes.TestMode2;
 import frc.robot.autonomous.tasks.Task;
-import frc.robot.subsystems.drivetrain.SwerveDrive;
 
 public class AutoRunner {
   private static AutoRunner m_autoRunner = null;
-  private SwerveDrive m_swerve = SwerveDrive.getInstance();
   private AutoModeBase m_autoMode;
 
   public static AutoRunner getInstance() {

@@ -18,7 +18,7 @@
   {
     "name": "/Preferences/SwerveDrive/x",
     "type": "double",
-    "value": 2.000379182496494,
+    "value": 13.180837190849166,
     "properties": {
       "persistent": true
     }
@@ -34,7 +34,7 @@
   {
     "name": "/Preferences/SwerveDrive/rot",
     "type": "double",
-    "value": 0.0,
+    "value": -180.0,
     "properties": {
       "persistent": true
     }

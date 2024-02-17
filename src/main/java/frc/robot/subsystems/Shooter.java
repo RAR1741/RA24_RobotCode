@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import org.littletonrobotics.junction.AutoLogOutput;
+
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -11,10 +13,10 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Preferences;
 import frc.robot.Constants;
 import frc.robot.Helpers;
+import frc.robot.REVThroughBoreEncoder;
 import frc.robot.simulation.ShooterSim;
 import frc.robot.simulation.SimMaster;
 
@@ -28,7 +30,7 @@ public class Shooter extends Subsystem {
 
   private RelativeEncoder m_topMotorEncoder;
   private RelativeEncoder m_bottomMotorEncoder;
-  private DutyCycleEncoder m_pivotAbsEncoder = new DutyCycleEncoder(Constants.Shooter.k_pivotEncoderId);
+  private REVThroughBoreEncoder m_pivotAbsEncoder = new REVThroughBoreEncoder(Constants.Shooter.k_pivotEncoderId);
 
   private SparkPIDController m_topShooterMotorPID;
   private SparkPIDController m_bottomShooterMotorPID;
@@ -37,6 +39,7 @@ public class Shooter extends Subsystem {
   private SlewRateLimiter m_speedLimiter = new SlewRateLimiter(1000); // TODO Double-check this value
 
   private PeriodicIO m_periodicIO;
+  private boolean m_hasSetPivotRelEncoder = false;
 
   private Shooter() {
     super("Shooter");
@@ -44,7 +47,6 @@ public class Shooter extends Subsystem {
     m_sim = SimMaster.getInstance().getShooterSim();
 
     m_topShooterMotor = new CANSparkFlex(Constants.Shooter.k_topMotorId, MotorType.kBrushless);
-
     m_topShooterMotor.restoreFactoryDefaults();
     m_topShooterMotor.setIdleMode(CANSparkFlex.IdleMode.kCoast);
     m_topShooterMotor.setInverted(true);
@@ -94,17 +96,24 @@ public class Shooter extends Subsystem {
 
   @Override
   public void periodic() {
+    // If we haven't set the pivot relative encoder yet, and
+    // the abs encoder is connected:
+    if (!m_hasSetPivotRelEncoder && getIsPivotAsbConnected()) {
+      setPivotAbsOffset();
+    }
+
     if (!(Preferences.getString("Test Mode", "NONE").contains("SHOOTER_") && DriverStation.isTest())) {
       // m_periodicIO.pivot_voltage =
-      // m_pivotMotorPID.calculate(getCurrentPivotAngle(), m_periodicIO.pivot_angle);
+      // m_pivotMotorPID.calculate(getPivotAngle(), m_periodicIO.pivot_angle);
 
       m_pivotMotorPID.setReference(m_periodicIO.pivot_angle, ControlType.kPosition);
 
+      // TODO: actually implement this safety
       // if (m_pivotAbsEncoder.get() == 0.0) {
       // m_periodicIO.pivot_voltage = 0.0;
       // }
 
-      m_sim.updateAngle(getCurrentPivotAngle());
+      m_sim.updateAngle(getPivotAngle());
     }
   }
 
@@ -140,11 +149,11 @@ public class Shooter extends Subsystem {
     putNumber("TopMotorSpeed", m_topMotorEncoder.getVelocity());
     putNumber("BottomMotorSpeed", m_bottomMotorEncoder.getVelocity());
     putNumber("PivotMotorVoltage", Helpers.getVoltage(m_pivotMotor));
-    putNumber("PivotAngle", getCurrentPivotAngle());
+    putNumber("PivotAngle", getPivotAngle());
 
     putNumber("pivot_relative_position", m_pivotMotor.getEncoder().getPosition());
     putNumber("pivot_speed", m_periodicIO.pivot_speed);
-    putNumber("pivot_current", m_pivotMotor.getOutputCurrent());
+    putNumber("current_pivot_current", m_pivotMotor.getOutputCurrent());
   }
 
   @Override
@@ -154,6 +163,47 @@ public class Shooter extends Subsystem {
 
   public void setAngle(double angle) {
     m_periodicIO.pivot_angle = angle;
+  }
+
+  public void changeAngle(double alpha) {
+    m_periodicIO.pivot_angle += alpha;
+  }
+
+  public void setPivotAbsOffset() {
+    RelativeEncoder m_pivotRelEncoder = m_pivotMotor.getEncoder();
+    double pivotAngle = getPivotAngle();
+    double offset = targetAngleToRelRotations(pivotAngle);
+
+    m_pivotRelEncoder.setPosition(offset);
+    m_hasSetPivotRelEncoder = true;
+  }
+
+  @AutoLogOutput
+  public boolean getIsPivotAsbConnected() {
+    return m_pivotAbsEncoder.isConnected();
+  }
+
+  @AutoLogOutput
+  public double getPivotRelRotations() {
+    return m_pivotMotor.getEncoder().getPosition();
+  }
+
+  @AutoLogOutput
+  public int getPivotAbsFrequency() {
+    return m_pivotAbsEncoder.getFrequency();
+  }
+
+  public double targetAngleToRelRotations(double angle) {
+    angle = Units.degreesToRadians(angle);
+
+    double theta = Math.acos(8.75 / 10.5);
+    double distanceInches = Math.sqrt(
+        Math.pow(10.5, 2.0) +
+            Math.pow(7, 2.0) -
+            (2.0 * 10.5 * 7.0 * Math.cos(theta + angle)));
+
+    // Result in relative encoder rotations
+    return Constants.Shooter.k_relRotationsToMaxExtension - (distanceInches * Constants.Shooter.k_rotationsPerInch);
   }
 
   public void setAngle(ShooterPivotTarget target) {
@@ -197,8 +247,10 @@ public class Shooter extends Subsystem {
     m_periodicIO.shoot_speed = (positive - negative) * limit;
   }
 
-  public double getCurrentPivotAngle() {
-    return Units.rotationsToDegrees(Helpers.modRotations(m_pivotAbsEncoder.get()));
+  @AutoLogOutput
+  public double getPivotAngle() {
+    return Units.rotationsToDegrees(Helpers.modRotations(
+        m_pivotAbsEncoder.getAbsolutePosition() - Units.degreesToRotations(Constants.Shooter.k_absPivotOffset)));
   }
 
   public double getAngleFromTarget(ShooterPivotTarget target) {
@@ -209,7 +261,6 @@ public class Shooter extends Subsystem {
         return Constants.Shooter.k_ampPivotAngle;
       case SPEAKER:
         return Constants.Shooter.k_speakerPivotAngle;
-
       default:
         return Constants.Shooter.k_lowPivotAngle;
     }
@@ -220,10 +271,10 @@ public class Shooter extends Subsystem {
       return true;
     }
 
-    double current_angle = getCurrentPivotAngle();
+    double _angle = getPivotAngle();
     double target_angle = getAngleFromTarget(target);
 
-    return current_angle <= target_angle + 2 && current_angle >= target_angle - 2;
+    return _angle <= target_angle + 2 && _angle >= target_angle - 2;
   }
 
   private static class PeriodicIO {

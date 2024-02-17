@@ -19,7 +19,6 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.autonomous.AutoChooser;
 import frc.robot.autonomous.AutoRunner;
-import frc.robot.autonomous.AutoRunner.AutoMode;
 import frc.robot.autonomous.tasks.Task;
 import frc.robot.controls.controllers.DriverController;
 import frc.robot.controls.controllers.OperatorController;
@@ -90,11 +89,6 @@ public class Robot extends LoggedRobot {
     // m_allSubsystems.add(m_climbers);
 
     m_swerve.setGyroAngleAdjustment(0);
-
-    // This has to be done later, so the absolute encoders are initialized
-    // m_intake.setPivotAbsOffset();
-
-    // TODO: do the above with the shooter pivot as well also too
   }
 
   @Override
@@ -114,7 +108,6 @@ public class Robot extends LoggedRobot {
     m_swerve.setBrakeMode(false);
 
     m_autoRunner.setAutoMode(m_autoChooser.getSelectedAuto());
-    m_autoRunner.setAutoMode(AutoMode.TEST);
     m_currentTask = m_autoRunner.getNextTask();
 
     // Start the first task
@@ -205,9 +198,13 @@ public class Robot extends LoggedRobot {
       m_intake.setState(IntakeState.INTAKE);
     } else if (m_driverController.getWantsEject()) {
       m_intake.setState(IntakeState.EJECT);
+    } else if (m_operatorController.getWantsShoot()) {
+      m_intake.setState(IntakeState.FEED_SHOOTER);
     } else {
       m_intake.setState(IntakeState.NONE);
     }
+
+    m_shooter.changeAngle(m_operatorController.getWantsManualShooterPivot(0.5));
 
     m_driverController.outputTelemetry();
   }

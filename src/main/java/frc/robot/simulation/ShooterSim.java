@@ -15,7 +15,7 @@ import frc.robot.Constants;
 public class ShooterSim {
   private static ShooterSim m_sim = null;
 
-  private final double k_simOffset = 30.0;
+  private final double k_simOffset = -90.0;
 
   private final DCMotor k_pivotMotor = DCMotor.getNeoVortex(1);
   private final double k_pivotGearRatio = 1.0;
@@ -70,13 +70,12 @@ public class ShooterSim {
             new Color8Bit(Color.kYellow)));
   }
 
-  public void updateAngle(double shooterAngle) {
-    double a = -1 * (k_simOffset + shooterAngle);
-    m_shooter.setAngle(a);
+  public void updateAngle(double angle) {
+    m_shooter.setAngle(-(k_simOffset + angle));
 
     // Translation2d setpoint = m_origin.plus(new Translation2d(x, y));
     // m_crosshair.setPosition(setpoint.getX(), setpoint.getY());
 
-    SmartDashboard.putNumber("Sim/Shoter Sim Angle", shooterAngle);
+    SmartDashboard.putNumber("Sim/Shooter Sim Angle", angle);
   }
 }

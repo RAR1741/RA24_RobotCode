@@ -190,12 +190,23 @@ public final class Constants {
 
     public static final double k_distanceFromCenter = 4.0008;
 
-    // Shooter angle lookup table
-    // Plate, Abs, Rel
-    // 20 deg, 135.9, 0.0
-    // 45 deg, 161.9, -14.72
-    // 60 deg, 176.7, -22.13
-    // 90 deg, 204.5, -33.31
+    // Offset, -90, since that's where we want to start
+    public static final double k_absPivotOffset = 208.587 - 90;
+
+    static double threadsPerInch = 10.0;
+    static double helices = 2.0;
+    public static final double k_rotationsPerInch = threadsPerInch / helices;
+
+    static double maxPivotExtensionInches = 15.5;
+    public static final double k_relRotationsToMaxExtension = maxPivotExtensionInches * k_rotationsPerInch;
+
+    // Shooter angle lookup table, V2
+    // Rotations from plate at 90 degrees (aka straight up)
+    // Plate, Rel
+    // 20 deg, 33.162384
+    // 45 deg, 20.878754
+    // 60 deg, 12.488831
+    // 90 deg, 0.0
   }
 
   public static class Climber {

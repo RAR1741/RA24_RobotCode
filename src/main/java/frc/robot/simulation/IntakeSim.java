@@ -69,12 +69,12 @@ public class IntakeSim {
             new Color8Bit(Color.kBlue)));
   }
 
-  public void updateAngle(double intakeAngle) {
-    m_intake.setAngle(-(k_simOffset + intakeAngle));
+  public void updateAngle(double angle) {
+    m_intake.setAngle(-(k_simOffset + angle));
 
     // Translation2d setpoint = m_origin.plus(new Translation2d(x, y));
     // m_crosshair.setPosition(setpoint.getX(), setpoint.getY());
 
-    SmartDashboard.putNumber("Sim/Intake Sim Angle", intakeAngle);
+    SmartDashboard.putNumber("Sim/Intake Sim Angle", angle);
   }
 }

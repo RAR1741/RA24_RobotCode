@@ -66,7 +66,7 @@ public class FilteredController extends GenericHID {
     int RIGHT_JOYSTICK = 10;
   }
 
-  public interface RawAxis {
+  public interface Axis {
     int LEFT_X_AXIS = 0;
     int LEFT_Y_AXIS = 1;
     int LEFT_TRIGGER = 2;

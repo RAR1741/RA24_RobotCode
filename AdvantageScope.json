@@ -8,10 +8,13 @@
       "state": {
         "sidebar": {
           "width": 300,
-          "expanded": ["/RealOutputs", "/RealOutputs/SwerveDrive"]
+          "expanded": [
+            "/RealOutputs",
+            "/RealOutputs/Shooter"
+          ]
         },
         "tabs": {
-          "selected": 2,
+          "selected": 4,
           "tabs": [
             {
               "type": 0,
@@ -82,6 +85,54 @@
               "type": 3,
               "field": "/RealOutputs/Console",
               "title": "Console"
+            },
+            {
+              "type": 1,
+              "legends": {
+                "left": {
+                  "lockedRange": null,
+                  "unitConversion": {
+                    "type": null,
+                    "factor": 1
+                  },
+                  "fields": [
+                    {
+                      "key": "/RealOutputs/Shooter/PivotAngle",
+                      "color": "#af2437",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/Shooter/PivotRelRotations",
+                      "color": "#80588e",
+                      "show": true
+                    }
+                  ]
+                },
+                "discrete": {
+                  "fields": [
+                    {
+                      "key": "/RealOutputs/Shooter/IsPivotAsbConnected",
+                      "color": "#e5b31b",
+                      "show": true
+                    }
+                  ]
+                },
+                "right": {
+                  "lockedRange": null,
+                  "unitConversion": {
+                    "type": null,
+                    "factor": 1
+                  },
+                  "fields": [
+                    {
+                      "key": "/RealOutputs/Shooter/PivotAbsFrequency",
+                      "color": "#2b66a2",
+                      "show": true
+                    }
+                  ]
+                }
+              },
+              "title": "ShooterPivot"
             }
           ]
         }

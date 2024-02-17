@@ -17,23 +17,23 @@ public class DriverController extends FilteredController {
 
   // Drive
   public double getForwardAxis() {
-    return -this.getFilteredAxis(RawAxis.LEFT_Y_AXIS);
+    return -this.getFilteredAxis(Axis.LEFT_Y_AXIS);
   }
 
   public double getStrafeAxis() {
-    return -this.getFilteredAxis(RawAxis.LEFT_X_AXIS);
+    return -this.getFilteredAxis(Axis.LEFT_X_AXIS);
   }
 
   public double getTurnAxis() {
-    return -this.getFilteredAxis(RawAxis.RIGHT_X_AXIS);
+    return -this.getFilteredAxis(Axis.RIGHT_X_AXIS);
   }
 
   public double getSlowScaler() {
-    return this.getFilteredAxis(RawAxis.RIGHT_TRIGGER);
+    return this.getFilteredAxis(Axis.RIGHT_TRIGGER);
   }
 
   public double getBoostScaler() {
-    return this.getFilteredAxis(RawAxis.LEFT_TRIGGER);
+    return this.getFilteredAxis(Axis.LEFT_TRIGGER);
   }
 
   public boolean getWantsResetGyro() {
@@ -45,7 +45,7 @@ public class DriverController extends FilteredController {
   }
 
   public boolean getWantsSlowMode() {
-    return this.getFilteredAxis(RawAxis.RIGHT_TRIGGER) > k_triggerActivationThreshold;
+    return this.getFilteredAxis(Axis.RIGHT_TRIGGER) > k_triggerActivationThreshold;
   }
 
   public boolean getWantsAutoAim() {
@@ -72,11 +72,11 @@ public class DriverController extends FilteredController {
 
   // Intake test mode //
   public double testPositive() {
-    return this.getFilteredAxis(RawAxis.LEFT_TRIGGER);
+    return this.getFilteredAxis(Axis.LEFT_TRIGGER);
   }
-  
+
   public double testNegative() {
-    return this.getFilteredAxis(RawAxis.RIGHT_TRIGGER);
+    return this.getFilteredAxis(Axis.RIGHT_TRIGGER);
   }
   /////
 
