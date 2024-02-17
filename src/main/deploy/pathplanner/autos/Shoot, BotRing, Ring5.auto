@@ -1,0 +1,37 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.7167669684804105,
+      "y": 6.73373101381842
+    },
+    "rotation": -30.0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Shoot, BotRing"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BotRing, Shoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Shoot, Ring5"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "Auto1",
+  "choreoAuto": false
+}
