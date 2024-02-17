@@ -37,7 +37,9 @@ public class DriveTrajectoryTask extends Task {
         m_autoPath.preventFlipping = true;
       }
 
-      m_autoTrajectory = m_autoPath.getTrajectory(new ChassisSpeeds(), m_swerve.getPose().getRotation());
+      m_autoTrajectory = m_autoPath.getTrajectory(
+          new ChassisSpeeds(),
+          m_autoPath.getStartingDifferentialPose().getRotation());
 
     } catch (Exception ex) {
       DriverStation.reportError("Unable to load PathPlanner trajectory: " + pathName, ex.getStackTrace());
@@ -99,7 +101,7 @@ public class DriveTrajectoryTask extends Task {
   }
 
   public Pose2d getStartingPose() {
-    return m_autoPath.getPreviewStartingHolonomicPose();
+    return m_autoPath.getStartingDifferentialPose();
   }
 
   @Override
