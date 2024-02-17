@@ -1,0 +1,31 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.6699236222990311,
+      "y": 4.414985377760731
+    },
+    "rotation": -150.0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Copy of Shoot, PodiumRing"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "PodiumRing, Ring2"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "Auto4",
+  "choreoAuto": false
+}

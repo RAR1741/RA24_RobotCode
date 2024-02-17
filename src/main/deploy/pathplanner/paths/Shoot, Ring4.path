@@ -3,43 +3,53 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.7167669684804105,
-        "y": 6.73373101381842
+        "x": 1.41,
+        "y": 5.55
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.3491521419562087,
-        "y": 6.8391285427364
+        "x": 2.8715608929078047,
+        "y": 5.808574926707628
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.8949825659957713,
-        "y": 7.0
+        "x": 6.09204094299772,
+        "y": 6.2887192250846695
       },
       "prevControl": {
-        "x": 1.9932481519741916,
-        "y": 6.956236908194216
+        "x": 4.066066220577518,
+        "y": 6.312140898176232
+      },
+      "nextControl": {
+        "x": 7.129554375149632,
+        "y": 6.276724850146497
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.281967377058862,
+        "y": 5.7617315805245015
+      },
+      "prevControl": {
+        "x": 6.478498549008509,
+        "y": 5.679755724704031
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.0,
-      "rotationDegrees": -30.0,
-      "rotateFast": true
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [
     {
       "name": "New Constraints Zone",
       "minWaypointRelativePos": 0,
-      "maxWaypointRelativePos": 1.0,
+      "maxWaypointRelativePos": 2.0,
       "constraints": {
         "maxVelocity": 3.0,
         "maxAcceleration": 1.0,
@@ -56,15 +66,12 @@
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
-    "velocity": 0.0,
-    "rotation": -90.0,
+    "velocity": 0,
+    "rotation": 0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Auto1Paths",
-  "previewStartingState": {
-    "rotation": -30.0,
-    "velocity": 0
-  },
+  "folder": "Auto2Paths",
+  "previewStartingState": null,
   "useDefaultConstraints": false
 }

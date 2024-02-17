@@ -1,0 +1,43 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.383130458568611,
+      "y": 6.975928567241751
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Amp"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Amp, BotRing"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BotRing, Amp"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Amp, Ring5"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}
