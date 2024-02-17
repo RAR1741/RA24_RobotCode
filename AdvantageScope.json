@@ -15,11 +15,16 @@
           ]
         },
         "tabs": {
-          "selected": 3,
+          "selected": 2,
           "tabs": [
             {
               "type": 0,
               "path": "../docs/tabs/SWERVE.md"
+            },
+            {
+              "type": 3,
+              "field": "/RealOutputs/Console",
+              "title": "Console"
             },
             {
               "type": 5,
@@ -45,7 +50,7 @@
                 "allianceOrigin": "blue",
                 "orientation": "blue left, red right"
               },
-              "configHidden": false,
+              "configHidden": true,
               "visualizer": null,
               "title": "Odometry"
             },
@@ -78,7 +83,7 @@
                 "sizeFrontBack": 0.76,
                 "forwardDirection": "up"
               },
-              "configHidden": false,
+              "configHidden": true,
               "visualizer": null,
               "title": "Swerve"
             },
@@ -124,11 +129,6 @@
                 }
               },
               "title": "Battery"
-            },
-            {
-              "type": 3,
-              "field": "/RealOutputs/Console",
-              "title": "Console"
             },
             {
               "type": 1,
