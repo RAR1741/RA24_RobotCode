@@ -98,6 +98,7 @@ public class SwerveModule {
     m_drivePIDController.setI(Constants.SwerveDrive.Drive.k_I);
     m_drivePIDController.setD(Constants.SwerveDrive.Drive.k_D);
     m_drivePIDController.setIZone(Constants.SwerveDrive.Drive.k_IZone);
+    // m_drivePIDController.setFF(Constants.SwerveDrive.Drive.k_FF);
   }
 
   public SwerveModuleState getState() {
@@ -107,6 +108,7 @@ public class SwerveModule {
 
   public double getTurnPosition() {
     return Helpers.modRadians(m_turningRelEncoder.getPosition());
+    // returnm_turningRelEncoder.getPosition();
   }
 
   public SwerveModulePosition getPosition() {
@@ -118,6 +120,14 @@ public class SwerveModule {
 
   public CANSparkMax getDriveMotor() {
     return m_driveMotor;
+  }
+
+  public CANSparkMax getTurnMotor() {
+    return m_turningMotor;
+  }
+
+  public double getTurnVelocity() {
+    return m_turningRelEncoder.getVelocity();
   }
 
   // returns m/s
@@ -149,9 +159,10 @@ public class SwerveModule {
   // Pass voltage into drive motor and set turn motor to 0 deg
   public void sysidDrive(double volts) {
 
-    m_turningPIDController.setReference(0, ControlType.kPosition);
+    // m_turningPIDController.setReference(0, ControlType.kPosition);
 
-    m_driveMotor.setVoltage(volts);
+    // m_driveMotor.setVoltage(volts);
+    m_turningMotor.setVoltage(volts);
   }
 
   public SwerveModuleState getDesiredState() {

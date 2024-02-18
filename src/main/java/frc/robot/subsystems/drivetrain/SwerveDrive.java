@@ -114,42 +114,42 @@ public class SwerveDrive extends Subsystem {
               // Record a frame for the front left
               log.motor("drive-frontleft")
                   .voltage(m_appliedVoltage.mut_replace(
-                      m_modules[Module.FRONT_LEFT].getDriveMotor().getAppliedOutput()
+                      m_modules[Module.FRONT_LEFT].getTurnMotor().getAppliedOutput()
                           * RobotController.getBatteryVoltage(),
                       Volts))
-                  .linearPosition(m_distance.mut_replace(m_modules[Module.FRONT_LEFT].getDrivePosition(), Meters))
+                  .linearPosition(m_distance.mut_replace(m_modules[Module.FRONT_LEFT].getTurnPosition(), Meters))
                   .linearVelocity(
-                      m_velocity.mut_replace(m_modules[Module.FRONT_LEFT].getDriveVelocity(), MetersPerSecond));
+                      m_velocity.mut_replace(m_modules[Module.FRONT_LEFT].getTurnVelocity(), MetersPerSecond));
 
               // Record a frame for the front right
               log.motor("drive-frontright")
                   .voltage(m_appliedVoltage.mut_replace(
-                      m_modules[Module.FRONT_RIGHT].getDriveMotor().getAppliedOutput()
+                      m_modules[Module.FRONT_RIGHT].getTurnMotor().getAppliedOutput()
                           * RobotController.getBatteryVoltage(),
                       Volts))
-                  .linearPosition(m_distance.mut_replace(m_modules[Module.FRONT_RIGHT].getDrivePosition(), Meters))
+                  .linearPosition(m_distance.mut_replace(m_modules[Module.FRONT_RIGHT].getTurnPosition(), Meters))
                   .linearVelocity(
-                      m_velocity.mut_replace(m_modules[Module.FRONT_RIGHT].getDriveVelocity(), MetersPerSecond));
+                      m_velocity.mut_replace(m_modules[Module.FRONT_RIGHT].getTurnVelocity(), MetersPerSecond));
 
               // Record a frame for the back right
               log.motor("drive-backright")
                   .voltage(m_appliedVoltage.mut_replace(
-                      m_modules[Module.BACK_RIGHT].getDriveMotor().getAppliedOutput()
+                      m_modules[Module.BACK_RIGHT].getTurnMotor().getAppliedOutput()
                           * RobotController.getBatteryVoltage(),
                       Volts))
-                  .linearPosition(m_distance.mut_replace(m_modules[Module.BACK_RIGHT].getDrivePosition(), Meters))
+                  .linearPosition(m_distance.mut_replace(m_modules[Module.BACK_RIGHT].getTurnPosition(), Meters))
                   .linearVelocity(
-                      m_velocity.mut_replace(m_modules[Module.BACK_RIGHT].getDriveVelocity(), MetersPerSecond));
+                      m_velocity.mut_replace(m_modules[Module.BACK_RIGHT].getTurnVelocity(), MetersPerSecond));
 
               // Record a frame for the back left
               log.motor("drive-backleft")
                   .voltage(m_appliedVoltage.mut_replace(
-                      m_modules[Module.BACK_LEFT].getDriveMotor().getAppliedOutput()
+                      m_modules[Module.BACK_LEFT].getTurnMotor().getAppliedOutput()
                           * RobotController.getBatteryVoltage(),
                       Volts))
-                  .linearPosition(m_distance.mut_replace(m_modules[Module.BACK_LEFT].getDrivePosition(), Meters))
+                  .linearPosition(m_distance.mut_replace(m_modules[Module.BACK_LEFT].getTurnPosition(), Meters))
                   .linearVelocity(
-                      m_velocity.mut_replace(m_modules[Module.BACK_LEFT].getDriveVelocity(), MetersPerSecond));
+                      m_velocity.mut_replace(m_modules[Module.BACK_LEFT].getTurnVelocity(), MetersPerSecond));
 
             },
             // Tell SysId to make generated commands require this subsystem, suffix test
