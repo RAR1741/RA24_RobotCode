@@ -154,6 +154,7 @@ public final class Constants {
     public static final double k_startingAngle = 0.0;
 
     public static final double k_distanceFromCenter = 12.5;
+    public static final int k_sensorThreshold = 1000;
   }
 
   public static class Simulation {
