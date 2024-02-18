@@ -3,6 +3,7 @@ package frc.robot.autonomous;
 import frc.robot.autonomous.modes.AutoModeBase;
 import frc.robot.autonomous.modes.DefaultMode;
 import frc.robot.autonomous.modes.DoNothingMode;
+import frc.robot.autonomous.modes.ShootMidringRing4;
 import frc.robot.autonomous.modes.TestMode;
 import frc.robot.autonomous.modes.TestMode2;
 import frc.robot.autonomous.tasks.Task;
@@ -21,6 +22,7 @@ public class AutoRunner {
   public enum AutoMode {
     DO_NOTHING,
     DEFAULT,
+    SHOOT_MIDRING_RING_4,
     TEST,
     TEST2
   }
@@ -36,6 +38,9 @@ public class AutoRunner {
         break;
       case DEFAULT:
         m_autoMode = new DefaultMode();
+        break;
+      case SHOOT_MIDRING_RING_4:
+        m_autoMode = new ShootMidringRing4();
         break;
       case TEST:
         m_autoMode = new TestMode();

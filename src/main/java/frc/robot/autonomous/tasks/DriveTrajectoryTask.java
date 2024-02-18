@@ -81,11 +81,13 @@ public class DriveTrajectoryTask extends Task {
       Logger.recordOutput("Auto/DriveTrajectory/ChassisRotationRPS",
           Units.radiansToDegrees(chassisSpeeds.omegaRadiansPerSecond));
 
-      m_swerve.drive(
-          chassisSpeeds.vxMetersPerSecond,
-          chassisSpeeds.vyMetersPerSecond,
-          chassisSpeeds.omegaRadiansPerSecond,
-          true); // TODO: figure out if this is correct
+      // m_swerve.drive(
+      // chassisSpeeds.vxMetersPerSecond,
+      // chassisSpeeds.vyMetersPerSecond,
+      // chassisSpeeds.omegaRadiansPerSecond,
+      // true); // TODO: figure out if this is correct
+
+      m_swerve.drive(chassisSpeeds);
 
       m_isFinished |= m_runningTimer.get() >= m_autoTrajectory.getTotalTimeSeconds();
     } else {
@@ -96,11 +98,11 @@ public class DriveTrajectoryTask extends Task {
   @Override
   public void updateSim() {
     if (!RobotBase.isReal() && m_autoTrajectory != null) {
-      State state = m_autoTrajectory.sample(m_runningTimer.get());
+      Pose2d pose = m_autoTrajectory.sample(m_runningTimer.get()).getTargetHolonomicPose();
 
-      Preferences.setDouble("SwerveDrive/x", state.getTargetHolonomicPose().getX());
-      Preferences.setDouble("SwerveDrive/y", state.getTargetHolonomicPose().getY());
-      Preferences.setDouble("SwerveDrive/rot", state.getTargetHolonomicPose().getRotation().getDegrees());
+      Preferences.setDouble("SwerveDrive/x", pose.getX());
+      Preferences.setDouble("SwerveDrive/y", pose.getY());
+      Preferences.setDouble("SwerveDrive/rot", pose.getRotation().getDegrees());
     }
   }
 

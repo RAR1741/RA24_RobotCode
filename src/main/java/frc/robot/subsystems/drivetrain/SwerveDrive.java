@@ -10,6 +10,7 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkBase.IdleMode;
 
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -18,6 +19,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
@@ -246,19 +248,60 @@ public class SwerveDrive extends Subsystem {
     }
   }
 
+  public void drive(ChassisSpeeds speeds) {
+    SwerveModuleState[] swerveModuleStates = m_kinematics.toSwerveModuleStates(speeds);
+
+    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.SwerveDrive.k_maxBoostSpeed);
+
+    for (int i = 0; i < m_modules.length; i++) {
+      m_modules[i].setDesiredState(swerveModuleStates[i]);
+    }
+  }
+
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
     SwerveModuleState[] swerveModuleStates = m_kinematics.toSwerveModuleStates(
         fieldRelative
             ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, m_gyro.getRotation2d())
             : new ChassisSpeeds(xSpeed, ySpeed, rot));
 
-    double maxBoostSpeed = Constants.SwerveDrive.k_maxBoostSpeed;
-    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, maxBoostSpeed);
+    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.SwerveDrive.k_maxBoostSpeed);
 
     for (int i = 0; i < m_modules.length; i++) {
       m_modules[i].setDesiredState(swerveModuleStates[i]);
     }
   }
+
+  /////
+  public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean lockHeading) {
+    if (lockHeading) {
+      rot = correct();
+    }
+
+    SwerveModuleState[] swerveModuleStates = m_kinematics.toSwerveModuleStates(
+        fieldRelative
+            ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, m_gyro.getRotation2d())
+            : new ChassisSpeeds(xSpeed, ySpeed, rot));
+
+    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.SwerveDrive.k_maxBoostSpeed);
+
+    for (int i = 0; i < m_modules.length; i++) {
+      m_modules[i].setDesiredState(swerveModuleStates[i]);
+    }
+  }
+
+  private Rotation2d m_oldRotation;
+
+  public void updateFormerGyroPosition(boolean hasUpdated) {
+    if (!hasUpdated) {
+      m_oldRotation = m_gyro.getRotation2d();
+    }
+  }
+
+  private double correct() {
+    ProfiledPIDController pid = new ProfiledPIDController(1, 0, 0, new Constraints(10, 1));
+    return pid.calculate(m_gyro.getRotation2d().getDegrees(), m_oldRotation.getDegrees());
+  }
+  /////
 
   public void pointModules(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
     SwerveModuleState[] swerveModuleStates = m_kinematics.toSwerveModuleStates(

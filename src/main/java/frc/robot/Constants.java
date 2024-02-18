@@ -27,7 +27,7 @@ public final class Constants {
       }
 
       public class Rotation {
-        public static final double k_P = 2.0;
+        public static final double k_P = 0.7;
         public static final double k_I = 0.0;
         public static final double k_D = 0.0;
       }

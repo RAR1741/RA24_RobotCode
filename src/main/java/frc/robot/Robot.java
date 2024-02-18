@@ -147,10 +147,11 @@ public class Robot extends LoggedRobot {
     m_swerve.drive(0, 0, 0, false);
   }
 
+  boolean m_lockHeading = false;
+
   @Override
   public void teleopPeriodic() {
     double rot = 0.0;
-    boolean lockHeading = false;
 
     // if (m_driverController.getWantsAutoAim() && m_swerve.getPose().getX() >=
     // Constants.Field.k_autoAimThreshold && !autoAimEnabled) {
@@ -161,9 +162,13 @@ public class Robot extends LoggedRobot {
     // autoAimEnabled = false;
     // }
 
-    if (m_driverController.getTurnAxis() == 0.0) {
-      lockHeading = true;
-    }
+    // TODO Uncomment this when ready to test heading locking
+    /*if (m_driverController.getTurnAxis() == 0.0) {
+      m_swerve.updateFormerGyroPosition(m_lockHeading);
+      m_lockHeading = true;
+    } else {
+      m_lockHeading = false;
+    }*/
 
     if (m_autoAimEnabled) {
       rot = m_aimPID.calculate(m_swerve.getRotation2d().getRadians(), m_swerve.calculateAutoAimAngle(false));
@@ -185,7 +190,11 @@ public class Robot extends LoggedRobot {
     ySpeed *= slowScaler;
     rot *= slowScaler;
 
-    m_swerve.drive(xSpeed, ySpeed, rot, true);
+    if (m_lockHeading) {
+      m_swerve.drive(xSpeed, ySpeed, rot, true, true);
+    } else {
+      m_swerve.drive(xSpeed, ySpeed, rot, true);
+    }
 
     if (m_driverController.getWantsResetGyro()) {
       m_swerve.resetGyro();
