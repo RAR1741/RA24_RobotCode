@@ -1,5 +1,7 @@
 package frc.robot.autonomous.tasks;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.PathPlannerTrajectory;
@@ -39,7 +41,7 @@ public class DriveTrajectoryTask extends Task {
 
       m_autoTrajectory = m_autoPath.getTrajectory(
           new ChassisSpeeds(),
-          m_autoPath.getStartingDifferentialPose().getRotation());
+          m_swerve.getRotation2d());
 
     } catch (Exception ex) {
       DriverStation.reportError("Unable to load PathPlanner trajectory: " + pathName, ex.getStackTrace());
@@ -71,13 +73,15 @@ public class DriveTrajectoryTask extends Task {
   public void update() {
     if (m_autoTrajectory != null) {
       State goal = m_autoTrajectory.sample(m_runningTimer.get());
+      Logger.recordOutput("Auto/DriveTrajectory/TargetPose", goal.getTargetHolonomicPose());
+
       ChassisSpeeds chassisSpeeds = m_driveController.calculateRobotRelativeSpeeds(m_swerve.getPose(), goal);
 
       m_swerve.drive(
           chassisSpeeds.vxMetersPerSecond,
           chassisSpeeds.vyMetersPerSecond,
           chassisSpeeds.omegaRadiansPerSecond,
-          false);
+          false); // TODO: figure out if this is correct
 
       m_isFinished |= m_runningTimer.get() >= m_autoTrajectory.getTotalTimeSeconds();
 
@@ -101,7 +105,8 @@ public class DriveTrajectoryTask extends Task {
   }
 
   public Pose2d getStartingPose() {
-    return m_autoPath.getStartingDifferentialPose();
+    // return m_autoPath.getPreviewStartingHolonomicPose();
+    return m_autoTrajectory.getState(0).getTargetHolonomicPose();
   }
 
   @Override

@@ -28,13 +28,17 @@ public class IntakeTask extends Task {
 
 	@Override
 	public boolean isFinished() {
-		if (m_pivotTarget == IntakePivotTarget.NONE && m_intakeState == IntakeState.NONE) {
-			return true;
-		}
+		// TODO: Figure out if we actually need this
 
-		boolean isAtPivotTarget = m_intake.isAtPivotTarget(m_pivotTarget);
-		boolean isAtState = m_intake.isAtState(m_intakeState);
+		// if (m_pivotTarget == IntakePivotTarget.NONE && m_intakeState ==
+		// IntakeState.NONE) {
+		// return true;
+		// }
+		// boolean isAtPivotTarget = m_intake.isAtPivotTarget(m_pivotTarget);
+		// boolean isAtState = m_intake.isAtState(m_intakeState);
 
-		return isAtPivotTarget && isAtState;
+		// return isAtPivotTarget && isAtState;
+
+		return true;
 	}
 }

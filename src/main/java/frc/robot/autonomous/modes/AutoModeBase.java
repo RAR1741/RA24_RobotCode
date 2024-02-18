@@ -35,6 +35,8 @@ public abstract class AutoModeBase {
     // Figure out the first PathPlanner path
     Pose2d startingPose = null;
 
+    // TODO: make this also search though the ParallelTasks and SequentialTasks
+    // this will likely need to be a recursive function
     // Loop over the m_tasks and find the first DriveTrajectoryTask
     for (Task task : m_tasks) {
       if (task instanceof DriveTrajectoryTask) {

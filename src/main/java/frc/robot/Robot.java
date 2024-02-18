@@ -30,7 +30,6 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Shooter.ShooterPivotTarget;
 import frc.robot.subsystems.Shooter.ShooterSpeedTarget;
 import frc.robot.subsystems.Subsystem;
-import frc.robot.subsystems.climber.Climbers;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 
 public class Robot extends LoggedRobot {
@@ -53,7 +52,7 @@ public class Robot extends LoggedRobot {
   private final SwerveDrive m_swerve = SwerveDrive.getInstance();
   private final Intake m_intake = Intake.getInstance();
   private final Shooter m_shooter = Shooter.getInstance();
-  private final Climbers m_climbers = Climbers.getInstance();
+  // private final Climbers m_climbers = Climbers.getInstance();
 
   // Auto tasks
   private Task m_currentTask;

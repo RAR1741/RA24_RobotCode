@@ -187,7 +187,7 @@ public final class Constants {
 
     // TODO: get shooter pivot setpoint angles
     public static final double k_ampPivotAngle = 45.0;
-    public static final double k_speakerPivotAngle = 60.0;
+    public static final double k_speakerPivotAngle = 57.0;
 
     // TODO get values
     public static final double k_length = 11.94335; // in inches

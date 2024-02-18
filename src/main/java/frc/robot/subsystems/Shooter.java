@@ -36,7 +36,7 @@ public class Shooter extends Subsystem {
   private SparkPIDController m_bottomShooterMotorPID;
   private SparkPIDController m_pivotMotorPID;
 
-  private SlewRateLimiter m_speedLimiter = new SlewRateLimiter(1000); // TODO Double-check this value
+  private SlewRateLimiter m_speedLimiter = new SlewRateLimiter(2000); // TODO Double-check this value
 
   private PeriodicIO m_periodicIO;
   private boolean m_hasSetPivotRelEncoder = false;
