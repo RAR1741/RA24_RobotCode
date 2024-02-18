@@ -163,12 +163,14 @@ public class Robot extends LoggedRobot {
     // }
 
     // TODO Uncomment this when ready to test heading locking
-    /*if (m_driverController.getTurnAxis() == 0.0) {
-      m_swerve.updateFormerGyroPosition(m_lockHeading);
-      m_lockHeading = true;
-    } else {
-      m_lockHeading = false;
-    }*/
+    /*
+     * if (m_driverController.getTurnAxis() == 0.0) {
+     * m_swerve.updateFormerGyroPosition(m_lockHeading);
+     * m_lockHeading = true;
+     * } else {
+     * m_lockHeading = false;
+     * }
+     */
 
     if (m_autoAimEnabled) {
       rot = m_aimPID.calculate(m_swerve.getRotation2d().getRadians(), m_swerve.calculateAutoAimAngle(false));
@@ -212,14 +214,14 @@ public class Robot extends LoggedRobot {
       m_intake.setPivotTarget(IntakePivotTarget.GROUND);
     }
 
-    if (m_driverController.getWantsIntake() && !m_intake.doesHaveRing()) {
-      m_intake.setState(IntakeState.INTAKE);
+    if (m_driverController.getWantsIntake() && !m_intake.isHoldingNote()) {
+      m_intake.setIntakeState(IntakeState.INTAKE);
     } else if (m_driverController.getWantsEject()) {
-      m_intake.setState(IntakeState.EJECT);
+      m_intake.setIntakeState(IntakeState.EJECT);
     } else if (m_operatorController.getWantsShoot() && m_intake.isAtPivotTarget(IntakePivotTarget.STOW)) {
-      m_intake.setState(IntakeState.FEED_SHOOTER);
+      m_intake.setIntakeState(IntakeState.FEED_SHOOTER);
     } else {
-      m_intake.setState(IntakeState.NONE);
+      m_intake.setIntakeState(IntakeState.NONE);
     }
 
     m_shooter.changePivotByAngle(m_operatorController.getWantsManualShooterPivot(0.5));

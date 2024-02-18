@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import org.littletonrobotics.junction.AutoLogOutput;
+
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.ColorSensorV3;
@@ -63,8 +65,14 @@ public class Intake extends Subsystem {
     m_colorSensor = new ColorSensorV3(k_colorSensorPort);
   }
 
-  public boolean doesHaveRing() {
+  @AutoLogOutput
+  public boolean isHoldingNote() {
     return m_colorSensor.getProximity() >= Constants.Intake.k_sensorThreshold;
+  }
+
+  @AutoLogOutput
+  public int getIntakeProximity() {
+    return m_colorSensor.getProximity();
   }
 
   public static Intake getInstance() {
@@ -77,6 +85,8 @@ public class Intake extends Subsystem {
 
   @Override
   public void periodic() {
+    checkAutoTasks();
+
     if (!DriverStation.isTest()) {
       double target_pivot_angle = getAngleFromTarget(m_periodicIO.pivot_target);
       m_periodicIO.pivot_voltage = m_pivotMotorPID.calculate(getPivotAngle(), target_pivot_angle);
@@ -104,7 +114,7 @@ public class Intake extends Subsystem {
     putNumber("IntakeSpeed_PERIODIC", m_periodicIO.intake_speed);
     putNumber("IntakePower", Helpers.getVoltage(m_intakeMotor));
     putNumber("IntakeSpeed", getSpeedFromState(m_periodicIO.intake_state));
-    putBoolean("IntakeHasRing", doesHaveRing());
+    putBoolean("IntakeHasRing", isHoldingNote());
 
     putString("PivotTarget", m_periodicIO.pivot_target.toString());
     putNumber("PivotAbsPos", m_pivotAbsEncoder.getAbsolutePosition());
@@ -126,6 +136,8 @@ public class Intake extends Subsystem {
         return Constants.Intake.k_groundPivotAngle;
       case PIVOT:
         return Constants.Intake.k_sourcePivotAngle;
+      case EJECT:
+        return Constants.Intake.k_ejectPivotAngle;
       case AMP:
         return Constants.Intake.k_ampPivotAngle;
       case STOW:
@@ -154,7 +166,7 @@ public class Intake extends Subsystem {
     m_periodicIO.intake_state = IntakeState.NONE;
   }
 
-  public void setState(IntakeState state) {
+  public void setIntakeState(IntakeState state) {
     m_periodicIO.intake_state = state;
   }
 
@@ -212,6 +224,7 @@ public class Intake extends Subsystem {
   public enum IntakePivotTarget {
     NONE,
     GROUND,
+    EJECT,
     PIVOT,
     AMP,
     STOW
@@ -223,5 +236,32 @@ public class Intake extends Subsystem {
     EJECT,
     PULSE,
     FEED_SHOOTER
+  }
+
+  /*---------------------------------- Custom Private Functions ---------------------------------*/
+  private void checkAutoTasks() {
+    // If the intake is set to GROUND, and the intake has a note, and the pivot is
+    // close to it's target
+    // Stop the intake and go to the SOURCE position
+    if (m_periodicIO.pivot_target == IntakePivotTarget.GROUND &&
+        isHoldingNote() &&
+        isAtPivotTarget(IntakePivotTarget.GROUND)) {
+
+      setPivotTarget(IntakePivotTarget.STOW);
+      setIntakeState(IntakeState.NONE);
+      // m_leds.setColor(Color.kGreen);
+    }
+
+    // if (isHoldingNote() && m_periodicIO.intake_state == IntakeState.EJECT){
+    // if (m_periodicIO.pivot_target == IntakePivotTarget.STOW &&
+    // isAtPivotTarget(IntakePivotTarget.STOW)) {
+    // setPivotTarget(IntakePivotTarget.EJECT);
+    // setIntakeState(IntakeState.NONE);
+    // } else if(m_periodicIO.pivot_target == IntakePivotTarget.EJECT &&
+    // isAtPivotTarget(IntakePivotTarget.EJECT)) {
+    // setIntakeState(IntakeState.EJECT);
+    // }
+    // }
+
   }
 }

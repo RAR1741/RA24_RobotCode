@@ -4,18 +4,21 @@
       "x": 0,
       "y": 38,
       "width": 1728,
-      "height": 1079,
+      "height": 833,
       "state": {
         "sidebar": {
           "width": 300,
           "expanded": [
-            "/RealOutputs/Shooter",
             "/DriverStation/Joystick0/AxisValues",
-            "/SystemStats"
+            "/RealOutputs",
+            "/RealOutputs/Auto",
+            "/RealOutputs/Auto/DriveTrajectory",
+            "/RealOutputs/Intake",
+            "/RealOutputs/Shooter"
           ]
         },
         "tabs": {
-          "selected": 2,
+          "selected": 8,
           "tabs": [
             {
               "type": 0,
@@ -35,6 +38,12 @@
                   {
                     "type": "Robot",
                     "key": "/RealOutputs/SwerveDrive/Pose",
+                    "sourceTypeIndex": 1,
+                    "sourceType": "Pose2d"
+                  },
+                  {
+                    "type": "Ghost",
+                    "key": "/RealOutputs/Auto/DriveTrajectory/TargetPose",
                     "sourceTypeIndex": 1,
                     "sourceType": "Pose2d"
                   }
@@ -86,6 +95,43 @@
               "configHidden": true,
               "visualizer": null,
               "title": "Swerve"
+            },
+            {
+              "type": 1,
+              "legends": {
+                "left": {
+                  "lockedRange": null,
+                  "unitConversion": {
+                    "type": null,
+                    "factor": 1
+                  },
+                  "fields": [
+                    {
+                      "key": "/RealOutputs/Auto/DriveTrajectory/RotationError",
+                      "color": "#2b66a2",
+                      "show": true
+                    }
+                  ]
+                },
+                "discrete": {
+                  "fields": []
+                },
+                "right": {
+                  "lockedRange": null,
+                  "unitConversion": {
+                    "type": null,
+                    "factor": 1
+                  },
+                  "fields": [
+                    {
+                      "key": "/RealOutputs/Auto/DriveTrajectory/ChassisRotationRPS",
+                      "color": "#e5b31b",
+                      "show": true
+                    }
+                  ]
+                }
+              },
+              "title": "Auto"
             },
             {
               "type": 1,
@@ -223,12 +269,61 @@
                 }
               },
               "title": "ShooterSpeed"
+            },
+            {
+              "type": 1,
+              "legends": {
+                "left": {
+                  "lockedRange": null,
+                  "unitConversion": {
+                    "type": null,
+                    "factor": 1
+                  },
+                  "fields": []
+                },
+                "discrete": {
+                  "fields": [
+                    {
+                      "key": "/RealOutputs/Intake/IsHoldingNote",
+                      "color": "#2b66a2",
+                      "show": true
+                    }
+                  ]
+                },
+                "right": {
+                  "lockedRange": null,
+                  "unitConversion": {
+                    "type": null,
+                    "factor": 1
+                  },
+                  "fields": [
+                    {
+                      "key": "/RealOutputs/Intake/IntakeProximity",
+                      "color": "#e5b31b",
+                      "show": true
+                    }
+                  ]
+                }
+              },
+              "title": "Intake"
             }
           ]
         }
       }
     }
   ],
-  "satellites": [],
+  "satellites": [
+    {
+      "x": 963,
+      "y": 709,
+      "width": 765,
+      "height": 408,
+      "state": {
+        "type": 5,
+        "visualizer": null
+      },
+      "uuid": "bnv416jy5f1t1u41qg0hldeyz962nriv"
+    }
+  ],
   "version": "3.1.0"
 }

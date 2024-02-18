@@ -81,13 +81,13 @@ public class DriveTrajectoryTask extends Task {
       Logger.recordOutput("Auto/DriveTrajectory/ChassisRotationRPS",
           Units.radiansToDegrees(chassisSpeeds.omegaRadiansPerSecond));
 
-      // m_swerve.drive(
-      // chassisSpeeds.vxMetersPerSecond,
-      // chassisSpeeds.vyMetersPerSecond,
-      // chassisSpeeds.omegaRadiansPerSecond,
-      // true); // TODO: figure out if this is correct
+      m_swerve.drive(
+      chassisSpeeds.vxMetersPerSecond,
+      chassisSpeeds.vyMetersPerSecond,
+      chassisSpeeds.omegaRadiansPerSecond,
+      true); // TODO: figure out if this is correct
 
-      m_swerve.drive(chassisSpeeds);
+      // m_swerve.drive(chassisSpeeds);
 
       m_isFinished |= m_runningTimer.get() >= m_autoTrajectory.getTotalTimeSeconds();
     } else {

@@ -24,7 +24,7 @@ public class TestMode2 extends AutoModeBase {
     // queueTask(new DriveTrajectoryTask("Shoot, MidRing"));
 
     // Note 1 (preload)
-    queueTask(new ShooterTask(ShooterPivotTarget.SPEAKER, ShooterSpeedTarget.MAX));
+    queueTask(new ShooterTask(ShooterPivotTarget.SPEAKER, ShooterSpeedTarget.HALF));
     queueTask(new IntakeTask(IntakePivotTarget.STOW, IntakeState.NONE));
     queueTask(new WaitTask(3));
     queueTask(new IntakeTask(IntakePivotTarget.STOW, IntakeState.FEED_SHOOTER));

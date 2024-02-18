@@ -130,6 +130,7 @@ public final class Constants {
     public static final double k_groundPivotAngle = 41.0;
     public static final double k_sourcePivotAngle = 180.0;
     // public static final double k_sourcePivotAngle = k_stowPivotAngle;
+    public static final double k_ejectPivotAngle = 155.386120;
     public static final double k_ampPivotAngle = k_stowPivotAngle;
 
     // TODO: get intake speeds
@@ -154,7 +155,7 @@ public final class Constants {
     public static final double k_startingAngle = 0.0;
 
     public static final double k_distanceFromCenter = 12.5;
-    public static final int k_sensorThreshold = 1000;
+    public static final int k_sensorThreshold = 1000; // 1,000 is "in", 2000 is max
   }
 
   public static class Simulation {
@@ -189,7 +190,7 @@ public final class Constants {
     public static final double k_pivotMotorIZone = 0.0;
 
     // TODO: get shooter pivot setpoint angles
-    public static final double k_ampPivotAngle = 45.0;
+    public static final double k_ampPivotAngle = 26.0; // TODO This is wing shot
     public static final double k_speakerPivotAngle = 57.0;
 
     // TODO get values

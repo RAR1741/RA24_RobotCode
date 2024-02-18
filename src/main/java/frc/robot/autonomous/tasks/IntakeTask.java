@@ -18,7 +18,7 @@ public class IntakeTask extends Task {
 	@Override
 	public void start() {
 		m_intake.setPivotTarget(m_pivotTarget);
-		m_intake.setState(m_intakeState);
+		m_intake.setIntakeState(m_intakeState);
 	}
 
 	@Override
