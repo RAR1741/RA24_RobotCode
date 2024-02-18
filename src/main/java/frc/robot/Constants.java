@@ -126,11 +126,11 @@ public final class Constants {
     public static final int k_pivotEncoderId = 4;
 
     // TODO: get pivot angles
-    public static final double k_stowPivotAngle = 267.0;
+    public static final double k_stowPivotAngle = 270.0;
     public static final double k_groundPivotAngle = 41.0;
     public static final double k_sourcePivotAngle = 180.0;
     // public static final double k_sourcePivotAngle = k_stowPivotAngle;
-    public static final double k_ejectPivotAngle = 155.386120;
+    public static final double k_ejectPivotAngle = 110.0;
     public static final double k_ampPivotAngle = k_stowPivotAngle;
 
     // TODO: get intake speeds

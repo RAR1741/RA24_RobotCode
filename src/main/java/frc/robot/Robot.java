@@ -217,11 +217,12 @@ public class Robot extends LoggedRobot {
     if (m_driverController.getWantsIntake() && !m_intake.isHoldingNote()) {
       m_intake.setIntakeState(IntakeState.INTAKE);
     } else if (m_driverController.getWantsEject()) {
-      m_intake.setIntakeState(IntakeState.EJECT);
+      m_intake.wantsToEject(true);
     } else if (m_operatorController.getWantsShoot() && m_intake.isAtPivotTarget(IntakePivotTarget.STOW)) {
       m_intake.setIntakeState(IntakeState.FEED_SHOOTER);
     } else {
       m_intake.setIntakeState(IntakeState.NONE);
+      m_intake.wantsToEject(false);
     }
 
     m_shooter.changePivotByAngle(m_operatorController.getWantsManualShooterPivot(0.5));

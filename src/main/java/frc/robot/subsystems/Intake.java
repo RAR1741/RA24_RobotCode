@@ -219,6 +219,8 @@ public class Intake extends Subsystem {
 
     // double intake_pivot_voltage = 0.0;
     double intake_speed = 0.0;
+
+    boolean wantsToEject = false;
   }
 
   public enum IntakePivotTarget {
@@ -238,6 +240,14 @@ public class Intake extends Subsystem {
     FEED_SHOOTER
   }
 
+  public boolean wantsToEject() {
+    return m_periodicIO.wantsToEject;
+  }
+
+  public void wantsToEject(boolean eject) {
+    m_periodicIO.wantsToEject = eject;
+  }
+
   /*---------------------------------- Custom Private Functions ---------------------------------*/
   private void checkAutoTasks() {
     // If the intake is set to GROUND, and the intake has a note, and the pivot is
@@ -252,16 +262,21 @@ public class Intake extends Subsystem {
       // m_leds.setColor(Color.kGreen);
     }
 
-    // if (isHoldingNote() && m_periodicIO.intake_state == IntakeState.EJECT){
-    // if (m_periodicIO.pivot_target == IntakePivotTarget.STOW &&
-    // isAtPivotTarget(IntakePivotTarget.STOW)) {
-    // setPivotTarget(IntakePivotTarget.EJECT);
-    // setIntakeState(IntakeState.NONE);
-    // } else if(m_periodicIO.pivot_target == IntakePivotTarget.EJECT &&
-    // isAtPivotTarget(IntakePivotTarget.EJECT)) {
-    // setIntakeState(IntakeState.EJECT);
-    // }
-    // }
+    if (wantsToEject()){
+      if ((m_periodicIO.pivot_target == IntakePivotTarget.STOW &&
+        isAtPivotTarget(IntakePivotTarget.STOW)) || 
+        (m_periodicIO.pivot_target == IntakePivotTarget.GROUND &&
+        isAtPivotTarget(IntakePivotTarget.GROUND))) {
+          setPivotTarget(IntakePivotTarget.EJECT);
+          setIntakeState(IntakeState.NONE);
+      } else if(m_periodicIO.pivot_target == IntakePivotTarget.EJECT &&
+        isAtPivotTarget(IntakePivotTarget.EJECT)) {
+          setIntakeState(IntakeState.EJECT);
+      }
+    } else if (m_periodicIO.pivot_target == IntakePivotTarget.EJECT && isAtPivotTarget(IntakePivotTarget.EJECT)) {
+      setIntakeState(IntakeState.NONE);
+      setPivotTarget(IntakePivotTarget.STOW);
+    }
 
   }
 }
