@@ -25,10 +25,10 @@ public class SequentialTask extends Task {
 
   @Override
   public void update() {
-    if(m_currentTask.isFinished()) {
+    if (m_currentTask.isFinished()) {
       m_currentTask.done();
 
-      if(++m_index >= m_tasks.length) {
+      if (++m_index >= m_tasks.length) {
         m_finished = true;
         System.out.println("Sequential task finished!");
         return;
