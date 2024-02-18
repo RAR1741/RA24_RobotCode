@@ -10,12 +10,12 @@ import com.pathplanner.lib.util.PIDConstants;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 
@@ -24,7 +24,6 @@ public class DriveTrajectoryTask extends Task {
   private PathPlannerTrajectory m_autoTrajectory;
   private boolean m_isFinished = false;
   private PathPlannerPath m_autoPath = null;
-  private String m_smartDashboardKey = "DriveTrajectoryTask/";
 
   private final Timer m_runningTimer = new Timer();
   private PPHolonomicDriveController m_driveController;
@@ -56,7 +55,7 @@ public class DriveTrajectoryTask extends Task {
             Constants.Auto.PIDConstants.Rotation.k_P,
             Constants.Auto.PIDConstants.Rotation.k_I,
             Constants.Auto.PIDConstants.Rotation.k_D),
-        Constants.SwerveDrive.k_maxSpeed,
+        Constants.Auto.k_maxModuleSpeed,
         Constants.Robot.k_width / 2);
   }
 
@@ -73,21 +72,22 @@ public class DriveTrajectoryTask extends Task {
   public void update() {
     if (m_autoTrajectory != null) {
       State goal = m_autoTrajectory.sample(m_runningTimer.get());
+      ChassisSpeeds chassisSpeeds = m_driveController.calculateRobotRelativeSpeeds(m_swerve.getPose(), goal);
+
       Logger.recordOutput("Auto/DriveTrajectory/TargetPose", goal.getTargetHolonomicPose());
 
-      ChassisSpeeds chassisSpeeds = m_driveController.calculateRobotRelativeSpeeds(m_swerve.getPose(), goal);
+      Logger.recordOutput("Auto/DriveTrajectory/RotationError",
+          goal.getTargetHolonomicPose().getRotation().getDegrees() - m_swerve.getPose().getRotation().getDegrees());
+      Logger.recordOutput("Auto/DriveTrajectory/ChassisRotationRPS",
+          Units.radiansToDegrees(chassisSpeeds.omegaRadiansPerSecond));
 
       m_swerve.drive(
           chassisSpeeds.vxMetersPerSecond,
           chassisSpeeds.vyMetersPerSecond,
           chassisSpeeds.omegaRadiansPerSecond,
-          false); // TODO: figure out if this is correct
+          true); // TODO: figure out if this is correct
 
       m_isFinished |= m_runningTimer.get() >= m_autoTrajectory.getTotalTimeSeconds();
-
-      SmartDashboard.putNumber(m_smartDashboardKey + "vx", chassisSpeeds.vxMetersPerSecond);
-      SmartDashboard.putNumber(m_smartDashboardKey + "vy", chassisSpeeds.vyMetersPerSecond);
-      SmartDashboard.putNumber(m_smartDashboardKey + "vr", chassisSpeeds.omegaRadiansPerSecond);
     } else {
       m_isFinished = true;
     }
