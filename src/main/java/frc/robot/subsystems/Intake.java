@@ -2,11 +2,13 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.ColorSensorV3;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.I2C;
 import frc.robot.Constants;
 import frc.robot.Helpers;
 import frc.robot.simulation.IntakeSim;
@@ -27,6 +29,10 @@ public class Intake extends Subsystem {
   private final double k_intakeSpeedThreshold = 0.1;
 
   private PeriodicIO m_periodicIO;
+
+  private final I2C.Port k_colorSensorPort = I2C.Port.kMXP;
+
+  private ColorSensorV3 m_colorSensor;
 
   private Intake() {
     super("Intake");
@@ -53,6 +59,12 @@ public class Intake extends Subsystem {
         Constants.Intake.k_pivotMotorD);
 
     m_periodicIO = new PeriodicIO();
+
+    m_colorSensor = new ColorSensorV3(k_colorSensorPort);
+  }
+
+  public boolean doesHaveRing() {
+    return m_colorSensor.getProximity() >= Constants.Intake.k_sensorThreshold;
   }
 
   public static Intake getInstance() {
@@ -92,6 +104,7 @@ public class Intake extends Subsystem {
     putNumber("IntakeSpeed_PERIODIC", m_periodicIO.intake_speed);
     putNumber("IntakePower", Helpers.getVoltage(m_intakeMotor));
     putNumber("IntakeSpeed", getSpeedFromState(m_periodicIO.intake_state));
+    putBoolean("IntakeHasRing", doesHaveRing());
 
     putString("PivotTarget", m_periodicIO.pivot_target.toString());
     putNumber("PivotAbsPos", m_pivotAbsEncoder.getAbsolutePosition());

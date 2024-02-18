@@ -201,7 +201,7 @@ public class Robot extends LoggedRobot {
       m_intake.setPivotTarget(IntakePivotTarget.GROUND);
     }
 
-    if (m_driverController.getWantsIntake()) {
+    if (m_driverController.getWantsIntake() && !m_intake.doesHaveRing()) {
       m_intake.setState(IntakeState.INTAKE);
     } else if (m_driverController.getWantsEject()) {
       m_intake.setState(IntakeState.EJECT);
