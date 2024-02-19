@@ -71,15 +71,14 @@ public final class Constants {
       public static final int k_BRMotorId = 10;
       public static final int k_BLMotorId = 12;
 
-      public static final double k_P = 0.000000026657; // value by sysid
+      public static final double k_P = 0.0;
       public static final double k_I = 0.0;
       public static final double k_D = 0.0;
       public static final double k_IZone = 0.0;
-      public static final double k_FF = 3.75;
 
-      public static final double k_FFS = 0.32699; // value by sysid
-      public static final double k_FFV = 2.377; // value by sysid
-      public static final double k_FFA = 0.14114; // value by sysid
+      public static final double k_FFS = 3.75;
+      public static final double k_FFV = 0.0;
+      public static final double k_FFA = 0.0;
     }
 
     // Drivetrain (turn) constants

@@ -1,5 +1,7 @@
 package frc.robot.subsystems.drivetrain;
 
+import org.littletonrobotics.junction.AutoLogOutput;
+
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -20,7 +22,7 @@ import frc.robot.Helpers;
 
 public class SwerveModule {
   private final CANSparkMax m_driveMotor;
-  private final CANSparkMax m_turningMotor;
+  private final CANSparkMax m_turnMotor;
   private final RelativeEncoder m_driveEncoder;
   private final RelativeEncoder m_turningRelEncoder;
   private final DutyCycleEncoder m_turningAbsEncoder;
@@ -60,27 +62,30 @@ public class SwerveModule {
             / Constants.SwerveDrive.k_driveGearRatio);
     m_driveEncoder.setVelocityConversionFactor(Units.inchesToMeters(
         (Constants.SwerveDrive.k_wheelRadiusIn * 2.0 * Math.PI) / Constants.SwerveDrive.k_driveGearRatio) / 60.0);
+    // m_driveMotor.setSmartCurrentLimit(25);
+    m_driveMotor.burnFlash();
 
-    m_turningMotor = new CANSparkMax(turningMotorChannel, MotorType.kBrushless);
-    m_turningMotor.restoreFactoryDefaults();
-    // m_turningMotor.burnFlash();
-    m_turningMotor.setIdleMode(IdleMode.kCoast);
+    m_turnMotor = new CANSparkMax(turningMotorChannel, MotorType.kBrushless);
+    m_turnMotor.restoreFactoryDefaults();
+    m_turnMotor.setIdleMode(IdleMode.kCoast);
+    // m_turningMotor.setSmartCurrentLimit(25);
+    m_turnMotor.burnFlash();
 
     m_turningAbsEncoder = new DutyCycleEncoder(turningAbsoluteID);
 
     m_turningAbsEncoder.setDistancePerRotation(Constants.SwerveDrive.k_turnGearRatio);
 
-    m_turningRelEncoder = m_turningMotor.getEncoder();
+    m_turningRelEncoder = m_turnMotor.getEncoder();
 
-    m_turningMotor.setInverted(true);
-    m_turningMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 20);
+    m_turnMotor.setInverted(true);
+    m_turnMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 20);
     m_turningRelEncoder.setPositionConversionFactor(Constants.SwerveDrive.k_turnGearRatio * 2 * Math.PI);
     m_turningRelEncoder.setVelocityConversionFactor(Constants.SwerveDrive.k_turnGearRatio * 2 * Math.PI / 60);
 
     m_turningRelEncoder.setPosition(
         Helpers.modRadians(Units.rotationsToRadians(m_turningAbsEncoder.get() - m_turningOffset)));
 
-    m_turningPIDController = m_turningMotor.getPIDController();
+    m_turningPIDController = m_turnMotor.getPIDController();
     m_turningPIDController.setP(Constants.SwerveDrive.Turn.k_turningP);
     m_turningPIDController.setI(Constants.SwerveDrive.Turn.k_turningI);
     m_turningPIDController.setD(Constants.SwerveDrive.Turn.k_turningD);
@@ -123,7 +128,7 @@ public class SwerveModule {
   }
 
   public CANSparkMax getTurnMotor() {
-    return m_turningMotor;
+    return m_turnMotor;
   }
 
   public double getTurnVelocity() {
@@ -158,15 +163,39 @@ public class SwerveModule {
 
   // Pass voltage into drive motor and set turn motor to 0 deg
   public void sysidDrive(double volts) {
+    m_turningPIDController.setReference(0, ControlType.kPosition);
 
-    // m_turningPIDController.setReference(0, ControlType.kPosition);
+    m_driveMotor.setVoltage(volts);
+  }
 
-    // m_driveMotor.setVoltage(volts);
-    m_turningMotor.setVoltage(volts);
+  public void sysidTurn(double volts) {
+    m_drivePIDController.setReference(0, ControlType.kVoltage);
+
+    m_turnMotor.setVoltage(volts);
   }
 
   public SwerveModuleState getDesiredState() {
     return m_periodicIO.desiredState;
+  }
+
+  @AutoLogOutput(key = "SwerveDrive/Module/Turn/{m_moduleName}/Voltage")
+  public double getTurnMotorVoltage() {
+    return Helpers.getVoltage(m_turnMotor);
+  }
+
+  @AutoLogOutput(key = "SwerveDrive/Module/Turn/{m_moduleName}/Current")
+  public double getTurnMotorCurrent() {
+    return m_turnMotor.getOutputCurrent();
+  }
+
+  @AutoLogOutput(key = "SwerveDrive/Module/Drive/{m_moduleName}/Voltage")
+  public double getDriveMotorVoltage() {
+    return Helpers.getVoltage(m_driveMotor);
+  }
+
+  @AutoLogOutput(key = "SwerveDrive/Module/Drive/{m_moduleName}/Current")
+  public double getDriveMotorCurrent() {
+    return m_driveMotor.getOutputCurrent();
   }
 
   public void periodic() {
@@ -186,7 +215,7 @@ public class SwerveModule {
     SmartDashboard.putNumber(m_smartDashboardKey + "DriveMotorVelocity", getDriveVelocity());
     SmartDashboard.putNumber(m_smartDashboardKey + "TurnMotorPosition", getTurnPosition());
 
-    SmartDashboard.putNumber(m_smartDashboardKey + "TurnVoltage", Helpers.getVoltage(m_turningMotor));
+    SmartDashboard.putNumber(m_smartDashboardKey + "TurnVoltage", Helpers.getVoltage(m_turnMotor));
     SmartDashboard.putNumber(m_smartDashboardKey + "DriveTargetVelocity",
         m_periodicIO.desiredState.speedMetersPerSecond);
     SmartDashboard.putNumber(m_smartDashboardKey + "TurnTargetAngleRadians",
