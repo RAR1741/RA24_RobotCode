@@ -57,11 +57,11 @@ public class DriverController extends FilteredController {
     return this.getRawButtonPressed(RawButton.B);
   }
 
-  public boolean getWantsSysIdDynamicBackward() {
+  public boolean getWantsSysIdDynamicForward() {
     return this.getRawButtonPressed(RawButton.X);
   }
 
-  public boolean getWantsSysIdDynamicForward() {
+  public boolean getWantsSysIdDynamicBackward() {
     return this.getRawButtonPressed(RawButton.Y);
   }
 

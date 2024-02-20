@@ -42,16 +42,16 @@ public class SwerveDrive extends Subsystem {
 
   private final SwerveModule[] m_modules = {
       new SwerveModule(Constants.SwerveDrive.Drive.k_FLMotorId, Constants.SwerveDrive.Turn.k_FLMotorId,
-          Constants.SwerveDrive.Turn.k_FLAbsID,
+          Constants.SwerveDrive.Turn.k_FLAbsId,
           Constants.SwerveDrive.Turn.k_FLOffset, "FL"), // 0
       new SwerveModule(Constants.SwerveDrive.Drive.k_FRMotorId, Constants.SwerveDrive.Turn.k_FRMotorId,
-          Constants.SwerveDrive.Turn.k_FRAbsID,
+          Constants.SwerveDrive.Turn.k_FRAbsId,
           Constants.SwerveDrive.Turn.k_FROffset, "FR"), // 1
       new SwerveModule(Constants.SwerveDrive.Drive.k_BRMotorId, Constants.SwerveDrive.Turn.k_BRMotorId,
-          Constants.SwerveDrive.Turn.k_BRAbsID,
+          Constants.SwerveDrive.Turn.k_BRAbsId,
           Constants.SwerveDrive.Turn.k_BROffset, "BR"), // 2
       new SwerveModule(Constants.SwerveDrive.Drive.k_BLMotorId, Constants.SwerveDrive.Turn.k_BLMotorId,
-          Constants.SwerveDrive.Turn.k_BLAbsID,
+          Constants.SwerveDrive.Turn.k_BLAbsId,
           Constants.SwerveDrive.Turn.k_BLOffset, "BL") // 3
   };
 
@@ -92,14 +92,15 @@ public class SwerveDrive extends Subsystem {
   private final MutableMeasure<Distance> m_distance = mutable(Meters.of(0));
   private final MutableMeasure<Velocity<Distance>> m_velocity = mutable(MetersPerSecond.of(0));
 
-  private final SysIdRoutine m_sysIdRoutine;
+  private final SysIdRoutine m_sysIdTurnRoutine;
+  private final SysIdRoutine m_sysIdDriveRoutine;
 
   private SwerveDrive() {
     super("SwerveDrive");
 
     reset();
 
-    m_sysIdRoutine = new SysIdRoutine( // i hate this constructor
+    m_sysIdDriveRoutine = new SysIdRoutine( // i hate this constructor
         new SysIdRoutine.Config(),
         new SysIdRoutine.Mechanism(
             // Tell SysId how to plumb the driving voltage to the motors.
@@ -114,6 +115,63 @@ public class SwerveDrive extends Subsystem {
               // Record a frame for the front left
               log.motor("drive-frontleft")
                   .voltage(m_appliedVoltage.mut_replace(
+                      m_modules[Module.FRONT_LEFT].getDriveMotor().getAppliedOutput()
+                          * RobotController.getBatteryVoltage(),
+                      Volts))
+                  .linearPosition(m_distance.mut_replace(m_modules[Module.FRONT_LEFT].getDrivePosition(), Meters))
+                  .linearVelocity(
+                      m_velocity.mut_replace(m_modules[Module.FRONT_LEFT].getDriveVelocity(), MetersPerSecond));
+
+              // Record a frame for the front right
+              log.motor("drive-frontright")
+                  .voltage(m_appliedVoltage.mut_replace(
+                      m_modules[Module.FRONT_RIGHT].getDriveMotor().getAppliedOutput()
+                          * RobotController.getBatteryVoltage(),
+                      Volts))
+                  .linearPosition(m_distance.mut_replace(m_modules[Module.FRONT_RIGHT].getDrivePosition(), Meters))
+                  .linearVelocity(
+                      m_velocity.mut_replace(m_modules[Module.FRONT_RIGHT].getDriveVelocity(), MetersPerSecond));
+
+              // Record a frame for the back right
+              log.motor("drive-backright")
+                  .voltage(m_appliedVoltage.mut_replace(
+                      m_modules[Module.BACK_RIGHT].getDriveMotor().getAppliedOutput()
+                          * RobotController.getBatteryVoltage(),
+                      Volts))
+                  .linearPosition(m_distance.mut_replace(m_modules[Module.BACK_RIGHT].getDrivePosition(), Meters))
+                  .linearVelocity(
+                      m_velocity.mut_replace(m_modules[Module.BACK_RIGHT].getDriveVelocity(), MetersPerSecond));
+
+              // Record a frame for the back left
+              log.motor("drive-backleft")
+                  .voltage(m_appliedVoltage.mut_replace(
+                      m_modules[Module.BACK_LEFT].getDriveMotor().getAppliedOutput()
+                          * RobotController.getBatteryVoltage(),
+                      Volts))
+                  .linearPosition(m_distance.mut_replace(m_modules[Module.BACK_LEFT].getDrivePosition(), Meters))
+                  .linearVelocity(
+                      m_velocity.mut_replace(m_modules[Module.BACK_LEFT].getDriveVelocity(), MetersPerSecond));
+
+            },
+            // Tell SysId to make generated commands require this subsystem, suffix test
+            // state in WPILog with this subsystem's name ("drive")
+            this));
+
+    m_sysIdTurnRoutine = new SysIdRoutine( // i hate this constructor
+        new SysIdRoutine.Config(),
+        new SysIdRoutine.Mechanism(
+            // Tell SysId how to plumb the driving voltage to the motors.
+            (Measure<Voltage> volts) -> {
+              for (SwerveModule module : m_modules) {
+                module.sysidTurn(volts.in(Volts));
+              }
+            },
+            // Tell SysId how to record a frame of data for each motor on the mechanism
+            // being characterized.
+            log -> {
+              // Record a frame for the front left
+              log.motor("turn-frontleft")
+                  .voltage(m_appliedVoltage.mut_replace(
                       m_modules[Module.FRONT_LEFT].getTurnMotor().getAppliedOutput()
                           * RobotController.getBatteryVoltage(),
                       Volts))
@@ -122,7 +180,7 @@ public class SwerveDrive extends Subsystem {
                       m_velocity.mut_replace(m_modules[Module.FRONT_LEFT].getTurnVelocity(), MetersPerSecond));
 
               // Record a frame for the front right
-              log.motor("drive-frontright")
+              log.motor("turn-frontright")
                   .voltage(m_appliedVoltage.mut_replace(
                       m_modules[Module.FRONT_RIGHT].getTurnMotor().getAppliedOutput()
                           * RobotController.getBatteryVoltage(),
@@ -132,7 +190,7 @@ public class SwerveDrive extends Subsystem {
                       m_velocity.mut_replace(m_modules[Module.FRONT_RIGHT].getTurnVelocity(), MetersPerSecond));
 
               // Record a frame for the back right
-              log.motor("drive-backright")
+              log.motor("turn-backright")
                   .voltage(m_appliedVoltage.mut_replace(
                       m_modules[Module.BACK_RIGHT].getTurnMotor().getAppliedOutput()
                           * RobotController.getBatteryVoltage(),
@@ -142,7 +200,7 @@ public class SwerveDrive extends Subsystem {
                       m_velocity.mut_replace(m_modules[Module.BACK_RIGHT].getTurnVelocity(), MetersPerSecond));
 
               // Record a frame for the back left
-              log.motor("drive-backleft")
+              log.motor("turn-backleft")
                   .voltage(m_appliedVoltage.mut_replace(
                       m_modules[Module.BACK_LEFT].getTurnMotor().getAppliedOutput()
                           * RobotController.getBatteryVoltage(),
@@ -423,12 +481,20 @@ public class SwerveDrive extends Subsystem {
         new double[] { getPose().getX(), getPose().getY(), getPose().getRotation().getDegrees() });
   }
 
-  public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-    return m_sysIdRoutine.quasistatic(direction);
+  public Command sysIdTurnQuasistatic(SysIdRoutine.Direction direction) {
+    return m_sysIdTurnRoutine.quasistatic(direction);
   }
 
-  public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-    return m_sysIdRoutine.dynamic(direction);
+  public Command sysIdTurnDynamic(SysIdRoutine.Direction direction) {
+    return m_sysIdTurnRoutine.dynamic(direction);
+  }
+
+  public Command sysIdDriveQuasistatic(SysIdRoutine.Direction direction) {
+    return m_sysIdDriveRoutine.quasistatic(direction);
+  }
+
+  public Command sysIdDriveDynamic(SysIdRoutine.Direction direction) {
+    return m_sysIdDriveRoutine.dynamic(direction);
   }
 
   public interface Module {

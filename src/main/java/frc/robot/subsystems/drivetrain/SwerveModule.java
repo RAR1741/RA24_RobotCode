@@ -62,14 +62,14 @@ public class SwerveModule {
             / Constants.SwerveDrive.k_driveGearRatio);
     m_driveEncoder.setVelocityConversionFactor(Units.inchesToMeters(
         (Constants.SwerveDrive.k_wheelRadiusIn * 2.0 * Math.PI) / Constants.SwerveDrive.k_driveGearRatio) / 60.0);
-    // m_driveMotor.setSmartCurrentLimit(25);
+    m_driveMotor.setSmartCurrentLimit(Constants.SwerveDrive.Drive.k_currentLimit);
 
     m_turnMotor = new CANSparkMax(turningMotorChannel, MotorType.kBrushless);
     m_turnMotor.restoreFactoryDefaults();
     m_turnMotor.setIdleMode(IdleMode.kCoast);
     m_turnMotor.setInverted(true);
     m_turnMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 20);
-    // m_turningMotor.setSmartCurrentLimit(25);
+    m_turnMotor.setSmartCurrentLimit(Constants.SwerveDrive.Turn.k_currentLimit);
 
     m_turningAbsEncoder = new DutyCycleEncoder(turningAbsoluteID);
 
@@ -80,11 +80,12 @@ public class SwerveModule {
         Helpers.modRadians(Units.rotationsToRadians(m_turningAbsEncoder.get() - m_turningOffset)));
 
     m_turningPIDController = m_turnMotor.getPIDController();
-    m_turningPIDController.setP(Constants.SwerveDrive.Turn.k_turningP);
-    m_turningPIDController.setI(Constants.SwerveDrive.Turn.k_turningI);
-    m_turningPIDController.setD(Constants.SwerveDrive.Turn.k_turningD);
-    m_turningPIDController.setIZone(Constants.SwerveDrive.Turn.k_turningIZone);
-    m_turningPIDController.setFF(Constants.SwerveDrive.Turn.k_turningFF);
+    m_turningPIDController.setP(Constants.SwerveDrive.Turn.k_P);
+    m_turningPIDController.setI(Constants.SwerveDrive.Turn.k_I);
+    m_turningPIDController.setD(Constants.SwerveDrive.Turn.k_D);
+    m_turningPIDController.setIZone(Constants.SwerveDrive.Turn.k_IZone);
+    m_turningPIDController.setFF(Constants.SwerveDrive.Turn.k_FFS);
+
     m_turningPIDController.setPositionPIDWrappingEnabled(true);
     m_turningPIDController.setPositionPIDWrappingMinInput(0.0);
     m_turningPIDController.setPositionPIDWrappingMaxInput(2.0 * Math.PI);

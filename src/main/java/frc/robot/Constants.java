@@ -71,14 +71,16 @@ public final class Constants {
       public static final int k_BRMotorId = 10;
       public static final int k_BLMotorId = 12;
 
-      public static final double k_P = 0.0;
+      public static final int k_currentLimit = 40;
+
+      public static final double k_P = 0.00079049;
       public static final double k_I = 0.0;
       public static final double k_D = 0.0;
       public static final double k_IZone = 0.0;
 
-      public static final double k_FFS = 3.75;
-      public static final double k_FFV = 0.0;
-      public static final double k_FFA = 0.0;
+      public static final double k_FFS = 0.21465;
+      public static final double k_FFV = 2.3914;
+      public static final double k_FFA = 0.36664;
     }
 
     // Drivetrain (turn) constants
@@ -89,21 +91,26 @@ public final class Constants {
       public static final double k_BROffset = 0.820736;
       public static final double k_BLOffset = 0.161767;
 
-      public static final int k_FLAbsID = 0;
-      public static final int k_FRAbsID = 1;
-      public static final int k_BRAbsID = 2;
-      public static final int k_BLAbsID = 3;
+      public static final int k_FLAbsId = 0;
+      public static final int k_FRAbsId = 1;
+      public static final int k_BRAbsId = 2;
+      public static final int k_BLAbsId = 3;
+
+      public static final int k_currentLimit = 25;
 
       public static final int k_FLMotorId = 5;
       public static final int k_FRMotorId = 7;
       public static final int k_BRMotorId = 9;
       public static final int k_BLMotorId = 11;
 
-      public static final double k_turningP = 0.1;
-      public static final double k_turningI = 0.0;
-      public static final double k_turningD = 0.0;
-      public static final double k_turningIZone = 0.0;
-      public static final double k_turningFF = 0.0;
+      public static final double k_P = 5.6906;
+      public static final double k_I = 0.0;
+      public static final double k_D = 0.1976;
+      public static final double k_IZone = 0.0;
+
+      public static final double k_FFS = 0.29745;
+      public static final double k_FFV = 0.43892; // Not used
+      public static final double k_FFA = 0.048573; // Not used
 
       public static final double k_TurningMinOutput = -1.0;
       public static final double k_TurningMaxOutput = 1.0;

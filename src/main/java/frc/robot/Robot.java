@@ -10,6 +10,7 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.Preferences;
@@ -94,11 +95,10 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void robotPeriodic() {
-    // if (!(Preferences.getString("Test Mode", "NONE").contains("SYSID") &&
-    // DriverStation.isTest())) {
-    // }
-    m_allSubsystems.forEach(subsystem -> subsystem.periodic());
-    m_allSubsystems.forEach(subsystem -> subsystem.writePeriodicOutputs());
+    if (!(Preferences.getString("Test Mode", "NONE").contains("SYSID") && DriverStation.isTest())) {
+      m_allSubsystems.forEach(subsystem -> subsystem.periodic());
+      m_allSubsystems.forEach(subsystem -> subsystem.writePeriodicOutputs());
+    }
     m_allSubsystems.forEach(subsystem -> subsystem.outputTelemetry());
     m_allSubsystems.forEach(subsystem -> subsystem.writeToLog());
 
@@ -284,13 +284,13 @@ public class Robot extends LoggedRobot {
         m_intake.stopIntake();
 
         if (m_driverController.getWantsSysIdQuasistaticForward()) {
-          m_swerve.sysIdQuasistatic(SysIdRoutine.Direction.kForward).schedule();
+          m_swerve.sysIdDriveQuasistatic(SysIdRoutine.Direction.kForward).schedule();
         } else if (m_driverController.getWantsSysIdQuasistaticBackward()) {
-          m_swerve.sysIdQuasistatic(SysIdRoutine.Direction.kReverse).schedule();
+          m_swerve.sysIdDriveQuasistatic(SysIdRoutine.Direction.kReverse).schedule();
         } else if (m_driverController.getWantsSysIdDynamicForward()) {
-          m_swerve.sysIdDynamic(SysIdRoutine.Direction.kForward).schedule();
+          m_swerve.sysIdDriveDynamic(SysIdRoutine.Direction.kForward).schedule();
         } else if (m_driverController.getWantsSysIdDynamicBackward()) {
-          m_swerve.sysIdDynamic(SysIdRoutine.Direction.kReverse).schedule();
+          m_swerve.sysIdDriveDynamic(SysIdRoutine.Direction.kReverse).schedule();
         } else if (m_driverController.getWantSysIdStop()) {
           CommandScheduler.getInstance().cancelAll();
         }
