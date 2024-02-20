@@ -10,15 +10,21 @@
           "width": 300,
           "expanded": [
             "/DriverStation/Joystick0/AxisValues",
-            "/RealOutputs",
             "/RealOutputs/Auto",
             "/RealOutputs/Auto/DriveTrajectory",
-            "/RealOutputs/Intake",
-            "/RealOutputs/Shooter"
+            "/RealOutputs/SwerveDrive/Module",
+            "/RealOutputs/SwerveDrive/Modules/BL/Turn",
+            "/RealOutputs/SwerveDrive/Modules/BR/Turn",
+            "/RealOutputs/SwerveDrive/Modules/FL/Turn",
+            "/RealOutputs/SwerveDrive/Modules/FR/Turn",
+            "/RealOutputs",
+            "/RealOutputs/SwerveDrive",
+            "/RealOutputs/SwerveDrive/Modules",
+            "/RealOutputs/SwerveDrive/Modules/FL"
           ]
         },
         "tabs": {
-          "selected": 8,
+          "selected": 9,
           "tabs": [
             {
               "type": 0,
@@ -187,6 +193,119 @@
                   },
                   "fields": [
                     {
+                      "key": "/RealOutputs/SwerveDrive/Modules/FL/Drive/Current",
+                      "color": "#2b66a2",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/SwerveDrive/Modules/FR/Drive/Current",
+                      "color": "#e5b31b",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/SwerveDrive/Modules/BR/Drive/Current",
+                      "color": "#af2437",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/SwerveDrive/Modules/BL/Drive/Current",
+                      "color": "#80588e",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/SwerveDrive/Modules/FL/Turn/Current",
+                      "color": "#d993aa",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/SwerveDrive/Modules/FR/Turn/Current",
+                      "color": "#eb987e",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/SwerveDrive/Modules/BR/Turn/Voltage",
+                      "color": "#5d4f92",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/SwerveDrive/Modules/BL/Turn/Voltage",
+                      "color": "#a64b6b",
+                      "show": true
+                    }
+                  ]
+                },
+                "discrete": {
+                  "fields": [
+                    {
+                      "key": "/SystemStats/BrownedOut",
+                      "color": "#3b875a",
+                      "show": true
+                    }
+                  ]
+                },
+                "right": {
+                  "lockedRange": null,
+                  "unitConversion": {
+                    "type": null,
+                    "factor": 1
+                  },
+                  "fields": [
+                    {
+                      "key": "/RealOutputs/SwerveDrive/Modules/FL/Drive/Voltage",
+                      "color": "#e48b32",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/SwerveDrive/Modules/FR/Drive/Voltage",
+                      "color": "#aacaee",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/SwerveDrive/Modules/BR/Drive/Voltage",
+                      "color": "#c0b487",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/SwerveDrive/Modules/BL/Drive/Voltage",
+                      "color": "#858584",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/SwerveDrive/Modules/FL/Turn/Voltage",
+                      "color": "#dbd345",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/SwerveDrive/Modules/FR/Turn/Voltage",
+                      "color": "#7e331f",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/SwerveDrive/Modules/BR/Turn/Voltage",
+                      "color": "#96b637",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/SwerveDrive/Modules/BL/Turn/Voltage",
+                      "color": "#5f4528",
+                      "show": true
+                    }
+                  ]
+                }
+              },
+              "title": "Drivetrain"
+            },
+            {
+              "type": 1,
+              "legends": {
+                "left": {
+                  "lockedRange": null,
+                  "unitConversion": {
+                    "type": null,
+                    "factor": 1
+                  },
+                  "fields": [
+                    {
                       "key": "/RealOutputs/Shooter/PivotAngle",
                       "color": "#af2437",
                       "show": true
@@ -279,7 +398,13 @@
                     "type": null,
                     "factor": 1
                   },
-                  "fields": []
+                  "fields": [
+                    {
+                      "key": "/RealOutputs/Intake/PivotAngle",
+                      "color": "#af2437",
+                      "show": true
+                    }
+                  ]
                 },
                 "discrete": {
                   "fields": [

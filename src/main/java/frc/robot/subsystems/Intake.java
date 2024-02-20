@@ -174,6 +174,7 @@ public class Intake extends Subsystem {
     m_periodicIO.pivot_target = target;
   }
 
+  @AutoLogOutput
   public double getPivotAngle() {
     return Units.rotationsToDegrees(m_pivotAbsEncoder.getAbsolutePosition());
   }
@@ -262,16 +263,16 @@ public class Intake extends Subsystem {
       // m_leds.setColor(Color.kGreen);
     }
 
-    if (wantsToEject()){
+    if (wantsToEject()) {
       if ((m_periodicIO.pivot_target == IntakePivotTarget.STOW &&
-        isAtPivotTarget(IntakePivotTarget.STOW)) || 
-        (m_periodicIO.pivot_target == IntakePivotTarget.GROUND &&
-        isAtPivotTarget(IntakePivotTarget.GROUND))) {
-          setPivotTarget(IntakePivotTarget.EJECT);
-          setIntakeState(IntakeState.NONE);
-      } else if(m_periodicIO.pivot_target == IntakePivotTarget.EJECT &&
-        isAtPivotTarget(IntakePivotTarget.EJECT)) {
-          setIntakeState(IntakeState.EJECT);
+          isAtPivotTarget(IntakePivotTarget.STOW)) ||
+          (m_periodicIO.pivot_target == IntakePivotTarget.GROUND &&
+              isAtPivotTarget(IntakePivotTarget.GROUND))) {
+        setPivotTarget(IntakePivotTarget.EJECT);
+        setIntakeState(IntakeState.NONE);
+      } else if (m_periodicIO.pivot_target == IntakePivotTarget.EJECT &&
+          isAtPivotTarget(IntakePivotTarget.EJECT)) {
+        setIntakeState(IntakeState.EJECT);
       }
     } else if (m_periodicIO.pivot_target == IntakePivotTarget.EJECT && isAtPivotTarget(IntakePivotTarget.EJECT)) {
       setIntakeState(IntakeState.NONE);
