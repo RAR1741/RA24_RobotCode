@@ -21,7 +21,6 @@
             "NT:/AdvantageKit/RealOutputs/SwerveDrive",
             "NT:/AdvantageKit/RealOutputs/SwerveDrive/Modules",
             "NT:/AdvantageKit/RealOutputs/SwerveDrive/Modules/FL",
-            "/AdvantageKit",
             "/AdvantageKit/RealOutputs",
             "/AdvantageKit/RealOutputs/SwerveDrive"
           ]
@@ -90,7 +89,7 @@
               "options": {
                 "field": "2024 Field",
                 "alliance": "blue",
-                "robot": "2024 KitBot",
+                "robot": "Temp Robot Name",
                 "unitDistance": "meters",
                 "unitRotation": "radians"
               },
@@ -99,14 +98,14 @@
                 "cameraIndex": -1,
                 "orbitFov": 90,
                 "cameraPosition": [
-                  3.5414733782513346,
-                  5.33475163830476,
-                  -0.5860311984593287
+                  3.8842865607964225,
+                  4.116807162462315,
+                  -2.0665753099413724
                 ],
                 "cameraTarget": [
-                  3.5414734185312926,
-                  0.3535411499213543,
-                  -0.5860262174117025
+                  4.232207701940798,
+                  1.0025697409544638,
+                  -0.556313390719946
                 ]
               },
               "title": "3D Field"
@@ -146,7 +145,7 @@
             },
             {
               "type": 1,
-              "legendHeight": null,
+              "legendHeight": 0.15,
               "legends": {
                 "left": {
                   "lockedRange": null,
@@ -184,7 +183,7 @@
             },
             {
               "type": 1,
-              "legendHeight": null,
+              "legendHeight": 0.15,
               "legends": {
                 "left": {
                   "lockedRange": null,
@@ -228,7 +227,7 @@
             },
             {
               "type": 1,
-              "legendHeight": null,
+              "legendHeight": 0.15,
               "legends": {
                 "left": {
                   "lockedRange": null,
@@ -342,7 +341,7 @@
             },
             {
               "type": 1,
-              "legendHeight": null,
+              "legendHeight": 0.15,
               "legends": {
                 "left": {
                   "lockedRange": null,
@@ -396,7 +395,7 @@
             },
             {
               "type": 1,
-              "legendHeight": null,
+              "legendHeight": 0.15,
               "legends": {
                 "left": {
                   "lockedRange": null,
@@ -438,7 +437,7 @@
             },
             {
               "type": 1,
-              "legendHeight": null,
+              "legendHeight": 0.15,
               "legends": {
                 "left": {
                   "lockedRange": null,
