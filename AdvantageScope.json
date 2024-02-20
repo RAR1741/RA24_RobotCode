@@ -1,10 +1,10 @@
 {
   "hubs": [
     {
-      "x": 0,
-      "y": 38,
-      "width": 1728,
-      "height": 833,
+      "x": 1912,
+      "y": -8,
+      "width": 1936,
+      "height": 1048,
       "state": {
         "sidebar": {
           "width": 300,
@@ -20,11 +20,14 @@
             "NT:/AdvantageKit/RealOutputs",
             "NT:/AdvantageKit/RealOutputs/SwerveDrive",
             "NT:/AdvantageKit/RealOutputs/SwerveDrive/Modules",
-            "NT:/AdvantageKit/RealOutputs/SwerveDrive/Modules/FL"
+            "NT:/AdvantageKit/RealOutputs/SwerveDrive/Modules/FL",
+            "/AdvantageKit",
+            "/AdvantageKit/RealOutputs",
+            "/AdvantageKit/RealOutputs/SwerveDrive"
           ]
         },
         "tabs": {
-          "selected": 9,
+          "selected": 3,
           "tabs": [
             {
               "type": 0,
@@ -70,6 +73,45 @@
               "title": "Odometry"
             },
             {
+              "type": 6,
+              "uuid": "fmujopntln4ekpotsyssu85h8jlifbca",
+              "fields": [],
+              "listFields": [
+                [],
+                [
+                  {
+                    "type": "Robot",
+                    "key": "NT:/AdvantageKit/RealOutputs/SwerveDrive/Pose",
+                    "sourceTypeIndex": 1,
+                    "sourceType": "Pose2d"
+                  }
+                ]
+              ],
+              "options": {
+                "field": "2024 Field",
+                "alliance": "blue",
+                "robot": "2024 KitBot",
+                "unitDistance": "meters",
+                "unitRotation": "radians"
+              },
+              "configHidden": false,
+              "visualizer": {
+                "cameraIndex": -1,
+                "orbitFov": 90,
+                "cameraPosition": [
+                  3.5414733782513346,
+                  5.33475163830476,
+                  -0.5860311984593287
+                ],
+                "cameraTarget": [
+                  3.5414734185312926,
+                  0.3535411499213543,
+                  -0.5860262174117025
+                ]
+              },
+              "title": "3D Field"
+            },
+            {
               "type": 9,
               "uuid": "ekyksagig6fls8piz7ucc019946gelt5",
               "fields": [
@@ -98,12 +140,13 @@
                 "sizeFrontBack": 0.76,
                 "forwardDirection": "up"
               },
-              "configHidden": true,
+              "configHidden": false,
               "visualizer": null,
               "title": "Swerve"
             },
             {
               "type": 1,
+              "legendHeight": null,
               "legends": {
                 "left": {
                   "lockedRange": null,
@@ -141,6 +184,7 @@
             },
             {
               "type": 1,
+              "legendHeight": null,
               "legends": {
                 "left": {
                   "lockedRange": null,
@@ -160,7 +204,7 @@
                   "fields": [
                     {
                       "key": "/SystemStats/BrownedOut",
-                      "color": "#af2437",
+                      "color": "#e5b31b",
                       "show": true
                     }
                   ]
@@ -174,7 +218,7 @@
                   "fields": [
                     {
                       "key": "/SystemStats/BatteryCurrent",
-                      "color": "#e5b31b",
+                      "color": "#af2437",
                       "show": true
                     }
                   ]
@@ -184,6 +228,7 @@
             },
             {
               "type": 1,
+              "legendHeight": null,
               "legends": {
                 "left": {
                   "lockedRange": null,
@@ -214,22 +259,22 @@
                     },
                     {
                       "key": "NT:/AdvantageKit/RealOutputs/SwerveDrive/Modules/FL/Turn/Current",
-                      "color": "#d993aa",
+                      "color": "#e48b32",
                       "show": true
                     },
                     {
                       "key": "NT:/AdvantageKit/RealOutputs/SwerveDrive/Modules/FR/Turn/Current",
-                      "color": "#eb987e",
+                      "color": "#aacaee",
                       "show": true
                     },
                     {
                       "key": "NT:/AdvantageKit/RealOutputs/SwerveDrive/Modules/BR/Turn/Voltage",
-                      "color": "#5d4f92",
+                      "color": "#c0b487",
                       "show": true
                     },
                     {
                       "key": "NT:/AdvantageKit/RealOutputs/SwerveDrive/Modules/BL/Turn/Voltage",
-                      "color": "#a64b6b",
+                      "color": "#858584",
                       "show": true
                     }
                   ]
@@ -252,22 +297,22 @@
                   "fields": [
                     {
                       "key": "NT:/AdvantageKit/RealOutputs/SwerveDrive/Modules/FL/Drive/Voltage",
-                      "color": "#e48b32",
+                      "color": "#d993aa",
                       "show": true
                     },
                     {
                       "key": "NT:/AdvantageKit/RealOutputs/SwerveDrive/Modules/FR/Drive/Voltage",
-                      "color": "#aacaee",
+                      "color": "#eb987e",
                       "show": true
                     },
                     {
                       "key": "NT:/AdvantageKit/RealOutputs/SwerveDrive/Modules/BR/Drive/Voltage",
-                      "color": "#c0b487",
+                      "color": "#5d4f92",
                       "show": true
                     },
                     {
                       "key": "NT:/AdvantageKit/RealOutputs/SwerveDrive/Modules/BL/Drive/Voltage",
-                      "color": "#858584",
+                      "color": "#a64b6b",
                       "show": true
                     },
                     {
@@ -297,6 +342,7 @@
             },
             {
               "type": 1,
+              "legendHeight": null,
               "legends": {
                 "left": {
                   "lockedRange": null,
@@ -307,12 +353,12 @@
                   "fields": [
                     {
                       "key": "NT:/AdvantageKit/RealOutputs/Shooter/PivotAngle",
-                      "color": "#af2437",
+                      "color": "#2b66a2",
                       "show": true
                     },
                     {
                       "key": "NT:/AdvantageKit/RealOutputs/Shooter/PivotMotorCurrent",
-                      "color": "#e48b32",
+                      "color": "#e5b31b",
                       "show": true
                     }
                   ]
@@ -321,7 +367,7 @@
                   "fields": [
                     {
                       "key": "NT:/AdvantageKit/RealOutputs/Shooter/IsPivotAsbConnected",
-                      "color": "#e5b31b",
+                      "color": "#af2437",
                       "show": true
                     }
                   ]
@@ -335,12 +381,12 @@
                   "fields": [
                     {
                       "key": "NT:/AdvantageKit/RealOutputs/Shooter/PivotRelRotations",
-                      "color": "#2b66a2",
+                      "color": "#80588e",
                       "show": true
                     },
                     {
                       "key": "NT:/AdvantageKit/RealOutputs/Shooter/PivotRelTarget",
-                      "color": "#80588e",
+                      "color": "#e48b32",
                       "show": true
                     }
                   ]
@@ -350,6 +396,7 @@
             },
             {
               "type": 1,
+              "legendHeight": null,
               "legends": {
                 "left": {
                   "lockedRange": null,
@@ -391,6 +438,7 @@
             },
             {
               "type": 1,
+              "legendHeight": null,
               "legends": {
                 "left": {
                   "lockedRange": null,
@@ -401,7 +449,7 @@
                   "fields": [
                     {
                       "key": "NT:/AdvantageKit/RealOutputs/Intake/PivotAngle",
-                      "color": "#af2437",
+                      "color": "#2b66a2",
                       "show": true
                     }
                   ]
@@ -410,7 +458,7 @@
                   "fields": [
                     {
                       "key": "NT:/AdvantageKit/RealOutputs/Intake/IsHoldingNote",
-                      "color": "#2b66a2",
+                      "color": "#e5b31b",
                       "show": true
                     }
                   ]
@@ -424,7 +472,7 @@
                   "fields": [
                     {
                       "key": "NT:/AdvantageKit/RealOutputs/Intake/IntakeProximity",
-                      "color": "#e5b31b",
+                      "color": "#af2437",
                       "show": true
                     }
                   ]
@@ -437,18 +485,6 @@
       }
     }
   ],
-  "satellites": [
-    {
-      "x": 963,
-      "y": 709,
-      "width": 765,
-      "height": 408,
-      "state": {
-        "type": 5,
-        "visualizer": null
-      },
-      "uuid": "bnv416jy5f1t1u41qg0hldeyz962nriv"
-    }
-  ],
-  "version": "3.1.0"
+  "satellites": [],
+  "version": "3.2.0"
 }
