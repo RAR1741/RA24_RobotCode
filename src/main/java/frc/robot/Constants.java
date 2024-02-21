@@ -33,6 +33,11 @@ public final class Constants {
       }
     }
 
+    public class Timing {
+      public static final double k_shootFeedTime = 0.5; // seconds
+      public static final double k_shootRevTime = 2.0; // seconds
+    }
+
     // TODO: Add left and right subwoofer starting poses
     public static final Pose2d k_redCenterPose2d = new Pose2d(15.19, 5.50,
         new Rotation2d(Units.degreesToRadians(180.0)));

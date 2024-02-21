@@ -19,7 +19,9 @@
             "/AdvantageKit/RealOutputs/SwerveDrive",
             "/RealOutputs/SwerveDrive",
             "/RealOutputs/SwerveDrive/Modules/BL/Abs",
-            "/RealOutputs/SwerveDrive/Modules"
+            "/RealOutputs/SwerveDrive/Modules",
+            "/SystemStats",
+            "/SystemStats/CANBus"
           ]
         },
         "tabs": {
@@ -95,14 +97,14 @@
                 "cameraIndex": -1,
                 "orbitFov": 90,
                 "cameraPosition": [
-                  3.34770191276896,
-                  4.969859529735412,
-                  -2.4473470251585585
+                  3.5315413275434913,
+                  5.334751815706416,
+                  -0.40860931784689775
                 ],
                 "cameraTarget": [
-                  3.5414734185312926,
-                  0.3535411499213543,
-                  -0.5860262174117025
+                  3.531541337523335,
+                  0.35354132732298005,
+                  -0.40860433664640666
                 ]
               },
               "title": "3D Field"
@@ -225,7 +227,7 @@
                 "sizeFrontBack": 0.76,
                 "forwardDirection": "up"
               },
-              "configHidden": false,
+              "configHidden": true,
               "visualizer": null,
               "title": "Swerve"
             },
