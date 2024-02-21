@@ -2,9 +2,11 @@ package frc.robot.autonomous.tasks;
 
 import org.littletonrobotics.junction.Logger;
 
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.PathPlannerTrajectory;
 import com.pathplanner.lib.path.PathPlannerTrajectory.State;
+import com.pathplanner.lib.util.PIDConstants;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -14,14 +16,28 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
-import frc.robot.Constants;
+import frc.robot.Constants.Auto;
+import frc.robot.Constants.AutoAim.Rotation;
+import frc.robot.Constants.AutoAim.Translation;
+import frc.robot.Constants.Robot;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 
 public class DriveTrajectoryTask extends Task {
-  private SwerveDrive m_swerve = SwerveDrive.getInstance();;
+  private SwerveDrive m_swerve = SwerveDrive.getInstance();
   private PathPlannerTrajectory m_autoTrajectory;
-  private boolean m_isFinished = false;
   private PathPlannerPath m_autoPath = null;
+
+  private PPHolonomicDriveController k_driveController = new PPHolonomicDriveController(
+      new PIDConstants(
+          Translation.k_P,
+          Translation.k_I,
+          Translation.k_D),
+      new PIDConstants(
+          Rotation.k_P,
+          Rotation.k_I,
+          Rotation.k_D),
+      Auto.k_maxModuleSpeed,
+      Robot.k_width / 2);
 
   private final Timer m_runningTimer = new Timer();
 
@@ -57,8 +73,7 @@ public class DriveTrajectoryTask extends Task {
   public void update() {
     if (m_autoTrajectory != null) {
       State goal = m_autoTrajectory.sample(m_runningTimer.get());
-      ChassisSpeeds chassisSpeeds = Constants.AutoAim.k_driveController
-          .calculateRobotRelativeSpeeds(m_swerve.getPose(), goal);
+      ChassisSpeeds chassisSpeeds = k_driveController.calculateRobotRelativeSpeeds(m_swerve.getPose(), goal);
 
       Logger.recordOutput("Auto/DriveTrajectory/TargetPose", goal.getTargetHolonomicPose());
 
@@ -87,7 +102,6 @@ public class DriveTrajectoryTask extends Task {
   }
 
   public Pose2d getStartingPose() {
-    // return m_autoPath.getPreviewStartingHolonomicPose();
     return m_autoTrajectory.getState(0).getTargetHolonomicPose();
   }
 

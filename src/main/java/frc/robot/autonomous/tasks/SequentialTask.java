@@ -9,7 +9,6 @@ public class SequentialTask extends Task {
   private int m_index = 0;
   private Task[] m_tasks;
   private Task m_currentTask;
-  private boolean m_finished = false;
 
   public SequentialTask(Task... tasks) {
     m_tasks = tasks;
@@ -29,7 +28,7 @@ public class SequentialTask extends Task {
       m_currentTask.done();
 
       if (++m_index >= m_tasks.length) {
-        m_finished = true;
+        m_isFinished = true;
         System.out.println("Sequential task finished!");
         return;
       }
@@ -45,6 +44,6 @@ public class SequentialTask extends Task {
 
   @Override
   public boolean isFinished() {
-    return m_finished;
+    return m_isFinished;
   }
 }

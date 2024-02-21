@@ -149,7 +149,7 @@ public class SwerveDrive extends SwerveSysId {
 
   public void setPose(Pose2d pose) {
     m_poseEstimator.resetPosition(
-        m_gyro.getRotation2d(), // Maybe should be getRotation2d() (it uses pose estimator)?
+        pose.getRotation(), // Maybe should be getRotation2d() (it uses pose estimator)?
         new SwerveModulePosition[] {
             m_modules[Module.FRONT_LEFT].getPosition(),
             m_modules[Module.FRONT_RIGHT].getPosition(),
@@ -220,6 +220,7 @@ public class SwerveDrive extends SwerveSysId {
   }
 
   private double correct() {
+    // TODO: use the PIC controllers in Constatns.AutoAim to correct the heading
     ProfiledPIDController pid = new ProfiledPIDController(1, 0, 0, new Constraints(10, 1));
     return pid.calculate(m_gyro.getRotation2d().getDegrees(), m_oldRotation.getDegrees());
   }

@@ -3,7 +3,9 @@ package frc.robot.autonomous.modes;
 import java.util.ArrayList;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.Constants.Field;
 import frc.robot.autonomous.tasks.DriveTrajectoryTask;
 import frc.robot.autonomous.tasks.Task;
@@ -53,7 +55,7 @@ public abstract class AutoModeBase {
     }
 
     SwerveDrive m_swerve = SwerveDrive.getInstance();
-    //TODO: Fix PP rotation again
+    // TODO: Fix PP rotation again
 
     // Reset the gyro to the starting rotation
     // m_swerve.resetGyro();
@@ -62,4 +64,12 @@ public abstract class AutoModeBase {
 
     m_swerve.resetOdometry(startingPose);
   };
+
+  public Pose3d getAllianceSpeakerPose() {
+    if (DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) {
+      return Field.k_blueSpeakerPose;
+    } else {
+      return Field.k_redSpeakerPose;
+    }
+  }
 }

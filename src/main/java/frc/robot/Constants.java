@@ -1,10 +1,15 @@
 package frc.robot;
 
-import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.path.PathConstraints;
 
+import edu.wpi.first.math.controller.HolonomicDriveController;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 
 public final class Constants {
@@ -112,12 +117,6 @@ public final class Constants {
   }
 
   public class AutoAim {
-    public static final double k_P = 1.0;
-    public static final double k_I = 0.0;
-    public static final double k_D = 0.0;
-
-    public static final double k_autoAimThreshold = 1; // in meters
-
     public class Translation {
       public static final double k_P = 10.0;
       public static final double k_I = 0.0;
@@ -130,18 +129,41 @@ public final class Constants {
       public static final double k_D = 0.0;
     }
 
-    public static final PPHolonomicDriveController k_driveController = new PPHolonomicDriveController(
-        new PIDConstants(
-            Translation.k_P,
-            Translation.k_I,
-            Translation.k_D),
+    public static final double k_autoAimDistanceThreshold = 1; // in meters
+    public static final double k_autoAimAngleTolerance = Units.degreesToRadians(2.0);
 
-        new PIDConstants(
-            Rotation.k_P,
-            Rotation.k_I,
-            Rotation.k_D),
-        Auto.k_maxModuleSpeed,
-        Robot.k_width / 2);
+    // Max speed
+    public static final double k_maxSpeed = 3.0; // Meters per second
+    public static final double k_maxLinearAcceleration = 1.5; // Meters per second squared
+
+    // Max rotation
+    public static final double k_maxAngularSpeed = Math.PI * 2 * 1.5; // Radians per second (540 degrees per second)
+    public static final double k_maxAngularAcceleration = Math.PI * 2 * 2; // Radians per second squared (720 degrees
+                                                                           // per second squared)
+
+    // TODO: Use these values as overrides in DriveTrajectoryTask
+    // These are the current PathPlanner values
+    public static final PathConstraints k_pathConstraints = new PathConstraints(
+        k_maxSpeed,
+        k_maxLinearAcceleration,
+        k_maxAngularSpeed,
+        k_maxAngularAcceleration);
+
+    public static final PIDController translationPIDController = new PIDController(
+        Translation.k_P,
+        Translation.k_I,
+        Translation.k_D);
+
+    public static final ProfiledPIDController rotationPIDController = new ProfiledPIDController(
+        Rotation.k_P,
+        Rotation.k_I,
+        Rotation.k_D,
+        new Constraints(k_maxSpeed, k_maxLinearAcceleration));
+
+    public static final HolonomicDriveController k_autoTargetController = new HolonomicDriveController(
+        translationPIDController,
+        translationPIDController,
+        rotationPIDController);
   }
 
   public class Intake {
@@ -278,8 +300,9 @@ public final class Constants {
     public static final double k_speakerAngle = 14.0;
 
     // TODO: Make sure the robot uses the same coordinate system
-    public static final Pose2d k_redSpeakerPose = new Pose2d(16.579342, 5.547868, new Rotation2d(0));
-    public static final Pose2d k_blueSpeakerPose = new Pose2d(-0.0381, 5.547868, new Rotation2d(0));
+    private static final double speakerHeight = 2.032; // Meters
+    public static final Pose3d k_redSpeakerPose = new Pose3d(16.579342, 5.547868, speakerHeight, new Rotation3d());
+    public static final Pose3d k_blueSpeakerPose = new Pose3d(-0.0381, 5.547868, speakerHeight, new Rotation3d());
   }
 
   public static class Limelight {

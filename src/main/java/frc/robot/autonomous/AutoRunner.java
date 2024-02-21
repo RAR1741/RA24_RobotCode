@@ -3,6 +3,7 @@ package frc.robot.autonomous;
 import frc.robot.autonomous.modes.AutoModeBase;
 import frc.robot.autonomous.modes.DefaultMode;
 import frc.robot.autonomous.modes.DoNothingMode;
+import frc.robot.autonomous.modes.FourNoteAutoTargetMode;
 import frc.robot.autonomous.modes.FourNoteMode;
 import frc.robot.autonomous.modes.ShootMidringRing4;
 import frc.robot.autonomous.modes.TestMode;
@@ -26,7 +27,8 @@ public class AutoRunner {
     SHOOT_MIDRING_RING_4,
     TEST,
     TEST2,
-    FOUR_NOTE
+    FOUR_NOTE,
+    FOUR_NOTE_AUTO_TARGET
   }
 
   public Task getNextTask() {
@@ -52,6 +54,9 @@ public class AutoRunner {
         break;
       case FOUR_NOTE:
         m_autoMode = new FourNoteMode();
+        break;
+      case FOUR_NOTE_AUTO_TARGET:
+        m_autoMode = new FourNoteAutoTargetMode();
         break;
       default:
         System.out.println("Invalid auto mode selected. Defaulting to do nothing.");

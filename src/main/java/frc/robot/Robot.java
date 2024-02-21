@@ -8,7 +8,6 @@ import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
@@ -41,12 +40,6 @@ public class Robot extends LoggedRobot {
   private final SlewRateLimiter m_xRateLimiter = new SlewRateLimiter(Constants.SwerveDrive.k_maxLinearAcceleration);
   private final SlewRateLimiter m_yRateLimiter = new SlewRateLimiter(Constants.SwerveDrive.k_maxLinearAcceleration);
   private final SlewRateLimiter m_rotRateLimiter = new SlewRateLimiter(Constants.SwerveDrive.k_maxAngularAcceleration);
-
-  // PID Controller for Swerve Auto Aim speed
-  private final PIDController m_aimPID = new PIDController(
-      Constants.SwerveDrive.AutoAim.k_P,
-      Constants.SwerveDrive.AutoAim.k_I,
-      Constants.SwerveDrive.AutoAim.k_D);
 
   // Robot subsystems
   private List<Subsystem> m_allSubsystems = new ArrayList<>();
@@ -154,12 +147,12 @@ public class Robot extends LoggedRobot {
     double rot = 0.0;
 
     // if (m_driverController.getWantsAutoAim() && m_swerve.getPose().getX() >=
-    // Constants.AutoAim.k_autoAimThreshold && !autoAimEnabled) {
+    // Constants.AutoAim.k_autoAimDistanceThreshold && !autoAimEnabled) {
     // autoAimEnabled = true;
     // }
     // if (autoAimEnabled && m_driverController.getWantsAutoAim() ||
     // m_swerve.getPose().getX() <=
-    // Constants.AutoAim.k_autoAimThreshold) {
+    // Constants.AutoAim.k_autoAimDistanceThreshold) {
     // autoAimEnabled = false;
     // }
 
@@ -174,7 +167,8 @@ public class Robot extends LoggedRobot {
      */
 
     if (m_autoAimEnabled) {
-      rot = m_aimPID.calculate(m_swerve.getRotation2d().getRadians(), m_swerve.calculateAutoAimAngle(false));
+      rot = Constants.AutoAim.rotationPIDController.calculate(m_swerve.getRotation2d().getRadians(),
+          m_swerve.calculateAutoAimAngle(false));
     } else {
       rot = m_rotRateLimiter.calculate(m_driverController.getTurnAxis() * Constants.SwerveDrive.k_maxAngularSpeed);
     }
