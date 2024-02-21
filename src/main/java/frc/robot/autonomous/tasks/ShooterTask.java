@@ -1,11 +1,13 @@
 package frc.robot.autonomous.tasks;
 
+import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Shooter.ShooterPivotTarget;
 import frc.robot.subsystems.Shooter.ShooterSpeedTarget;
 
 public class ShooterTask extends Task {
 	private Shooter m_shooter = Shooter.getInstance();
+	// private boolean m_isSimFinished = false;
 
 	private ShooterPivotTarget m_pivotTarget;
 	private ShooterSpeedTarget m_speedTarget;
@@ -38,9 +40,18 @@ public class ShooterTask extends Task {
 	}
 
 	@Override
+	public void updateSim() {
+		// TODO: Implement sim
+		// if (!RobotBase.isReal()) {
+		// m_shooter.periodic();
+		// m_isSimFinished = m_shooter.isAtTarget(m_pivotTarget);
+		// }
+	}
+
+	@Override
 	public boolean isFinished() {
 		boolean isAtTarget = m_shooter.isAtTarget(m_pivotTarget);
 
-		return isAtTarget;
+		return isAtTarget || !RobotBase.isReal();
 	}
 }
