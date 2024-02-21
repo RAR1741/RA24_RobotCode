@@ -202,6 +202,31 @@ public class SwerveModule {
     return m_driveMotor.getOutputCurrent();
   }
 
+  @AutoLogOutput(key = "SwerveDrive/Modules/{m_moduleName}/Abs/Frequency")
+  public int getAsbEncoderFrequency() {
+    return m_turningAbsEncoder.getFrequency();
+  }
+
+  @AutoLogOutput(key = "SwerveDrive/Modules/{m_moduleName}/Abs/isConnected")
+  public boolean getAsbEncoderIsConnected() {
+    return m_turningAbsEncoder.isConnected();
+  }
+
+  @AutoLogOutput(key = "SwerveDrive/Modules/{m_moduleName}/Abs/getPosition")
+  public double getAsbEncoderPosition() {
+    return m_turningAbsEncoder.get();
+  }
+
+  @AutoLogOutput(key = "SwerveDrive/Modules/{m_moduleName}/Drive/Temperature")
+  public double getDriveTemp() {
+    return m_driveMotor.getMotorTemperature();
+  }
+
+  @AutoLogOutput(key = "SwerveDrive/Modules/{m_moduleName}/Turn/Temperature")
+  public double getTurnTemp() {
+    return m_turnMotor.getMotorTemperature();
+  }
+
   public void periodic() {
     if (m_periodicIO.shouldChangeState) {
       double feedforward = m_drivingFeedForward.calculate(m_periodicIO.desiredState.speedMetersPerSecond);

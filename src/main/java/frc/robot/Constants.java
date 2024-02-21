@@ -14,20 +14,20 @@ public final class Constants {
   }
 
   public static class Auto {
-    // Meters per second
+    // Meters per second2
     // Needs to be more than the max robot speed, to allow for turning
-    public static final double k_maxModuleSpeed = 10.0;
+    public static final double k_maxModuleSpeed = 100.0;
     public static final double k_maxAcceleration = 1.0; // NOT USED
 
     public class PIDConstants {
       public class Translation {
-        public static final double k_P = 0.5;
+        public static final double k_P = 10.0;
         public static final double k_I = 0.0;
         public static final double k_D = 0.0;
       }
 
       public class Rotation {
-        public static final double k_P = 0.7;
+        public static final double k_P = 2.0;
         public static final double k_I = 0.0;
         public static final double k_D = 0.0;
       }

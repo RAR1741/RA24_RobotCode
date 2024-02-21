@@ -52,7 +52,14 @@ public abstract class AutoModeBase {
       startingPose = new Pose2d(Field.k_width / 2, Field.k_length / 2, new Rotation2d(0));
     }
 
-    SwerveDrive m_drive = SwerveDrive.getInstance();
-    m_drive.resetOdometry(startingPose);
+    SwerveDrive m_swerve = SwerveDrive.getInstance();
+    //TODO: Fix PP rotation again
+
+    // Reset the gyro to the starting rotation
+    // m_swerve.resetGyro();
+    // m_swerve.setGyroAngleAdjustment(startingPose.getRotation().getDegrees());
+    // m_swerve.get
+
+    m_swerve.resetOdometry(startingPose);
   };
 }
