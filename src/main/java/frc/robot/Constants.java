@@ -1,5 +1,8 @@
 package frc.robot;
 
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.util.PIDConstants;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
@@ -18,20 +21,6 @@ public final class Constants {
     // Needs to be more than the max robot speed, to allow for turning
     public static final double k_maxModuleSpeed = 100.0;
     public static final double k_maxAcceleration = 1.0; // NOT USED
-
-    public class PIDConstants {
-      public class Translation {
-        public static final double k_P = 10.0;
-        public static final double k_I = 0.0;
-        public static final double k_D = 0.0;
-      }
-
-      public class Rotation {
-        public static final double k_P = 2.0;
-        public static final double k_I = 0.0;
-        public static final double k_D = 0.0;
-      }
-    }
 
     public class Timing {
       public static final double k_shootFeedTime = 0.5; // seconds
@@ -57,11 +46,11 @@ public final class Constants {
     // Max speeds
     public static final double k_maxSpeed = 2.5; // Meters per second
     public static final double k_maxBoostSpeed = 5.0; // Meters per second
-    public static final double k_maxAngularSpeed = Math.PI * 2.0; // Meters per second
+    public static final double k_maxAngularSpeed = Math.PI * 2.0; // Radians per second
 
     // Max acceleration
-    public static final double k_maxLinearAcceleration = 12.0;
-    public static final double k_maxAngularAcceleration = Math.PI * 8.0;
+    public static final double k_maxLinearAcceleration = 12.0; // Meters per second squared
+    public static final double k_maxAngularAcceleration = Math.PI * 8.0; // Radians per second squared
 
     public static final double k_slowScaler = 0.2; // % reduction in speed
 
@@ -120,12 +109,39 @@ public final class Constants {
       public static final double k_TurningMinOutput = -1.0;
       public static final double k_TurningMaxOutput = 1.0;
     }
+  }
 
-    public class AutoAim {
-      public static final double k_P = 1.0;
+  public class AutoAim {
+    public static final double k_P = 1.0;
+    public static final double k_I = 0.0;
+    public static final double k_D = 0.0;
+
+    public static final double k_autoAimThreshold = 1; // in meters
+
+    public class Translation {
+      public static final double k_P = 10.0;
       public static final double k_I = 0.0;
       public static final double k_D = 0.0;
     }
+
+    public class Rotation {
+      public static final double k_P = 2.0;
+      public static final double k_I = 0.0;
+      public static final double k_D = 0.0;
+    }
+
+    public static final PPHolonomicDriveController k_driveController = new PPHolonomicDriveController(
+        new PIDConstants(
+            Translation.k_P,
+            Translation.k_I,
+            Translation.k_D),
+
+        new PIDConstants(
+            Rotation.k_P,
+            Rotation.k_I,
+            Rotation.k_D),
+        Auto.k_maxModuleSpeed,
+        Robot.k_width / 2);
   }
 
   public class Intake {
@@ -260,8 +276,6 @@ public final class Constants {
     public static final double k_speakerBottom = 78;
     public static final double k_speakerTop = 82.875;
     public static final double k_speakerAngle = 14.0;
-
-    public static final double k_autoAimThreshold = 1; // in meters
 
     // TODO: Make sure the robot uses the same coordinate system
     public static final Pose2d k_redSpeakerPose = new Pose2d(16.579342, 5.547868, new Rotation2d(0));

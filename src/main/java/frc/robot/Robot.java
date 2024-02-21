@@ -154,11 +154,12 @@ public class Robot extends LoggedRobot {
     double rot = 0.0;
 
     // if (m_driverController.getWantsAutoAim() && m_swerve.getPose().getX() >=
-    // Constants.Field.k_autoAimThreshold && !autoAimEnabled) {
+    // Constants.AutoAim.k_autoAimThreshold && !autoAimEnabled) {
     // autoAimEnabled = true;
     // }
     // if (autoAimEnabled && m_driverController.getWantsAutoAim() ||
-    // m_swerve.getPose().getX() <= Constants.Field.k_autoAimThreshold) {
+    // m_swerve.getPose().getX() <=
+    // Constants.AutoAim.k_autoAimThreshold) {
     // autoAimEnabled = false;
     // }
 

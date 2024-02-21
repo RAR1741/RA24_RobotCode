@@ -2,11 +2,9 @@ package frc.robot.autonomous.tasks;
 
 import org.littletonrobotics.junction.Logger;
 
-import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.PathPlannerTrajectory;
 import com.pathplanner.lib.path.PathPlannerTrajectory.State;
-import com.pathplanner.lib.util.PIDConstants;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -26,7 +24,6 @@ public class DriveTrajectoryTask extends Task {
   private PathPlannerPath m_autoPath = null;
 
   private final Timer m_runningTimer = new Timer();
-  private PPHolonomicDriveController m_driveController;
 
   public DriveTrajectoryTask(String pathName) {
     try {
@@ -41,23 +38,10 @@ public class DriveTrajectoryTask extends Task {
       m_autoTrajectory = m_autoPath.getTrajectory(
           new ChassisSpeeds(),
           m_swerve.getGyro().getRotation2d());
-      // m_autoPath.getPathPoses().get(0).getRotation());
 
     } catch (Exception ex) {
       DriverStation.reportError("Unable to load PathPlanner trajectory: " + pathName, ex.getStackTrace());
     }
-
-    m_driveController = new PPHolonomicDriveController(
-        new PIDConstants(
-            Constants.Auto.PIDConstants.Translation.k_P,
-            Constants.Auto.PIDConstants.Translation.k_I,
-            Constants.Auto.PIDConstants.Translation.k_D),
-        new PIDConstants(
-            Constants.Auto.PIDConstants.Rotation.k_P,
-            Constants.Auto.PIDConstants.Rotation.k_I,
-            Constants.Auto.PIDConstants.Rotation.k_D),
-        Constants.Auto.k_maxModuleSpeed,
-        Constants.Robot.k_width / 2);
   }
 
   @Override
@@ -73,7 +57,8 @@ public class DriveTrajectoryTask extends Task {
   public void update() {
     if (m_autoTrajectory != null) {
       State goal = m_autoTrajectory.sample(m_runningTimer.get());
-      ChassisSpeeds chassisSpeeds = m_driveController.calculateRobotRelativeSpeeds(m_swerve.getPose(), goal);
+      ChassisSpeeds chassisSpeeds = Constants.AutoAim.k_driveController
+          .calculateRobotRelativeSpeeds(m_swerve.getPose(), goal);
 
       Logger.recordOutput("Auto/DriveTrajectory/TargetPose", goal.getTargetHolonomicPose());
 
@@ -81,12 +66,6 @@ public class DriveTrajectoryTask extends Task {
           goal.getTargetHolonomicPose().getRotation().getDegrees() - m_swerve.getPose().getRotation().getDegrees());
       Logger.recordOutput("Auto/DriveTrajectory/ChassisRotationRPS",
           Units.radiansToDegrees(chassisSpeeds.omegaRadiansPerSecond));
-
-      // m_swerve.drive(
-      // chassisSpeeds.vxMetersPerSecond,
-      // chassisSpeeds.vyMetersPerSecond,
-      // chassisSpeeds.omegaRadiansPerSecond,
-      // true); // TODO: figure out if this is correct
 
       m_swerve.drive(chassisSpeeds);
 
