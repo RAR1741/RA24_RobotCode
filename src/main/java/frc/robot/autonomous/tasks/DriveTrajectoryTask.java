@@ -40,7 +40,8 @@ public class DriveTrajectoryTask extends Task {
 
       m_autoTrajectory = m_autoPath.getTrajectory(
           new ChassisSpeeds(),
-          m_swerve.getRotation2d());
+          m_swerve.getGyro().getRotation2d());
+      // m_autoPath.getPathPoses().get(0).getRotation());
 
     } catch (Exception ex) {
       DriverStation.reportError("Unable to load PathPlanner trajectory: " + pathName, ex.getStackTrace());
@@ -81,13 +82,13 @@ public class DriveTrajectoryTask extends Task {
       Logger.recordOutput("Auto/DriveTrajectory/ChassisRotationRPS",
           Units.radiansToDegrees(chassisSpeeds.omegaRadiansPerSecond));
 
-      m_swerve.drive(
-          chassisSpeeds.vxMetersPerSecond,
-          chassisSpeeds.vyMetersPerSecond,
-          chassisSpeeds.omegaRadiansPerSecond,
-          true); // TODO: figure out if this is correct
+      // m_swerve.drive(
+      // chassisSpeeds.vxMetersPerSecond,
+      // chassisSpeeds.vyMetersPerSecond,
+      // chassisSpeeds.omegaRadiansPerSecond,
+      // true); // TODO: figure out if this is correct
 
-      // m_swerve.drive(chassisSpeeds);
+      m_swerve.drive(chassisSpeeds);
 
       m_isFinished |= m_runningTimer.get() >= m_autoTrajectory.getTotalTimeSeconds();
     } else {

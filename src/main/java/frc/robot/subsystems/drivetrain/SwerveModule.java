@@ -77,7 +77,7 @@ public class SwerveModule {
     m_turningRelEncoder.setPositionConversionFactor(Constants.SwerveDrive.k_turnGearRatio * 2.0 * Math.PI);
     m_turningRelEncoder.setVelocityConversionFactor(Constants.SwerveDrive.k_turnGearRatio * 2.0 * Math.PI / 60.0);
     m_turningRelEncoder.setPosition(
-        Helpers.modRadians(Units.rotationsToRadians(m_turningAbsEncoder.get() - m_turningOffset)));
+        Helpers.modRadians(Units.rotationsToRadians(m_turningAbsEncoder.getAbsolutePosition() - m_turningOffset)));
 
     m_turningPIDController = m_turnMotor.getPIDController();
     m_turningPIDController.setP(Constants.SwerveDrive.Turn.k_P);
@@ -116,7 +116,7 @@ public class SwerveModule {
 
   @AutoLogOutput(key = "SwerveDrive/Modules/{m_moduleName}/Turn/absPosition")
   public double getTurnAbsPosition() {
-    return Helpers.modRotations(m_turningAbsEncoder.get() - m_turningOffset);
+    return Helpers.modRotations(m_turningAbsEncoder.getAbsolutePosition() - m_turningOffset);
   }
 
   public SwerveModulePosition getPosition() {
@@ -202,6 +202,31 @@ public class SwerveModule {
     return m_driveMotor.getOutputCurrent();
   }
 
+  @AutoLogOutput(key = "SwerveDrive/Modules/{m_moduleName}/Abs/Frequency")
+  public int getAsbEncoderFrequency() {
+    return m_turningAbsEncoder.getFrequency();
+  }
+
+  @AutoLogOutput(key = "SwerveDrive/Modules/{m_moduleName}/Abs/isConnected")
+  public boolean getAsbEncoderIsConnected() {
+    return m_turningAbsEncoder.isConnected();
+  }
+
+  @AutoLogOutput(key = "SwerveDrive/Modules/{m_moduleName}/Abs/getPosition")
+  public double getAsbEncoderPosition() {
+    return m_turningAbsEncoder.getAbsolutePosition() - m_turningOffset;
+  }
+
+  @AutoLogOutput(key = "SwerveDrive/Modules/{m_moduleName}/Drive/Temperature")
+  public double getDriveTemp() {
+    return m_driveMotor.getMotorTemperature();
+  }
+
+  @AutoLogOutput(key = "SwerveDrive/Modules/{m_moduleName}/Turn/Temperature")
+  public double getTurnTemp() {
+    return m_turnMotor.getMotorTemperature();
+  }
+
   public void periodic() {
     if (m_periodicIO.shouldChangeState) {
       double feedforward = m_drivingFeedForward.calculate(m_periodicIO.desiredState.speedMetersPerSecond);
@@ -214,7 +239,8 @@ public class SwerveModule {
   }
 
   public void outputTelemetry() {
-    SmartDashboard.putNumber(m_smartDashboardKey + "TurnAbsPosition", Helpers.modRotations(m_turningAbsEncoder.get()));
+    SmartDashboard.putNumber(m_smartDashboardKey + "TurnAbsPosition",
+        Helpers.modRotations(m_turningAbsEncoder.getAbsolutePosition()));
     SmartDashboard.putNumber(m_smartDashboardKey + "DriveMotorPos", m_driveEncoder.getPosition());
     SmartDashboard.putNumber(m_smartDashboardKey + "DriveMotorVelocity", getDriveVelocity());
     SmartDashboard.putNumber(m_smartDashboardKey + "TurnMotorPosition", getTurnPosition());

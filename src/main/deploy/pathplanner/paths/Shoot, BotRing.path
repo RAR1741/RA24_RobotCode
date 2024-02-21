@@ -3,38 +3,32 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.7167669684804105,
-        "y": 6.73373101381842
+        "x": 1.4,
+        "y": 5.55
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.3491521419562087,
-        "y": 6.8391285427364
+        "x": 2.637942403644932,
+        "y": 5.55
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "BlueSubStart"
     },
     {
       "anchor": {
-        "x": 2.8949825659957713,
-        "y": 7.0
+        "x": 2.503968077023164,
+        "y": 6.992721434125467
       },
       "prevControl": {
-        "x": 1.9932481519741916,
-        "y": 6.956236908194216
+        "x": 1.188630992714747,
+        "y": 6.992721434125467
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "BlueBotNote"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.0,
-      "rotationDegrees": -30.0,
-      "rotateFast": true
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [
     {
       "name": "New Constraints Zone",
@@ -57,13 +51,13 @@
   },
   "goalEndState": {
     "velocity": 0.0,
-    "rotation": -90.0,
+    "rotation": 0.0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Auto1Paths",
+  "folder": null,
   "previewStartingState": {
-    "rotation": -30.0,
+    "rotation": 0.0,
     "velocity": 0
   },
   "useDefaultConstraints": false

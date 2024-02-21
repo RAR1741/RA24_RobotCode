@@ -234,18 +234,6 @@ public class SwerveDrive extends Subsystem {
     }
   }
 
-  public void setPose(Pose2d pose) {
-    m_poseEstimator.resetPosition(
-        getRotation2d(),
-        new SwerveModulePosition[] {
-            m_modules[Module.FRONT_LEFT].getPosition(),
-            m_modules[Module.FRONT_RIGHT].getPosition(),
-            m_modules[Module.BACK_RIGHT].getPosition(),
-            m_modules[Module.BACK_LEFT].getPosition()
-        },
-        pose);
-  }
-
   /**
    * @param degreeMode If <code>true</code>, return result in degrees; otherwise,
    *                   return in radians
@@ -290,9 +278,21 @@ public class SwerveDrive extends Subsystem {
             new SwerveModulePosition(0.0,
                 Rotation2d.fromRotations(m_modules[Module.BACK_LEFT].getTurnPosition()))
         },
-        new Pose2d(0, 0, Rotation2d.fromDegrees(0)));
+        pose);
 
-    setPose(pose);
+    // setPose(pose);
+  }
+
+  public void setPose(Pose2d pose) {
+    m_poseEstimator.resetPosition(
+        m_gyro.getRotation2d(), // Maybe should be getRotation2d() (it uses pose estimator)?
+        new SwerveModulePosition[] {
+            m_modules[Module.FRONT_LEFT].getPosition(),
+            m_modules[Module.FRONT_RIGHT].getPosition(),
+            m_modules[Module.BACK_RIGHT].getPosition(),
+            m_modules[Module.BACK_LEFT].getPosition()
+        },
+        pose);
   }
 
   @AutoLogOutput

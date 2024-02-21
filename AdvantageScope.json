@@ -1,10 +1,10 @@
 {
   "hubs": [
     {
-      "x": 1912,
-      "y": -8,
-      "width": 1936,
-      "height": 1048,
+      "x": 0,
+      "y": 38,
+      "width": 1728,
+      "height": 1079,
       "state": {
         "sidebar": {
           "width": 300,
@@ -22,11 +22,16 @@
             "NT:/AdvantageKit/RealOutputs/SwerveDrive/Modules",
             "NT:/AdvantageKit/RealOutputs/SwerveDrive/Modules/FL",
             "/AdvantageKit/RealOutputs",
-            "/AdvantageKit/RealOutputs/SwerveDrive"
+            "/AdvantageKit/RealOutputs/SwerveDrive",
+            "/RealOutputs/SwerveDrive",
+            "/RealOutputs/SwerveDrive/Modules/BL/Abs",
+            "/RealOutputs/SwerveDrive/Modules",
+            "/SystemStats",
+            "/SystemStats/CANBus"
           ]
         },
         "tabs": {
-          "selected": 3,
+          "selected": 4,
           "tabs": [
             {
               "type": 0,
@@ -34,7 +39,7 @@
             },
             {
               "type": 3,
-              "field": "NT:/AdvantageKit/RealOutputs/Console",
+              "field": "/RealOutputs/Console",
               "title": "Console"
             },
             {
@@ -45,13 +50,13 @@
                 [
                   {
                     "type": "Robot",
-                    "key": "NT:/AdvantageKit/RealOutputs/SwerveDrive/Pose",
+                    "key": "/RealOutputs/SwerveDrive/Pose",
                     "sourceTypeIndex": 1,
                     "sourceType": "Pose2d"
                   },
                   {
                     "type": "Ghost",
-                    "key": "NT:/AdvantageKit/RealOutputs/Auto/DriveTrajectory/TargetPose",
+                    "key": "/RealOutputs/Auto/DriveTrajectory/TargetPose",
                     "sourceTypeIndex": 1,
                     "sourceType": "Pose2d"
                   }
@@ -80,7 +85,7 @@
                 [
                   {
                     "type": "Robot",
-                    "key": "NT:/AdvantageKit/RealOutputs/SwerveDrive/Pose",
+                    "key": "/RealOutputs/SwerveDrive/Pose",
                     "sourceTypeIndex": 1,
                     "sourceType": "Pose2d"
                   }
@@ -111,21 +116,110 @@
               "title": "3D Field"
             },
             {
+              "type": 1,
+              "legendHeight": 0.3,
+              "legends": {
+                "left": {
+                  "lockedRange": null,
+                  "unitConversion": {
+                    "type": null,
+                    "factor": 1
+                  },
+                  "fields": [
+                    {
+                      "key": "/RealOutputs/SwerveDrive/Modules/FL/Abs/Frequency",
+                      "color": "#2b66a2",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/SwerveDrive/Modules/FR/Abs/Frequency",
+                      "color": "#af2437",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/SwerveDrive/Modules/BR/Abs/Frequency",
+                      "color": "#e48b32",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/SwerveDrive/Modules/BL/Abs/Frequency",
+                      "color": "#c0b487",
+                      "show": true
+                    }
+                  ]
+                },
+                "discrete": {
+                  "fields": [
+                    {
+                      "key": "/RealOutputs/SwerveDrive/Modules/FL/Abs/isConnected",
+                      "color": "#e5b31b",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/SwerveDrive/Modules/FR/Abs/isConnected",
+                      "color": "#80588e",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/SwerveDrive/Modules/BR/Abs/isConnected",
+                      "color": "#aacaee",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/SwerveDrive/Modules/BL/Abs/isConnected",
+                      "color": "#858584",
+                      "show": true
+                    }
+                  ]
+                },
+                "right": {
+                  "lockedRange": null,
+                  "unitConversion": {
+                    "type": null,
+                    "factor": 1
+                  },
+                  "fields": [
+                    {
+                      "key": "/RealOutputs/SwerveDrive/Modules/FL/Abs/getPosition",
+                      "color": "#3b875a",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/SwerveDrive/Modules/FR/Abs/getPosition",
+                      "color": "#d993aa",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/SwerveDrive/Modules/BR/Abs/getPosition",
+                      "color": "#eb987e",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/SwerveDrive/Modules/BL/Abs/getPosition",
+                      "color": "#5d4f92",
+                      "show": true
+                    }
+                  ]
+                }
+              },
+              "title": "DriveEncoders"
+            },
+            {
               "type": 9,
               "uuid": "ekyksagig6fls8piz7ucc019946gelt5",
               "fields": [
                 {
-                  "key": "NT:/AdvantageKit/RealOutputs/SwerveDrive/CurrentStates",
+                  "key": "/RealOutputs/SwerveDrive/CurrentStates",
                   "sourceTypeIndex": 1,
                   "sourceType": "SwerveModuleState[]"
                 },
                 {
-                  "key": "NT:/AdvantageKit/RealOutputs/SwerveDrive/DesiredStates",
+                  "key": "/RealOutputs/SwerveDrive/DesiredStates",
                   "sourceTypeIndex": 1,
                   "sourceType": "SwerveModuleState[]"
                 },
                 {
-                  "key": "NT:/AdvantageKit/RealOutputs/SwerveDrive/Rotation2d",
+                  "key": "/RealOutputs/SwerveDrive/Rotation2d",
                   "sourceTypeIndex": 1,
                   "sourceType": "Rotation2d"
                 }
@@ -139,7 +233,7 @@
                 "sizeFrontBack": 0.76,
                 "forwardDirection": "up"
               },
-              "configHidden": false,
+              "configHidden": true,
               "visualizer": null,
               "title": "Swerve"
             },
@@ -155,7 +249,7 @@
                   },
                   "fields": [
                     {
-                      "key": "NT:/AdvantageKit/RealOutputs/Auto/DriveTrajectory/RotationError",
+                      "key": "/RealOutputs/Auto/DriveTrajectory/RotationError",
                       "color": "#2b66a2",
                       "show": true
                     }
@@ -172,7 +266,7 @@
                   },
                   "fields": [
                     {
-                      "key": "NT:/AdvantageKit/RealOutputs/Auto/DriveTrajectory/ChassisRotationRPS",
+                      "key": "/RealOutputs/Auto/DriveTrajectory/ChassisRotationRPS",
                       "color": "#e5b31b",
                       "show": true
                     }
@@ -237,42 +331,42 @@
                   },
                   "fields": [
                     {
-                      "key": "NT:/AdvantageKit/RealOutputs/SwerveDrive/Modules/FL/Drive/Current",
+                      "key": "/RealOutputs/SwerveDrive/Modules/FL/Drive/Current",
                       "color": "#2b66a2",
                       "show": true
                     },
                     {
-                      "key": "NT:/AdvantageKit/RealOutputs/SwerveDrive/Modules/FR/Drive/Current",
+                      "key": "/RealOutputs/SwerveDrive/Modules/FR/Drive/Current",
                       "color": "#e5b31b",
                       "show": true
                     },
                     {
-                      "key": "NT:/AdvantageKit/RealOutputs/SwerveDrive/Modules/BR/Drive/Current",
+                      "key": "/RealOutputs/SwerveDrive/Modules/BR/Drive/Current",
                       "color": "#af2437",
                       "show": true
                     },
                     {
-                      "key": "NT:/AdvantageKit/RealOutputs/SwerveDrive/Modules/BL/Drive/Current",
+                      "key": "/RealOutputs/SwerveDrive/Modules/BL/Drive/Current",
                       "color": "#80588e",
                       "show": true
                     },
                     {
-                      "key": "NT:/AdvantageKit/RealOutputs/SwerveDrive/Modules/FL/Turn/Current",
+                      "key": "/RealOutputs/SwerveDrive/Modules/FL/Turn/Current",
                       "color": "#e48b32",
                       "show": true
                     },
                     {
-                      "key": "NT:/AdvantageKit/RealOutputs/SwerveDrive/Modules/FR/Turn/Current",
+                      "key": "/RealOutputs/SwerveDrive/Modules/FR/Turn/Current",
                       "color": "#aacaee",
                       "show": true
                     },
                     {
-                      "key": "NT:/AdvantageKit/RealOutputs/SwerveDrive/Modules/BR/Turn/Voltage",
+                      "key": "/RealOutputs/SwerveDrive/Modules/BR/Turn/Voltage",
                       "color": "#c0b487",
                       "show": true
                     },
                     {
-                      "key": "NT:/AdvantageKit/RealOutputs/SwerveDrive/Modules/BL/Turn/Voltage",
+                      "key": "/RealOutputs/SwerveDrive/Modules/BL/Turn/Voltage",
                       "color": "#858584",
                       "show": true
                     }
@@ -295,42 +389,42 @@
                   },
                   "fields": [
                     {
-                      "key": "NT:/AdvantageKit/RealOutputs/SwerveDrive/Modules/FL/Drive/Voltage",
+                      "key": "/RealOutputs/SwerveDrive/Modules/FL/Drive/Voltage",
                       "color": "#d993aa",
                       "show": true
                     },
                     {
-                      "key": "NT:/AdvantageKit/RealOutputs/SwerveDrive/Modules/FR/Drive/Voltage",
+                      "key": "/RealOutputs/SwerveDrive/Modules/FR/Drive/Voltage",
                       "color": "#eb987e",
                       "show": true
                     },
                     {
-                      "key": "NT:/AdvantageKit/RealOutputs/SwerveDrive/Modules/BR/Drive/Voltage",
+                      "key": "/RealOutputs/SwerveDrive/Modules/BR/Drive/Voltage",
                       "color": "#5d4f92",
                       "show": true
                     },
                     {
-                      "key": "NT:/AdvantageKit/RealOutputs/SwerveDrive/Modules/BL/Drive/Voltage",
+                      "key": "/RealOutputs/SwerveDrive/Modules/BL/Drive/Voltage",
                       "color": "#a64b6b",
                       "show": true
                     },
                     {
-                      "key": "NT:/AdvantageKit/RealOutputs/SwerveDrive/Modules/FL/Turn/Voltage",
+                      "key": "/RealOutputs/SwerveDrive/Modules/FL/Turn/Voltage",
                       "color": "#dbd345",
                       "show": true
                     },
                     {
-                      "key": "NT:/AdvantageKit/RealOutputs/SwerveDrive/Modules/FR/Turn/Voltage",
+                      "key": "/RealOutputs/SwerveDrive/Modules/FR/Turn/Voltage",
                       "color": "#7e331f",
                       "show": true
                     },
                     {
-                      "key": "NT:/AdvantageKit/RealOutputs/SwerveDrive/Modules/BR/Turn/Voltage",
+                      "key": "/RealOutputs/SwerveDrive/Modules/BR/Turn/Voltage",
                       "color": "#96b637",
                       "show": true
                     },
                     {
-                      "key": "NT:/AdvantageKit/RealOutputs/SwerveDrive/Modules/BL/Turn/Voltage",
+                      "key": "/RealOutputs/SwerveDrive/Modules/BL/Turn/Voltage",
                       "color": "#5f4528",
                       "show": true
                     }
@@ -351,12 +445,12 @@
                   },
                   "fields": [
                     {
-                      "key": "NT:/AdvantageKit/RealOutputs/Shooter/PivotAngle",
+                      "key": "/RealOutputs/Shooter/PivotAngle",
                       "color": "#2b66a2",
                       "show": true
                     },
                     {
-                      "key": "NT:/AdvantageKit/RealOutputs/Shooter/PivotMotorCurrent",
+                      "key": "/RealOutputs/Shooter/PivotMotorCurrent",
                       "color": "#e5b31b",
                       "show": true
                     }
@@ -365,7 +459,7 @@
                 "discrete": {
                   "fields": [
                     {
-                      "key": "NT:/AdvantageKit/RealOutputs/Shooter/IsPivotAsbConnected",
+                      "key": "/RealOutputs/Shooter/IsPivotAsbConnected",
                       "color": "#af2437",
                       "show": true
                     }
@@ -379,12 +473,12 @@
                   },
                   "fields": [
                     {
-                      "key": "NT:/AdvantageKit/RealOutputs/Shooter/PivotRelRotations",
+                      "key": "/RealOutputs/Shooter/PivotRelRotations",
                       "color": "#80588e",
                       "show": true
                     },
                     {
-                      "key": "NT:/AdvantageKit/RealOutputs/Shooter/PivotRelTarget",
+                      "key": "/RealOutputs/Shooter/PivotRelTarget",
                       "color": "#e48b32",
                       "show": true
                     }
@@ -405,17 +499,17 @@
                   },
                   "fields": [
                     {
-                      "key": "NT:/AdvantageKit/RealOutputs/Shooter/ShooterTargetSpeed",
+                      "key": "/RealOutputs/Shooter/ShooterTargetSpeed",
                       "color": "#2b66a2",
                       "show": true
                     },
                     {
-                      "key": "NT:/AdvantageKit/RealOutputs/Shooter/TopMotorSpeed",
+                      "key": "/RealOutputs/Shooter/TopMotorSpeed",
                       "color": "#e5b31b",
                       "show": true
                     },
                     {
-                      "key": "NT:/AdvantageKit/RealOutputs/Shooter/BottomMotorSpeed",
+                      "key": "/RealOutputs/Shooter/BottomMotorSpeed",
                       "color": "#af2437",
                       "show": true
                     }
@@ -447,7 +541,7 @@
                   },
                   "fields": [
                     {
-                      "key": "NT:/AdvantageKit/RealOutputs/Intake/PivotAngle",
+                      "key": "/RealOutputs/Intake/PivotAngle",
                       "color": "#2b66a2",
                       "show": true
                     }
@@ -456,7 +550,7 @@
                 "discrete": {
                   "fields": [
                     {
-                      "key": "NT:/AdvantageKit/RealOutputs/Intake/IsHoldingNote",
+                      "key": "/RealOutputs/Intake/IsHoldingNote",
                       "color": "#e5b31b",
                       "show": true
                     }
@@ -470,7 +564,7 @@
                   },
                   "fields": [
                     {
-                      "key": "NT:/AdvantageKit/RealOutputs/Intake/IntakeProximity",
+                      "key": "/RealOutputs/Intake/IntakeProximity",
                       "color": "#af2437",
                       "show": true
                     }
