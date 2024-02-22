@@ -220,7 +220,8 @@ public class SwerveDrive extends SwerveSysId {
   }
 
   private double correct() {
-    // TODO: use the PIC controllers in Constatns.AutoAim to correct the heading
+    // TODO: use the PID controllers in Constants.AutoAim to correct the heading
+    // (Bro Jordan can't spell 💀)
     ProfiledPIDController pid = new ProfiledPIDController(1, 0, 0, new Constraints(10, 1));
     return pid.calculate(m_gyro.getRotation2d().getDegrees(), m_oldRotation.getDegrees());
   }
@@ -257,7 +258,7 @@ public class SwerveDrive extends SwerveSysId {
 
   public void resetGyro() {
     m_gyro.reset();
-    m_gyro.setAngleAdjustment(0);
+    setGyroAngleAdjustment(0);
   }
 
   @Override
@@ -311,12 +312,14 @@ public class SwerveDrive extends SwerveSysId {
   public void outputTelemetry() {
     double currentTime = Timer.getFPGATimestamp();
 
-    if (m_limelightOne.seesAprilTag()) {
-      m_poseEstimator.addVisionMeasurement(m_limelightOne.getBotpose2D(), currentTime);
+    if (m_limelightOne.seesAprilTag()) { // TODO: Enable Limelights
+      // m_poseEstimator.addVisionMeasurement(m_limelightOne.getBotpose2D(),
+      // currentTime);
     }
 
     if (m_limelightTwo.seesAprilTag()) {
-      m_poseEstimator.addVisionMeasurement(m_limelightTwo.getBotpose2D(), currentTime);
+      // m_poseEstimator.addVisionMeasurement(m_limelightTwo.getBotpose2D(),
+      // currentTime);
     }
 
     if (RobotBase.isReal()) {

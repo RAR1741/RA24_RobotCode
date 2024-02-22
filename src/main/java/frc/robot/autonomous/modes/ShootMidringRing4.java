@@ -13,7 +13,7 @@ import frc.robot.subsystems.Shooter.ShooterSpeedTarget;
 public class ShootMidringRing4 extends AutoModeBase {
   public void queueTasks() {
     // Note 1 (preload)
-    queueTask(new ShooterTask(ShooterPivotTarget.SPEAKER, ShooterSpeedTarget.MAX));
+    queueTask(new ShooterTask(ShooterPivotTarget.SUBWOOFER, ShooterSpeedTarget.MAX));
     queueTask(new IntakeTask(IntakePivotTarget.STOW, IntakeState.NONE));
     queueTask(new WaitTask(Constants.Auto.Timing.k_shootRevTime));
     queueTask(new IntakeTask(IntakePivotTarget.STOW, IntakeState.FEED_SHOOTER));
@@ -32,7 +32,7 @@ public class ShootMidringRing4 extends AutoModeBase {
     queueTask(new DriveTrajectoryTask("Shoot, Ring4"));
 
     // Done
-    queueTask(new ShooterTask(ShooterPivotTarget.SPEAKER, ShooterSpeedTarget.OFF));
+    queueTask(new ShooterTask(ShooterPivotTarget.SUBWOOFER, ShooterSpeedTarget.OFF));
     queueTask(new IntakeTask(IntakePivotTarget.STOW, IntakeState.NONE));
   }
 }

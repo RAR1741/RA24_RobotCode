@@ -21,7 +21,7 @@ public class OperatorController extends FilteredController {
     return this.getRawButtonPressed(RawButton.A);
   }
 
-  public boolean getWantsSpeakerAngle() {
+  public boolean getWantsSubwooferAngle() {
     return this.getRawButtonPressed(RawButton.Y);
   }
 

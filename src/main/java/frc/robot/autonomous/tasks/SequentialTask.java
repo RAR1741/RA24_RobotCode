@@ -1,5 +1,7 @@
 package frc.robot.autonomous.tasks;
 
+import edu.wpi.first.wpilibj.DriverStation;
+
 /**
  * This task is for running tasks sequentially inside
  * an automode, for use when you want to run things
@@ -45,5 +47,10 @@ public class SequentialTask extends Task {
   @Override
   public boolean isFinished() {
     return m_isFinished;
+  }
+
+  @Override
+  public void done() {
+    DriverStation.reportWarning("Sequential task done", false);
   }
 }

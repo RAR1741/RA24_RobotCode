@@ -31,8 +31,8 @@ public class AutoTargetTask extends Task {
 
     // Get the target rotation between the current pose and the target pose
     Rotation2d targetRotation = new Rotation2d(
-        m_targetPose.getTranslation().getX() - currentPose.getTranslation().getX(),
-        m_targetPose.getTranslation().getY() - currentPose.getTranslation().getY());
+        currentPose.getTranslation().getX() - m_targetPose.getTranslation().getX(),
+        currentPose.getTranslation().getY() - m_targetPose.getTranslation().getY());
 
     System.out.println("Target degrees: " + targetRotation.getDegrees());
     m_targetRobotPose = new Pose2d(currentPose.getTranslation(), targetRotation);

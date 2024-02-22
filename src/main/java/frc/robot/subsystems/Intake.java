@@ -122,7 +122,7 @@ public class Intake extends Subsystem {
     putNumber("PivotSpeed", m_periodicIO.pivot_voltage);
     putNumber("PivotPower", Helpers.getVoltage(m_pivotMotor));
     putNumber("PivotRelAngle", getPivotAngle());
-    putBoolean("PivotAtTarget", isAtPivotTarget(m_periodicIO.pivot_target));
+    putBoolean("PivotAtTarget", isAtPivotTarget());
   }
 
   @Override
@@ -174,6 +174,10 @@ public class Intake extends Subsystem {
     m_periodicIO.pivot_target = target;
   }
 
+  public IntakePivotTarget getPivotTarget() {
+    return m_periodicIO.pivot_target;
+  }
+
   @AutoLogOutput
   public double getPivotAngle() {
     return Units.rotationsToDegrees(m_pivotAbsEncoder.getAbsolutePosition());
@@ -183,13 +187,14 @@ public class Intake extends Subsystem {
     return m_intakeMotor.getEncoder().getVelocity();
   }
 
-  public boolean isAtPivotTarget(IntakePivotTarget target) {
-    if (target == IntakePivotTarget.NONE) {
+  @AutoLogOutput
+  public boolean isAtPivotTarget() {
+    if (m_periodicIO.pivot_target == IntakePivotTarget.NONE) {
       return true;
     }
 
     double current_angle = getPivotAngle();
-    double target_angle = getAngleFromTarget(target);
+    double target_angle = getAngleFromTarget(m_periodicIO.pivot_target);
 
     return Math.abs(target_angle - current_angle) <= k_pivotThreshold;
   }
@@ -256,7 +261,7 @@ public class Intake extends Subsystem {
     // Stop the intake and go to the SOURCE position
     if (m_periodicIO.pivot_target == IntakePivotTarget.GROUND &&
         isHoldingNote() &&
-        isAtPivotTarget(IntakePivotTarget.GROUND)) {
+        isAtPivotTarget()) {
 
       setPivotTarget(IntakePivotTarget.STOW);
       setIntakeState(IntakeState.NONE);
@@ -265,19 +270,16 @@ public class Intake extends Subsystem {
 
     if (wantsToEject()) {
       if ((m_periodicIO.pivot_target == IntakePivotTarget.STOW &&
-          isAtPivotTarget(IntakePivotTarget.STOW)) ||
-          (m_periodicIO.pivot_target == IntakePivotTarget.GROUND &&
-              isAtPivotTarget(IntakePivotTarget.GROUND))) {
+          isAtPivotTarget()) ||
+          (m_periodicIO.pivot_target == IntakePivotTarget.GROUND && isAtPivotTarget())) {
         setPivotTarget(IntakePivotTarget.EJECT);
         setIntakeState(IntakeState.NONE);
-      } else if (m_periodicIO.pivot_target == IntakePivotTarget.EJECT &&
-          isAtPivotTarget(IntakePivotTarget.EJECT)) {
+      } else if (m_periodicIO.pivot_target == IntakePivotTarget.EJECT && isAtPivotTarget()) {
         setIntakeState(IntakeState.EJECT);
       }
-    } else if (m_periodicIO.pivot_target == IntakePivotTarget.EJECT && isAtPivotTarget(IntakePivotTarget.EJECT)) {
+    } else if (m_periodicIO.pivot_target == IntakePivotTarget.EJECT && isAtPivotTarget()) {
       setIntakeState(IntakeState.NONE);
       setPivotTarget(IntakePivotTarget.STOW);
     }
-
   }
 }

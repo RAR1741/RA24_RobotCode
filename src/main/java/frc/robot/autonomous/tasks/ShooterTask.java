@@ -1,5 +1,6 @@
 package frc.robot.autonomous.tasks;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Shooter.ShooterPivotTarget;
@@ -50,8 +51,13 @@ public class ShooterTask extends Task {
 
 	@Override
 	public boolean isFinished() {
-		boolean isAtTarget = m_shooter.isAtTarget(m_pivotTarget);
+		boolean isAtTarget = m_shooter.isAtTarget();
 
 		return isAtTarget || !RobotBase.isReal();
+	}
+
+	@Override
+	public void done() {
+		DriverStation.reportWarning("Auto shooter done", false);
 	}
 }

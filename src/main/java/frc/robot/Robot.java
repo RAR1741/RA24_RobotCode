@@ -213,7 +213,9 @@ public class Robot extends LoggedRobot {
       m_intake.setIntakeState(IntakeState.INTAKE);
     } else if (m_driverController.getWantsEject()) {
       m_intake.wantsToEject(true);
-    } else if (m_operatorController.getWantsShoot() && m_intake.isAtPivotTarget(IntakePivotTarget.STOW)) {
+    } else if (m_operatorController.getWantsShoot() &&
+        m_intake.isAtPivotTarget() &&
+        m_intake.getPivotTarget() == IntakePivotTarget.STOW) {
       m_intake.setIntakeState(IntakeState.FEED_SHOOTER);
     } else {
       m_intake.setIntakeState(IntakeState.NONE);
@@ -223,11 +225,11 @@ public class Robot extends LoggedRobot {
     m_shooter.changePivotByAngle(m_operatorController.getWantsManualShooterPivot(0.5));
 
     if (m_operatorController.getWantsAmpAngle()) {
-      m_shooter.setAngle(ShooterPivotTarget.AMP);
+      m_shooter.setAngle(ShooterPivotTarget.PODIUM);
     }
 
-    if (m_operatorController.getWantsSpeakerAngle()) {
-      m_shooter.setAngle(ShooterPivotTarget.SPEAKER);
+    if (m_operatorController.getWantsSubwooferAngle()) {
+      m_shooter.setAngle(ShooterPivotTarget.SUBWOOFER);
     }
 
     if (m_operatorController.getWantsShooterMaxAngle()) {

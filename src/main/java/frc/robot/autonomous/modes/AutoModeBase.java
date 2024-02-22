@@ -60,7 +60,6 @@ public abstract class AutoModeBase {
     // Reset the gyro to the starting rotation
     // m_swerve.resetGyro();
     // m_swerve.setGyroAngleAdjustment(startingPose.getRotation().getDegrees());
-    // m_swerve.get
 
     m_swerve.resetOdometry(startingPose);
   };

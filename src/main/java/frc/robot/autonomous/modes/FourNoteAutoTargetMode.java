@@ -14,44 +14,40 @@ import frc.robot.subsystems.Shooter.ShooterSpeedTarget;
 public class FourNoteAutoTargetMode extends AutoModeBase {
   public void queueTasks() {
     // Note 1 (preload)
-    queueTask(new ShooterTask(ShooterPivotTarget.SPEAKER, ShooterSpeedTarget.MAX));
+    queueTask(new ShooterTask(ShooterPivotTarget.SUBWOOFER, ShooterSpeedTarget.MAX));
     queueTask(new IntakeTask(IntakePivotTarget.STOW, IntakeState.NONE));
     queueTask(new WaitTask(Constants.Auto.Timing.k_shootRevTime));
     queueTask(new IntakeTask(IntakePivotTarget.STOW, IntakeState.FEED_SHOOTER));
     queueTask(new WaitTask(Constants.Auto.Timing.k_shootFeedTime));
+    queueTask(new ShooterTask(ShooterPivotTarget.PODIUM, ShooterSpeedTarget.MAX));
 
     // Note 2 (MidRing)
     queueTask(new IntakeTask(IntakePivotTarget.GROUND, IntakeState.INTAKE));
     queueTask(new DriveTrajectoryTask("Shoot, MidRing"));
     queueTask(new IntakeTask(IntakePivotTarget.STOW, IntakeState.NONE));
     queueTask(new AutoTargetTask(getAllianceSpeakerPose()));
-    queueTask(new WaitTask(3));
+    queueTask(new WaitTask(1));
     queueTask(new IntakeTask(IntakePivotTarget.STOW, IntakeState.FEED_SHOOTER));
     queueTask(new WaitTask(Constants.Auto.Timing.k_shootFeedTime));
-    queueTask(new IntakeTask(IntakePivotTarget.GROUND, IntakeState.INTAKE));
 
     // Note 3 (PodiumRing)
     queueTask(new IntakeTask(IntakePivotTarget.GROUND, IntakeState.INTAKE));
     queueTask(new DriveTrajectoryTask("MidRing, PodiumRing"));
     queueTask(new IntakeTask(IntakePivotTarget.STOW, IntakeState.NONE));
     queueTask(new AutoTargetTask(getAllianceSpeakerPose()));
-    queueTask(new WaitTask(3));
     queueTask(new IntakeTask(IntakePivotTarget.STOW, IntakeState.FEED_SHOOTER));
     queueTask(new WaitTask(Constants.Auto.Timing.k_shootFeedTime));
-    queueTask(new IntakeTask(IntakePivotTarget.GROUND, IntakeState.INTAKE));
 
     // Note 4 (BotRing)
     queueTask(new IntakeTask(IntakePivotTarget.GROUND, IntakeState.INTAKE));
     queueTask(new DriveTrajectoryTask("PodiumRing, BotRing"));
     queueTask(new IntakeTask(IntakePivotTarget.STOW, IntakeState.NONE));
     queueTask(new AutoTargetTask(getAllianceSpeakerPose()));
-    queueTask(new WaitTask(3));
     queueTask(new IntakeTask(IntakePivotTarget.STOW, IntakeState.FEED_SHOOTER));
     queueTask(new WaitTask(Constants.Auto.Timing.k_shootFeedTime));
-    queueTask(new IntakeTask(IntakePivotTarget.GROUND, IntakeState.INTAKE));
 
     // Done
-    queueTask(new ShooterTask(ShooterPivotTarget.SPEAKER, ShooterSpeedTarget.OFF));
+    queueTask(new ShooterTask(ShooterPivotTarget.SUBWOOFER, ShooterSpeedTarget.OFF));
     queueTask(new IntakeTask(IntakePivotTarget.STOW, IntakeState.NONE));
   }
 }

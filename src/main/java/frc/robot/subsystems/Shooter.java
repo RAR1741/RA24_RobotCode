@@ -297,21 +297,23 @@ public class Shooter extends Subsystem {
         return Constants.Shooter.k_minAngle;
       case AMP:
         return Constants.Shooter.k_ampPivotAngle;
-      case SPEAKER:
-        return Constants.Shooter.k_speakerPivotAngle;
+      case PODIUM:
+        return Constants.Shooter.k_podiumPivotAngle;
+      case SUBWOOFER:
+        return Constants.Shooter.k_subwooferPivotAngle;
       default:
         return m_periodicIO.pivot_angle;
     }
   }
 
   @AutoLogOutput
-  public boolean isAtTarget(ShooterPivotTarget target) {
-    if (target == ShooterPivotTarget.NONE) {
+  public boolean isAtTarget() {
+    if (m_periodicIO.pivot_angle == getAngleFromTarget(ShooterPivotTarget.NONE)) {
       return true;
     }
 
     double angle = getPivotAngle();
-    double target_angle = getAngleFromTarget(target);
+    double target_angle = m_periodicIO.pivot_angle;
 
     return angle <= target_angle + 2 && angle >= target_angle - 2;
   }
@@ -338,7 +340,8 @@ public class Shooter extends Subsystem {
     MAX,
     MIN,
     AMP,
-    SPEAKER,
+    SUBWOOFER,
+    PODIUM,
     NONE
   }
 }

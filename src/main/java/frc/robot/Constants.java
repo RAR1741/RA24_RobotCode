@@ -124,7 +124,7 @@ public final class Constants {
     }
 
     public class Rotation {
-      public static final double k_P = 2.0;
+      public static final double k_P = 3.0;
       public static final double k_I = 0.0;
       public static final double k_D = 0.0;
     }
@@ -176,7 +176,7 @@ public final class Constants {
     public static final int k_pivotEncoderId = 4;
 
     // TODO: get pivot angles
-    public static final double k_stowPivotAngle = 270.0;
+    public static final double k_stowPivotAngle = 267.0;
     public static final double k_groundPivotAngle = 41.0;
     public static final double k_sourcePivotAngle = 180.0;
     // public static final double k_sourcePivotAngle = k_stowPivotAngle;
@@ -241,7 +241,8 @@ public final class Constants {
 
     // TODO: get shooter pivot setpoint angles
     public static final double k_ampPivotAngle = 26.0; // TODO This is wing shot
-    public static final double k_speakerPivotAngle = 57.0;
+    public static final double k_subwooferPivotAngle = 57.0;
+    public static final double k_podiumPivotAngle = 43.0;
 
     // TODO get values
     public static final double k_length = 11.94335; // in inches
