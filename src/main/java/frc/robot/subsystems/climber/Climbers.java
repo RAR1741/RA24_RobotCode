@@ -4,8 +4,8 @@ import frc.robot.Constants;
 import frc.robot.subsystems.Subsystem;
 
 public class Climbers extends Subsystem {
-  public Climbers(String baseSmartDashboardKey) {
-    super(baseSmartDashboardKey);
+  public Climbers() {
+    super("Climbers");
   }
 
   private static Climbers m_instance;
@@ -14,9 +14,15 @@ public class Climbers extends Subsystem {
       new Climber(Constants.Climber.k_rightMotorID)
   };
 
+  public void manualControl(double positive, double negative, double limit) {
+    for(Climber climber : m_climbers) {
+      climber.setManualSpeed((positive - negative) * limit);
+    }
+  }
+
   public static Climbers getInstance() {
     if (m_instance == null) {
-      m_instance = new Climbers("Climbers");
+      m_instance = new Climbers();
     }
 
     return m_instance;

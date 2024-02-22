@@ -6,6 +6,8 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 
@@ -86,11 +88,19 @@ public class Climber {
     m_periodicIO.speed = 0.0;
   }
 
+  public void setManualSpeed(double speed) {
+    m_periodicIO.manual_speed = speed;
+  }
+
   public void writePeriodicOutputs() {
-    if (!isHoming()) {
-      m_pidController.setReference(m_periodicIO.setpoint, ControlType.kPosition);
+    if (!(DriverStation.isTest() && Preferences.getString("Test Mode", "NONE").contains("CLIMBER_"))) {
+      if (!isHoming()) {
+        m_pidController.setReference(m_periodicIO.setpoint, ControlType.kPosition); // THIS PROBABLY IS WRONG
+      } else {
+        m_pidController.setReference(m_periodicIO.speed, ControlType.kVelocity);
+      }
     } else {
-      m_pidController.setReference(m_periodicIO.speed, ControlType.kVelocity);
+      m_motor.set(m_periodicIO.manual_speed);
     }
   }
 
@@ -103,6 +113,7 @@ public class Climber {
     ClimberState climberState = ClimberState.REHOME;
     double setpoint = 0.0; // rotations
     double speed = 0.0; // m/s
+    double manual_speed = 0.0;
   }
 
   public enum ClimberState {

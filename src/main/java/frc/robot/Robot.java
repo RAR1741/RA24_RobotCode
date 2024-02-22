@@ -30,6 +30,7 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Shooter.ShooterPivotTarget;
 import frc.robot.subsystems.Shooter.ShooterSpeedTarget;
 import frc.robot.subsystems.Subsystem;
+import frc.robot.subsystems.climber.Climbers;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 
 public class Robot extends LoggedRobot {
@@ -46,7 +47,7 @@ public class Robot extends LoggedRobot {
   private final SwerveDrive m_swerve = SwerveDrive.getInstance();
   private final Intake m_intake = Intake.getInstance();
   private final Shooter m_shooter = Shooter.getInstance();
-  // private final Climbers m_climbers = Climbers.getInstance();
+  private final Climbers m_climbers = Climbers.getInstance();
 
   // Auto tasks
   private Task m_currentTask;
@@ -81,7 +82,7 @@ public class Robot extends LoggedRobot {
     m_allSubsystems.add(m_swerve);
     m_allSubsystems.add(m_intake);
     m_allSubsystems.add(m_shooter);
-    // m_allSubsystems.add(m_climbers);
+    m_allSubsystems.add(m_climbers);
 
     m_swerve.setGyroAngleAdjustment(0);
   }
@@ -305,7 +306,7 @@ public class Robot extends LoggedRobot {
         m_shooter.manualShootControl(m_driverController.testPositive(), m_driverController.testNegative(), 0.85);
         break;
       case "CLIMBER":
-        // m_climber.manualControl();
+        m_climbers.manualControl(m_driverController.testPositive(), m_driverController.testNegative(), 0.85);
         break;
       default:
         System.out.println("you lost the game");
