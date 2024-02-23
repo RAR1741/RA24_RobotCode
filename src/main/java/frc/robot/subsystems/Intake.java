@@ -65,16 +65,6 @@ public class Intake extends Subsystem {
     m_colorSensor = new ColorSensorV3(k_colorSensorPort);
   }
 
-  @AutoLogOutput
-  public boolean isHoldingNote() {
-    return m_colorSensor.getProximity() >= Constants.Intake.k_sensorThreshold;
-  }
-
-  @AutoLogOutput
-  public int getIntakeProximity() {
-    return m_colorSensor.getProximity();
-  }
-
   public static Intake getInstance() {
     if (m_intake == null) {
       m_intake = new Intake();
@@ -110,54 +100,8 @@ public class Intake extends Subsystem {
   }
 
   @Override
-  public void outputTelemetry() {
-    putNumber("IntakeSpeed_PERIODIC", m_periodicIO.intake_speed);
-    putNumber("IntakePower", Helpers.getVoltage(m_intakeMotor));
-    putNumber("IntakeSpeed", getSpeedFromState(m_periodicIO.intake_state));
-    putBoolean("IntakeHasRing", isHoldingNote());
-
-    putString("PivotTarget", m_periodicIO.pivot_target.toString());
-    putNumber("PivotAbsPos", m_pivotAbsEncoder.getAbsolutePosition());
-    putNumber("PivotSetpoint", getAngleFromTarget(m_periodicIO.pivot_target));
-    putNumber("PivotSpeed", m_periodicIO.pivot_voltage);
-    putNumber("PivotPower", Helpers.getVoltage(m_pivotMotor));
-    putNumber("PivotRelAngle", getPivotAngle());
-    putBoolean("PivotAtTarget", isAtPivotTarget());
-  }
-
-  @Override
   public void reset() {
     throw new UnsupportedOperationException("Unimplemented method 'reset'");
-  }
-
-  private double getAngleFromTarget(IntakePivotTarget target) {
-    switch (target) {
-      case GROUND:
-        return Constants.Intake.k_groundPivotAngle;
-      case PIVOT:
-        return Constants.Intake.k_sourcePivotAngle;
-      case EJECT:
-        return Constants.Intake.k_ejectPivotAngle;
-      case AMP:
-        return Constants.Intake.k_ampPivotAngle;
-      case STOW:
-        return Constants.Intake.k_stowPivotAngle;
-      default:
-        return Constants.Intake.k_stowPivotAngle;
-    }
-  }
-
-  private double getSpeedFromState(IntakeState state) {
-    switch (state) {
-      case INTAKE:
-        return Constants.Intake.k_intakeSpeed;
-      case EJECT:
-        return Constants.Intake.k_ejectSpeed;
-      case FEED_SHOOTER:
-        return Constants.Intake.k_feedShooterSpeed;
-      default:
-        return 0.0;
-    }
   }
 
   public void stopIntake() {
@@ -176,27 +120,6 @@ public class Intake extends Subsystem {
 
   public IntakePivotTarget getPivotTarget() {
     return m_periodicIO.pivot_target;
-  }
-
-  @AutoLogOutput
-  public double getPivotAngle() {
-    return Units.rotationsToDegrees(m_pivotAbsEncoder.getAbsolutePosition());
-  }
-
-  public double getCurrentSpeed() {
-    return m_intakeMotor.getEncoder().getVelocity();
-  }
-
-  @AutoLogOutput
-  public boolean isAtPivotTarget() {
-    if (m_periodicIO.pivot_target == IntakePivotTarget.NONE) {
-      return true;
-    }
-
-    double current_angle = getPivotAngle();
-    double target_angle = getAngleFromTarget(m_periodicIO.pivot_target);
-
-    return Math.abs(target_angle - current_angle) <= k_pivotThreshold;
   }
 
   public boolean isAtState(IntakeState state) {
@@ -246,10 +169,6 @@ public class Intake extends Subsystem {
     FEED_SHOOTER
   }
 
-  public boolean wantsToEject() {
-    return m_periodicIO.wantsToEject;
-  }
-
   public void wantsToEject(boolean eject) {
     m_periodicIO.wantsToEject = eject;
   }
@@ -281,5 +200,110 @@ public class Intake extends Subsystem {
       setIntakeState(IntakeState.NONE);
       setPivotTarget(IntakePivotTarget.STOW);
     }
+  }
+
+  // Logged
+  @AutoLogOutput
+  private String getPivotTargetAsString() {
+    return m_periodicIO.pivot_target.toString();
+  }
+
+  @AutoLogOutput
+  public double getPivotAngle() {
+    return Units.rotationsToDegrees(m_pivotAbsEncoder.getAbsolutePosition());
+  }
+
+  @AutoLogOutput
+  public double getAbsoluteAngle() {
+    return m_pivotAbsEncoder.getAbsolutePosition();
+  }
+
+  @AutoLogOutput
+  public double getCurrentSpeed() {
+    return m_intakeMotor.getEncoder().getVelocity();
+  }
+
+  @AutoLogOutput
+  public boolean isAtPivotTarget() {
+    if (m_periodicIO.pivot_target == IntakePivotTarget.NONE) {
+      return true;
+    }
+
+    double current_angle = getPivotAngle();
+    double target_angle = getAngleFromTarget(m_periodicIO.pivot_target);
+
+    return Math.abs(target_angle - current_angle) <= k_pivotThreshold;
+  }
+
+  @AutoLogOutput
+  public boolean wantsToEject() {
+    return m_periodicIO.wantsToEject;
+  }
+
+  @AutoLogOutput
+  private double getPivotVoltage() {
+    return Helpers.getVoltage(m_pivotMotor);
+  }
+
+  @AutoLogOutput
+  private double getTargetPivotVoltage() {
+    return Helpers.getVoltage(m_pivotMotor);
+  }
+
+  @AutoLogOutput
+  private double getIntakeVoltage() {
+    return Helpers.getVoltage(m_intakeMotor);
+  }
+
+  @AutoLogOutput
+  private double getPivotCurrent() {
+    return m_pivotMotor.getOutputCurrent();
+  }
+
+  @AutoLogOutput
+  private double getIntakeCurrent() {
+    return m_intakeMotor.getOutputCurrent();
+  }
+
+  @AutoLogOutput
+  private double getAngleFromTarget(IntakePivotTarget target) {
+    switch (target) {
+      case GROUND:
+        return Constants.Intake.k_groundPivotAngle;
+      case PIVOT:
+        return Constants.Intake.k_sourcePivotAngle;
+      case EJECT:
+        return Constants.Intake.k_ejectPivotAngle;
+      case AMP:
+        return Constants.Intake.k_ampPivotAngle;
+      case STOW:
+        return Constants.Intake.k_stowPivotAngle;
+      default:
+        return Constants.Intake.k_stowPivotAngle;
+    }
+  }
+
+  @AutoLogOutput
+  private double getSpeedFromState(IntakeState state) {
+    switch (state) {
+      case INTAKE:
+        return Constants.Intake.k_intakeSpeed;
+      case EJECT:
+        return Constants.Intake.k_ejectSpeed;
+      case FEED_SHOOTER:
+        return Constants.Intake.k_feedShooterSpeed;
+      default:
+        return 0.0;
+    }
+  }
+
+  @AutoLogOutput
+  public boolean isHoldingNote() {
+    return m_colorSensor.getProximity() >= Constants.Intake.k_sensorThreshold;
+  }
+
+  @AutoLogOutput
+  public int getIntakeProximity() {
+    return m_colorSensor.getProximity();
   }
 }

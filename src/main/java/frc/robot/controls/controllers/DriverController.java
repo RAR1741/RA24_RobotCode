@@ -33,11 +33,11 @@ public class DriverController extends FilteredController {
   }
 
   public boolean getWantsResetGyro() {
-    return this.getRawButton(RawButton.Y);
+    return this.getRawButton(Button.Y);
   }
 
   public boolean getWantsBrake() {
-    return this.getRawButton(RawButton.LEFT_BUMPER);
+    return this.getRawButton(Button.LEFT_BUMPER);
   }
 
   public boolean getWantsSlowMode() {
@@ -45,28 +45,28 @@ public class DriverController extends FilteredController {
   }
 
   public boolean getWantsAutoAim() {
-    return this.getRawButtonPressed(RawButton.START);
+    return this.getRawButtonPressed(Button.START);
   }
 
   // SysId test mode //
   public boolean getWantsSysIdQuasistaticForward() {
-    return this.getRawButtonPressed(RawButton.A);
+    return this.getRawButtonPressed(Button.A);
   }
 
   public boolean getWantsSysIdQuasistaticBackward() {
-    return this.getRawButtonPressed(RawButton.B);
+    return this.getRawButtonPressed(Button.B);
   }
 
   public boolean getWantsSysIdDynamicForward() {
-    return this.getRawButtonPressed(RawButton.X);
+    return this.getRawButtonPressed(Button.X);
   }
 
   public boolean getWantsSysIdDynamicBackward() {
-    return this.getRawButtonPressed(RawButton.Y);
+    return this.getRawButtonPressed(Button.Y);
   }
 
   public boolean getWantSysIdStop() {
-    return this.getRawButtonPressed(RawButton.START);
+    return this.getRawButtonPressed(Button.START);
   }
   /////
 
@@ -81,18 +81,18 @@ public class DriverController extends FilteredController {
   /////
 
   public boolean getWantsIntakeStow() {
-    return this.getRawButtonPressed(RawButton.LEFT_BUMPER);
+    return this.getRawButtonPressed(Button.LEFT_BUMPER);
   }
 
   public boolean getWantsIntakeGround() {
-    return this.getRawButtonPressed(RawButton.RIGHT_BUMPER);
+    return this.getRawButtonPressed(Button.RIGHT_BUMPER);
   }
 
   public boolean getWantsIntake() {
-    return this.getRawButton(RawButton.X);
+    return this.getRawButton(Button.X);
   }
 
   public boolean getWantsEject() {
-    return this.getRawButton(RawButton.B);
+    return this.getRawButton(Button.B);
   }
 }

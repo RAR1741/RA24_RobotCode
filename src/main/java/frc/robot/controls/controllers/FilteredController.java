@@ -53,7 +53,7 @@ public class FilteredController extends GenericHID {
     return hatButtons[direction].get();
   }
 
-  public interface RawButton {
+  public interface Button {
     int A = 1;
     int B = 2;
     int X = 3;

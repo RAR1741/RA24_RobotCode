@@ -276,17 +276,20 @@ public final class Constants {
   }
 
   public static class Climber {
-    public static final int k_leftMotorID = 18;
-    public static final int k_rightMotorID = 19;
+    public static final int k_leftMotorID = 19;
+    public static final int k_rightMotorID = 18;
 
-    public static final double k_velocity = 0.0;
+    public static final double k_raiseSpeed = 600.0; // RPM
+    public static final double k_lowerSpeed = -600.0; // RPM
 
-    public class Setpoints {
-      // TODO: get climber setpoints
-      public static final double k_fullyExtended = 0.0;
-      public static final double k_fullyRetracted = 0.0;
+    public static final double k_gearRatio = 1.0 / 16.0;
 
-    }
+    public static final double k_P = 0.001;
+    public static final double k_I = 0.0;
+    public static final double k_D = 0.0;
+
+    public static final double k_minOutput = -0.5;
+    public static final double k_maxOutput = 0.5;
   }
 
   public static class Field {

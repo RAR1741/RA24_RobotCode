@@ -159,11 +159,6 @@ public class SwerveDrive extends SwerveSysId {
         pose);
   }
 
-  @AutoLogOutput
-  public Rotation2d getRotation2d() {
-    return m_poseEstimator.getEstimatedPosition().getRotation();
-  }
-
   public void clearTurnPIDAccumulation() {
     for (SwerveModule module : m_modules) {
       module.clearTurnPIDAccumulation();
@@ -247,11 +242,6 @@ public class SwerveDrive extends SwerveSysId {
     return m_gyro;
   }
 
-  @AutoLogOutput
-  public Pose2d getPose() {
-    return m_poseEstimator.getEstimatedPosition();
-  }
-
   public void setGyroAngleAdjustment(double angle) {
     m_gyro.setAngleAdjustment(angle);
   }
@@ -263,53 +253,6 @@ public class SwerveDrive extends SwerveSysId {
 
   @Override
   public void periodic() {
-    for (SwerveModule module : m_modules) {
-      module.periodic();
-    }
-  }
-
-  @Override
-  public void stop() {
-    setBrakeMode(true);
-    drive(0.0, 0.0, 0.0, true);
-  }
-
-  @Override
-  public void writePeriodicOutputs() {
-  }
-
-  @Override
-  public void reset() {
-    setBrakeMode(false);
-    resetPose();
-  }
-
-  @AutoLogOutput
-  private SwerveModuleState[] getCurrentStates() {
-    SwerveModuleState[] currentStates = {
-        m_modules[Module.FRONT_LEFT].getState(),
-        m_modules[Module.FRONT_RIGHT].getState(),
-        m_modules[Module.BACK_RIGHT].getState(),
-        m_modules[Module.BACK_LEFT].getState()
-    };
-
-    return currentStates;
-  }
-
-  @AutoLogOutput
-  private SwerveModuleState[] getDesiredStates() {
-    SwerveModuleState[] desiredStates = {
-        m_modules[Module.FRONT_LEFT].getDesiredState(),
-        m_modules[Module.FRONT_RIGHT].getDesiredState(),
-        m_modules[Module.BACK_RIGHT].getDesiredState(),
-        m_modules[Module.BACK_LEFT].getDesiredState()
-    };
-
-    return desiredStates;
-  }
-
-  @Override
-  public void outputTelemetry() {
     double currentTime = Timer.getFPGATimestamp();
 
     if (m_limelightOne.seesAprilTag()) { // TODO: Enable Limelights
@@ -340,13 +283,24 @@ public class SwerveDrive extends SwerveSysId {
     }
 
     for (SwerveModule module : m_modules) {
-      module.outputTelemetry();
+      module.periodic();
     }
+  }
 
-    putNumber("Gyro/AngleDegrees", m_gyro.getRotation2d().getDegrees());
-    putNumber("Gyro/Pitch", m_gyro.getPitch());
-    putNumberArray("Pose",
-        new double[] { getPose().getX(), getPose().getY(), getPose().getRotation().getDegrees() });
+  @Override
+  public void stop() {
+    setBrakeMode(true);
+    drive(0.0, 0.0, 0.0, true);
+  }
+
+  @Override
+  public void writePeriodicOutputs() {
+  }
+
+  @Override
+  public void reset() {
+    setBrakeMode(false);
+    resetPose();
   }
 
   public interface Module {
@@ -354,5 +308,50 @@ public class SwerveDrive extends SwerveSysId {
     int FRONT_RIGHT = 1;
     int BACK_RIGHT = 2;
     int BACK_LEFT = 3;
+  }
+
+  // Logged
+  @AutoLogOutput
+  public Rotation2d getRotation2d() {
+    return m_poseEstimator.getEstimatedPosition().getRotation();
+  }
+
+  @AutoLogOutput
+  private SwerveModuleState[] getCurrentStates() {
+    SwerveModuleState[] currentStates = {
+        m_modules[Module.FRONT_LEFT].getState(),
+        m_modules[Module.FRONT_RIGHT].getState(),
+        m_modules[Module.BACK_RIGHT].getState(),
+        m_modules[Module.BACK_LEFT].getState()
+    };
+
+    return currentStates;
+  }
+
+  @AutoLogOutput
+  private SwerveModuleState[] getDesiredStates() {
+    SwerveModuleState[] desiredStates = {
+        m_modules[Module.FRONT_LEFT].getDesiredState(),
+        m_modules[Module.FRONT_RIGHT].getDesiredState(),
+        m_modules[Module.BACK_RIGHT].getDesiredState(),
+        m_modules[Module.BACK_LEFT].getDesiredState()
+    };
+
+    return desiredStates;
+  }
+
+  @AutoLogOutput
+  private double getGyroYaw() {
+    return m_gyro.getRotation2d().getDegrees();
+  }
+
+  @AutoLogOutput
+  private double getGyroPitch() {
+    return m_gyro.getPitch();
+  }
+
+  @AutoLogOutput
+  public Pose2d getPose() {
+    return m_poseEstimator.getEstimatedPosition();
   }
 }

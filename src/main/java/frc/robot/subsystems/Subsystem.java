@@ -59,11 +59,6 @@ public abstract class Subsystem extends SubsystemBase {
    */
   public abstract void stop();
 
-  /**
-   * Puts the relevant subsystem information on the SmartDashboard
-   */
-  public abstract void outputTelemetry();
-
   public String baseSmartDashboardKey = "UnknownSubsystem/";
 
   public void putNumber(String key, double value) {

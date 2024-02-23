@@ -146,35 +146,6 @@ public class Shooter extends Subsystem {
   }
 
   @Override
-  public void outputTelemetry() {
-    putNumber("TargetSpeed", m_periodicIO.shooter_rpm);
-    putNumber("TopMotorSpeed", m_topMotorEncoder.getVelocity());
-    putNumber("BottomMotorSpeed", m_bottomMotorEncoder.getVelocity());
-    putNumber("PivotMotorVoltage", Helpers.getVoltage(m_pivotMotor));
-    putNumber("PivotAngle", getPivotAngle());
-
-    putNumber("pivot_relative_position", m_pivotMotor.getEncoder().getPosition());
-    putNumber("pivot_speed", m_periodicIO.pivot_speed);
-    putNumber("current_pivot_current", m_pivotMotor.getOutputCurrent());
-    putNumber("current_pivot_voltage", Helpers.getVoltage(m_pivotMotor));
-  }
-
-  @AutoLogOutput
-  public double getTopMotorSpeed() {
-    return m_topMotorEncoder.getVelocity();
-  }
-
-  @AutoLogOutput
-  public double getBottomMotorSpeed() {
-    return m_bottomMotorEncoder.getVelocity();
-  }
-
-  @AutoLogOutput
-  public double getShooterTargetSpeed() {
-    return m_periodicIO.shooter_rpm;
-  }
-
-  @Override
   public void reset() {
     throw new UnsupportedOperationException("Unimplemented method 'reset'");
   }
@@ -186,31 +157,6 @@ public class Shooter extends Subsystem {
 
     m_pivotRelEncoder.setPosition(offset);
     m_hasSetPivotRelEncoder = true;
-  }
-
-  @AutoLogOutput
-  public boolean getIsPivotAsbConnected() {
-    return m_pivotAbsEncoder.isConnected();
-  }
-
-  @AutoLogOutput
-  public double getPivotRelRotations() {
-    return m_pivotMotor.getEncoder().getPosition();
-  }
-
-  @AutoLogOutput
-  public int getPivotAbsFrequency() {
-    return m_pivotAbsEncoder.getFrequency();
-  }
-
-  @AutoLogOutput
-  public double getPivotRelTarget() {
-    return targetAngleToRelRotations(m_periodicIO.pivot_angle);
-  }
-
-  @AutoLogOutput
-  public double getPivotMotorCurrent() {
-    return m_pivotMotor.getOutputCurrent();
   }
 
   public double targetAngleToRelRotations(double angle) {
@@ -240,11 +186,6 @@ public class Shooter extends Subsystem {
 
   public void pivotAbsAngleToRel(double angle) {
     MathUtil.interpolate(angle, angle, angle);
-  }
-
-  // TODO Get rid of this and make it part of the actual functionality
-  public void setSimPosition(double a) {
-    m_sim.updateAngle(a);
   }
 
   public void setSpeed(double rpm) {
@@ -283,12 +224,6 @@ public class Shooter extends Subsystem {
     m_periodicIO.shoot_speed = (positive - negative) * limit;
   }
 
-  @AutoLogOutput
-  public double getPivotAngle() {
-    return Units.rotationsToDegrees(Helpers.modRotations(
-        m_pivotAbsEncoder.getAbsolutePosition() - Units.degreesToRotations(Constants.Shooter.k_absPivotOffset)));
-  }
-
   public double getAngleFromTarget(ShooterPivotTarget target) {
     switch (target) {
       case MAX:
@@ -304,18 +239,6 @@ public class Shooter extends Subsystem {
       default:
         return m_periodicIO.pivot_angle;
     }
-  }
-
-  @AutoLogOutput
-  public boolean isAtTarget() {
-    if (m_periodicIO.pivot_angle == getAngleFromTarget(ShooterPivotTarget.NONE)) {
-      return true;
-    }
-
-    double angle = getPivotAngle();
-    double target_angle = m_periodicIO.pivot_angle;
-
-    return angle <= target_angle + 2 && angle >= target_angle - 2;
   }
 
   private static class PeriodicIO {
@@ -344,4 +267,74 @@ public class Shooter extends Subsystem {
     PODIUM,
     NONE
   }
+
+  // Logged
+  @AutoLogOutput
+  public boolean isAtTarget() {
+    if (m_periodicIO.pivot_angle == getAngleFromTarget(ShooterPivotTarget.NONE)) {
+      return true;
+    }
+
+    double angle = getPivotAngle();
+    double target_angle = m_periodicIO.pivot_angle;
+
+    return angle <= target_angle + 2 && angle >= target_angle - 2;
+  }
+
+  @AutoLogOutput
+  public double getPivotAngle() {
+    return Units.rotationsToDegrees(Helpers.modRotations(
+        m_pivotAbsEncoder.getAbsolutePosition() - Units.degreesToRotations(Constants.Shooter.k_absPivotOffset)));
+  }
+
+  @AutoLogOutput
+  public boolean getIsPivotAsbConnected() {
+    return m_pivotAbsEncoder.isConnected();
+  }
+
+  @AutoLogOutput
+  public double getPivotRelRotations() {
+    return m_pivotMotor.getEncoder().getPosition();
+  }
+
+  @AutoLogOutput
+  public int getPivotAbsFrequency() {
+    return m_pivotAbsEncoder.getFrequency();
+  }
+
+  @AutoLogOutput
+  public double getPivotRelTarget() {
+    return targetAngleToRelRotations(m_periodicIO.pivot_angle);
+  }
+
+  @AutoLogOutput
+  public double getPivotMotorCurrent() {
+    return m_pivotMotor.getOutputCurrent();
+  }
+
+  @AutoLogOutput
+  private double getPivotVoltage() {
+    return Helpers.getVoltage(m_pivotMotor);
+  }
+
+  @AutoLogOutput
+  private double getPivotSpeed() {
+    return m_periodicIO.pivot_speed;
+  }
+
+  @AutoLogOutput
+  public double getTopMotorSpeed() {
+    return m_topMotorEncoder.getVelocity();
+  }
+
+  @AutoLogOutput
+  public double getBottomMotorSpeed() {
+    return m_bottomMotorEncoder.getVelocity();
+  }
+
+  @AutoLogOutput
+  public double getShooterTargetSpeed() {
+    return m_periodicIO.shooter_rpm;
+  }
+
 }

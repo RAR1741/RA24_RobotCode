@@ -10,7 +10,7 @@ public class OperatorController extends FilteredController {
   }
 
   public boolean getWantsShoot() {
-    return this.getRawButton(RawButton.X);
+    return this.getRawButton(Button.X);
   }
 
   public double getWantsManualShooterPivot(double limit) {
@@ -18,34 +18,42 @@ public class OperatorController extends FilteredController {
   }
 
   public boolean getWantsAmpAngle() {
-    return this.getRawButtonPressed(RawButton.A);
+    return this.getRawButtonPressed(Button.A);
   }
 
   public boolean getWantsSubwooferAngle() {
-    return this.getRawButtonPressed(RawButton.Y);
+    return this.getRawButtonPressed(Button.Y);
   }
 
   public boolean getWantsShooterMaxAngle() {
-    return this.getRawButtonPressed(RawButton.START);
+    return this.getRawButtonPressed(Button.START);
   }
 
   public boolean getWantsShooterMinAngle() {
-    return this.getRawButtonPressed(RawButton.BACK);
+    return this.getRawButtonPressed(Button.BACK);
   }
 
   public boolean getWantsMaxSpeed() {
-    return this.getHatPressed(Direction.UP);
+    return this.getRawButtonPressed(Button.RIGHT_BUMPER);
   }
 
-  public boolean getWantsHalfSpeed() {
-    return this.getHatPressed(Direction.RIGHT);
+  public boolean getWantsNoSpeed() {
+    return this.getRawButtonPressed(Button.LEFT_BUMPER);
   }
 
-  public boolean getWantsQuarterSpeed() {
-    return this.getHatPressed(Direction.LEFT);
+  public boolean getWantsClimberLower() {
+    return this.getHat(Direction.DOWN);
   }
 
-  public boolean getWantsStopped() {
-    return this.getHatPressed(Direction.DOWN);
+  public boolean getWantsClimberTiltRight() {
+    return this.getHat(Direction.RIGHT);
+  }
+
+  public boolean getWantsClimberRaise() {
+    return this.getHat(Direction.UP);
+  }
+
+  public boolean getWantsClimberTiltLeft() {
+    return this.getHat(Direction.LEFT);
   }
 }

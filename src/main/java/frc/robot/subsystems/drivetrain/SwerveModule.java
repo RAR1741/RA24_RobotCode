@@ -16,7 +16,6 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.Helpers;
 
@@ -33,8 +32,8 @@ public class SwerveModule {
   private final PeriodicIO m_periodicIO = new PeriodicIO();
 
   private final double m_turningOffset;
+  @SuppressWarnings("unused")
   private final String m_moduleName;
-  private final String m_smartDashboardKey;
 
   private static class PeriodicIO {
     SwerveModuleState desiredState = new SwerveModuleState();
@@ -45,8 +44,6 @@ public class SwerveModule {
       String moduleName) {
     m_turningOffset = turningOffset;
     m_moduleName = moduleName;
-
-    m_smartDashboardKey = "SwerveDrive/" + m_moduleName + "/";
 
     m_drivingFeedForward = new SimpleMotorFeedforward(
         Constants.SwerveDrive.Drive.k_FFS,
@@ -109,16 +106,6 @@ public class SwerveModule {
         getDriveVelocity(), Rotation2d.fromRadians(getTurnPosition()));
   }
 
-  @AutoLogOutput(key = "SwerveDrive/Modules/{m_moduleName}/Turn/Position")
-  public double getTurnPosition() {
-    return Helpers.modRadians(m_turningRelEncoder.getPosition());
-  }
-
-  @AutoLogOutput(key = "SwerveDrive/Modules/{m_moduleName}/Turn/absPosition")
-  public double getTurnAbsPosition() {
-    return Helpers.modRotations(m_turningAbsEncoder.getAbsolutePosition() - m_turningOffset);
-  }
-
   public SwerveModulePosition getPosition() {
     double drivePosition = m_driveEncoder.getPosition();
 
@@ -132,20 +119,6 @@ public class SwerveModule {
 
   public CANSparkMax getTurnMotor() {
     return m_turnMotor;
-  }
-
-  public double getTurnVelocity() {
-    return m_turningRelEncoder.getVelocity();
-  }
-
-  // returns m/s
-  public double getDriveVelocity() {
-    return m_driveEncoder.getVelocity();
-  }
-
-  // returns meters
-  public double getDrivePosition() {
-    return m_driveEncoder.getPosition();
   }
 
   public void clearTurnPIDAccumulation() {
@@ -182,6 +155,28 @@ public class SwerveModule {
     return m_periodicIO.desiredState;
   }
 
+  public void periodic() {
+    if (m_periodicIO.shouldChangeState) {
+      double feedforward = m_drivingFeedForward.calculate(getDriveTargetVelocity());
+
+      m_drivePIDController.setReference(getDriveTargetVelocity(), ControlType.kVelocity, 0,
+          feedforward);
+      m_turningPIDController.setReference(getTurnTargetAngleRadians(), ControlType.kPosition);
+      m_periodicIO.shouldChangeState = false;
+    }
+  }
+
+  // Logged
+  @AutoLogOutput
+  private double getTurnTargetAngleRadians() {
+    return m_periodicIO.desiredState.angle.getRadians();
+  }
+
+  @AutoLogOutput
+  private double getDriveTargetVelocity() {
+    return m_periodicIO.desiredState.speedMetersPerSecond;
+  }
+
   @AutoLogOutput(key = "SwerveDrive/Modules/{m_moduleName}/Turn/Voltage")
   public double getTurnMotorVoltage() {
     return Helpers.getVoltage(m_turnMotor);
@@ -212,7 +207,7 @@ public class SwerveModule {
     return m_turningAbsEncoder.isConnected();
   }
 
-  @AutoLogOutput(key = "SwerveDrive/Modules/{m_moduleName}/Abs/getPosition")
+  @AutoLogOutput(key = "SwerveDrive/Modules/{m_moduleName}/Abs/getTurnPosition")
   public double getAsbEncoderPosition() {
     return m_turningAbsEncoder.getAbsolutePosition() - m_turningOffset;
   }
@@ -227,28 +222,28 @@ public class SwerveModule {
     return m_turnMotor.getMotorTemperature();
   }
 
-  public void periodic() {
-    if (m_periodicIO.shouldChangeState) {
-      double feedforward = m_drivingFeedForward.calculate(m_periodicIO.desiredState.speedMetersPerSecond);
-
-      m_drivePIDController.setReference(m_periodicIO.desiredState.speedMetersPerSecond, ControlType.kVelocity, 0,
-          feedforward);
-      m_turningPIDController.setReference(m_periodicIO.desiredState.angle.getRadians(), ControlType.kPosition);
-      m_periodicIO.shouldChangeState = false;
-    }
+  @AutoLogOutput(key = "SwerveDrive/Modules/{m_moduleName}/Drive/Velocity")
+  public double getDriveVelocity() {
+    return m_driveEncoder.getVelocity();
   }
 
-  public void outputTelemetry() {
-    SmartDashboard.putNumber(m_smartDashboardKey + "TurnAbsPosition",
-        Helpers.modRotations(m_turningAbsEncoder.getAbsolutePosition()));
-    SmartDashboard.putNumber(m_smartDashboardKey + "DriveMotorPos", m_driveEncoder.getPosition());
-    SmartDashboard.putNumber(m_smartDashboardKey + "DriveMotorVelocity", getDriveVelocity());
-    SmartDashboard.putNumber(m_smartDashboardKey + "TurnMotorPosition", getTurnPosition());
+  @AutoLogOutput(key = "SwerveDrive/Modules/{m_moduleName}/Drive/Position")
+  public double getDrivePosition() {
+    return m_driveEncoder.getPosition();
+  }
 
-    SmartDashboard.putNumber(m_smartDashboardKey + "TurnVoltage", Helpers.getVoltage(m_turnMotor));
-    SmartDashboard.putNumber(m_smartDashboardKey + "DriveTargetVelocity",
-        m_periodicIO.desiredState.speedMetersPerSecond);
-    SmartDashboard.putNumber(m_smartDashboardKey + "TurnTargetAngleRadians",
-        m_periodicIO.desiredState.angle.getRadians());
+  @AutoLogOutput(key = "SwerveDrive/Modules/{m_moduleName}/Turn/Position")
+  public double getTurnPosition() {
+    return Helpers.modRadians(m_turningRelEncoder.getPosition());
+  }
+
+  @AutoLogOutput(key = "SwerveDrive/Modules/{m_moduleName}/Turn/absPosition")
+  public double getTurnAbsPosition() {
+    return Helpers.modRotations(m_turningAbsEncoder.getAbsolutePosition() - m_turningOffset);
+  }
+
+  @AutoLogOutput(key = "SwerveDrive/Modules/{m_moduleName}/Turn/Velocity")
+  public double getTurnVelocity() {
+    return m_turningRelEncoder.getVelocity();
   }
 }
