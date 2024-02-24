@@ -106,6 +106,10 @@ public class Shooter extends Subsystem {
     if (!m_hasSetPivotRelEncoder && getIsPivotAsbConnected()) {
       setPivotAbsOffset();
     }
+
+    if (!m_bottomShooterMotor.getInverted()) {
+      m_bottomShooterMotor.setInverted(true);
+    }
   }
 
   @Override

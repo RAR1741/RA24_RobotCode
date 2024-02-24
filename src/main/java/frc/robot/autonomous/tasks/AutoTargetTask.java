@@ -1,5 +1,6 @@
 package frc.robot.autonomous.tasks;
 
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -17,11 +18,33 @@ public class AutoTargetTask extends Task {
   // Where we want to aim
   private Pose2d m_targetRobotPose;
   private Pose3d m_targetPose;
+  private ChassisSpeeds m_chassisSpeeds;
+  private Rotation2d m_targetRotation;
 
   public AutoTargetTask(Pose3d targetPose) {
     m_targetPose = targetPose;
 
     Logger.recordOutput("Auto/AutoTarget/TargetPose", targetPose);
+  }
+
+  @AutoLogOutput(key = "Auto/AutoTarget/TargetRobotPose")
+  public Pose2d getTargetRobotPose() {
+    return m_targetRobotPose;
+  }
+
+  @AutoLogOutput(key = "Auto/AutoTarget/getChassisX")
+  public double getChassisX() {
+    return m_chassisSpeeds.vxMetersPerSecond;
+  }
+
+  @AutoLogOutput(key = "Auto/AutoTarget/getChassisY")
+  public double getChassisY() {
+    return m_chassisSpeeds.vyMetersPerSecond;
+  }
+
+  @AutoLogOutput(key = "Auto/AutoTarget/getChassisTheta")
+  public double getChassisTheta() {
+    return m_chassisSpeeds.omegaRadiansPerSecond;
   }
 
   @Override
@@ -30,23 +53,20 @@ public class AutoTargetTask extends Task {
     System.out.println("Starting degrees: " + currentPose.getRotation().getDegrees());
 
     // Get the target rotation between the current pose and the target pose
-    Rotation2d targetRotation = new Rotation2d(
+    m_targetRotation = new Rotation2d(
         currentPose.getTranslation().getX() - m_targetPose.getTranslation().getX(),
         currentPose.getTranslation().getY() - m_targetPose.getTranslation().getY());
 
-    System.out.println("Target degrees: " + targetRotation.getDegrees());
-    m_targetRobotPose = new Pose2d(currentPose.getTranslation(), targetRotation);
+    System.out.println("Target degrees: " + m_targetRotation.getDegrees());
+    m_targetRobotPose = new Pose2d(currentPose.getTranslation(), m_targetRotation);
   }
 
   @Override
   public void update() {
-    ChassisSpeeds chassisSpeeds = Constants.AutoAim.k_autoTargetController.calculate(
-        m_swerve.getPose(),
-        m_targetRobotPose,
-        0.0,
-        m_targetRobotPose.getRotation());
+    double rotationError = m_targetRobotPose.getRotation().getRadians()
+        - m_swerve.getPose().getRotation().getRadians();
 
-    m_swerve.drive(chassisSpeeds);
+    m_swerve.drive(0, 0, rotationError * 5.0, true);
   }
 
   @Override

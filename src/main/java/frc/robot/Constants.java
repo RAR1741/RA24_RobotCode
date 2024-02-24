@@ -28,8 +28,8 @@ public final class Constants {
     public static final double k_maxAcceleration = 1.0; // NOT USED
 
     public class Timing {
-      public static final double k_shootFeedTime = 0.5; // seconds
-      public static final double k_shootRevTime = 2.0; // seconds
+      public static final double k_shootFeedTime = 0.2; // seconds
+      public static final double k_shootRevTime = 1.0; // seconds
     }
 
     // TODO: Add left and right subwoofer starting poses
@@ -216,7 +216,7 @@ public final class Constants {
     public static final int k_bottomMotorId = 17;
 
     public static final double k_shooterMotorP = 0.0005;
-    public static final double k_shooterMotorI = 0.000001;
+    public static final double k_shooterMotorI = 0.0000008;
     public static final double k_shooterMotorD = 0.0;
     public static final double k_shooterMotorFF = 0.00015;
 

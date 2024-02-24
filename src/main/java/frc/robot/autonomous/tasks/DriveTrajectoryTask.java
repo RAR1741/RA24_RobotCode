@@ -13,7 +13,6 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants.Auto;
@@ -95,9 +94,9 @@ public class DriveTrajectoryTask extends Task {
     if (!RobotBase.isReal() && m_autoTrajectory != null) {
       Pose2d pose = m_autoTrajectory.sample(m_runningTimer.get()).getTargetHolonomicPose();
 
-      Preferences.setDouble("SwerveDrive/x", pose.getX());
-      Preferences.setDouble("SwerveDrive/y", pose.getY());
-      Preferences.setDouble("SwerveDrive/rot", pose.getRotation().getDegrees());
+      // Preferences.setDouble("SwerveDrive/x", pose.getX());
+      // Preferences.setDouble("SwerveDrive/y", pose.getY());
+      // Preferences.setDouble("SwerveDrive/rot", pose.getRotation().getDegrees());
     }
   }
 
