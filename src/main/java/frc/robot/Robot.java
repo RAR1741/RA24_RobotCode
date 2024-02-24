@@ -10,11 +10,11 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -24,7 +24,6 @@ import frc.robot.autonomous.tasks.Task;
 import frc.robot.controls.controllers.DriverController;
 import frc.robot.controls.controllers.OperatorController;
 import frc.robot.simulation.Field;
-import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Intake.IntakePivotTarget;
 import frc.robot.subsystems.Intake.IntakeState;
@@ -48,13 +47,13 @@ public class Robot extends LoggedRobot {
   private final SwerveDrive m_swerve = SwerveDrive.getInstance();
   private final Intake m_intake = Intake.getInstance();
   private final Shooter m_shooter = Shooter.getInstance();
-  private final Climber m_climber = Climber.getInstance();
+  // private final Climber m_climber = Climber.getInstance();
 
   // Auto tasks
   private Task m_currentTask;
   private AutoRunner m_autoRunner = AutoRunner.getInstance();
 
-  //Misc. vars
+  // Misc. vars
   private Alliance m_alliance;
   private boolean m_autoAimEnabled = false;
 
@@ -85,7 +84,7 @@ public class Robot extends LoggedRobot {
     m_allSubsystems.add(m_swerve);
     m_allSubsystems.add(m_intake);
     m_allSubsystems.add(m_shooter);
-    m_allSubsystems.add(m_climber);
+    // m_allSubsystems.add(m_climber);
 
     m_swerve.setGyroAngleAdjustment(0);
   }
@@ -171,10 +170,10 @@ public class Robot extends LoggedRobot {
      * m_lockHeading = false;
      * }
      */
-    if(m_alliance.equals(Alliance.Red)) {
-      autoAimAngle = m_swerve.calculateAutoAimAngle(false, 0);
+    if (m_alliance.equals(Alliance.Red)) {
+      // autoAimAngle = m_swerve.calculateAutoAimAngle(false, 0);
     } else {
-      autoAimAngle = m_swerve.calculateAutoAimAngle(false, 0);
+      // autoAimAngle = m_swerve.calculateAutoAimAngle(false, 0);
     }
 
     if (m_autoAimEnabled) {
@@ -184,9 +183,9 @@ public class Robot extends LoggedRobot {
       rot = m_rotRateLimiter.calculate(m_driverController.getTurnAxis() * Constants.SwerveDrive.k_maxAngularSpeed);
     }
 
-    double maxSpeed = Constants.SwerveDrive.k_maxSpeed + ((Constants.SwerveDrive.k_maxBoostSpeed - 
-      Constants.SwerveDrive.k_maxSpeed) * m_driverController.getBoostScaler());
-          
+    double maxSpeed = Constants.SwerveDrive.k_maxSpeed + ((Constants.SwerveDrive.k_maxBoostSpeed -
+        Constants.SwerveDrive.k_maxSpeed) * m_driverController.getBoostScaler());
+
     double xSpeed = m_xRateLimiter.calculate(m_driverController.getForwardAxis() * maxSpeed);
     double ySpeed = m_yRateLimiter.calculate(m_driverController.getStrafeAxis() * maxSpeed);
 
@@ -253,21 +252,22 @@ public class Robot extends LoggedRobot {
 
     if (m_operatorController.getWantsMaxSpeed()) {
       m_shooter.setSpeed(ShooterSpeedTarget.MAX);
+      // m_shooter.setSpeed(3500);
     } else if (m_operatorController.getWantsNoSpeed()) {
       m_shooter.setSpeed(ShooterSpeedTarget.OFF);
     }
 
-    if (m_operatorController.getWantsClimberRaise()) {
-      m_climber.raise();
-    } else if (m_operatorController.getWantsClimberLower()) {
-      m_climber.lower();
-    } else if (m_operatorController.getWantsClimberTiltLeft()) {
-      m_climber.tiltLeft();
-    } else if (m_operatorController.getWantsClimberTiltRight()) {
-      m_climber.tiltRight();
-    } else {
-      m_climber.stopClimber();
-    }
+    // if (m_operatorController.getWantsClimberRaise()) {
+    // m_climber.raise();
+    // } else if (m_operatorController.getWantsClimberLower()) {
+    // m_climber.lower();
+    // } else if (m_operatorController.getWantsClimberTiltLeft()) {
+    // m_climber.tiltLeft();
+    // } else if (m_operatorController.getWantsClimberTiltRight()) {
+    // m_climber.tiltRight();
+    // } else {
+    // m_climber.stopClimber();
+    // }
   }
 
   @Override
@@ -324,7 +324,8 @@ public class Robot extends LoggedRobot {
         break;
       case "CLIMBER":
         m_shooter.setAngle(ShooterPivotTarget.MIN);
-        m_climber.manualControl(m_driverController.testPositive(), m_driverController.testNegative(), 0.10);
+        // m_climber.manualControl(m_driverController.testPositive(),
+        // m_driverController.testNegative(), 0.10);
         break;
       default:
         // System.out.println("you lost the game");

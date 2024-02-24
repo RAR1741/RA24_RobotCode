@@ -78,6 +78,9 @@ public class Climber extends Subsystem {
 
     m_leftMotor.setInverted(false);
     m_rightMotor.setInverted(true);
+
+    m_leftMotor.burnFlash();
+    m_rightMotor.burnFlash();
   }
 
   private static class PeriodicIO {

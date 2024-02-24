@@ -215,8 +215,8 @@ public final class Constants {
     public static final int k_topMotorId = 16;
     public static final int k_bottomMotorId = 17;
 
-    public static final double k_shooterMotorP = 0.00008;
-    public static final double k_shooterMotorI = 0.0;
+    public static final double k_shooterMotorP = 0.0005;
+    public static final double k_shooterMotorI = 0.000001;
     public static final double k_shooterMotorD = 0.0;
     public static final double k_shooterMotorFF = 0.00015;
 
@@ -293,7 +293,7 @@ public final class Constants {
     public static final double k_speakerTop = 82.875;
     public static final double k_speakerAngle = 14.0;
 
-    //TODO: Maybe get these from AprilTags?
+    // TODO: Maybe get these from AprilTags?
     private static final double speakerHeight = 2.032; // Meters
     public static final Pose3d k_redSpeakerPose = new Pose3d(16.579342, 5.547868, speakerHeight, new Rotation3d());
     public static final Pose3d k_blueSpeakerPose = new Pose3d(-0.0381, 5.547868, speakerHeight, new Rotation3d());

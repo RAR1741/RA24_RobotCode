@@ -97,8 +97,8 @@ public class SwerveModule {
     m_drivePIDController.setIZone(Constants.SwerveDrive.Drive.k_IZone);
     // m_drivePIDController.setFF(Constants.SwerveDrive.Drive.k_FF);
 
-    // m_driveMotor.burnFlash();
-    // m_turnMotor.burnFlash();
+    m_driveMotor.burnFlash();
+    m_turnMotor.burnFlash();
   }
 
   public SwerveModuleState getState() {

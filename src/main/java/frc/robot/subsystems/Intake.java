@@ -45,7 +45,7 @@ public class Intake extends Subsystem {
     m_pivotMotor = new CANSparkMax(Constants.Intake.k_pivotMotorId, MotorType.kBrushless);
     m_pivotMotor.restoreFactoryDefaults();
     m_pivotMotor.setIdleMode(CANSparkMax.IdleMode.kCoast);
-    m_pivotMotor.setSmartCurrentLimit(10); 
+    m_pivotMotor.setSmartCurrentLimit(10);
     m_pivotMotor.setInverted(true);
 
     // Intake motor setup
@@ -63,6 +63,9 @@ public class Intake extends Subsystem {
     m_periodicIO = new PeriodicIO();
 
     m_colorSensor = new ColorSensorV3(k_colorSensorPort);
+
+    m_intakeMotor.burnFlash();
+    m_pivotMotor.burnFlash();
   }
 
   public static Intake getInstance() {
@@ -247,7 +250,7 @@ public class Intake extends Subsystem {
 
   @AutoLogOutput
   private double getTargetPivotVoltage() {
-    return Helpers.getVoltage(m_pivotMotor);
+    return m_periodicIO.pivot_voltage;
   }
 
   @AutoLogOutput
