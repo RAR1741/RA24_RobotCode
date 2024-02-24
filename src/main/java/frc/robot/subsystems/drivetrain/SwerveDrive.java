@@ -20,8 +20,8 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
+import frc.robot.AprilTagLocations;
 import frc.robot.Constants;
-import frc.robot.Helpers;
 import frc.robot.subsystems.Limelight;
 
 public class SwerveDrive extends SwerveSysId {
@@ -106,8 +106,8 @@ public class SwerveDrive extends SwerveSysId {
   public double calculateAutoAimAngle(boolean degreeMode, int tagID) {
     double botX = m_poseEstimator.getEstimatedPosition().getX();
     double botY = m_poseEstimator.getEstimatedPosition().getY();
-    double targetX = Helpers.getAprilTagPosition(tagID).getX();
-    double targetY = Helpers.getAprilTagPosition(tagID).getY();
+    double targetX = AprilTagLocations.getPosition(tagID).getX();
+    double targetY = AprilTagLocations.getPosition(tagID).getY();
 
     double x = targetX - botX;
     double distance = Math.sqrt(Math.pow(x, 2) + Math.pow(targetY - botY, 2));

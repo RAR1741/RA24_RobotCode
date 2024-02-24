@@ -35,6 +35,7 @@ public class AprilTagLocations {
         return position;
       }
     }
+
     DriverStation.reportError("AprilTag [" + id + "] is not valid", true);
     return null;
   }
