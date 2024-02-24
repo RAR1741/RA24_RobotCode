@@ -185,7 +185,7 @@ public final class Constants {
     public static final double k_ejectSpeed = -0.25;
     public static final double k_feedShooterSpeed = -0.5;
 
-    public static final double k_pivotMotorP = 0.01; // 0.035
+    public static final double k_pivotMotorP = 0.035;
     public static final double k_pivotMotorI = 0.0;
     public static final double k_pivotMotorD = 0.0;
     public static final double k_pivotMotorIZone = 0.0;
@@ -209,8 +209,8 @@ public final class Constants {
 
     public static final double k_pivotOffset = 74.5;
 
-	  public static double k_maxVelocity = 120.0;//460.0;
-    public static double k_maxAcceleration = 120.0; //460.0;
+	  public static double k_maxVelocity = 690.0;
+    public static double k_maxAcceleration = 1380.0;
   }
 
   public static class Simulation {
