@@ -30,6 +30,7 @@ public final class Constants {
     public class Timing {
       public static final double k_shootFeedTime = 0.5; // seconds
       public static final double k_shootRevTime = 0.75; // seconds
+      public static final double k_intakeBounceTime = 0.2; // seconds
     }
 
     // TODO: Add left and right subwoofer starting poses

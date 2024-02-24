@@ -99,7 +99,7 @@ public class Robot extends LoggedRobot {
 
     updateSim();
 
-    CommandScheduler.getInstance().run(); // used by sysid
+    // CommandScheduler.getInstance().run(); // used by sysid
   }
 
   @Override

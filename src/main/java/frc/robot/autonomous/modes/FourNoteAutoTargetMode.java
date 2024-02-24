@@ -2,6 +2,7 @@ package frc.robot.autonomous.modes;
 
 import frc.robot.Constants;
 import frc.robot.autonomous.tasks.AutoTargetTask;
+import frc.robot.autonomous.tasks.DriveForwardTask;
 import frc.robot.autonomous.tasks.DriveTrajectoryTask;
 import frc.robot.autonomous.tasks.IntakeTask;
 import frc.robot.autonomous.tasks.ParallelTask;
@@ -29,6 +30,7 @@ public class FourNoteAutoTargetMode extends AutoModeBase {
     queueTask(new ParallelTask(
         new IntakeTask(IntakePivotTarget.STOW, IntakeState.NONE),
         new AutoTargetTask(getAllianceSpeakerPose())));
+    queueTask(new WaitTask(Constants.Auto.Timing.k_intakeBounceTime));
     queueTask(new IntakeTask(IntakePivotTarget.STOW, IntakeState.FEED_SHOOTER));
     queueTask(new WaitTask(Constants.Auto.Timing.k_shootFeedTime));
 
@@ -39,6 +41,7 @@ public class FourNoteAutoTargetMode extends AutoModeBase {
     queueTask(new ParallelTask(
         new IntakeTask(IntakePivotTarget.STOW, IntakeState.NONE),
         new AutoTargetTask(getAllianceSpeakerPose())));
+    queueTask(new WaitTask(Constants.Auto.Timing.k_intakeBounceTime));
     queueTask(new IntakeTask(IntakePivotTarget.STOW, IntakeState.FEED_SHOOTER));
     queueTask(new WaitTask(Constants.Auto.Timing.k_shootFeedTime));
 
@@ -49,11 +52,17 @@ public class FourNoteAutoTargetMode extends AutoModeBase {
     queueTask(new ParallelTask(
         new IntakeTask(IntakePivotTarget.STOW, IntakeState.NONE),
         new AutoTargetTask(getAllianceSpeakerPose())));
+    queueTask(new WaitTask(Constants.Auto.Timing.k_intakeBounceTime));
     queueTask(new IntakeTask(IntakePivotTarget.STOW, IntakeState.FEED_SHOOTER));
     queueTask(new WaitTask(Constants.Auto.Timing.k_shootFeedTime));
 
     // Done
-    queueTask(new ShooterTask(ShooterPivotTarget.SUBWOOFER, ShooterSpeedTarget.OFF));
-    queueTask(new IntakeTask(IntakePivotTarget.STOW, IntakeState.NONE));
+    queueTask(new ParallelTask(
+        new IntakeTask(IntakePivotTarget.STOW, IntakeState.NONE),
+        new ShooterTask(ShooterPivotTarget.SUBWOOFER, ShooterSpeedTarget.OFF),
+        new DriveTrajectoryTask("BotRing,Mid")
+    ));
+
+    queueTask(new DriveForwardTask(0, 0));
   }
 }
