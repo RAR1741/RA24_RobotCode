@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -53,6 +54,8 @@ public class Robot extends LoggedRobot {
   private Task m_currentTask;
   private AutoRunner m_autoRunner = AutoRunner.getInstance();
 
+  //Misc. vars
+  private Alliance m_alliance;
   private boolean m_autoAimEnabled = false;
 
   // Auto things
@@ -138,6 +141,8 @@ public class Robot extends LoggedRobot {
   public void teleopInit() {
     m_swerve.setBrakeMode(false);
     m_swerve.drive(0, 0, 0, false);
+
+    m_alliance = DriverStation.getAlliance().get();
   }
 
   boolean m_lockHeading = false;
@@ -145,6 +150,7 @@ public class Robot extends LoggedRobot {
   @Override
   public void teleopPeriodic() {
     double rot = 0.0;
+    double autoAimAngle = 0.0;
 
     // if (m_driverController.getWantsAutoAim() && m_swerve.getPose().getX() >=
     // Constants.AutoAim.k_autoAimDistanceThreshold && !autoAimEnabled) {
@@ -165,17 +171,22 @@ public class Robot extends LoggedRobot {
      * m_lockHeading = false;
      * }
      */
+    if(m_alliance.equals(Alliance.Red)) {
+      autoAimAngle = m_swerve.calculateAutoAimAngle(false, 0);
+    } else {
+      autoAimAngle = m_swerve.calculateAutoAimAngle(false, 0);
+    }
 
     if (m_autoAimEnabled) {
       rot = Constants.AutoAim.rotationPIDController.calculate(m_swerve.getRotation2d().getRadians(),
-          m_swerve.calculateAutoAimAngle(false));
+          autoAimAngle);
     } else {
       rot = m_rotRateLimiter.calculate(m_driverController.getTurnAxis() * Constants.SwerveDrive.k_maxAngularSpeed);
     }
 
-    double maxSpeed = m_driverController.getBoostScaler() > 0.5 ? Constants.SwerveDrive.k_maxBoostSpeed
-        : Constants.SwerveDrive.k_maxSpeed; // TODO: Use axis to be able to dial in boost speed
-
+    double maxSpeed = Constants.SwerveDrive.k_maxSpeed + ((Constants.SwerveDrive.k_maxBoostSpeed - 
+      Constants.SwerveDrive.k_maxSpeed) * m_driverController.getBoostScaler());
+          
     double xSpeed = m_xRateLimiter.calculate(m_driverController.getForwardAxis() * maxSpeed);
     double ySpeed = m_yRateLimiter.calculate(m_driverController.getStrafeAxis() * maxSpeed);
 

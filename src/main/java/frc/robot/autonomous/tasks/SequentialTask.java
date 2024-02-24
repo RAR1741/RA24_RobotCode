@@ -53,4 +53,8 @@ public class SequentialTask extends Task {
   public void done() {
     DriverStation.reportWarning("Sequential task done", false);
   }
+
+  public Task[] getTasks() {
+    return m_tasks;
+  }
 }

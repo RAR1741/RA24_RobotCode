@@ -42,7 +42,7 @@ public class ShooterTask extends Task {
 
 	@Override
 	public void updateSim() {
-		// TODO: Implement sim
+		// I chose not to delete this :P
 		// if (!RobotBase.isReal()) {
 		// m_shooter.periodic();
 		// m_isSimFinished = m_shooter.isAtTarget(m_pivotTarget);

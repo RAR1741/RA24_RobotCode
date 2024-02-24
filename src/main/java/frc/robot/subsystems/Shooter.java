@@ -36,7 +36,7 @@ public class Shooter extends Subsystem {
   private SparkPIDController m_bottomShooterMotorPID;
   private SparkPIDController m_pivotMotorPID;
 
-  private SlewRateLimiter m_speedLimiter = new SlewRateLimiter(2000); // TODO Double-check this value
+  private SlewRateLimiter m_speedLimiter = new SlewRateLimiter(2000); 
 
   private PeriodicIO m_periodicIO;
   private boolean m_hasSetPivotRelEncoder = false;
@@ -59,7 +59,7 @@ public class Shooter extends Subsystem {
     m_pivotMotor = new CANSparkFlex(Constants.Shooter.k_pivotMotorId, MotorType.kBrushless);
     m_pivotMotor.restoreFactoryDefaults();
     m_pivotMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
-    m_pivotMotor.setSmartCurrentLimit(30); // TODO: Double check this
+    m_pivotMotor.setSmartCurrentLimit(30); 
     m_pivotMotor.setInverted(true);
 
     m_topMotorEncoder = m_topShooterMotor.getEncoder();

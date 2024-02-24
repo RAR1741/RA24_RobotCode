@@ -1,6 +1,8 @@
 package frc.robot.autonomous.modes;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -8,6 +10,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.Constants.Field;
 import frc.robot.autonomous.tasks.DriveTrajectoryTask;
+import frc.robot.autonomous.tasks.ParallelTask;
+import frc.robot.autonomous.tasks.SequentialTask;
 import frc.robot.autonomous.tasks.Task;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 
@@ -37,16 +41,7 @@ public abstract class AutoModeBase {
     // Figure out the first PathPlanner path
     Pose2d startingPose = null;
 
-    // TODO: make this also search though the ParallelTasks and SequentialTasks
-    // this will likely need to be a recursive function
-    // Loop over the m_tasks and find the first DriveTrajectoryTask
-    for (Task task : m_tasks) {
-      if (task instanceof DriveTrajectoryTask) {
-        // Set the starting pose to the starting pose of the first DriveTrajectoryTask
-        startingPose = ((DriveTrajectoryTask) task).getStartingPose();
-        break;
-      }
-    }
+    startingPose = getFirstDriveTask(m_tasks).getStartingPose();
 
     // If there isn't one, default to something visible
     if (startingPose == null) {
@@ -70,5 +65,26 @@ public abstract class AutoModeBase {
     } else {
       return Field.k_redSpeakerPose;
     }
+  }
+
+  private DriveTrajectoryTask getFirstDriveTask(List<Task> tasks) {
+    Task[] taskArray = Arrays.copyOf(tasks.toArray(), tasks.toArray().length, Task[].class);
+    return getFirstDriveTask(taskArray);
+  }
+
+  private DriveTrajectoryTask getFirstDriveTask(Task[] tasks) {
+    for (Task task : tasks) {
+      if (task instanceof DriveTrajectoryTask t) {
+        // Set the starting pose to the starting pose of the first DriveTrajectoryTask
+        return t;
+      } else if (task instanceof ParallelTask t) {
+        return getFirstDriveTask(t.getTasks());
+      } else if (task instanceof SequentialTask t) {
+        return getFirstDriveTask(t.getTasks());
+      }
+    }
+
+    DriverStation.reportError("No DriveTrajectoryTask found in auto", true);
+    return null;
   }
 }

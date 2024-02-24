@@ -141,7 +141,7 @@ public final class Constants {
     public static final double k_maxAngularAcceleration = Math.PI * 2 * 2; // Radians per second squared (720 degrees
                                                                            // per second squared)
 
-    // TODO: Use these values as overrides in DriveTrajectoryTask
+    // Use these values as overrides in DriveTrajectoryTask
     // These are the current PathPlanner values
     public static final PathConstraints k_pathConstraints = new PathConstraints(
         k_maxSpeed,
@@ -167,7 +167,6 @@ public final class Constants {
   }
 
   public class Intake {
-    // TODO: Get intake motor IDs
     public static final int k_pivotMotorId = 13;
     public static final int k_intakeMotorId = 14;
 
@@ -175,7 +174,6 @@ public final class Constants {
 
     public static final int k_pivotEncoderId = 4;
 
-    // TODO: get pivot angles
     public static final double k_stowPivotAngle = 267.0;
     public static final double k_groundPivotAngle = 41.0;
     public static final double k_sourcePivotAngle = 180.0;
@@ -183,18 +181,15 @@ public final class Constants {
     public static final double k_ejectPivotAngle = 110.0;
     public static final double k_ampPivotAngle = k_stowPivotAngle;
 
-    // TODO: get intake speeds
     public static final double k_intakeSpeed = 0.4;
     public static final double k_ejectSpeed = -0.25;
     public static final double k_feedShooterSpeed = -0.5;
 
-    // TODO: get intake pivot PID
     public static final double k_pivotMotorP = 0.035;
     public static final double k_pivotMotorI = 0.0;
     public static final double k_pivotMotorD = 0.0;
     public static final double k_pivotMotorIZone = 0.0;
 
-    // TODO Get values
     public static final double k_length = 14.319626; // In inches
     public static final double k_mass = 5.8967; // In kg
 
@@ -209,7 +204,6 @@ public final class Constants {
   }
 
   public static class Simulation {
-    // TODO Get values
     public static final double k_width = 150; // Inches
     public static final double k_height = 100; // Inches
   }
@@ -221,37 +215,33 @@ public final class Constants {
     public static final int k_topMotorId = 16;
     public static final int k_bottomMotorId = 17;
 
-    // TODO: Get shooter motor PID
     public static final double k_shooterMotorP = 0.00008;
     public static final double k_shooterMotorI = 0.0;
     public static final double k_shooterMotorD = 0.0;
     public static final double k_shooterMotorFF = 0.00015;
 
-    // TODO: Check these
     public static final double k_shooterMinOutput = 0.0;
     public static final double k_shooterMaxOutput = 1.0;
 
     public static final int k_pivotEncoderId = 5;
 
-    // TODO: get shooter pivot PID
     public static final double k_pivotMotorP = 0.4;
     public static final double k_pivotMotorI = 0.0;
     public static final double k_pivotMotorD = 0.0;
     public static final double k_pivotMotorIZone = 0.0;
 
-    // TODO: get shooter pivot setpoint angles
-    public static final double k_ampPivotAngle = 26.0; // TODO This is wing shot
+    public static final double k_ampPivotAngle = 0.0; // TODO: get amp pivot angle
+    public static final double k_wingPivotAngle = 26.0;
     public static final double k_subwooferPivotAngle = 57.0;
     public static final double k_podiumPivotAngle = 43.0;
 
-    // TODO get values
     public static final double k_length = 11.94335; // in inches
     public static final double k_mass = 5.44311; // in kg
 
     public static final double k_pivotHeight = 4.0;
 
     public static final double k_minAngle = 20.0;
-    public static final double k_maxAngle = 60.0; // TODO: Increase at some point
+    public static final double k_maxAngle = 60.0;
     public static final double k_startingAngle = 0.0;
 
     public static final double k_distanceFromCenter = 4.0008;
@@ -303,7 +293,7 @@ public final class Constants {
     public static final double k_speakerTop = 82.875;
     public static final double k_speakerAngle = 14.0;
 
-    // TODO: Make sure the robot uses the same coordinate system
+    //TODO: Maybe get these from AprilTags?
     private static final double speakerHeight = 2.032; // Meters
     public static final Pose3d k_redSpeakerPose = new Pose3d(16.579342, 5.547868, speakerHeight, new Rotation3d());
     public static final Pose3d k_blueSpeakerPose = new Pose3d(-0.0381, 5.547868, speakerHeight, new Rotation3d());

@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
+import frc.robot.Helpers;
 import frc.robot.subsystems.Limelight;
 
 public class SwerveDrive extends SwerveSysId {
@@ -102,22 +103,20 @@ public class SwerveDrive extends SwerveSysId {
    * @param degreeMode If <code>true</code>, return result in degrees; otherwise,
    *                   return in radians
    */
-  public double calculateAutoAimAngle(boolean degreeMode) {
+  public double calculateAutoAimAngle(boolean degreeMode, int tagID) {
     double botX = m_poseEstimator.getEstimatedPosition().getX();
     double botY = m_poseEstimator.getEstimatedPosition().getY();
-    double speakerX = Constants.Field.k_redSpeakerPose.getX();
-    double speakerY = Constants.Field.k_redSpeakerPose.getY();
+    double targetX = Helpers.getAprilTagPosition(tagID).getX();
+    double targetY = Helpers.getAprilTagPosition(tagID).getY();
 
-    double x = speakerX - botX;
-    double distance = Math.sqrt(Math.pow(x, 2) + Math.pow(speakerY - botY, 2));
+    double x = targetX - botX;
+    double distance = Math.sqrt(Math.pow(x, 2) + Math.pow(targetY - botY, 2));
 
     double theta = Math.acos(x / distance);
 
     putNumber("AutoAimAngle", Units.radiansToDegrees(theta));
-    // System.out.println(theta);
 
     return degreeMode ? Units.radiansToDegrees(theta) : theta;
-    // arccosine(x/d)
   }
 
   public void resetPose() {
@@ -255,7 +254,7 @@ public class SwerveDrive extends SwerveSysId {
   public void periodic() {
     double currentTime = Timer.getFPGATimestamp();
 
-    if (m_limelightOne.seesAprilTag()) { // TODO: Enable Limelights
+    if (m_limelightOne.seesAprilTag()) {
       // m_poseEstimator.addVisionMeasurement(m_limelightOne.getBotpose2D(),
       // currentTime);
     }
