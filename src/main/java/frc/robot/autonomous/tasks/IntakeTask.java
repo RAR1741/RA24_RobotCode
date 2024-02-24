@@ -34,6 +34,6 @@ public class IntakeTask extends Task {
 
 	@Override
 	public boolean isFinished() {
-		return true;
+    return m_intake.isAtPivotTarget();
 	}
 }
