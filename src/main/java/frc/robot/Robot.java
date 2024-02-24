@@ -327,8 +327,29 @@ public class Robot extends LoggedRobot {
         // m_climber.manualControl(m_driverController.testPositive(),
         // m_driverController.testNegative(), 0.10);
         break;
+      case "POINT_FORWARD":
+        m_swerve.pointModules(0, 0, 0, false);
+        break;
+      case "NO_GYRO_DRIVE":
+        double rot = m_rotRateLimiter.calculate(m_driverController.getTurnAxis() * Constants.SwerveDrive.k_maxAngularSpeed);
+        double maxSpeed = Constants.SwerveDrive.k_maxSpeed + ((Constants.SwerveDrive.k_maxBoostSpeed -
+        Constants.SwerveDrive.k_maxSpeed) * m_driverController.getBoostScaler());
+
+        double xSpeed = m_xRateLimiter.calculate(m_driverController.getForwardAxis() * maxSpeed);
+        double ySpeed = m_yRateLimiter.calculate(m_driverController.getStrafeAxis() * maxSpeed);
+
+        // slowScaler should scale between k_slowScaler and 1
+        double slowScaler = Constants.SwerveDrive.k_slowScaler
+            + ((1 - m_driverController.getSlowScaler()) * (1 - Constants.SwerveDrive.k_slowScaler));
+
+        xSpeed *= slowScaler;
+        ySpeed *= slowScaler;
+        rot *= slowScaler;
+
+        m_swerve.drive(xSpeed, ySpeed, rot, false);
+        break;
       default:
-        // System.out.println("you lost the game");
+        // System.out.println("you lost the game"); jacob why
         break;
     }
   }

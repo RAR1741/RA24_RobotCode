@@ -29,7 +29,7 @@ public final class Constants {
 
     public class Timing {
       public static final double k_shootFeedTime = 0.5; // seconds
-      public static final double k_shootRevTime = 0.5; // seconds
+      public static final double k_shootRevTime = 0.75; // seconds
     }
 
     // TODO: Add left and right subwoofer starting poses
@@ -85,10 +85,10 @@ public final class Constants {
     // Drivetrain (turn) constants
     public class Turn {
       // Drivetrain turning offset constants
-      public static final double k_FLOffset = 0.156013;
-      public static final double k_FROffset = 0.156604;
-      public static final double k_BROffset = 0.820736;
-      public static final double k_BLOffset = 0.161767;
+      public static final double k_FLOffset = 0.159;
+      public static final double k_FROffset = 0.163;
+      public static final double k_BROffset = 0.832;
+      public static final double k_BLOffset = 0.157;
 
       public static final int k_FLAbsId = 0;
       public static final int k_FRAbsId = 1;
