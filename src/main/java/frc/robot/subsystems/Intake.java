@@ -6,7 +6,9 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.ColorSensorV3;
 
-import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
@@ -25,7 +27,8 @@ public class Intake extends Subsystem {
 
   private final DutyCycleEncoder m_pivotAbsEncoder = new DutyCycleEncoder(Constants.Intake.k_pivotEncoderId);
 
-  private final PIDController m_pivotMotorPID;
+  private final ProfiledPIDController m_pivotMotorPID;
+  private final ArmFeedforward m_pivotFeedForward;
 
   private final double k_pivotThreshold = 2.0;
   private final double k_intakeSpeedThreshold = 0.1;
@@ -55,10 +58,20 @@ public class Intake extends Subsystem {
     m_intakeMotor.setInverted(true);
 
     // Pivot PID
-    m_pivotMotorPID = new PIDController(
+    m_pivotMotorPID = new ProfiledPIDController(
         Constants.Intake.k_pivotMotorP,
         Constants.Intake.k_pivotMotorI,
-        Constants.Intake.k_pivotMotorD);
+        Constants.Intake.k_pivotMotorD,
+        new TrapezoidProfile.Constraints(
+          Constants.Intake.k_maxVelocity,
+          Constants.Intake.k_maxAcceleration));
+
+    // Pivot Feedforward
+    m_pivotFeedForward = new ArmFeedforward(
+      Constants.Intake.k_pivotMotorKS,
+      Constants.Intake.k_pivotMotorKG,
+      Constants.Intake.k_pivotMotorKV, 
+      Constants.Intake.k_pivotMotorKA);
 
     m_periodicIO = new PeriodicIO();
 
@@ -82,7 +95,12 @@ public class Intake extends Subsystem {
 
     if (!DriverStation.isTest()) {
       double target_pivot_angle = getAngleFromTarget(m_periodicIO.pivot_target);
-      m_periodicIO.pivot_voltage = m_pivotMotorPID.calculate(getPivotAngle(), target_pivot_angle);
+
+      double pidCalc = m_pivotMotorPID.calculate(getPivotAngle(), target_pivot_angle);
+      double ffCalc = m_pivotFeedForward.calculate(Math.toRadians(getPivotReferenceToHorizontal()), 
+        Math.toRadians(m_pivotMotorPID.getSetpoint().velocity));
+
+      m_periodicIO.pivot_voltage = pidCalc + ffCalc;
 
       m_periodicIO.intake_speed = getSpeedFromState(m_periodicIO.intake_state);
       putString("IntakeState", m_periodicIO.intake_state.toString());
@@ -206,6 +224,16 @@ public class Intake extends Subsystem {
   }
 
   // Logged
+  @AutoLogOutput
+  public double getVelocityError() {
+    return m_pivotMotorPID.getVelocityError();
+  }
+
+  @AutoLogOutput
+  public double getPivotReferenceToHorizontal() {
+    return getPivotAngle() - Constants.Intake.k_pivotOffset;
+  }
+
   @AutoLogOutput
   private String getPivotTargetAsString() {
     return m_periodicIO.pivot_target.toString();

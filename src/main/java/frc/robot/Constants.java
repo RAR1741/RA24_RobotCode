@@ -185,10 +185,15 @@ public final class Constants {
     public static final double k_ejectSpeed = -0.25;
     public static final double k_feedShooterSpeed = -0.5;
 
-    public static final double k_pivotMotorP = 0.035;
+    public static final double k_pivotMotorP = 0.01; // 0.035
     public static final double k_pivotMotorI = 0.0;
     public static final double k_pivotMotorD = 0.0;
     public static final double k_pivotMotorIZone = 0.0;
+
+    public static final double k_pivotMotorKS = 0.0; // volts
+    public static final double k_pivotMotorKG = 0.03; // volts
+    public static final double k_pivotMotorKV = 0.244; // volts*sec / rad
+    public static final double k_pivotMotorKA = 0.0; // 0.02; // volts*sec^2 / rad
 
     public static final double k_length = 14.319626; // In inches
     public static final double k_mass = 5.8967; // In kg
@@ -201,11 +206,16 @@ public final class Constants {
 
     public static final double k_distanceFromCenter = 12.5;
     public static final int k_sensorThreshold = 1000; // 1,000 is "in", 2000 is max
+
+    public static final double k_pivotOffset = 74.5;
+
+	  public static double k_maxVelocity = 120.0;//460.0;
+    public static double k_maxAcceleration = 120.0; //460.0;
   }
 
   public static class Simulation {
-    public static final double k_width = 150; // Inches
-    public static final double k_height = 100; // Inches
+    public static final double k_width = 150.0; // Inches
+    public static final double k_height = 100.0; // Inches
   }
 
   public class Shooter {
