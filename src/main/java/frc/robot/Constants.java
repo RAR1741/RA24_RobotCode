@@ -175,7 +175,7 @@ public final class Constants {
 
     public static final int k_pivotEncoderId = 4;
 
-    public static final double k_stowPivotAngle = 267.0;
+    public static final double k_stowPivotAngle = 264.0;
     public static final double k_groundPivotAngle = 41.0;
     public static final double k_sourcePivotAngle = 180.0;
     // public static final double k_sourcePivotAngle = k_stowPivotAngle;
@@ -210,7 +210,7 @@ public final class Constants {
 
     public static final double k_pivotOffset = 74.5;
 
-	  public static double k_maxVelocity = 690.0;
+    public static double k_maxVelocity = 690.0;
     public static double k_maxAcceleration = 1380.0;
   }
 
