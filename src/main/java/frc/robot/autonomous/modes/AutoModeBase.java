@@ -41,6 +41,8 @@ public abstract class AutoModeBase {
     // Figure out the first PathPlanner path
     Pose2d startingPose = null;
 
+    SwerveDrive m_swerve = SwerveDrive.getInstance();
+
     startingPose = getFirstDriveTask(m_tasks).getStartingPose();
 
     // If there isn't one, default to something visible
@@ -49,7 +51,6 @@ public abstract class AutoModeBase {
       startingPose = new Pose2d(Field.k_width / 2, Field.k_length / 2, new Rotation2d(0));
     }
 
-    SwerveDrive m_swerve = SwerveDrive.getInstance();
     // TODO: Fix PP rotation again
 
     // Reset the gyro to the starting rotation
@@ -57,6 +58,12 @@ public abstract class AutoModeBase {
     // m_swerve.setGyroAngleAdjustment(startingPose.getRotation().getDegrees());
 
     m_swerve.resetOdometry(startingPose);
+
+    // if (DriverStation.getAlliance().get() == Alliance.Red) {
+    // m_swerve.setGyroAngleAdjustment(180);
+    // } else {
+    // m_swerve.setGyroAngleAdjustment(0);
+    // }
   };
 
   public Pose3d getAllianceSpeakerPose() {

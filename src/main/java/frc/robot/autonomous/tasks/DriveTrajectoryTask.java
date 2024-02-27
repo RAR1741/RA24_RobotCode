@@ -13,6 +13,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants.Auto;
 import frc.robot.Constants.AutoAim.Rotation;
@@ -46,7 +47,7 @@ public class DriveTrajectoryTask extends Task {
       if (DriverStation.getAlliance().get() == Alliance.Red) {
         DriverStation.reportWarning("Translating path for Red Alliance!", false);
         m_autoPath = m_autoPath.flipPath();
-        m_autoPath.preventFlipping = true;
+        // m_autoPath.preventFlipping = true;
       }
 
       m_autoTrajectory = m_autoPath.getTrajectory(
@@ -71,13 +72,28 @@ public class DriveTrajectoryTask extends Task {
   public void update() {
     if (m_autoTrajectory != null) {
       State goal = m_autoTrajectory.sample(m_runningTimer.get());
-      ChassisSpeeds chassisSpeeds = k_driveController.calculateRobotRelativeSpeeds(m_swerve.getPose(), goal);
+      Pose2d pose = m_swerve.getPose();
+
+      // if (DriverStation.getAlliance().get() == Alliance.Red) {
+      // pose = pose.rotateBy(new Rotation2d(180));
+      // }
+
+      // goal.targetHolonomicRotation = goal.targetHolonomicRotation.rotateBy(new
+      // Rotation2d(2 * Math.PI));
+
+      ChassisSpeeds chassisSpeeds = k_driveController.calculateRobotRelativeSpeeds(pose, goal);
 
       Logger.recordOutput("Auto/DriveTrajectory/TargetPose", goal.getTargetHolonomicPose());
 
+      Logger.recordOutput("Auto/DriveTrajectory/TargetHoloRotation",
+          goal.targetHolonomicRotation);
+      Logger.recordOutput("Auto/DriveTrajectory/TargetRotationDegrees",
+          goal.getTargetHolonomicPose().getRotation().getDegrees());
+      Logger.recordOutput("Auto/DriveTrajectory/ActualRotationDegrees", pose.getRotation().getDegrees());
+
       Logger.recordOutput("Auto/DriveTrajectory/RotationError",
-          goal.getTargetHolonomicPose().getRotation().getDegrees() - m_swerve.getPose().getRotation().getDegrees());
-      Logger.recordOutput("Auto/DriveTrajectory/ChassisRotationRPS",
+          goal.getTargetHolonomicPose().getRotation().getDegrees() - pose.getRotation().getDegrees());
+      Logger.recordOutput("Auto/DriveTrajectory/ChassisRotationDPS",
           Units.radiansToDegrees(chassisSpeeds.omegaRadiansPerSecond));
 
       m_swerve.drive(chassisSpeeds);
@@ -90,13 +106,14 @@ public class DriveTrajectoryTask extends Task {
 
   @Override
   public void updateSim() {
-    // if (!RobotBase.isReal() && m_autoTrajectory != null) {
-    //   // Pose2d pose = m_autoTrajectory.sample(m_runningTimer.get()).getTargetHolonomicPose();
+    if (!RobotBase.isReal() && m_autoTrajectory != null) {
+      // Pose2d pose =
+      // m_autoTrajectory.sample(m_runningTimer.get()).getTargetHolonomicPose();
 
-    //   // Preferences.setDouble("SwerveDrive/x", pose.getX());
-    //   // Preferences.setDouble("SwerveDrive/y", pose.getY());
-    //   // Preferences.setDouble("SwerveDrive/rot", pose.getRotation().getDegrees());
-    // }
+      // Preferences.setDouble("SwerveDrive/x", pose.getX());
+      // Preferences.setDouble("SwerveDrive/y", pose.getY());
+      // Preferences.setDouble("SwerveDrive/rot", pose.getRotation().getDegrees());
+    }
   }
 
   public Pose2d getStartingPose() {
