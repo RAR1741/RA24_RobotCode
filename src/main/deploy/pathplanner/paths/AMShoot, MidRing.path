@@ -57,5 +57,5 @@
   "reversed": false,
   "folder": "Auto2Paths",
   "previewStartingState": null,
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

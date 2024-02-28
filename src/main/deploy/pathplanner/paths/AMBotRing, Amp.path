@@ -54,5 +54,5 @@
     "rotation": 45.0,
     "velocity": 0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }
