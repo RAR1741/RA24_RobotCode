@@ -210,9 +210,9 @@ public class Robot extends LoggedRobot {
       m_swerve.resetGyro();
     }
 
-    if (m_driverController.getWantsAutoAim()) {
-      m_autoAimEnabled = !m_autoAimEnabled;
-    }
+    // if (m_driverController.getWantsAutoAim()) {
+    //   m_autoAimEnabled = !m_autoAimEnabled;
+    // }
 
     if (m_driverController.getWantsIntakeStow()) {
       m_intake.setPivotTarget(IntakePivotTarget.STOW);
