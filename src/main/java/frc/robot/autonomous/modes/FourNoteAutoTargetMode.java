@@ -62,7 +62,7 @@ public class FourNoteAutoTargetMode extends AutoModeBase {
     queueTask(new ParallelTask(
         new IntakeTask(IntakePivotTarget.STOW, IntakeState.NONE),
         new ShooterTask(ShooterPivotTarget.SUBWOOFER, ShooterSpeedTarget.OFF),
-        new DriveTrajectoryTask("BotRing,Mid")));
+        new DriveTrajectoryTask("BotRing, Mid")));
 
     queueTask(new DriveForwardTask(0, 0));
   }
