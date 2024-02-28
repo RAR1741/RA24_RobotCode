@@ -17,12 +17,12 @@ public class OperatorController extends FilteredController {
     return (this.getFilteredAxis(Axis.RIGHT_TRIGGER) - this.getFilteredAxis(Axis.LEFT_TRIGGER)) * limit;
   }
 
-  public boolean getWantsAmpAngle() {
-    return this.getRawButtonPressed(Button.A);
+  public boolean getWantsPodiumAngle() {
+    return this.getRawButtonPressed(Button.Y);
   }
 
   public boolean getWantsSubwooferAngle() {
-    return this.getRawButtonPressed(Button.Y);
+    return this.getRawButtonPressed(Button.A);
   }
 
   public boolean getWantsShooterMaxAngle() {

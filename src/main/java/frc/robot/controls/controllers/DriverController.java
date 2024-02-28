@@ -35,19 +35,11 @@ public class DriverController extends FilteredController {
   }
 
   public boolean getWantsResetGyro() {
-    return this.getRawButton(Button.Y);
-  }
-
-  public boolean getWantsBrake() {
-    return this.getRawButton(Button.LEFT_BUMPER);
-  }
-
-  public boolean getWantsSlowMode() {
-    return this.getFilteredAxis(Axis.RIGHT_TRIGGER) > k_triggerActivationThreshold;
+    return this.getRawButton(Button.START);
   }
 
   public boolean getWantsAutoAim() {
-    return this.getRawButtonPressed(Button.START);
+    return this.getRawButtonPressed(Button.BACK);
   }
 
   // SysId test mode //
@@ -91,7 +83,7 @@ public class DriverController extends FilteredController {
   }
 
   public boolean getWantsIntake() {
-    return this.getRawButton(Button.X);
+    return this.getRawButton(Button.Y);
   }
 
   public boolean getWantsEject() {

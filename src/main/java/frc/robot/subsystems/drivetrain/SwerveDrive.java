@@ -264,7 +264,7 @@ public class SwerveDrive extends SwerveSysId {
   }
 
   public void setAllianceGyroAngleAdjustment() {
-    if (DriverStation.getAlliance().get() == Alliance.Red) {
+    if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {
       m_gyro.setAngleAdjustment(180);
     } else {
       m_gyro.setAngleAdjustment(0);
@@ -273,7 +273,8 @@ public class SwerveDrive extends SwerveSysId {
 
   public void resetGyro() {
     m_gyro.reset();
-    setGyroAngleAdjustment(0);
+    // setGyroAngleAdjustment(0);
+    setAllianceGyroAngleAdjustment();
   }
 
   @Override

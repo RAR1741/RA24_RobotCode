@@ -101,12 +101,13 @@ public class Robot extends LoggedRobot {
     m_allSubsystems.forEach(subsystem -> subsystem.writeToLog());
 
     updateSim();
-
+    m_swerve.setAllianceGyroAngleAdjustment();
     // CommandScheduler.getInstance().run(); // used by sysid
   }
 
   @Override
   public void autonomousInit() {
+    m_swerve.resetGyro();
     m_swerve.setBrakeMode(false);
 
     m_autoRunner.setAutoMode(m_autoChooser.getSelectedAuto());
@@ -141,6 +142,7 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void teleopInit() {
+    m_swerve.resetGyro();
     m_swerve.setBrakeMode(false);
     m_swerve.drive(0, 0, 0, false);
 
@@ -211,7 +213,7 @@ public class Robot extends LoggedRobot {
     }
 
     // if (m_driverController.getWantsAutoAim()) {
-    //   m_autoAimEnabled = !m_autoAimEnabled;
+    // m_autoAimEnabled = !m_autoAimEnabled;
     // }
 
     if (m_driverController.getWantsIntakeStow()) {
@@ -237,7 +239,7 @@ public class Robot extends LoggedRobot {
 
     m_shooter.changePivotByAngle(m_operatorController.getWantsManualShooterPivot(0.5));
 
-    if (m_operatorController.getWantsAmpAngle()) {
+    if (m_operatorController.getWantsPodiumAngle()) {
       m_shooter.setAngle(ShooterPivotTarget.PODIUM);
     }
 

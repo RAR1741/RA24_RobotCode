@@ -63,9 +63,15 @@ public class DriveTrajectoryTask extends Task {
     // We probably want to reset this to the pose's starting rotation
     m_swerve.setAllianceGyroAngleAdjustment();
 
+    // m_autoTrajectory = m_autoPath.getTrajectory(
+    // new ChassisSpeeds(),
+    // m_swerve.getGyro().getRotation2d());
+
     m_autoTrajectory = m_autoPath.getTrajectory(
         new ChassisSpeeds(),
-        m_swerve.getGyro().getRotation2d());
+        m_swerve.getPose().getRotation());
+
+    Logger.recordOutput("Auto/DriveTrajectory/StartingTargetPose", getStartingPose());
 
     // TODO: we probably want to do this all the time?
     // if (!m_swerve.hasSetPose()) {
@@ -82,6 +88,8 @@ public class DriveTrajectoryTask extends Task {
       // Rotation2d offset = new Rotation2d(Units.degreesToRadians(180));
 
       State goal = m_autoTrajectory.sample(m_runningTimer.get());
+
+      // goal.targetHolonomicRotation = Rotation2d.fromDegrees(180);
       // goal.targetHolonomicRotation = goal.targetHolonomicRotation.rotateBy(offset);
 
       Pose2d pose = m_swerve.getPose();
@@ -97,6 +105,10 @@ public class DriveTrajectoryTask extends Task {
       ChassisSpeeds chassisSpeeds = k_driveController.calculateRobotRelativeSpeeds(pose, goal);
 
       Logger.recordOutput("Auto/DriveTrajectory/TargetPose", goal.getTargetHolonomicPose());
+      Logger.recordOutput("Auto/DriveTrajectory/BigDummyTargetPose", new Pose2d(
+          goal.getTargetHolonomicPose().getX(),
+          goal.getTargetHolonomicPose().getY(),
+          goal.targetHolonomicRotation));
 
       Logger.recordOutput("Auto/DriveTrajectory/TargetHoloRotation",
           goal.targetHolonomicRotation);
