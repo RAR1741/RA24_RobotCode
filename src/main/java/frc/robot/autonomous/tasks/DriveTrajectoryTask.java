@@ -42,13 +42,13 @@ public class DriveTrajectoryTask extends Task {
 
   public DriveTrajectoryTask(String pathName) {
     try {
-      m_autoPath = PathPlannerPath.fromPathFile(pathName);
-
       if (DriverStation.getAlliance().get() == Alliance.Red) {
         DriverStation.reportWarning("Translating path for Red Alliance!", false);
-        m_autoPath = m_autoPath.flipPath();
-        // m_autoPath.preventFlipping = true;
+
+        pathName = "RED|" + pathName;
       }
+
+      m_autoPath = PathPlannerPath.fromPathFile(pathName);
 
     } catch (Exception ex) {
       DriverStation.reportError("Unable to load PathPlanner trajectory: " + pathName, ex.getStackTrace());
