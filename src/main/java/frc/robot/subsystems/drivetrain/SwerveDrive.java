@@ -16,6 +16,8 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.SPI;
@@ -74,6 +76,8 @@ public class SwerveDrive extends SwerveSysId {
       },
       new Pose2d(0, 0, Rotation2d.fromDegrees(0)));
 
+  private boolean m_hasSetPose = false;
+
   private SwerveDrive() {
     super(m_modules, "SwerveDrive");
 
@@ -121,10 +125,18 @@ public class SwerveDrive extends SwerveSysId {
 
   public void resetPose() {
     resetGyro();
-    resetOdometry(new Pose2d(0, 0, new Rotation2d(0)));
+    resetOdometry(new Pose2d(0, 0, new Rotation2d(0)), false);
   }
 
   public void resetOdometry(Pose2d pose) {
+    resetOdometry(pose, true);
+  }
+
+  public void resetOdometry(Pose2d pose, boolean shouldSetFlag) {
+    m_hasSetPose |= shouldSetFlag;
+
+    // setAllianceGyroAngleAdjustment();
+
     for (SwerveModule module : m_modules) {
       module.resetDriveEncoder();
     }
@@ -146,7 +158,13 @@ public class SwerveDrive extends SwerveSysId {
     // setPose(pose);
   }
 
+  // Only call this in simulation
   public void setPose(Pose2d pose) {
+    if (RobotBase.isReal()) {
+      throw new UnsupportedOperationException("Only call setPose() from sim");
+    }
+    // m_hasSetPose = true;
+
     m_poseEstimator.resetPosition(
         pose.getRotation(), // Maybe should be getRotation2d() (it uses pose estimator)?
         new SwerveModulePosition[] {
@@ -245,6 +263,14 @@ public class SwerveDrive extends SwerveSysId {
     m_gyro.setAngleAdjustment(angle);
   }
 
+  public void setAllianceGyroAngleAdjustment() {
+    if (DriverStation.getAlliance().get() == Alliance.Red) {
+      m_gyro.setAngleAdjustment(180);
+    } else {
+      m_gyro.setAngleAdjustment(0);
+    }
+  }
+
   public void resetGyro() {
     m_gyro.reset();
     setGyroAngleAdjustment(0);
@@ -337,6 +363,11 @@ public class SwerveDrive extends SwerveSysId {
     };
 
     return desiredStates;
+  }
+
+  @AutoLogOutput
+  public boolean hasSetPose() {
+    return m_hasSetPose;
   }
 
   @AutoLogOutput

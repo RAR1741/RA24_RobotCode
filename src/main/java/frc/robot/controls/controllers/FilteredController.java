@@ -1,5 +1,7 @@
 package frc.robot.controls.controllers;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID;
 import frc.robot.controls.Deadband;
 import frc.robot.controls.SquaredInput;
@@ -9,6 +11,8 @@ public class FilteredController extends GenericHID {
 
   private boolean m_useDeadband;
   private boolean m_useSquaredInput;
+
+  public double k_allianceMultiplier = 1.0;
 
   private Deadband m_deadband = new Deadband(DEADBAND_LIMIT);
   private SquaredInput m_squaredInput = new SquaredInput(DEADBAND_LIMIT);
@@ -27,6 +31,14 @@ public class FilteredController extends GenericHID {
     this(port);
     this.m_useDeadband = useDeadband;
     this.m_useSquaredInput = useSquaredInput;
+  }
+
+  public void setAllianceMultiplier() {
+    if (DriverStation.getAlliance().get() == Alliance.Red) {
+      k_allianceMultiplier = -1.0;
+    } else {
+      k_allianceMultiplier = 1.0;
+    }
   }
 
   public double getFilteredAxis(int axis) {

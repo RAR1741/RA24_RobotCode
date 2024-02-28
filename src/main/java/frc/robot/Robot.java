@@ -86,7 +86,10 @@ public class Robot extends LoggedRobot {
     m_allSubsystems.add(m_shooter);
     // m_allSubsystems.add(m_climber);
 
-    m_swerve.setGyroAngleAdjustment(0);
+    // m_swerve.setAllianceGyroAngleAdjustment();
+    // TODO: this
+    // m_driverController.setAllianceMultiplier();
+    // m_operatorController.setAllianceMultiplier();
   }
 
   @Override
@@ -331,9 +334,10 @@ public class Robot extends LoggedRobot {
         m_swerve.pointModules(0, 0, 0, false);
         break;
       case "NO_GYRO_DRIVE":
-        double rot = m_rotRateLimiter.calculate(m_driverController.getTurnAxis() * Constants.SwerveDrive.k_maxAngularSpeed);
+        double rot = m_rotRateLimiter
+            .calculate(m_driverController.getTurnAxis() * Constants.SwerveDrive.k_maxAngularSpeed);
         double maxSpeed = Constants.SwerveDrive.k_maxSpeed + ((Constants.SwerveDrive.k_maxBoostSpeed -
-        Constants.SwerveDrive.k_maxSpeed) * m_driverController.getBoostScaler());
+            Constants.SwerveDrive.k_maxSpeed) * m_driverController.getBoostScaler());
 
         double xSpeed = m_xRateLimiter.calculate(m_driverController.getForwardAxis() * maxSpeed);
         double ySpeed = m_yRateLimiter.calculate(m_driverController.getStrafeAxis() * maxSpeed);

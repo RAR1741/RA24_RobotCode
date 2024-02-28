@@ -50,10 +50,6 @@ public class DriveTrajectoryTask extends Task {
         // m_autoPath.preventFlipping = true;
       }
 
-      m_autoTrajectory = m_autoPath.getTrajectory(
-          new ChassisSpeeds(),
-          m_swerve.getGyro().getRotation2d());
-
     } catch (Exception ex) {
       DriverStation.reportError("Unable to load PathPlanner trajectory: " + pathName, ex.getStackTrace());
     }
@@ -64,6 +60,18 @@ public class DriveTrajectoryTask extends Task {
     m_runningTimer.reset();
     m_runningTimer.start();
 
+    // We probably want to reset this to the pose's starting rotation
+    m_swerve.setAllianceGyroAngleAdjustment();
+
+    m_autoTrajectory = m_autoPath.getTrajectory(
+        new ChassisSpeeds(),
+        m_swerve.getGyro().getRotation2d());
+
+    // TODO: we probably want to do this all the time?
+    // if (!m_swerve.hasSetPose()) {
+    m_swerve.resetOdometry(getStartingPose());
+    // }
+
     m_swerve.clearTurnPIDAccumulation();
     DriverStation.reportWarning("Running path for " + DriverStation.getAlliance().get().toString(), false);
   }
@@ -71,8 +79,13 @@ public class DriveTrajectoryTask extends Task {
   @Override
   public void update() {
     if (m_autoTrajectory != null) {
+      // Rotation2d offset = new Rotation2d(Units.degreesToRadians(180));
+
       State goal = m_autoTrajectory.sample(m_runningTimer.get());
+      // goal.targetHolonomicRotation = goal.targetHolonomicRotation.rotateBy(offset);
+
       Pose2d pose = m_swerve.getPose();
+      // pose = pose.rotateBy(offset);
 
       // if (DriverStation.getAlliance().get() == Alliance.Red) {
       // pose = pose.rotateBy(new Rotation2d(180));
@@ -117,6 +130,7 @@ public class DriveTrajectoryTask extends Task {
   }
 
   public Pose2d getStartingPose() {
+    System.out.println(m_autoTrajectory.getState(0).getTargetHolonomicPose().getRotation().getDegrees());
     return m_autoTrajectory.getState(0).getTargetHolonomicPose();
   }
 

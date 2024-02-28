@@ -66,6 +66,6 @@ public class AutoRunner {
 
     m_autoMode.queueTasks();
 
-    m_autoMode.setStartingPose();
+    // m_autoMode.setStartingPose();
   }
 }
