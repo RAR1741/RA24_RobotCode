@@ -12,7 +12,7 @@ public class FilteredController extends GenericHID {
   private boolean m_useDeadband;
   private boolean m_useSquaredInput;
 
-  public double k_allianceMultiplier = 1.0;
+  public double k_allianceMultiplier = -1.0;
 
   private Deadband m_deadband = new Deadband(DEADBAND_LIMIT);
   private SquaredInput m_squaredInput = new SquaredInput(DEADBAND_LIMIT);

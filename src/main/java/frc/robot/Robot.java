@@ -107,7 +107,7 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void autonomousInit() {
-    m_swerve.resetGyro();
+    // m_swerve.resetGyro();
     m_swerve.setBrakeMode(false);
 
     m_autoRunner.setAutoMode(m_autoChooser.getSelectedAuto());
@@ -210,6 +210,7 @@ public class Robot extends LoggedRobot {
 
     if (m_driverController.getWantsResetGyro()) {
       m_swerve.resetGyro();
+      m_swerve.resetTurnOffsets();
     }
 
     // if (m_driverController.getWantsAutoAim()) {

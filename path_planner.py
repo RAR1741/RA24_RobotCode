@@ -53,6 +53,9 @@ def copy_path_to_red(blue_file_name, path):
         if waypoint["nextControl"]:
             waypoint["nextControl"]["x"] = FIELD_LENGTH - waypoint["nextControl"]["x"]
 
+        # Remove linked waypoints
+        waypoint["linkedName"] = None
+
     # Fix start and end
     # Fix rotation targets
 

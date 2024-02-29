@@ -26,6 +26,8 @@ public class ShooterTask extends Task {
 
 	@Override
 	public void start() {
+		DriverStation.reportWarning("Auto shooter start", false);
+
 		m_shooter.setAngle(m_pivotTarget);
 		if (Double.isNaN(m_speed)) {
 			m_shooter.setSpeed(m_speed);

@@ -255,6 +255,12 @@ public class SwerveDrive extends SwerveSysId {
     }
   }
 
+  public void resetTurnOffsets() {
+    for (SwerveModule module : m_modules) {
+      module.resetTurnOffset();
+    }
+  }
+
   public AHRS getGyro() {
     return m_gyro;
   }

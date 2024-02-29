@@ -10,6 +10,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.Constants;
+import frc.robot.Helpers;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 
 public class AutoTargetTask extends Task {
@@ -49,22 +50,24 @@ public class AutoTargetTask extends Task {
 
   @Override
   public void start() {
+    DriverStation.reportWarning("Auto target start", false);
+
     Pose2d currentPose = m_swerve.getPose();
-    System.out.println("Starting degrees: " + currentPose.getRotation().getDegrees());
+    System.out.println("Starting degrees: " + Helpers.modDegrees(currentPose.getRotation().getDegrees()));
 
     // Get the target rotation between the current pose and the target pose
     m_targetRotation = new Rotation2d(
         currentPose.getTranslation().getX() - m_targetPose.getTranslation().getX(),
         currentPose.getTranslation().getY() - m_targetPose.getTranslation().getY());
 
-    System.out.println("Target degrees: " + m_targetRotation.getDegrees());
+    System.out.println("Target degrees: " + Helpers.modDegrees(m_targetRotation.getDegrees()));
     m_targetRobotPose = new Pose2d(currentPose.getTranslation(), m_targetRotation);
   }
 
   @Override
   public void update() {
-    double rotationError = m_targetRobotPose.getRotation().getRadians()
-        - m_swerve.getPose().getRotation().getRadians();
+    double rotationError = Helpers.modRadians(m_targetRobotPose.getRotation().getRadians())
+        - Helpers.modRadians(m_swerve.getPose().getRotation().getRadians());
 
     m_swerve.drive(0, 0, rotationError * 5.0, true);
   }
@@ -79,10 +82,10 @@ public class AutoTargetTask extends Task {
   @Override
   public boolean isFinished() {
     double rotationError = Math.abs(
-        m_swerve.getPose().getRotation().getDegrees()
-            - m_targetRobotPose.getRotation().getDegrees());
+        Helpers.modDegrees(m_swerve.getPose().getRotation().getDegrees())
+            - Helpers.modDegrees(m_targetRobotPose.getRotation().getDegrees()));
 
-    return m_isFinished || (rotationError < Constants.AutoAim.k_autoAimAngleTolerance);
+    return m_isFinished || (rotationError < Constants.AutoAim.k_autoAimAngleTolerance) || !RobotBase.isReal();
   }
 
   @Override

@@ -24,7 +24,7 @@ public final class Constants {
   public static class Auto {
     // Meters per second2
     // Needs to be more than the max robot speed, to allow for turning
-    public static final double k_maxModuleSpeed = 100.0;
+    public static final double k_maxModuleSpeed = 5.0;
     public static final double k_maxAcceleration = 1.0; // NOT USED
 
     public class Timing {

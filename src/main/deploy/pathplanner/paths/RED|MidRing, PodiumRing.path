@@ -12,7 +12,7 @@
         "y": 4.9628928348765795
       },
       "isLocked": false,
-      "linkedName": "BlueMidNote"
+      "linkedName": null
     },
     {
       "anchor": {
@@ -25,7 +25,7 @@
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "BluePodiumNote"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],

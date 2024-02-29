@@ -21,7 +21,7 @@ public class TestMode extends AutoModeBase {
     // queueTask(new ShooterTask(ShooterPivotTarget.SPEAKER,
     // ShooterSpeedTarget.MAX));
     // queueTask(new IntakeTask(IntakePivotTarget.STOW, IntakeState.NONE));
-    // queueTask(new WaitTask(3));
+    queueTask(new WaitTask(5));
     // queueTask(new IntakeTask(IntakePivotTarget.STOW, IntakeState.FEED_SHOOTER));
     // queueTask(new WaitTask(2));
 

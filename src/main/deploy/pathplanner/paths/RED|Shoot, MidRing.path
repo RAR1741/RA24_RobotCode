@@ -12,7 +12,7 @@
         "y": 5.55
       },
       "isLocked": false,
-      "linkedName": "BlueSubStart"
+      "linkedName": null
     },
     {
       "anchor": {
@@ -25,7 +25,7 @@
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "BlueMidNote"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -51,11 +51,14 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
+    "rotation": 180.0,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "Red",
-  "previewStartingState": null,
+  "previewStartingState": {
+    "rotation": 180.0,
+    "velocity": 0
+  },
   "useDefaultConstraints": true
 }
