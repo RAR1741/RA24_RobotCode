@@ -73,7 +73,7 @@ public class SwerveModule {
     m_turningRelEncoder = m_turnMotor.getEncoder();
     m_turningRelEncoder.setPositionConversionFactor(Constants.SwerveDrive.k_turnGearRatio * 2.0 * Math.PI);
     m_turningRelEncoder.setVelocityConversionFactor(Constants.SwerveDrive.k_turnGearRatio * 2.0 * Math.PI / 60.0);
-    resetTurnOffset();
+    resetTurnConfig();
 
     m_turningPIDController = m_turnMotor.getPIDController();
     m_turningPIDController.setP(Constants.SwerveDrive.Turn.k_P);
@@ -128,7 +128,7 @@ public class SwerveModule {
     m_driveEncoder.setPosition(0.0);
   }
 
-  public void resetTurnOffset() {
+  public void resetTurnConfig() {
     m_turningRelEncoder.setPosition(
         Helpers.modRadians(Units.rotationsToRadians(m_turningAbsEncoder.getAbsolutePosition() - m_turningOffset)));
   }

@@ -11,21 +11,24 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 
-public class CustomHolonomicDriveController2 extends PPHolonomicDriveController {
+public class RARHolonomicDriveController extends PPHolonomicDriveController {
   private final PIDController xController;
   private final PIDController yController;
   private final ProfiledPIDController rotationController;
   private final double maxModuleSpeed;
   private final double mpsToRps;
 
+  @SuppressWarnings("unused")
+  private Translation2d translationError = new Translation2d();
   private boolean isEnabled = true;
 
   private static Supplier<Optional<Rotation2d>> rotationTargetOverride = null;
 
-  public CustomHolonomicDriveController2(
+  public RARHolonomicDriveController(
       PIDConstants translationConstants,
       PIDConstants rotationConstants,
       double period,
@@ -35,20 +38,13 @@ public class CustomHolonomicDriveController2 extends PPHolonomicDriveController 
 
     this.xController = new PIDController(
         translationConstants.kP, translationConstants.kI, translationConstants.kD, period);
-    // this.xController.setIntegratorRange(-translationConstants.iZone,
-    // translationConstants.iZone);
+    this.xController.setIntegratorRange(-translationConstants.iZone, translationConstants.iZone);
 
     this.yController = new PIDController(
         translationConstants.kP, translationConstants.kI, translationConstants.kD, period);
-    // this.yController.setIntegratorRange(-translationConstants.iZone,
-    // translationConstants.iZone);
+    this.yController.setIntegratorRange(-translationConstants.iZone, translationConstants.iZone);
 
     // Temp rate limit of 0, will be changed in calculate
-    // this.rotationController = new PIDController(
-    // rotationConstants.kP,
-    // rotationConstants.kI,
-    // rotationConstants.kD,
-    // period);
     this.rotationController = new ProfiledPIDController(
         rotationConstants.kP,
         rotationConstants.kI,
@@ -62,7 +58,7 @@ public class CustomHolonomicDriveController2 extends PPHolonomicDriveController 
     this.mpsToRps = 1.0 / driveBaseRadius;
   }
 
-  public CustomHolonomicDriveController2(
+  public RARHolonomicDriveController(
       PIDConstants translationConstants,
       PIDConstants rotationConstants,
       double maxModuleSpeed,
@@ -70,21 +66,20 @@ public class CustomHolonomicDriveController2 extends PPHolonomicDriveController 
     this(translationConstants, rotationConstants, 0.02, maxModuleSpeed, driveBaseRadius);
   }
 
-  private double copyRotationFF = 0.0;
-  private double copyRotationFeedback = 0.0;
-  private double copyRotationTarget = 0.0;
-  private double copyRotationActual = 0.0;
   boolean firstTimeForEverything = true;
 
   @Override
-  public ChassisSpeeds calculateRobotRelativeSpeeds(
-      Pose2d currentPose, PathPlannerTrajectory.State targetState) {
+  public ChassisSpeeds calculateRobotRelativeSpeeds(Pose2d currentPose, PathPlannerTrajectory.State targetState) {
+    // This is the only thing we actually changed
     if (firstTimeForEverything) {
       firstTimeForEverything = false;
       rotationController.reset(currentPose.getRotation().getRadians());
     }
+
     double xFF = targetState.velocityMps * targetState.heading.getCos();
     double yFF = targetState.velocityMps * targetState.heading.getSin();
+
+    this.translationError = currentPose.getTranslation().minus(targetState.positionMeters);
 
     if (!this.isEnabled) {
       return ChassisSpeeds.fromFieldRelativeSpeeds(xFF, yFF, 0, currentPose.getRotation());
@@ -110,38 +105,13 @@ public class CustomHolonomicDriveController2 extends PPHolonomicDriveController 
       targetRotation = rotationTargetOverride.get().orElse(targetRotation);
     }
 
-    double rotationFeedback = 0.0;
-    // for (int i = 0; i < 5; i++) {
-    rotationFeedback = rotationController.calculate(
+    double rotationFeedback = rotationController.calculate(
         currentPose.getRotation().getRadians(),
         new TrapezoidProfile.State(targetRotation.getRadians(), 0),
         rotationConstraints);
-    // }
-
-    copyRotationTarget = targetRotation.getDegrees();
-    copyRotationActual = currentPose.getRotation().getDegrees();
-
-    copyRotationFeedback = rotationFeedback;
     double rotationFF = targetState.holonomicAngularVelocityRps.orElse(rotationController.getSetpoint().velocity);
-    copyRotationFF = rotationFF;
 
     return ChassisSpeeds.fromFieldRelativeSpeeds(
         xFF + xFeedback, yFF + yFeedback, rotationFF + rotationFeedback, currentPose.getRotation());
-  }
-
-  public double getRotationFF() {
-    return copyRotationFF;
-  }
-
-  public double getRotationFeedback() {
-    return copyRotationFeedback;
-  }
-
-  public double getRotationTarget() {
-    return copyRotationTarget;
-  }
-
-  public double getRotationActual() {
-    return copyRotationActual;
   }
 }

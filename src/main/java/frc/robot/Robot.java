@@ -85,11 +85,6 @@ public class Robot extends LoggedRobot {
     m_allSubsystems.add(m_intake);
     m_allSubsystems.add(m_shooter);
     // m_allSubsystems.add(m_climber);
-
-    // m_swerve.setAllianceGyroAngleAdjustment();
-    // TODO: this
-    // m_driverController.setAllianceMultiplier();
-    // m_operatorController.setAllianceMultiplier();
   }
 
   @Override
@@ -102,6 +97,9 @@ public class Robot extends LoggedRobot {
 
     updateSim();
     m_swerve.setAllianceGyroAngleAdjustment();
+    m_driverController.setAllianceMultiplier();
+    m_operatorController.setAllianceMultiplier();
+
     // CommandScheduler.getInstance().run(); // used by sysid
   }
 
@@ -210,6 +208,9 @@ public class Robot extends LoggedRobot {
 
     if (m_driverController.getWantsResetGyro()) {
       m_swerve.resetGyro();
+    }
+
+    if (m_driverController.getWantsResetModules()) {
       m_swerve.resetTurnOffsets();
     }
 
@@ -217,19 +218,19 @@ public class Robot extends LoggedRobot {
     // m_autoAimEnabled = !m_autoAimEnabled;
     // }
 
-    if (m_driverController.getWantsIntakeStow()) {
-      m_intake.setPivotTarget(IntakePivotTarget.STOW);
-    }
-
-    if (m_driverController.getWantsIntakeGround()) {
-      m_intake.setPivotTarget(IntakePivotTarget.GROUND);
+    if (m_driverController.getWantsIntakePivotToggle()) {
+      if (m_intake.getPivotTarget() == IntakePivotTarget.STOW) {
+        m_intake.setPivotTarget(IntakePivotTarget.GROUND);
+      } else if (m_intake.getPivotTarget() == IntakePivotTarget.GROUND) {
+        m_intake.setPivotTarget(IntakePivotTarget.STOW);
+      }
     }
 
     if (m_driverController.getWantsIntake() && !m_intake.isHoldingNote()) {
       m_intake.setIntakeState(IntakeState.INTAKE);
-    } else if (m_driverController.getWantsEject()) {
+    } else if (m_driverController.getWantsEject() || m_operatorController.getWantsEject()) {
       m_intake.wantsToEject(true);
-    } else if (m_operatorController.getWantsShoot() &&
+    } else if ((m_driverController.getWantsShoot() || m_operatorController.getWantsShoot()) &&
         m_intake.isAtPivotTarget() &&
         m_intake.getPivotTarget() == IntakePivotTarget.STOW) {
       m_intake.setIntakeState(IntakeState.FEED_SHOOTER);
@@ -371,7 +372,7 @@ public class Robot extends LoggedRobot {
 
   @SuppressWarnings("resource")
   private void setupLogging() {
-    Logger.recordMetadata("ProjectName", "TBD Robot Name");
+    Logger.recordMetadata("ProjectName", "Apollo, Eater of Batteries");
     Logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
 
     // if (isReal()) {

@@ -81,6 +81,7 @@ public class SwerveDrive extends SwerveSysId {
   private SwerveDrive() {
     super(m_modules, "SwerveDrive");
 
+    resetTurnOffsets();
     reset();
   }
 
@@ -257,7 +258,7 @@ public class SwerveDrive extends SwerveSysId {
 
   public void resetTurnOffsets() {
     for (SwerveModule module : m_modules) {
-      module.resetTurnOffset();
+      module.resetTurnConfig();
     }
   }
 

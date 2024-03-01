@@ -12,26 +12,20 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants.Auto;
 import frc.robot.Constants.AutoAim.Rotation;
 import frc.robot.Constants.AutoAim.Translation;
 import frc.robot.Constants.Robot;
-import frc.robot.subsystems.drivetrain.CustomHolonomicDriveController;
+import frc.robot.subsystems.drivetrain.RARHolonomicDriveController;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 
 public class DriveTrajectoryTask extends Task {
   private SwerveDrive m_swerve = SwerveDrive.getInstance();
   private PathPlannerTrajectory m_autoTrajectory;
   private PathPlannerPath m_autoPath = null;
-  private PathPlannerPath m_postFlipPath = null;
 
-  // private PPHolonomicDriveController k_driveController = new
-  // PPHolonomicDriveController(
-  private CustomHolonomicDriveController k_driveController = new CustomHolonomicDriveController(
-      // private CustomHolonomicDriveController k_driveController = new
-      // CustomHolonomicDriveController(
+  private RARHolonomicDriveController k_driveController = new RARHolonomicDriveController(
       new PIDConstants(Translation.k_P, Translation.k_I, Translation.k_D),
       new PIDConstants(Rotation.k_P, Rotation.k_I, Rotation.k_D),
       Auto.k_maxModuleSpeed,
@@ -45,10 +39,7 @@ public class DriveTrajectoryTask extends Task {
 
       if (DriverStation.getAlliance().get() == Alliance.Red) {
         DriverStation.reportWarning("Translating path for Red Alliance!", false);
-        m_postFlipPath = m_autoPath.flipPath();
-        // pathName = "RED|" + pathName;
-      } else {
-        m_postFlipPath = m_autoPath;
+        m_autoPath = m_autoPath.flipPath();
       }
 
     } catch (Exception ex) {
@@ -65,24 +56,16 @@ public class DriveTrajectoryTask extends Task {
     // We probably want to reset this to the pose's starting rotation
     m_swerve.setAllianceGyroAngleAdjustment();
 
-    // m_autoTrajectory = m_postFlipPath.getTrajectory(
-    // new ChassisSpeeds(),
-    // m_swerve.getPose().getRotation());
-
-    m_autoTrajectory = m_postFlipPath.getTrajectory(
+    m_autoTrajectory = m_autoPath.getTrajectory(
         new ChassisSpeeds(),
         m_swerve.getGyro().getRotation2d());
-
-    // m_autoTrajectory = m_postFlipPath.getTrajectory(
-    // new ChassisSpeeds(),
-    // Rotation2d.fromDegrees(180));
 
     Logger.recordOutput("Auto/DriveTrajectory/StartingTargetPose", getStartingPose());
 
     // TODO: we probably want to do this all the time?
-    // if (!m_swerve.hasSetPose()) {
-    m_swerve.resetOdometry(getStartingPose());
-    // }
+    if (!m_swerve.hasSetPose()) {
+      m_swerve.resetOdometry(getStartingPose());
+    }
 
     m_swerve.clearTurnPIDAccumulation();
     DriverStation.reportWarning("Running path for " + DriverStation.getAlliance().get().toString(), false);
@@ -91,30 +74,8 @@ public class DriveTrajectoryTask extends Task {
   @Override
   public void update() {
     if (m_autoTrajectory != null) {
-      // Rotation2d offset = new Rotation2d(Units.degreesToRadians(180));
-
       State goal = m_autoTrajectory.sample(m_runningTimer.get());
-
-      // goal.targetHolonomicRotation = Rotation2d
-      // .fromRadians(Helpers.modRadians(goal.getTargetHolonomicPose().getRotation().getRadians()));
-
-      // goal.targetHolonomicRotation = Rotation2d.fromDegrees(180);
-      // goal.targetHolonomicRotation = goal.targetHolonomicRotation.rotateBy(offset);
-
       Pose2d pose = m_swerve.getPose();
-
-      // pose = new Pose2d(
-      // pose.getTranslation(),
-      // Rotation2d.fromRadians(Helpers.modRadians(pose.getRotation().getRadians())));
-
-      // pose = pose.rotateBy(offset);
-
-      // if (DriverStation.getAlliance().get() == Alliance.Red) {
-      // pose = pose.rotateBy(new Rotation2d(180));
-      // }
-
-      // goal.targetHolonomicRotation = goal.targetHolonomicRotation.rotateBy(new
-      // Rotation2d(2 * Math.PI));
 
       ChassisSpeeds chassisSpeeds = k_driveController.calculateRobotRelativeSpeeds(pose, goal);
 
@@ -128,21 +89,12 @@ public class DriveTrajectoryTask extends Task {
           goal.targetHolonomicRotation);
       Logger.recordOutput("Auto/DriveTrajectory/TargetRotationDegrees",
           goal.getTargetHolonomicPose().getRotation().getDegrees());
-      // Logger.recordOutput("Auto/DriveTrajectory/TargetRotationDegrees2",
-      // k_driveController.getRotationTarget());
-      // Logger.recordOutput("Auto/DriveTrajectory/ActualRotationDegrees2",
-      // k_driveController.getRotationActual());
       Logger.recordOutput("Auto/DriveTrajectory/ActualRotationDegrees", pose.getRotation().getDegrees());
 
       Logger.recordOutput("Auto/DriveTrajectory/RotationError",
           goal.getTargetHolonomicPose().getRotation().getDegrees() - pose.getRotation().getDegrees());
       Logger.recordOutput("Auto/DriveTrajectory/ChassisRotationDPS",
           Units.radiansToDegrees(chassisSpeeds.omegaRadiansPerSecond));
-
-      // Logger.recordOutput("Auto/DriveTrajectory/RotationFF",
-      // k_driveController.getRotationFF());
-      // Logger.recordOutput("Auto/DriveTrajectory/RotationFeedback",
-      // k_driveController.getRotationFeedback());
 
       m_swerve.drive(chassisSpeeds);
 
@@ -154,21 +106,18 @@ public class DriveTrajectoryTask extends Task {
 
   @Override
   public void updateSim() {
-    if (!RobotBase.isReal() && m_autoTrajectory != null) {
-      // m_swerve.setPose(m_autoTrajectory.sample(m_runningTimer.get()).getTargetHolonomicPose());
-      // Pose2d pose =
-      // m_autoTrajectory.sample(m_runningTimer.get()).getTargetHolonomicPose();
+    // if (!RobotBase.isReal() && m_autoTrajectory != null) {
+    // m_swerve.setPose(m_autoTrajectory.sample(m_runningTimer.get()).getTargetHolonomicPose());
+    // Pose2d pose =
+    // m_autoTrajectory.sample(m_runningTimer.get()).getTargetHolonomicPose();
 
-      // Preferences.setDouble("SwerveDrive/x", pose.getX());
-      // Preferences.setDouble("SwerveDrive/y", pose.getY());
-      // Preferences.setDouble("SwerveDrive/rot", pose.getRotation().getDegrees());
-    }
+    // Preferences.setDouble("SwerveDrive/x", pose.getX());
+    // Preferences.setDouble("SwerveDrive/y", pose.getY());
+    // Preferences.setDouble("SwerveDrive/rot", pose.getRotation().getDegrees());
+    // }
   }
 
   public Pose2d getStartingPose() {
-    // System.out.println(m_autoPath.getPreviewStartingHolonomicPose().getRotation().getDegrees());
-    // return m_autoPath.getPreviewStartingHolonomicPose();
-    System.out.println(m_autoTrajectory.getState(0).getTargetHolonomicPose().getRotation().getDegrees());
     return m_autoTrajectory.getState(0).getTargetHolonomicPose();
   }
 

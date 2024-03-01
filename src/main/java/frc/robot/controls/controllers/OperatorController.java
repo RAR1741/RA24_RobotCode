@@ -10,7 +10,11 @@ public class OperatorController extends FilteredController {
   }
 
   public boolean getWantsShoot() {
-    return this.getRawButton(Button.X);
+    return this.getRawButton(Button.A);
+  }
+
+  public boolean getWantsEject() {
+    return this.getRawButton(Button.B);
   }
 
   public double getWantsManualShooterPivot(double limit) {
@@ -18,11 +22,11 @@ public class OperatorController extends FilteredController {
   }
 
   public boolean getWantsPodiumAngle() {
-    return this.getRawButtonPressed(Button.Y);
+    return this.getRawButtonPressed(Button.X);
   }
 
   public boolean getWantsSubwooferAngle() {
-    return this.getRawButtonPressed(Button.A);
+    return this.getRawButtonPressed(Button.Y);
   }
 
   public boolean getWantsShooterMaxAngle() {
