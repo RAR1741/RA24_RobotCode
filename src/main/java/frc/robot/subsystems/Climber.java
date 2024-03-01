@@ -76,8 +76,8 @@ public class Climber extends Subsystem {
     m_leftMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
     m_rightMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
 
-    m_leftMotor.setInverted(false);
-    m_rightMotor.setInverted(true);
+    m_leftMotor.setInverted(true);
+    m_rightMotor.setInverted(false);
 
     m_leftMotor.burnFlash();
     m_rightMotor.burnFlash();

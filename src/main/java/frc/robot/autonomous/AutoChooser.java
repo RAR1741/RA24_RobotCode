@@ -12,8 +12,7 @@ public class AutoChooser {
 
   public AutoChooser() {
     // TODO: change this back after red flipping works
-    m_chooser.setDefaultOption("FOUR_NOTE_AUTO_TARGET", "FOUR_NOTE_AUTO_TARGET");
-    // m_chooser.setDefaultOption("DEFAULT", "DEFAULT");
+    m_chooser.setDefaultOption("DO_NOTHING", "DO_NOTHING");
 
     // Populate the chooser with all the available autos
     for (AutoMode mode : AutoRunner.AutoMode.values()) {
