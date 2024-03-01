@@ -24,6 +24,7 @@ import frc.robot.autonomous.tasks.Task;
 import frc.robot.controls.controllers.DriverController;
 import frc.robot.controls.controllers.OperatorController;
 import frc.robot.simulation.Field;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Intake.IntakePivotTarget;
 import frc.robot.subsystems.Intake.IntakeState;
@@ -47,7 +48,7 @@ public class Robot extends LoggedRobot {
   private final SwerveDrive m_swerve = SwerveDrive.getInstance();
   private final Intake m_intake = Intake.getInstance();
   private final Shooter m_shooter = Shooter.getInstance();
-  // private final Climber m_climber = Climber.getInstance();
+  private final Climber m_climber = Climber.getInstance();
 
   // Auto tasks
   private Task m_currentTask;
@@ -84,7 +85,7 @@ public class Robot extends LoggedRobot {
     m_allSubsystems.add(m_swerve);
     m_allSubsystems.add(m_intake);
     m_allSubsystems.add(m_shooter);
-    // m_allSubsystems.add(m_climber);
+    m_allSubsystems.add(m_climber);
   }
 
   @Override
@@ -140,7 +141,7 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void teleopInit() {
-    m_swerve.resetGyro();
+    // m_swerve.resetGyro();1
     m_swerve.setBrakeMode(false);
     m_swerve.drive(0, 0, 0, false);
 
@@ -259,22 +260,21 @@ public class Robot extends LoggedRobot {
 
     if (m_operatorController.getWantsMaxSpeed()) {
       m_shooter.setSpeed(ShooterSpeedTarget.MAX);
-      // m_shooter.setSpeed(3500);
     } else if (m_operatorController.getWantsNoSpeed()) {
       m_shooter.setSpeed(ShooterSpeedTarget.OFF);
     }
 
-    // if (m_operatorController.getWantsClimberRaise()) {
-    // m_climber.raise();
-    // } else if (m_operatorController.getWantsClimberLower()) {
-    // m_climber.lower();
-    // } else if (m_operatorController.getWantsClimberTiltLeft()) {
-    // m_climber.tiltLeft();
-    // } else if (m_operatorController.getWantsClimberTiltRight()) {
-    // m_climber.tiltRight();
-    // } else {
-    // m_climber.stopClimber();
-    // }
+    if (m_operatorController.getWantsClimberRaise()) {
+      m_climber.raise();
+    } else if (m_operatorController.getWantsClimberLower()) {
+      m_climber.lower();
+    } else if (m_operatorController.getWantsClimberTiltLeft()) {
+      m_climber.tiltLeft();
+    } else if (m_operatorController.getWantsClimberTiltRight()) {
+      m_climber.tiltRight();
+    } else {
+      m_climber.stopClimber();
+    }
   }
 
   @Override
