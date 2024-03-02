@@ -22,6 +22,7 @@ public class CenterOneNoteMode extends AutoModeBase {
 
     queueTask(new DriveTrajectoryTask("Shoot, MidRing"));
 
+    queueTask(new IntakeTask(IntakePivotTarget.STOW, IntakeState.NONE));
     queueTask(new DriveForwardTask(0, 0));
   }
 }

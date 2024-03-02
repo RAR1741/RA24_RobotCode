@@ -266,12 +266,16 @@ public class Robot extends LoggedRobot {
 
     if (m_operatorController.getWantsClimberRaise()) {
       m_climber.raise();
+      m_shooter.setAngle(ShooterPivotTarget.MIN);
     } else if (m_operatorController.getWantsClimberLower()) {
       m_climber.lower();
+      m_shooter.setAngle(ShooterPivotTarget.MIN);
     } else if (m_operatorController.getWantsClimberTiltLeft()) {
       m_climber.tiltLeft();
+      m_shooter.setAngle(ShooterPivotTarget.MIN);
     } else if (m_operatorController.getWantsClimberTiltRight()) {
       m_climber.tiltRight();
+      m_shooter.setAngle(ShooterPivotTarget.MIN);
     } else {
       m_climber.stopClimber();
     }

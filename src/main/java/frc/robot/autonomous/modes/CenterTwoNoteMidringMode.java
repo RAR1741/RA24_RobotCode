@@ -2,6 +2,7 @@ package frc.robot.autonomous.modes;
 
 import frc.robot.Constants;
 import frc.robot.autonomous.tasks.AutoTargetTask;
+import frc.robot.autonomous.tasks.DriveForwardTask;
 import frc.robot.autonomous.tasks.DriveTrajectoryTask;
 import frc.robot.autonomous.tasks.IntakeTask;
 import frc.robot.autonomous.tasks.ParallelTask;
@@ -33,7 +34,7 @@ public class CenterTwoNoteMidringMode extends AutoModeBase {
     queueTask(new WaitTask(Constants.Auto.Timing.k_shootFeedTime));
 
     // Done
-    queueTask(new ShooterTask(ShooterPivotTarget.SUBWOOFER, ShooterSpeedTarget.OFF));
     queueTask(new IntakeTask(IntakePivotTarget.STOW, IntakeState.NONE));
+    queueTask(new DriveForwardTask(0, 0));
   }
 }

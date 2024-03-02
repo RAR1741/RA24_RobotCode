@@ -243,8 +243,8 @@ public final class Constants {
 
     public static final double k_ampPivotAngle = 0.0; // TODO: get amp pivot angle
     public static final double k_wingPivotAngle = 26.0;
-    public static final double k_subwooferPivotAngle = 57.0;
-    public static final double k_podiumPivotAngle = 43.0;
+    public static final double k_subwooferPivotAngle = 62.0;
+    public static final double k_podiumPivotAngle = 46.0;
 
     public static final double k_length = 11.94335; // in inches
     public static final double k_mass = 5.44311; // in kg
@@ -252,7 +252,7 @@ public final class Constants {
     public static final double k_pivotHeight = 4.0;
 
     public static final double k_minAngle = 20.0;
-    public static final double k_maxAngle = 60.0;
+    public static final double k_maxAngle = 65.0;
     public static final double k_startingAngle = 0.0;
 
     public static final double k_distanceFromCenter = 4.0008;

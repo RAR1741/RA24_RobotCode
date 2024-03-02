@@ -60,16 +60,15 @@ public class AutoTargetTask extends Task {
         currentPose.getTranslation().getX() - m_targetPose.getTranslation().getX(),
         currentPose.getTranslation().getY() - m_targetPose.getTranslation().getY());
 
-    System.out.println("Target degrees: " + Helpers.modDegrees(m_targetRotation.getDegrees()));
+    // System.out.println("Target degrees: " + Helpers.modDegrees(m_targetRotation.getDegrees()));
     m_targetRobotPose = new Pose2d(currentPose.getTranslation(), m_targetRotation);
   }
 
   @Override
   public void update() {
-    double rotationError = Helpers.modRadians(m_targetRobotPose.getRotation().getRadians())
-        - Helpers.modRadians(m_swerve.getPose().getRotation().getRadians());
+    Rotation2d diff = m_targetRotation.minus(m_swerve.getRotation2d());
 
-    m_swerve.drive(0, 0, rotationError * 5.0, true);
+    m_swerve.drive(0, 0, diff.getRadians() * 5.0, true);
   }
 
   @Override

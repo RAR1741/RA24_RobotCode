@@ -5,8 +5,8 @@ import frc.robot.autonomous.modes.CenterFourNote;
 import frc.robot.autonomous.modes.CenterOneNoteMode;
 import frc.robot.autonomous.modes.CenterTwoNoteMidringMode;
 import frc.robot.autonomous.modes.DoNothingMode;
-import frc.robot.autonomous.modes.LeftOneNoteMode;
-import frc.robot.autonomous.modes.RightOneNoteMode;
+import frc.robot.autonomous.modes.LeftTwoNoteMode;
+import frc.robot.autonomous.modes.RightTwoNoteMode;
 import frc.robot.autonomous.tasks.Task;
 
 public class AutoRunner {
@@ -27,8 +27,8 @@ public class AutoRunner {
     // TEST,
     // TEST2,
     CENTER_FOUR_NOTE,
-    LEFT_ONE_NOTE,
-    RIGHT_ONE_NOTE
+    BOTRING_TWO_NOTE,
+    PODIUM_TWO_NOTE
   }
 
   public Task getNextTask() {
@@ -49,11 +49,11 @@ public class AutoRunner {
       case CENTER_FOUR_NOTE:
         m_autoMode = new CenterFourNote();
         break;
-      case LEFT_ONE_NOTE:
-        m_autoMode = new LeftOneNoteMode();
+      case BOTRING_TWO_NOTE:
+        m_autoMode = new LeftTwoNoteMode();
         break;
-      case RIGHT_ONE_NOTE:
-        m_autoMode = new RightOneNoteMode();
+      case PODIUM_TWO_NOTE:
+        m_autoMode = new RightTwoNoteMode();
         break;
       // case TEST:
       // m_autoMode = new TestMode();
