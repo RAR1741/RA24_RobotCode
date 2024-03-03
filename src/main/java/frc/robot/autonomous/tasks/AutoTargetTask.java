@@ -35,16 +35,19 @@ public class AutoTargetTask extends Task {
 
   @AutoLogOutput(key = "Auto/AutoTarget/getChassisX")
   public double getChassisX() {
+    Logger.recordOutput("Auto/AutoTarget/getChassisX", m_chassisSpeeds.vxMetersPerSecond);
     return m_chassisSpeeds.vxMetersPerSecond;
   }
 
   @AutoLogOutput(key = "Auto/AutoTarget/getChassisY")
   public double getChassisY() {
+    Logger.recordOutput("Auto/AutoTarget/getChassisY", m_chassisSpeeds.vyMetersPerSecond);
     return m_chassisSpeeds.vyMetersPerSecond;
   }
 
   @AutoLogOutput(key = "Auto/AutoTarget/getChassisTheta")
   public double getChassisTheta() {
+    Logger.recordOutput("Auto/AutoTarget/getChassisTheta", m_chassisSpeeds.omegaRadiansPerSecond);
     return m_chassisSpeeds.omegaRadiansPerSecond;
   }
 

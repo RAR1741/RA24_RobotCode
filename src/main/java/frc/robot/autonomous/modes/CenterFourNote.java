@@ -26,9 +26,8 @@ public class CenterFourNote extends AutoModeBase {
         ShooterSpeedTarget.MAX));
 
     // Note 2 (MidRing)
-    queueTask(new ParallelTask(
-        new IntakeTask(IntakePivotTarget.GROUND, IntakeState.INTAKE),
-        new DriveTrajectoryTask("Shoot, MidRing")));
+    queueTask(new IntakeTask(IntakePivotTarget.GROUND, IntakeState.INTAKE));
+    queueTask(new DriveTrajectoryTask("Shoot, MidRing"));
     queueTask(new ParallelTask(
         new IntakeTask(IntakePivotTarget.STOW, IntakeState.NONE),
         new AutoTargetTask(getAllianceSpeakerPose())));

@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkFlex;
@@ -27,6 +28,7 @@ public class Shooter extends Subsystem {
   private CANSparkFlex m_topShooterMotor;
   private CANSparkFlex m_bottomShooterMotor;
   private CANSparkFlex m_pivotMotor;
+  private int m_cycles = 0;
 
   private RelativeEncoder m_topMotorEncoder;
   private RelativeEncoder m_bottomMotorEncoder;
@@ -107,9 +109,13 @@ public class Shooter extends Subsystem {
       setPivotAbsOffset();
     }
 
+    m_cycles++;
+
     if (!m_bottomShooterMotor.getInverted()) {
       m_bottomShooterMotor.setInverted(true);
     }
+
+    Logger.recordOutput("Shooter/PivotTargetAngle", m_periodicIO.pivot_angle);
   }
 
   @Override
@@ -131,6 +137,11 @@ public class Shooter extends Subsystem {
       m_bottomShooterMotorPID.setReference(limited_speed, ControlType.kVelocity);
 
       double pivotRelRotations = targetAngleToRelRotations(m_periodicIO.pivot_angle);
+
+      if(m_cycles % 10 == 0) {
+        setPivotAbsOffset();
+      }
+
       m_pivotMotorPID.setReference(pivotRelRotations, ControlType.kPosition);
     } else {
       // Test mode

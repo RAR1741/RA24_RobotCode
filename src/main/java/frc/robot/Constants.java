@@ -131,7 +131,7 @@ public final class Constants {
     }
 
     public static final double k_autoAimDistanceThreshold = 1; // in meters
-    public static final double k_autoAimAngleTolerance = Units.degreesToRadians(2.0);
+    public static final double k_autoAimAngleTolerance = Units.degreesToRadians(3.0);
 
     // Max speed
     public static final double k_maxSpeed = 3.0; // Meters per second
