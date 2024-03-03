@@ -150,6 +150,8 @@ public class Robot extends LoggedRobot {
 
   boolean m_lockHeading = false;
 
+  boolean m_intaking = false;
+
   @Override
   public void teleopPeriodic() {
     double rot = 0.0;
@@ -222,20 +224,31 @@ public class Robot extends LoggedRobot {
     if (m_driverController.getWantsIntakePivotToggle()) {
       if (m_intake.getPivotTarget() == IntakePivotTarget.STOW) {
         m_intake.setPivotTarget(IntakePivotTarget.GROUND);
+        m_intake.setIntakeState(IntakeState.INTAKE);
+        m_intaking = true;
       } else if (m_intake.getPivotTarget() == IntakePivotTarget.GROUND) {
         m_intake.setPivotTarget(IntakePivotTarget.STOW);
+        m_intake.setIntakeState(IntakeState.NONE);
+        m_intaking = false;
       }
+    }
+
+    if (m_driverController.getWantsStopIntake()) {
+      m_intaking = false;
+      m_intake.setIntakeState(IntakeState.NONE);
     }
 
     if (m_driverController.getWantsIntake() && !m_intake.isHoldingNote()) {
       m_intake.setIntakeState(IntakeState.INTAKE);
+      m_intaking = true;
     } else if (m_driverController.getWantsEject() || m_operatorController.getWantsEject()) {
       m_intake.wantsToEject(true);
+      m_intaking = false;
     } else if ((m_driverController.getWantsShoot() || m_operatorController.getWantsShoot()) &&
         m_intake.isAtPivotTarget() &&
         m_intake.getPivotTarget() == IntakePivotTarget.STOW) {
       m_intake.setIntakeState(IntakeState.FEED_SHOOTER);
-    } else {
+    } else if (!m_intaking) {
       m_intake.setIntakeState(IntakeState.NONE);
       m_intake.wantsToEject(false);
     }

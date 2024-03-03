@@ -82,6 +82,10 @@ public class DriverController extends FilteredController {
     return this.getRawButton(Button.RIGHT_BUMPER);
   }
 
+  public boolean getWantsStopIntake() {
+    return this.getRawButtonReleased(Button.RIGHT_BUMPER);
+  }
+
   public boolean getWantsEject() {
     return this.getRawButton(Button.B);
   }
