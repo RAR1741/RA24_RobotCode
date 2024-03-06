@@ -11,7 +11,8 @@ public class AutoChooser {
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
   public AutoChooser() {
-    m_chooser.setDefaultOption("DEFAULT", "DEFAULT");
+    // TODO: change this back after red flipping works
+    m_chooser.setDefaultOption("DO_NOTHING", "DO_NOTHING");
 
     // Populate the chooser with all the available autos
     for (AutoMode mode : AutoRunner.AutoMode.values()) {

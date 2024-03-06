@@ -1,12 +1,18 @@
 package frc.robot.subsystems;
 
+import org.littletonrobotics.junction.AutoLogOutput;
+
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.ColorSensorV3;
 
-import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.I2C;
 import frc.robot.Constants;
 import frc.robot.Helpers;
 import frc.robot.simulation.IntakeSim;
@@ -21,12 +27,17 @@ public class Intake extends Subsystem {
 
   private final DutyCycleEncoder m_pivotAbsEncoder = new DutyCycleEncoder(Constants.Intake.k_pivotEncoderId);
 
-  private final PIDController m_pivotMotorPID;
+  private final ProfiledPIDController m_pivotMotorPID;
+  private final ArmFeedforward m_pivotFeedForward;
 
   private final double k_pivotThreshold = 2.0;
   private final double k_intakeSpeedThreshold = 0.1;
 
   private PeriodicIO m_periodicIO;
+
+  private final I2C.Port k_colorSensorPort = I2C.Port.kMXP;
+
+  private ColorSensorV3 m_colorSensor;
 
   private Intake() {
     super("Intake");
@@ -37,7 +48,7 @@ public class Intake extends Subsystem {
     m_pivotMotor = new CANSparkMax(Constants.Intake.k_pivotMotorId, MotorType.kBrushless);
     m_pivotMotor.restoreFactoryDefaults();
     m_pivotMotor.setIdleMode(CANSparkMax.IdleMode.kCoast);
-    m_pivotMotor.setSmartCurrentLimit(10); // TODO: Double check this
+    m_pivotMotor.setSmartCurrentLimit(20);
     m_pivotMotor.setInverted(true);
 
     // Intake motor setup
@@ -47,12 +58,27 @@ public class Intake extends Subsystem {
     m_intakeMotor.setInverted(true);
 
     // Pivot PID
-    m_pivotMotorPID = new PIDController(
+    m_pivotMotorPID = new ProfiledPIDController(
         Constants.Intake.k_pivotMotorP,
         Constants.Intake.k_pivotMotorI,
-        Constants.Intake.k_pivotMotorD);
+        Constants.Intake.k_pivotMotorD,
+        new TrapezoidProfile.Constraints(
+          Constants.Intake.k_maxVelocity,
+          Constants.Intake.k_maxAcceleration));
+
+    // Pivot Feedforward
+    m_pivotFeedForward = new ArmFeedforward(
+      Constants.Intake.k_pivotMotorKS,
+      Constants.Intake.k_pivotMotorKG,
+      Constants.Intake.k_pivotMotorKV, 
+      Constants.Intake.k_pivotMotorKA);
 
     m_periodicIO = new PeriodicIO();
+
+    m_colorSensor = new ColorSensorV3(k_colorSensorPort);
+
+    m_intakeMotor.burnFlash();
+    m_pivotMotor.burnFlash();
   }
 
   public static Intake getInstance() {
@@ -65,9 +91,16 @@ public class Intake extends Subsystem {
 
   @Override
   public void periodic() {
+    checkAutoTasks();
+
     if (!DriverStation.isTest()) {
       double target_pivot_angle = getAngleFromTarget(m_periodicIO.pivot_target);
-      m_periodicIO.pivot_voltage = m_pivotMotorPID.calculate(getPivotAngle(), target_pivot_angle);
+
+      double pidCalc = m_pivotMotorPID.calculate(getPivotAngle(), target_pivot_angle);
+      double ffCalc = m_pivotFeedForward.calculate(Math.toRadians(getPivotReferenceToHorizontal()), 
+        Math.toRadians(m_pivotMotorPID.getSetpoint().velocity));
+
+      m_periodicIO.pivot_voltage = pidCalc + ffCalc;
 
       m_periodicIO.intake_speed = getSpeedFromState(m_periodicIO.intake_state);
       putString("IntakeState", m_periodicIO.intake_state.toString());
@@ -88,51 +121,8 @@ public class Intake extends Subsystem {
   }
 
   @Override
-  public void outputTelemetry() {
-    putNumber("IntakeSpeed_PERIODIC", m_periodicIO.intake_speed);
-    putNumber("IntakePower", Helpers.getVoltage(m_intakeMotor));
-    putNumber("IntakeSpeed", getSpeedFromState(m_periodicIO.intake_state));
-
-    putString("PivotTarget", m_periodicIO.pivot_target.toString());
-    putNumber("PivotAbsPos", m_pivotAbsEncoder.getAbsolutePosition());
-    putNumber("PivotSetpoint", getAngleFromTarget(m_periodicIO.pivot_target));
-    putNumber("PivotSpeed", m_periodicIO.pivot_voltage);
-    putNumber("PivotPower", Helpers.getVoltage(m_pivotMotor));
-    putNumber("PivotRelAngle", getPivotAngle());
-    putBoolean("PivotAtTarget", isAtPivotTarget(m_periodicIO.pivot_target));
-  }
-
-  @Override
   public void reset() {
     throw new UnsupportedOperationException("Unimplemented method 'reset'");
-  }
-
-  private double getAngleFromTarget(IntakePivotTarget target) {
-    switch (target) {
-      case GROUND:
-        return Constants.Intake.k_groundPivotAngle;
-      case PIVOT:
-        return Constants.Intake.k_sourcePivotAngle;
-      case AMP:
-        return Constants.Intake.k_ampPivotAngle;
-      case STOW:
-        return Constants.Intake.k_stowPivotAngle;
-      default:
-        return Constants.Intake.k_stowPivotAngle;
-    }
-  }
-
-  private double getSpeedFromState(IntakeState state) {
-    switch (state) {
-      case INTAKE:
-        return Constants.Intake.k_intakeSpeed;
-      case EJECT:
-        return Constants.Intake.k_ejectSpeed;
-      case FEED_SHOOTER:
-        return Constants.Intake.k_feedShooterSpeed;
-      default:
-        return 0.0;
-    }
   }
 
   public void stopIntake() {
@@ -141,7 +131,7 @@ public class Intake extends Subsystem {
     m_periodicIO.intake_state = IntakeState.NONE;
   }
 
-  public void setState(IntakeState state) {
+  public void setIntakeState(IntakeState state) {
     m_periodicIO.intake_state = state;
   }
 
@@ -149,23 +139,8 @@ public class Intake extends Subsystem {
     m_periodicIO.pivot_target = target;
   }
 
-  public double getPivotAngle() {
-    return Units.rotationsToDegrees(m_pivotAbsEncoder.getAbsolutePosition());
-  }
-
-  public double getCurrentSpeed() {
-    return m_intakeMotor.getEncoder().getVelocity();
-  }
-
-  public boolean isAtPivotTarget(IntakePivotTarget target) {
-    if (target == IntakePivotTarget.NONE) {
-      return true;
-    }
-
-    double current_angle = getPivotAngle();
-    double target_angle = getAngleFromTarget(target);
-
-    return Math.abs(target_angle - current_angle) <= k_pivotThreshold;
+  public IntakePivotTarget getPivotTarget() {
+    return m_periodicIO.pivot_target;
   }
 
   public boolean isAtState(IntakeState state) {
@@ -194,11 +169,14 @@ public class Intake extends Subsystem {
 
     // double intake_pivot_voltage = 0.0;
     double intake_speed = 0.0;
+
+    boolean wantsToEject = false;
   }
 
   public enum IntakePivotTarget {
     NONE,
     GROUND,
+    EJECT,
     PIVOT,
     AMP,
     STOW
@@ -210,5 +188,153 @@ public class Intake extends Subsystem {
     EJECT,
     PULSE,
     FEED_SHOOTER
+  }
+
+  public void wantsToEject(boolean eject) {
+    m_periodicIO.wantsToEject = eject;
+  }
+
+  /*---------------------------------- Custom Private Functions ---------------------------------*/
+  private void checkAutoTasks() {
+    // If the intake is set to GROUND, and the intake has a note, and the pivot is
+    // close to it's target
+    // Stop the intake and go to the SOURCE position
+    if (m_periodicIO.pivot_target == IntakePivotTarget.GROUND &&
+        isHoldingNote() &&
+        isAtPivotTarget()) {
+
+      setPivotTarget(IntakePivotTarget.STOW);
+      setIntakeState(IntakeState.NONE);
+      // m_leds.setColor(Color.kGreen);
+    }
+
+    if (wantsToEject()) {
+      if ((m_periodicIO.pivot_target == IntakePivotTarget.STOW &&
+          isAtPivotTarget()) ||
+          (m_periodicIO.pivot_target == IntakePivotTarget.GROUND && isAtPivotTarget())) {
+        setPivotTarget(IntakePivotTarget.EJECT);
+        setIntakeState(IntakeState.NONE);
+      } else if (m_periodicIO.pivot_target == IntakePivotTarget.EJECT && isAtPivotTarget()) {
+        setIntakeState(IntakeState.EJECT);
+      }
+    } else if (m_periodicIO.pivot_target == IntakePivotTarget.EJECT && isAtPivotTarget()) {
+      setIntakeState(IntakeState.NONE);
+      setPivotTarget(IntakePivotTarget.STOW);
+    }
+  }
+
+  // Logged
+  @AutoLogOutput
+  public double getVelocityError() {
+    return m_pivotMotorPID.getVelocityError();
+  }
+
+  @AutoLogOutput
+  public double getPivotReferenceToHorizontal() {
+    return getPivotAngle() - Constants.Intake.k_pivotOffset;
+  }
+
+  @AutoLogOutput
+  private String getPivotTargetAsString() {
+    return m_periodicIO.pivot_target.toString();
+  }
+
+  @AutoLogOutput
+  public double getPivotAngle() {
+    return Units.rotationsToDegrees(m_pivotAbsEncoder.getAbsolutePosition());
+  }
+
+  @AutoLogOutput
+  public double getAbsoluteAngle() {
+    return m_pivotAbsEncoder.getAbsolutePosition();
+  }
+
+  @AutoLogOutput
+  public double getCurrentSpeed() {
+    return m_intakeMotor.getEncoder().getVelocity();
+  }
+
+  @AutoLogOutput
+  public boolean isAtPivotTarget() {
+    if (m_periodicIO.pivot_target == IntakePivotTarget.NONE) {
+      return true;
+    }
+
+    double current_angle = getPivotAngle();
+    double target_angle = getAngleFromTarget(m_periodicIO.pivot_target);
+
+    return Math.abs(target_angle - current_angle) <= k_pivotThreshold;
+  }
+
+  @AutoLogOutput
+  public boolean wantsToEject() {
+    return m_periodicIO.wantsToEject;
+  }
+
+  @AutoLogOutput
+  private double getPivotVoltage() {
+    return Helpers.getVoltage(m_pivotMotor);
+  }
+
+  @AutoLogOutput
+  private double getTargetPivotVoltage() {
+    return m_periodicIO.pivot_voltage;
+  }
+
+  @AutoLogOutput
+  private double getIntakeVoltage() {
+    return Helpers.getVoltage(m_intakeMotor);
+  }
+
+  @AutoLogOutput
+  private double getPivotCurrent() {
+    return m_pivotMotor.getOutputCurrent();
+  }
+
+  @AutoLogOutput
+  private double getIntakeCurrent() {
+    return m_intakeMotor.getOutputCurrent();
+  }
+
+  @AutoLogOutput
+  private double getAngleFromTarget(IntakePivotTarget target) {
+    switch (target) {
+      case GROUND:
+        return Constants.Intake.k_groundPivotAngle;
+      case PIVOT:
+        return Constants.Intake.k_sourcePivotAngle;
+      case EJECT:
+        return Constants.Intake.k_ejectPivotAngle;
+      case AMP:
+        return Constants.Intake.k_ampPivotAngle;
+      case STOW:
+        return Constants.Intake.k_stowPivotAngle;
+      default:
+        return Constants.Intake.k_stowPivotAngle;
+    }
+  }
+
+  @AutoLogOutput
+  private double getSpeedFromState(IntakeState state) {
+    switch (state) {
+      case INTAKE:
+        return Constants.Intake.k_intakeSpeed;
+      case EJECT:
+        return Constants.Intake.k_ejectSpeed;
+      case FEED_SHOOTER:
+        return Constants.Intake.k_feedShooterSpeed;
+      default:
+        return 0.0;
+    }
+  }
+
+  @AutoLogOutput
+  public boolean isHoldingNote() {
+    return m_colorSensor.getProximity() >= Constants.Intake.k_sensorThreshold;
+  }
+
+  @AutoLogOutput
+  public int getIntakeProximity() {
+    return m_colorSensor.getProximity();
   }
 }

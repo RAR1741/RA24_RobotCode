@@ -1,5 +1,7 @@
 package frc.robot.autonomous.tasks;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Intake.IntakePivotTarget;
 import frc.robot.subsystems.Intake.IntakeState;
@@ -17,8 +19,9 @@ public class IntakeTask extends Task {
 
 	@Override
 	public void start() {
+		DriverStation.reportWarning("Auto Intake start", false);
 		m_intake.setPivotTarget(m_pivotTarget);
-		m_intake.setState(m_intakeState);
+		m_intake.setIntakeState(m_intakeState);
 	}
 
 	@Override
@@ -27,14 +30,12 @@ public class IntakeTask extends Task {
 	}
 
 	@Override
+	public void done() {
+		DriverStation.reportWarning("Auto Intake done", false);
+	}
+
+	@Override
 	public boolean isFinished() {
-		if (m_pivotTarget == IntakePivotTarget.NONE && m_intakeState == IntakeState.NONE) {
-			return true;
-		}
-
-		boolean isAtPivotTarget = m_intake.isAtPivotTarget(m_pivotTarget);
-		boolean isAtState = m_intake.isAtState(m_intakeState);
-
-		return isAtPivotTarget && isAtState;
+		return m_intake.isAtPivotTarget() || !RobotBase.isReal();
 	}
 }

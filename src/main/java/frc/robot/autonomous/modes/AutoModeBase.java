@@ -2,12 +2,11 @@ package frc.robot.autonomous.modes;
 
 import java.util.ArrayList;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants.Field;
-import frc.robot.autonomous.tasks.DriveTrajectoryTask;
 import frc.robot.autonomous.tasks.Task;
-import frc.robot.subsystems.drivetrain.SwerveDrive;
 
 public abstract class AutoModeBase {
   private ArrayList<Task> m_tasks;
@@ -31,26 +30,11 @@ public abstract class AutoModeBase {
 
   public abstract void queueTasks();
 
-  public void setStartingPose() {
-    // Figure out the first PathPlanner path
-    Pose2d startingPose = null;
-
-    // Loop over the m_tasks and find the first DriveTrajectoryTask
-    for (Task task : m_tasks) {
-      if (task instanceof DriveTrajectoryTask) {
-        // Set the starting pose to the starting pose of the first DriveTrajectoryTask
-        startingPose = ((DriveTrajectoryTask) task).getStartingPose();
-        break;
-      }
+  public Pose3d getAllianceSpeakerPose() {
+    if (DriverStation.getAlliance().get() == Alliance.Blue) {
+      return Field.k_blueSpeakerPose;
+    } else {
+      return Field.k_redSpeakerPose;
     }
-
-    // If there isn't one, default to something visible
-    if (startingPose == null) {
-      // Default to the center of the field
-      startingPose = new Pose2d(Field.k_width / 2, Field.k_length / 2, new Rotation2d(0));
-    }
-
-    SwerveDrive m_drive = SwerveDrive.getInstance();
-    m_drive.resetOdometry(startingPose);
-  };
+  }
 }

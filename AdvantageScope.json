@@ -7,15 +7,82 @@
       "height": 1079,
       "state": {
         "sidebar": {
-          "width": 300,
-          "expanded": ["/RealOutputs", "/RealOutputs/SwerveDrive"]
+          "width": 356,
+          "expanded": [
+            "/DriverStation/Joystick0/AxisValues",
+            "/RealOutputs/SwerveDrive/Module",
+            "/RealOutputs",
+            "/AdvantageKit",
+            "/AdvantageKit/RealOutputs",
+            "/AdvantageKit/RealOutputs/SwerveDrive",
+            "/RealOutputs/SwerveDrive/Modules/BL/Abs",
+            "/RealOutputs/SwerveDrive/Modules",
+            "/SystemStats/CANBus",
+            "/RealOutputs/Auto",
+            "/RealOutputs/Climber",
+            "/RealOutputs/Auto/AutoTarget",
+            "/RealOutputs/Auto/DriveTrajectory"
+          ]
         },
         "tabs": {
-          "selected": 2,
+          "selected": 3,
           "tabs": [
             {
               "type": 0,
-              "path": "../docs/INDEX.md"
+              "path": "../docs/tabs/SWERVE.md"
+            },
+            {
+              "type": 3,
+              "field": "/RealOutputs/Console",
+              "title": "Console"
+            },
+            {
+              "type": 1,
+              "legendHeight": 0.2260343087790111,
+              "legends": {
+                "left": {
+                  "lockedRange": null,
+                  "unitConversion": {
+                    "type": null,
+                    "factor": 1
+                  },
+                  "fields": [
+                    {
+                      "key": "/RealOutputs/Auto/DriveTrajectory/RotationError",
+                      "color": "#2b66a2",
+                      "show": false
+                    },
+                    {
+                      "key": "/RealOutputs/Auto/DriveTrajectory/TargetRotationDegrees",
+                      "color": "#af2437",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/Auto/DriveTrajectory/ActualRotationDegrees",
+                      "color": "#80588e",
+                      "show": true
+                    }
+                  ]
+                },
+                "discrete": {
+                  "fields": []
+                },
+                "right": {
+                  "lockedRange": null,
+                  "unitConversion": {
+                    "type": null,
+                    "factor": 1
+                  },
+                  "fields": [
+                    {
+                      "key": "/RealOutputs/Auto/DriveTrajectory/ChassisRotationDPS",
+                      "color": "#e48b32",
+                      "show": true
+                    }
+                  ]
+                }
+              },
+              "title": "Auto"
             },
             {
               "type": 5,
@@ -26,6 +93,12 @@
                   {
                     "type": "Robot",
                     "key": "/RealOutputs/SwerveDrive/Pose",
+                    "sourceTypeIndex": 1,
+                    "sourceType": "Pose2d"
+                  },
+                  {
+                    "type": "Ghost",
+                    "key": "/RealOutputs/Auto/DriveTrajectory/TargetPose",
                     "sourceTypeIndex": 1,
                     "sourceType": "Pose2d"
                   }
@@ -41,9 +114,144 @@
                 "allianceOrigin": "blue",
                 "orientation": "blue left, red right"
               },
-              "configHidden": false,
+              "configHidden": true,
               "visualizer": null,
               "title": "Odometry"
+            },
+            {
+              "type": 6,
+              "uuid": "fmujopntln4ekpotsyssu85h8jlifbca",
+              "fields": [],
+              "listFields": [
+                [
+                  {
+                    "type": "Vision Target",
+                    "key": "/RealOutputs/Auto/AutoTarget/TargetPose",
+                    "sourceTypeIndex": 1,
+                    "sourceType": "Pose3d"
+                  }
+                ],
+                [
+                  {
+                    "type": "Robot",
+                    "key": "/RealOutputs/SwerveDrive/Pose",
+                    "sourceTypeIndex": 1,
+                    "sourceType": "Pose2d"
+                  }
+                ]
+              ],
+              "options": {
+                "field": "2024 Field",
+                "alliance": "blue",
+                "robot": "Temp Robot Name",
+                "unitDistance": "meters",
+                "unitRotation": "radians"
+              },
+              "configHidden": false,
+              "visualizer": {
+                "cameraIndex": -1,
+                "orbitFov": 90,
+                "cameraPosition": [
+                  4.552791546406839,
+                  2.3098210259608196,
+                  3.5538578009742863
+                ],
+                "cameraTarget": [
+                  6.250070750468865,
+                  0.6015271943636625,
+                  2.3513849860224583
+                ]
+              },
+              "title": "3D Field"
+            },
+            {
+              "type": 1,
+              "legendHeight": 0.3,
+              "legends": {
+                "left": {
+                  "lockedRange": null,
+                  "unitConversion": {
+                    "type": null,
+                    "factor": 1
+                  },
+                  "fields": [
+                    {
+                      "key": "/RealOutputs/SwerveDrive/Modules/FL/Abs/Frequency",
+                      "color": "#2b66a2",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/SwerveDrive/Modules/FR/Abs/Frequency",
+                      "color": "#af2437",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/SwerveDrive/Modules/BR/Abs/Frequency",
+                      "color": "#e48b32",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/SwerveDrive/Modules/BL/Abs/Frequency",
+                      "color": "#c0b487",
+                      "show": true
+                    }
+                  ]
+                },
+                "discrete": {
+                  "fields": [
+                    {
+                      "key": "/RealOutputs/SwerveDrive/Modules/FL/Abs/isConnected",
+                      "color": "#e5b31b",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/SwerveDrive/Modules/FR/Abs/isConnected",
+                      "color": "#80588e",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/SwerveDrive/Modules/BR/Abs/isConnected",
+                      "color": "#aacaee",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/SwerveDrive/Modules/BL/Abs/isConnected",
+                      "color": "#858584",
+                      "show": true
+                    }
+                  ]
+                },
+                "right": {
+                  "lockedRange": null,
+                  "unitConversion": {
+                    "type": null,
+                    "factor": 1
+                  },
+                  "fields": [
+                    {
+                      "key": "/RealOutputs/SwerveDrive/Modules/FL/Abs/getPosition",
+                      "color": "#3b875a",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/SwerveDrive/Modules/FR/Abs/getPosition",
+                      "color": "#d993aa",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/SwerveDrive/Modules/BR/Abs/getPosition",
+                      "color": "#eb987e",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/SwerveDrive/Modules/BL/Abs/getPosition",
+                      "color": "#5d4f92",
+                      "show": true
+                    }
+                  ]
+                }
+              },
+              "title": "DriveEncoders"
             },
             {
               "type": 9,
@@ -51,13 +259,13 @@
               "fields": [
                 {
                   "key": "/RealOutputs/SwerveDrive/CurrentStates",
-                  "sourceTypeIndex": 0,
-                  "sourceType": 5
+                  "sourceTypeIndex": 1,
+                  "sourceType": "SwerveModuleState[]"
                 },
                 {
                   "key": "/RealOutputs/SwerveDrive/DesiredStates",
-                  "sourceTypeIndex": 0,
-                  "sourceType": 5
+                  "sourceTypeIndex": 1,
+                  "sourceType": "SwerveModuleState[]"
                 },
                 {
                   "key": "/RealOutputs/SwerveDrive/Rotation2d",
@@ -68,26 +276,389 @@
               "listFields": [],
               "options": {
                 "maxSpeed": 3,
-                "rotationUnits": "degrees",
-                "arrangement": "0,1,2,3",
+                "rotationUnits": "radians",
+                "arrangement": "0,1,3,2",
                 "sizeLeftRight": 0.76,
                 "sizeFrontBack": 0.76,
                 "forwardDirection": "up"
               },
-              "configHidden": false,
+              "configHidden": true,
               "visualizer": null,
               "title": "Swerve"
             },
             {
-              "type": 3,
-              "field": "/RealOutputs/Console",
-              "title": "Console"
+              "type": 1,
+              "legendHeight": 0.15,
+              "legends": {
+                "left": {
+                  "lockedRange": null,
+                  "unitConversion": {
+                    "type": null,
+                    "factor": 1
+                  },
+                  "fields": [
+                    {
+                      "key": "/SystemStats/BatteryVoltage",
+                      "color": "#2b66a2",
+                      "show": true
+                    }
+                  ]
+                },
+                "discrete": {
+                  "fields": [
+                    {
+                      "key": "/SystemStats/BrownedOut",
+                      "color": "#e5b31b",
+                      "show": true
+                    }
+                  ]
+                },
+                "right": {
+                  "lockedRange": null,
+                  "unitConversion": {
+                    "type": null,
+                    "factor": 1
+                  },
+                  "fields": [
+                    {
+                      "key": "/SystemStats/BatteryCurrent",
+                      "color": "#af2437",
+                      "show": true
+                    }
+                  ]
+                }
+              },
+              "title": "Battery"
+            },
+            {
+              "type": 1,
+              "legendHeight": 0.15,
+              "legends": {
+                "left": {
+                  "lockedRange": null,
+                  "unitConversion": {
+                    "type": null,
+                    "factor": 1
+                  },
+                  "fields": [
+                    {
+                      "key": "/RealOutputs/SwerveDrive/Modules/FL/Drive/Current",
+                      "color": "#2b66a2",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/SwerveDrive/Modules/FR/Drive/Current",
+                      "color": "#e5b31b",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/SwerveDrive/Modules/BR/Drive/Current",
+                      "color": "#af2437",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/SwerveDrive/Modules/BL/Drive/Current",
+                      "color": "#80588e",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/SwerveDrive/Modules/FL/Turn/Current",
+                      "color": "#e48b32",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/SwerveDrive/Modules/FR/Turn/Current",
+                      "color": "#aacaee",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/SwerveDrive/Modules/BR/Turn/Voltage",
+                      "color": "#c0b487",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/SwerveDrive/Modules/BL/Turn/Voltage",
+                      "color": "#858584",
+                      "show": true
+                    }
+                  ]
+                },
+                "discrete": {
+                  "fields": [
+                    {
+                      "key": "/SystemStats/BrownedOut",
+                      "color": "#3b875a",
+                      "show": true
+                    }
+                  ]
+                },
+                "right": {
+                  "lockedRange": null,
+                  "unitConversion": {
+                    "type": null,
+                    "factor": 1
+                  },
+                  "fields": [
+                    {
+                      "key": "/RealOutputs/SwerveDrive/Modules/FL/Drive/Voltage",
+                      "color": "#d993aa",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/SwerveDrive/Modules/FR/Drive/Voltage",
+                      "color": "#eb987e",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/SwerveDrive/Modules/BR/Drive/Voltage",
+                      "color": "#5d4f92",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/SwerveDrive/Modules/BL/Drive/Voltage",
+                      "color": "#a64b6b",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/SwerveDrive/Modules/FL/Turn/Voltage",
+                      "color": "#dbd345",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/SwerveDrive/Modules/FR/Turn/Voltage",
+                      "color": "#7e331f",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/SwerveDrive/Modules/BR/Turn/Voltage",
+                      "color": "#96b637",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/SwerveDrive/Modules/BL/Turn/Voltage",
+                      "color": "#5f4528",
+                      "show": true
+                    }
+                  ]
+                }
+              },
+              "title": "Drivetrain"
+            },
+            {
+              "type": 1,
+              "legendHeight": 0.15,
+              "legends": {
+                "left": {
+                  "lockedRange": null,
+                  "unitConversion": {
+                    "type": null,
+                    "factor": 1
+                  },
+                  "fields": [
+                    {
+                      "key": "/RealOutputs/Shooter/PivotAngle",
+                      "color": "#2b66a2",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/Shooter/PivotMotorCurrent",
+                      "color": "#e5b31b",
+                      "show": true
+                    }
+                  ]
+                },
+                "discrete": {
+                  "fields": [
+                    {
+                      "key": "/RealOutputs/Shooter/IsPivotAsbConnected",
+                      "color": "#af2437",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/Shooter/IsAtTarget",
+                      "color": "#aacaee",
+                      "show": true
+                    }
+                  ]
+                },
+                "right": {
+                  "lockedRange": null,
+                  "unitConversion": {
+                    "type": null,
+                    "factor": 1
+                  },
+                  "fields": [
+                    {
+                      "key": "/RealOutputs/Shooter/PivotRelRotations",
+                      "color": "#80588e",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/Shooter/PivotRelTarget",
+                      "color": "#e48b32",
+                      "show": true
+                    }
+                  ]
+                }
+              },
+              "title": "ShooterPivot"
+            },
+            {
+              "type": 1,
+              "legendHeight": 0.2472250252270434,
+              "legends": {
+                "left": {
+                  "lockedRange": null,
+                  "unitConversion": {
+                    "type": null,
+                    "factor": 1
+                  },
+                  "fields": [
+                    {
+                      "key": "/RealOutputs/Shooter/ShooterTargetSpeed",
+                      "color": "#2b66a2",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/Shooter/TopMotorSpeed",
+                      "color": "#e5b31b",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/Shooter/BottomMotorSpeed",
+                      "color": "#af2437",
+                      "show": true
+                    }
+                  ]
+                },
+                "discrete": {
+                  "fields": []
+                },
+                "right": {
+                  "lockedRange": null,
+                  "unitConversion": {
+                    "type": null,
+                    "factor": 1
+                  },
+                  "fields": []
+                }
+              },
+              "title": "ShooterSpeed"
+            },
+            {
+              "type": 1,
+              "legendHeight": 0.15,
+              "legends": {
+                "left": {
+                  "lockedRange": null,
+                  "unitConversion": {
+                    "type": null,
+                    "factor": 1
+                  },
+                  "fields": [
+                    {
+                      "key": "/RealOutputs/Intake/PivotAngle",
+                      "color": "#2b66a2",
+                      "show": true
+                    }
+                  ]
+                },
+                "discrete": {
+                  "fields": [
+                    {
+                      "key": "/RealOutputs/Intake/IsHoldingNote",
+                      "color": "#e5b31b",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/Intake/IsAtPivotTarget",
+                      "color": "#80588e",
+                      "show": true
+                    }
+                  ]
+                },
+                "right": {
+                  "lockedRange": null,
+                  "unitConversion": {
+                    "type": null,
+                    "factor": 1
+                  },
+                  "fields": [
+                    {
+                      "key": "/RealOutputs/Intake/IntakeProximity",
+                      "color": "#af2437",
+                      "show": true
+                    }
+                  ]
+                }
+              },
+              "title": "Intake"
+            },
+            {
+              "type": 1,
+              "legendHeight": 0.3,
+              "legends": {
+                "left": {
+                  "lockedRange": null,
+                  "unitConversion": {
+                    "type": null,
+                    "factor": 1
+                  },
+                  "fields": [
+                    {
+                      "key": "/RealOutputs/Climber/LeftMotorSpeed",
+                      "color": "#e5b31b",
+                      "show": false
+                    },
+                    {
+                      "key": "/RealOutputs/Climber/RightMotorSpeed",
+                      "color": "#80588e",
+                      "show": false
+                    }
+                  ]
+                },
+                "discrete": {
+                  "fields": []
+                },
+                "right": {
+                  "lockedRange": null,
+                  "unitConversion": {
+                    "type": null,
+                    "factor": 1
+                  },
+                  "fields": [
+                    {
+                      "key": "/RealOutputs/Climber/LeftMotorCurrent",
+                      "color": "#2b66a2",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/Climber/RightMotorCurrent",
+                      "color": "#af2437",
+                      "show": true
+                    }
+                  ]
+                }
+              },
+              "title": "Climber"
             }
           ]
         }
       }
     }
   ],
-  "satellites": [],
-  "version": "3.1.0"
+  "satellites": [
+    {
+      "x": 1156,
+      "y": 805,
+      "width": 572,
+      "height": 312,
+      "state": {
+        "type": 5,
+        "visualizer": null
+      },
+      "uuid": "bnv416jy5f1t1u41qg0hldeyz962nriv"
+    }
+  ],
+  "version": "3.2.0"
 }

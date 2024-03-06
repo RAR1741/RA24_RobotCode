@@ -1,9 +1,7 @@
 package frc.robot.controls.controllers;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 public class DriverController extends FilteredController {
-  private String m_smartDashboardKey = "DriverInput/";
+  public double k_triggerActivationThreshold = 0.5;
 
   public DriverController(int port) {
     super(port, false, false);
@@ -13,92 +11,86 @@ public class DriverController extends FilteredController {
     super(port, useDeadband, useSquaredInput);
   }
 
-  private final double k_triggerActivationThreshold = 0.5;
-
   // Drive
   public double getForwardAxis() {
-    return -this.getFilteredAxis(RawAxis.LEFT_Y_AXIS);
+    // return -this.getFilteredAxis(Axis.LEFT_Y_AXIS);
+    return -this.getFilteredAxis(Axis.LEFT_Y_AXIS) * k_allianceMultiplier;
   }
 
   public double getStrafeAxis() {
-    return -this.getFilteredAxis(RawAxis.LEFT_X_AXIS);
+    // return -this.getFilteredAxis(Axis.LEFT_X_AXIS);
+    return -this.getFilteredAxis(Axis.LEFT_X_AXIS) * k_allianceMultiplier;
   }
 
   public double getTurnAxis() {
-    return -this.getFilteredAxis(RawAxis.RIGHT_X_AXIS);
+    return -this.getFilteredAxis(Axis.RIGHT_X_AXIS);
   }
 
   public double getSlowScaler() {
-    return this.getFilteredAxis(RawAxis.RIGHT_TRIGGER);
+    return this.getFilteredAxis(Axis.RIGHT_TRIGGER);
   }
 
   public double getBoostScaler() {
-    return this.getFilteredAxis(RawAxis.LEFT_TRIGGER);
+    return this.getFilteredAxis(Axis.LEFT_TRIGGER);
   }
 
   public boolean getWantsResetGyro() {
-    return this.getRawButton(RawButton.Y);
+    return this.getRawButton(Button.START);
   }
 
-  public boolean getWantsBrake() {
-    return this.getRawButton(RawButton.LEFT_BUMPER);
-  }
-
-  public boolean getWantsSlowMode() {
-    return this.getFilteredAxis(RawAxis.RIGHT_TRIGGER) > k_triggerActivationThreshold;
-  }
-
-  public boolean getWantsAutoAim() {
-    return this.getRawButtonPressed(RawButton.START);
+  public boolean getWantsResetModules() {
+    return this.getRawButton(Button.BACK);
   }
 
   // SysId test mode //
   public boolean getWantsSysIdQuasistaticForward() {
-    return this.getRawButtonPressed(RawButton.A);
+    return this.getRawButtonPressed(Button.A);
   }
 
   public boolean getWantsSysIdQuasistaticBackward() {
-    return this.getRawButtonPressed(RawButton.B);
-  }
-
-  public boolean getWantsSysIdDynamicBackward() {
-    return this.getRawButtonPressed(RawButton.X);
+    return this.getRawButtonPressed(Button.B);
   }
 
   public boolean getWantsSysIdDynamicForward() {
-    return this.getRawButtonPressed(RawButton.Y);
+    return this.getRawButtonPressed(Button.X);
+  }
+
+  public boolean getWantsSysIdDynamicBackward() {
+    return this.getRawButtonPressed(Button.Y);
+  }
+
+  public boolean getWantSysIdStop() {
+    return this.getRawButtonPressed(Button.START);
   }
   /////
 
-  // Intake test mode //
+  // Manual system test modes //
   public double testPositive() {
-    return this.getFilteredAxis(RawAxis.LEFT_TRIGGER);
+    return this.getFilteredAxis(Axis.LEFT_TRIGGER);
   }
-  
+
   public double testNegative() {
-    return this.getFilteredAxis(RawAxis.RIGHT_TRIGGER);
+    return this.getFilteredAxis(Axis.RIGHT_TRIGGER);
   }
   /////
 
-  public boolean getWantsIntakeStow() {
-    return this.getRawButtonPressed(RawButton.LEFT_BUMPER);
-  }
-
-  public boolean getWantsIntakeGround() {
-    return this.getRawButtonPressed(RawButton.RIGHT_BUMPER);
+  public boolean getWantsIntakePivotToggle() {
+    return this.getRawButtonPressed(Button.LEFT_BUMPER);
   }
 
   public boolean getWantsIntake() {
-    return this.getRawButton(RawButton.X);
+    return this.getRawButton(Button.RIGHT_BUMPER);
+  }
+
+  public boolean getWantsStopIntake() {
+    return this.getRawButtonReleased(Button.RIGHT_BUMPER);
   }
 
   public boolean getWantsEject() {
-    return this.getRawButton(RawButton.B);
+    return this.getRawButton(Button.B);
   }
 
-  public void outputTelemetry() {
-    SmartDashboard.putNumber(m_smartDashboardKey + "Forward", getForwardAxis());
-    SmartDashboard.putNumber(m_smartDashboardKey + "Strafe", getStrafeAxis());
-    SmartDashboard.putNumber(m_smartDashboardKey + "Turn", getTurnAxis());
+  public boolean getWantsShoot() {
+    return this.getRawButton(Button.A);
   }
 }

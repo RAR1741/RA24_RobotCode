@@ -1,16 +1,17 @@
 package frc.robot.autonomous;
 
 import frc.robot.autonomous.modes.AutoModeBase;
-import frc.robot.autonomous.modes.DefaultMode;
+import frc.robot.autonomous.modes.CenterFourNote;
+import frc.robot.autonomous.modes.CenterOneNoteMode;
+import frc.robot.autonomous.modes.CenterTwoNoteMidringMode;
+import frc.robot.autonomous.modes.CenterlineOutsideNoteMode;
 import frc.robot.autonomous.modes.DoNothingMode;
-import frc.robot.autonomous.modes.TestMode;
-import frc.robot.autonomous.modes.TestMode2;
+import frc.robot.autonomous.modes.LeftTwoNoteMode;
+import frc.robot.autonomous.modes.RightTwoNoteMode;
 import frc.robot.autonomous.tasks.Task;
-import frc.robot.subsystems.drivetrain.SwerveDrive;
 
 public class AutoRunner {
   private static AutoRunner m_autoRunner = null;
-  private SwerveDrive m_swerve = SwerveDrive.getInstance();
   private AutoModeBase m_autoMode;
 
   public static AutoRunner getInstance() {
@@ -22,9 +23,14 @@ public class AutoRunner {
 
   public enum AutoMode {
     DO_NOTHING,
-    DEFAULT,
-    TEST,
-    TEST2
+    CENTER_ONE_NOTE,
+    CENTER_TWO_NOTE,
+    // TEST,
+    // TEST2,
+    CENTER_FOUR_NOTE,
+    BOTRING_TWO_NOTE,
+    PODIUM_TWO_NOTE,
+    CENTERLINE_OUTSIDE_NOTE
   }
 
   public Task getNextTask() {
@@ -36,15 +42,30 @@ public class AutoRunner {
       case DO_NOTHING:
         m_autoMode = new DoNothingMode();
         break;
-      case DEFAULT:
-        m_autoMode = new DefaultMode();
+      case CENTER_ONE_NOTE:
+        m_autoMode = new CenterOneNoteMode();
         break;
-      case TEST:
-        m_autoMode = new TestMode();
+      case CENTER_TWO_NOTE:
+        m_autoMode = new CenterTwoNoteMidringMode();
         break;
-      case TEST2:
-        m_autoMode = new TestMode2();
+      case CENTER_FOUR_NOTE:
+        m_autoMode = new CenterFourNote();
         break;
+      case BOTRING_TWO_NOTE:
+        m_autoMode = new LeftTwoNoteMode();
+        break;
+      case PODIUM_TWO_NOTE:
+        m_autoMode = new RightTwoNoteMode();
+        break;
+      case CENTERLINE_OUTSIDE_NOTE:
+        m_autoMode = new CenterlineOutsideNoteMode();
+        break;
+      // case TEST:
+      // m_autoMode = new TestMode();
+      // break;
+      // case TEST2:
+      // m_autoMode = new TestMode2();
+      // break;
       default:
         System.out.println("Invalid auto mode selected. Defaulting to do nothing.");
         m_autoMode = new DoNothingMode();
@@ -52,7 +73,5 @@ public class AutoRunner {
     }
 
     m_autoMode.queueTasks();
-
-    m_autoMode.setStartingPose();
   }
 }

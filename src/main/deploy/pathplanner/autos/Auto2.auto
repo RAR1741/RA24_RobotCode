@@ -1,0 +1,37 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.38896898621187,
+      "y": 5.55
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Shoot, MidRing"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "MidRing, Shoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Shoot, Ring4"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

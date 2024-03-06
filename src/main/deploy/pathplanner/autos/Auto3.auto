@@ -1,0 +1,31 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.6699236222990311,
+      "y": 4.414985377760731
+    },
+    "rotation": -30.0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Shoot, PodiumRing"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "PodiumRing, Ring1"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

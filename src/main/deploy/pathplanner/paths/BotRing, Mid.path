@@ -1,0 +1,52 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 2.609856395638717,
+        "y": 6.720945752076689
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.14187832311392,
+        "y": 6.720945752076689
+      },
+      "isLocked": false,
+      "linkedName": "BlueBotNote"
+    },
+    {
+      "anchor": {
+        "x": 7.707840800296987,
+        "y": 7.449541822160567
+      },
+      "prevControl": {
+        "x": 6.247464182012462,
+        "y": 7.449541822160567
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 5.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Blue",
+  "previewStartingState": {
+    "rotation": 35.0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

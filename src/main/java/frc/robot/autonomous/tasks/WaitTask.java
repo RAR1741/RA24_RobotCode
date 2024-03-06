@@ -1,5 +1,6 @@
 package frc.robot.autonomous.tasks;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 
@@ -27,4 +28,9 @@ public class WaitTask extends Task {
   public boolean isFinished() {
     return m_runningTimer.get() >= m_targetTime;
   }
+
+  @Override
+	public void done() {
+		DriverStation.reportWarning("Auto wait done", false);
+	}
 }
