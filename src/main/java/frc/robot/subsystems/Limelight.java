@@ -6,8 +6,11 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.LimelightHelpers;
+import frc.robot.LimelightHelpers.PoseEstimate;
 
 public class Limelight {
   private NetworkTable m_limelightTable;
@@ -74,5 +77,12 @@ public class Limelight {
    */
   private Pose2d toFieldPose(Pose2d pose) {
     return pose.relativeTo(new Pose2d(-8.2296, -8.2296 / 2, Rotation2d.fromDegrees(0)));
+  }
+
+  public PoseEstimate getPoseEstimation() {
+    if(DriverStation.getAlliance().get() == Alliance.Red) {
+      return LimelightHelpers.getBotPoseEstimate_wpiRed(m_name);
+    }
+    return LimelightHelpers.getBotPoseEstimate_wpiBlue(m_name);
   }
 }

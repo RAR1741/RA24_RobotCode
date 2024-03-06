@@ -5,6 +5,7 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkBase.IdleMode;
 
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -24,6 +25,7 @@ import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.AprilTagLocations;
 import frc.robot.Constants;
+import frc.robot.LimelightHelpers;
 import frc.robot.subsystems.Limelight;
 
 public class SwerveDrive extends SwerveSysId {
@@ -57,6 +59,7 @@ public class SwerveDrive extends SwerveSysId {
   private final AHRS m_gyro = new AHRS(SPI.Port.kMXP);
   private final Limelight m_limelightOne = new Limelight("limelight-one");
   private final Limelight m_limelightTwo = new Limelight("limelight-two");
+  private final Limelight m_limelightThree = new Limelight("limelight-three");
 
   private SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
       m_moduleLocations[Module.FRONT_LEFT],
@@ -287,15 +290,22 @@ public class SwerveDrive extends SwerveSysId {
   @Override
   public void periodic() {
     double currentTime = Timer.getFPGATimestamp();
+    LimelightHelpers.PoseEstimate LL1Pose = m_limelightOne.getPoseEstimation();
+    LimelightHelpers.PoseEstimate LL2Pose = m_limelightTwo.getPoseEstimation();
+    LimelightHelpers.PoseEstimate LL3Pose = m_limelightThree.getPoseEstimation();
 
-    if (m_limelightOne.seesAprilTag()) {
-      // m_poseEstimator.addVisionMeasurement(m_limelightOne.getBotpose2D(),
-      // currentTime);
+    // m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.7,0.7,99999)); //TODO: Check this, Limelight docs use these values
+
+    if(LL1Pose.tagCount > 0) {
+      m_poseEstimator.addVisionMeasurement(LL1Pose.pose, LL1Pose.timestampSeconds);
     }
 
-    if (m_limelightTwo.seesAprilTag()) {
-      // m_poseEstimator.addVisionMeasurement(m_limelightTwo.getBotpose2D(),
-      // currentTime);
+    if(LL2Pose.tagCount > 0) {
+      m_poseEstimator.addVisionMeasurement(LL2Pose.pose, LL2Pose.timestampSeconds);
+    }
+
+    if(LL3Pose.tagCount > 0) {
+      m_poseEstimator.addVisionMeasurement(LL3Pose.pose, LL3Pose.timestampSeconds);
     }
 
     if (RobotBase.isReal()) {
