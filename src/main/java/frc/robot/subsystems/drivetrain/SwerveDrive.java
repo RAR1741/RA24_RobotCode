@@ -5,7 +5,6 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkBase.IdleMode;
 
-import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -15,7 +14,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -26,10 +25,13 @@ import edu.wpi.first.wpilibj.Timer;
 import frc.robot.AprilTagLocations;
 import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
+import frc.robot.LimelightHelpers.PoseEstimate;
 import frc.robot.subsystems.Limelight;
 
 public class SwerveDrive extends SwerveSysId {
   private static SwerveDrive m_swerve = null;
+
+  private Rotation2d m_rotationTarget;
 
   private static final SwerveModule[] m_modules = {
       new SwerveModule(Constants.SwerveDrive.Drive.k_FLMotorId, Constants.SwerveDrive.Turn.k_FLMotorId,
@@ -57,9 +59,9 @@ public class SwerveDrive extends SwerveSysId {
   };
 
   private final AHRS m_gyro = new AHRS(SPI.Port.kMXP);
-  private final Limelight m_limelightOne = new Limelight("limelight-one");
-  private final Limelight m_limelightTwo = new Limelight("limelight-two");
-  private final Limelight m_limelightThree = new Limelight("limelight-three");
+  private final Limelight m_limelightLeft = new Limelight("limelight-left");
+  private final Limelight m_limelightRight = new Limelight("limelight-right");
+  private final Limelight m_limelightShooter = new Limelight("limelight-shooter");
 
   private SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
       m_moduleLocations[Module.FRONT_LEFT],
@@ -79,10 +81,21 @@ public class SwerveDrive extends SwerveSysId {
       },
       new Pose2d(0, 0, Rotation2d.fromDegrees(0)));
 
+  private final ProfiledPIDController k_rotController = new ProfiledPIDController(
+      Constants.AutoAim.Rotation.k_P,
+      Constants.AutoAim.Rotation.k_I,
+      Constants.AutoAim.Rotation.k_D,
+      new TrapezoidProfile.Constraints(
+          Constants.SwerveDrive.k_maxAngularSpeed,
+          Constants.SwerveDrive.k_maxAngularAcceleration),
+      (1.0 / 50.0));
+
   private boolean m_hasSetPose = false;
 
   private SwerveDrive() {
     super(m_modules, "SwerveDrive");
+
+    m_rotationTarget = m_gyro.getRotation2d();
 
     resetTurnOffsets();
     reset();
@@ -196,6 +209,40 @@ public class SwerveDrive extends SwerveSysId {
     }
   }
 
+  public ChassisSpeeds getChassisSpeeds() {
+    return m_kinematics.toChassisSpeeds(
+        m_modules[Module.FRONT_LEFT].getState(),
+        m_modules[Module.FRONT_RIGHT].getState(),
+        m_modules[Module.BACK_RIGHT].getState(),
+        m_modules[Module.BACK_LEFT].getState());
+  }
+
+  public void driveLockedHeading(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
+    double rotationFeedback = 0.0;
+    double rotationFF = rot;
+
+    if (Math.abs(rot) > 0.1) {
+      m_rotationTarget = m_gyro.getRotation2d().plus(m_rotationTarget.plus(new Rotation2d(rot * (1.0 / 50.0))));
+    }
+
+    rotationFeedback = k_rotController.calculate(
+        getPose().getRotation().getRadians(),
+        new TrapezoidProfile.State(m_rotationTarget.getRadians(), rot));
+    // rotationFF = rot; // k_rotController.getSetpoint().velocity;
+
+    SwerveModuleState[] swerveModuleStates = m_kinematics.toSwerveModuleStates(
+        fieldRelative
+            ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotationFeedback + rotationFF,
+                m_gyro.getRotation2d())
+            : new ChassisSpeeds(xSpeed, ySpeed, rotationFeedback + rotationFF));
+
+    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.SwerveDrive.k_maxBoostSpeed);
+
+    for (int i = 0; i < m_modules.length; i++) {
+      m_modules[i].setDesiredState(swerveModuleStates[i]);
+    }
+  }
+
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
     SwerveModuleState[] swerveModuleStates = m_kinematics.toSwerveModuleStates(
         fieldRelative
@@ -210,22 +257,25 @@ public class SwerveDrive extends SwerveSysId {
   }
 
   /////
-  public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean lockHeading) {
-    if (lockHeading) {
-      rot = correct();
-    }
+  // public void drive(double xSpeed, double ySpeed, double rot, boolean
+  ///// fieldRelative, boolean lockHeading) {
+  // if (lockHeading) {
+  // rot = correct();
+  // }
 
-    SwerveModuleState[] swerveModuleStates = m_kinematics.toSwerveModuleStates(
-        fieldRelative
-            ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, m_gyro.getRotation2d())
-            : new ChassisSpeeds(xSpeed, ySpeed, rot));
+  // SwerveModuleState[] swerveModuleStates = m_kinematics.toSwerveModuleStates(
+  // fieldRelative
+  // ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot,
+  // m_gyro.getRotation2d())
+  // : new ChassisSpeeds(xSpeed, ySpeed, rot));
 
-    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.SwerveDrive.k_maxBoostSpeed);
+  // SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates,
+  // Constants.SwerveDrive.k_maxBoostSpeed);
 
-    for (int i = 0; i < m_modules.length; i++) {
-      m_modules[i].setDesiredState(swerveModuleStates[i]);
-    }
-  }
+  // for (int i = 0; i < m_modules.length; i++) {
+  // m_modules[i].setDesiredState(swerveModuleStates[i]);
+  // }
+  // }
 
   private Rotation2d m_oldRotation;
 
@@ -235,12 +285,14 @@ public class SwerveDrive extends SwerveSysId {
     }
   }
 
-  private double correct() {
-    // TODO: use the PID controllers in Constants.AutoAim to correct the heading
-    // (Bro Jordan can't spell 💀)
-    ProfiledPIDController pid = new ProfiledPIDController(1, 0, 0, new Constraints(10, 1));
-    return pid.calculate(m_gyro.getRotation2d().getDegrees(), m_oldRotation.getDegrees());
-  }
+  // private double correct() {
+  // // TODO: use the PID controllers in Constants.AutoAim to correct the heading
+  // // (Bro Jordan can't spell 💀)
+  // ProfiledPIDController pid = new ProfiledPIDController(1, 0, 0, new
+  // Constraints(10, 1));
+  // return pid.calculate(m_gyro.getRotation2d().getDegrees(),
+  // m_oldRotation.getDegrees());
+  // }
   /////
 
   public void pointModules(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
@@ -290,21 +342,22 @@ public class SwerveDrive extends SwerveSysId {
   @Override
   public void periodic() {
     double currentTime = Timer.getFPGATimestamp();
-    LimelightHelpers.PoseEstimate LL1Pose = m_limelightOne.getPoseEstimation();
-    LimelightHelpers.PoseEstimate LL2Pose = m_limelightTwo.getPoseEstimation();
-    LimelightHelpers.PoseEstimate LL3Pose = m_limelightThree.getPoseEstimation();
+    LimelightHelpers.PoseEstimate LL1Pose = filteredLLPoseEstimate(m_limelightLeft.getPoseEstimation());
+    LimelightHelpers.PoseEstimate LL2Pose = filteredLLPoseEstimate(m_limelightRight.getPoseEstimation());
+    LimelightHelpers.PoseEstimate LL3Pose = filteredLLPoseEstimate(m_limelightShooter.getPoseEstimation());
 
-    // m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.7,0.7,99999)); //TODO: Check this, Limelight docs use these values
+    // m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.7,0.7,99999));
+    // //TODO: Check this, Limelight docs use these values
 
-    if(LL1Pose.tagCount > 0) {
+    if (LL1Pose.invalid == false) {
       m_poseEstimator.addVisionMeasurement(LL1Pose.pose, LL1Pose.timestampSeconds);
     }
 
-    if(LL2Pose.tagCount > 0) {
+    if (LL2Pose.invalid == false) {
       m_poseEstimator.addVisionMeasurement(LL2Pose.pose, LL2Pose.timestampSeconds);
     }
 
-    if(LL3Pose.tagCount > 0) {
+    if (LL3Pose.invalid == false) {
       m_poseEstimator.addVisionMeasurement(LL3Pose.pose, LL3Pose.timestampSeconds);
     }
 
@@ -401,5 +454,78 @@ public class SwerveDrive extends SwerveSysId {
   @AutoLogOutput
   public Pose2d getPose() {
     return m_poseEstimator.getEstimatedPosition();
+  }
+
+  int tagThreshold = 1;
+  double poseDistanceDiffThreshold = 10.0; // meters
+  double robotSpeedThreshold = 3.0; // meters per second
+  double maxTargetDistance = 5.0; // meters
+  double maxLatency = 500; // milliseconds
+
+  public PoseEstimate filteredLLPoseEstimate(PoseEstimate poseEstimate) {
+    // // Only use the pose if we can see a certain number of tags
+    // if (poseEstimate.tagCount >= tagThreshold) {
+    // poseEstimate.invalid = true;
+    // return poseEstimate;
+    // }
+
+    // // Only use the pose if it's within a certain distance of our current pose
+    // if (poseEstimate.pose.getTranslation().getDistance(
+    // m_poseEstimator.getEstimatedPosition().getTranslation()) >=
+    // poseDistanceDiffThreshold) {
+    // poseEstimate.invalid = true;
+    // return poseEstimate;
+    // }
+
+    // // Only use the pose if the target is within a certain distance
+    // if (poseEstimate.avgTagDist >= maxTargetDistance) {
+    // poseEstimate.invalid = true;
+    // return poseEstimate;
+    // }
+
+    // // Only use the pose if we're not moving too fast (robot go weeeeeeee-Andrew)
+    // ChassisSpeeds chassisSpeeds = getChassisSpeeds();
+    // double robotSpeed = Math
+    // .sqrt(Math.pow(chassisSpeeds.vxMetersPerSecond, 2) +
+    // Math.pow(chassisSpeeds.vyMetersPerSecond, 2));
+    // if (robotSpeed >= robotSpeedThreshold) {
+    // poseEstimate.invalid = true;
+    // return poseEstimate;
+    // }
+
+    // // Only use the pose if the latency is within a certain threshold
+    // if (poseEstimate.latency >= maxLatency) {
+    // poseEstimate.invalid = true;
+    // return poseEstimate;
+    // }
+
+    // // Only use the pose if it's legally on the field
+    // if (poseEstimate.pose.getY() < 0 || poseEstimate.pose.getY() >
+    // Constants.Field.k_length) {
+    // poseEstimate.invalid = true;
+    // return poseEstimate;
+    // }
+    // if (poseEstimate.pose.getX() < 0 || poseEstimate.pose.getX() >
+    // Constants.Field.k_width) {
+    // poseEstimate.invalid = true;
+    // return poseEstimate;
+    // }
+
+    return poseEstimate;
+  }
+
+  @AutoLogOutput
+  public Pose2d getLLLeftCurrentPose() {
+    return m_limelightLeft.getPoseEstimation().pose;
+  }
+
+  @AutoLogOutput
+  public Pose2d getLLRightCurrentPose() {
+    return m_limelightRight.getPoseEstimation().pose;
+  }
+
+  @AutoLogOutput
+  public Pose2d getLLShooterCurrentPose() {
+    return m_limelightShooter.getPoseEstimation().pose;
   }
 }

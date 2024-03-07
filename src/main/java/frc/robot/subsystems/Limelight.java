@@ -2,12 +2,13 @@ package frc.robot.subsystems;
 
 import java.util.Arrays;
 
+import org.littletonrobotics.junction.AutoLogOutput;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.LimelightHelpers;
 import frc.robot.LimelightHelpers.PoseEstimate;
@@ -45,18 +46,13 @@ public class Limelight {
    *
    * @return If there is a visible AprilTag
    */
+  @AutoLogOutput
   public boolean seesAprilTag() {
     return m_limelightTable.getEntry("tv").getInteger(0) == 1;
   }
 
-  public double getDistanceFromTag(int targetTagID) {
-    double distance = 0.0;
-
-    return distance;
-  }
-
-  public double getTimeOffset(double currentTime) {
-    return currentTime - LimelightHelpers.getLatency_Pipeline(m_name);
+  public double getTimeOffset() {
+    return Timer.getFPGATimestamp() - LimelightHelpers.getLatency_Pipeline(m_name);
   }
 
   public void outputTelemetry() {
@@ -80,9 +76,17 @@ public class Limelight {
   }
 
   public PoseEstimate getPoseEstimation() {
-    if(DriverStation.getAlliance().get() == Alliance.Red) {
-      return LimelightHelpers.getBotPoseEstimate_wpiRed(m_name);
-    }
+    // if (DriverStation.getAlliance().get() == Alliance.Red) {
+    // return LimelightHelpers.getBotPoseEstimate_wpiRed(m_name);
+    // }
+    // return LimelightHelpers.getBotPoseEstimate_wpiBlue(m_name);
+
     return LimelightHelpers.getBotPoseEstimate_wpiBlue(m_name);
+
+    // return LimelightHelpers.getBotPose2d(m_name);
+  }
+
+  public double getLatency() {
+    return LimelightHelpers.getLatency_Capture(m_name) + LimelightHelpers.getLatency_Pipeline(m_name);
   }
 }

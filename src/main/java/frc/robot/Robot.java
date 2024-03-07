@@ -1,3 +1,5 @@
+
+
 package frc.robot;
 
 import java.util.ArrayList;
@@ -148,7 +150,7 @@ public class Robot extends LoggedRobot {
     m_alliance = DriverStation.getAlliance().get();
   }
 
-  boolean m_lockHeading = false;
+  boolean m_lockHeading = true;
 
   boolean m_intaking = false;
 
@@ -176,18 +178,18 @@ public class Robot extends LoggedRobot {
      * m_lockHeading = false;
      * }
      */
-    if (m_alliance.equals(Alliance.Red)) {
+    // if (m_alliance.equals(Alliance.Red)) {
       // autoAimAngle = m_swerve.calculateAutoAimAngle(false, 0);
-    } else {
+    // } else {
       // autoAimAngle = m_swerve.calculateAutoAimAngle(false, 0);
-    }
+    // }
 
-    if (m_autoAimEnabled) {
-      rot = Constants.AutoAim.rotationPIDController.calculate(m_swerve.getRotation2d().getRadians(),
-          autoAimAngle);
-    } else {
-      rot = m_rotRateLimiter.calculate(m_driverController.getTurnAxis() * Constants.SwerveDrive.k_maxAngularSpeed);
-    }
+    // if (m_autoAimEnabled) {
+    //   rot = Constants.AutoAim.rotationPIDController.calculate(m_swerve.getRotation2d().getRadians(),
+    //       autoAimAngle);
+    // } else {
+    rot = m_rotRateLimiter.calculate(m_driverController.getTurnAxis() * Constants.SwerveDrive.k_maxAngularSpeed);
+    // }
 
     double maxSpeed = Constants.SwerveDrive.k_maxSpeed + ((Constants.SwerveDrive.k_maxBoostSpeed -
         Constants.SwerveDrive.k_maxSpeed) * m_driverController.getBoostScaler());
@@ -204,7 +206,7 @@ public class Robot extends LoggedRobot {
     rot *= slowScaler;
 
     if (m_lockHeading) {
-      m_swerve.drive(xSpeed, ySpeed, rot, true, true);
+      m_swerve.driveLockedHeading(xSpeed, ySpeed, rot, true);
     } else {
       m_swerve.drive(xSpeed, ySpeed, rot, true);
     }
