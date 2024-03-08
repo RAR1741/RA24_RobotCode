@@ -76,14 +76,7 @@ public class Limelight {
   }
 
   public PoseEstimate getPoseEstimation() {
-    // if (DriverStation.getAlliance().get() == Alliance.Red) {
-    // return LimelightHelpers.getBotPoseEstimate_wpiRed(m_name);
-    // }
-    // return LimelightHelpers.getBotPoseEstimate_wpiBlue(m_name);
-
     return LimelightHelpers.getBotPoseEstimate_wpiBlue(m_name);
-
-    // return LimelightHelpers.getBotPose2d(m_name);
   }
 
   public double getLatency() {

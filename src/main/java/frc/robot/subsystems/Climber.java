@@ -192,5 +192,4 @@ public class Climber extends Subsystem {
   public double getRightMotorCurrent() {
     return m_rightMotor.getOutputCurrent();
   }
-
 }

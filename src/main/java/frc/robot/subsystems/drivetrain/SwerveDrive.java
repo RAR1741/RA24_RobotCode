@@ -256,45 +256,6 @@ public class SwerveDrive extends SwerveSysId {
     }
   }
 
-  /////
-  // public void drive(double xSpeed, double ySpeed, double rot, boolean
-  ///// fieldRelative, boolean lockHeading) {
-  // if (lockHeading) {
-  // rot = correct();
-  // }
-
-  // SwerveModuleState[] swerveModuleStates = m_kinematics.toSwerveModuleStates(
-  // fieldRelative
-  // ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot,
-  // m_gyro.getRotation2d())
-  // : new ChassisSpeeds(xSpeed, ySpeed, rot));
-
-  // SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates,
-  // Constants.SwerveDrive.k_maxBoostSpeed);
-
-  // for (int i = 0; i < m_modules.length; i++) {
-  // m_modules[i].setDesiredState(swerveModuleStates[i]);
-  // }
-  // }
-
-  private Rotation2d m_oldRotation;
-
-  public void updateFormerGyroPosition(boolean hasUpdated) {
-    if (!hasUpdated) {
-      m_oldRotation = m_gyro.getRotation2d();
-    }
-  }
-
-  // private double correct() {
-  // // TODO: use the PID controllers in Constants.AutoAim to correct the heading
-  // // (Bro Jordan can't spell 💀)
-  // ProfiledPIDController pid = new ProfiledPIDController(1, 0, 0, new
-  // Constraints(10, 1));
-  // return pid.calculate(m_gyro.getRotation2d().getDegrees(),
-  // m_oldRotation.getDegrees());
-  // }
-  /////
-
   public void pointModules(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
     SwerveModuleState[] swerveModuleStates = m_kinematics.toSwerveModuleStates(
         fieldRelative
@@ -347,7 +308,7 @@ public class SwerveDrive extends SwerveSysId {
     LimelightHelpers.PoseEstimate LL3Pose = filteredLLPoseEstimate(m_limelightShooter.getPoseEstimation());
 
     // m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.7,0.7,99999));
-    // //TODO: Check this, Limelight docs use these values
+    // TODO: Check this, Limelight docs use these values
 
     if (LL1Pose.invalid == false) {
       m_poseEstimator.addVisionMeasurement(LL1Pose.pose, LL1Pose.timestampSeconds);

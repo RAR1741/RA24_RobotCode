@@ -138,7 +138,7 @@ public class Shooter extends Subsystem {
 
       double pivotRelRotations = targetAngleToRelRotations(m_periodicIO.pivot_angle);
 
-      if(m_cycles % 10 == 0) {
+      if(m_cycles % 10 == 0) { // TODO: maybe tweak this?
         setPivotAbsOffset();
       }
 
@@ -157,6 +157,8 @@ public class Shooter extends Subsystem {
     // If the pivot absolute encoder isn't connected
     if (!m_pivotAbsEncoder.isConnected()) {
       // SAFETY
+
+      // TODO: figure out what should go here
     }
 
     m_sim.updateAngle(getPivotAngle());
@@ -181,10 +183,7 @@ public class Shooter extends Subsystem {
     angle = Units.degreesToRadians(angle);
 
     double theta = Math.acos(8.75 / 10.5);
-    double distanceInches = Math.sqrt(
-        Math.pow(10.5, 2.0) +
-            Math.pow(7, 2.0) -
-            (2.0 * 10.5 * 7.0 * Math.cos(theta + angle)));
+    double distanceInches = Math.sqrt(Math.pow(10.5, 2.0) + Math.pow(7, 2.0) - (2.0 * 10.5 * 7.0 * Math.cos(theta + angle)));
 
     // Result in relative encoder rotations
     return Constants.Shooter.k_relRotationsToMaxExtension - (distanceInches * Constants.Shooter.k_rotationsPerInch);
@@ -354,5 +353,4 @@ public class Shooter extends Subsystem {
   public double getShooterTargetSpeed() {
     return m_periodicIO.shooter_rpm;
   }
-
 }

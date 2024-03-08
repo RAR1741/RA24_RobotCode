@@ -37,9 +37,9 @@ public abstract class Subsystem extends SubsystemBase {
    * Examples:
    *
    * <pre>
-   *mMotor.set(mPeriodicIO.speed);
-   *mSolenoid.set(mPeriodicIO.open);
-   *mLED.setRGB(...);
+   *m_motor.set(m_periodicIO.speed);
+   *m_solenoid.set(m_periodicIO.open);
+   *m_LED.setRGB(...);
    *etc...
    * </pre>
    * <p>

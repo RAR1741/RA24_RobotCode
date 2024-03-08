@@ -167,7 +167,6 @@ public class Intake extends Subsystem {
     IntakePivotTarget pivot_target = IntakePivotTarget.STOW;
     IntakeState intake_state = IntakeState.NONE;
 
-    // double intake_pivot_voltage = 0.0;
     double intake_speed = 0.0;
 
     boolean wantsToEject = false;
@@ -199,9 +198,7 @@ public class Intake extends Subsystem {
     // If the intake is set to GROUND, and the intake has a note, and the pivot is
     // close to it's target
     // Stop the intake and go to the SOURCE position
-    if (m_periodicIO.pivot_target == IntakePivotTarget.GROUND &&
-        isHoldingNote() &&
-        isAtPivotTarget()) {
+    if (m_periodicIO.pivot_target == IntakePivotTarget.GROUND && isHoldingNote() && isAtPivotTarget()) {
 
       setPivotTarget(IntakePivotTarget.STOW);
       setIntakeState(IntakeState.NONE);
@@ -209,8 +206,7 @@ public class Intake extends Subsystem {
     }
 
     if (wantsToEject()) {
-      if ((m_periodicIO.pivot_target == IntakePivotTarget.STOW &&
-          isAtPivotTarget()) ||
+      if ((m_periodicIO.pivot_target == IntakePivotTarget.STOW && isAtPivotTarget()) ||
           (m_periodicIO.pivot_target == IntakePivotTarget.GROUND && isAtPivotTarget())) {
         setPivotTarget(IntakePivotTarget.EJECT);
         setIntakeState(IntakeState.NONE);

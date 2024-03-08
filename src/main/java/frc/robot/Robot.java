@@ -12,7 +12,6 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.Preferences;
@@ -56,12 +55,12 @@ public class Robot extends LoggedRobot {
   private Task m_currentTask;
   private AutoRunner m_autoRunner = AutoRunner.getInstance();
 
-  // Misc. vars
-  private Alliance m_alliance;
-  private boolean m_autoAimEnabled = false;
-
   // Auto things
   AutoChooser m_autoChooser = new AutoChooser();
+
+  //Misc vars
+  private boolean m_lockHeading = true;
+  private boolean m_intaking = false;
 
   private final Field m_field = Field.getInstance();
 
@@ -146,56 +145,16 @@ public class Robot extends LoggedRobot {
     // m_swerve.resetGyro();1
     m_swerve.setBrakeMode(false);
     m_swerve.drive(0, 0, 0, false);
-
-    m_alliance = DriverStation.getAlliance().get();
   }
-
-  boolean m_lockHeading = true;
-
-  boolean m_intaking = false;
 
   @Override
   public void teleopPeriodic() {
-    double rot = 0.0;
-    double autoAimAngle = 0.0;
-
-    // if (m_driverController.getWantsAutoAim() && m_swerve.getPose().getX() >=
-    // Constants.AutoAim.k_autoAimDistanceThreshold && !autoAimEnabled) {
-    // autoAimEnabled = true;
-    // }
-    // if (autoAimEnabled && m_driverController.getWantsAutoAim() ||
-    // m_swerve.getPose().getX() <=
-    // Constants.AutoAim.k_autoAimDistanceThreshold) {
-    // autoAimEnabled = false;
-    // }
-
-    // TODO Uncomment this when ready to test heading locking
-    /*
-     * if (m_driverController.getTurnAxis() == 0.0) {
-     * m_swerve.updateFormerGyroPosition(m_lockHeading);
-     * m_lockHeading = true;
-     * } else {
-     * m_lockHeading = false;
-     * }
-     */
-    // if (m_alliance.equals(Alliance.Red)) {
-      // autoAimAngle = m_swerve.calculateAutoAimAngle(false, 0);
-    // } else {
-      // autoAimAngle = m_swerve.calculateAutoAimAngle(false, 0);
-    // }
-
-    // if (m_autoAimEnabled) {
-    //   rot = Constants.AutoAim.rotationPIDController.calculate(m_swerve.getRotation2d().getRadians(),
-    //       autoAimAngle);
-    // } else {
-    rot = m_rotRateLimiter.calculate(m_driverController.getTurnAxis() * Constants.SwerveDrive.k_maxAngularSpeed);
-    // }
-
     double maxSpeed = Constants.SwerveDrive.k_maxSpeed + ((Constants.SwerveDrive.k_maxBoostSpeed -
         Constants.SwerveDrive.k_maxSpeed) * m_driverController.getBoostScaler());
 
     double xSpeed = m_xRateLimiter.calculate(m_driverController.getForwardAxis() * maxSpeed);
     double ySpeed = m_yRateLimiter.calculate(m_driverController.getStrafeAxis() * maxSpeed);
+    double rot = m_rotRateLimiter.calculate(m_driverController.getTurnAxis() * Constants.SwerveDrive.k_maxAngularSpeed);
 
     // slowScaler should scale between k_slowScaler and 1
     double slowScaler = Constants.SwerveDrive.k_slowScaler
@@ -218,10 +177,6 @@ public class Robot extends LoggedRobot {
     if (m_driverController.getWantsResetModules()) {
       m_swerve.resetTurnOffsets();
     }
-
-    // if (m_driverController.getWantsAutoAim()) {
-    // m_autoAimEnabled = !m_autoAimEnabled;
-    // }
 
     if (m_driverController.getWantsIntakePivotToggle()) {
       if (m_intake.getPivotTarget() == IntakePivotTarget.STOW) {
