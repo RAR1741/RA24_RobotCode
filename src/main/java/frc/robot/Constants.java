@@ -41,6 +41,18 @@ public final class Constants {
         new Rotation2d(0));
   }
 
+  public static class Vision {
+    // Increase these numbers to trust your model's state estimates less.
+    public static final double k_positionStdDevX = 0.1;
+    public static final double k_positionStdDevY = 0.1;
+    public static final double k_positionStdDevTheta = 10;
+
+    // Increase these numbers to trust global measurements from vision less.
+    public static final double k_visionStdDevX = 5;
+    public static final double k_visionStdDevY = 5;
+    public static final double k_visionStdDevTheta = 500;
+  }
+
   public class SwerveDrive {
     // Drivetrain wheel offsets
     public static final double k_xDistance = 0.762; // 30 inches Forward/Backward

@@ -1,11 +1,14 @@
 package frc.robot.subsystems.drivetrain;
 
 import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
 
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkBase.IdleMode;
 
-import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.Vector;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -14,7 +17,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -22,7 +25,6 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
-import frc.robot.AprilTagLocations;
 import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
 import frc.robot.LimelightHelpers.PoseEstimate;
@@ -79,21 +81,27 @@ public class SwerveDrive extends SwerveSysId {
           m_modules[Module.BACK_RIGHT].getPosition(),
           m_modules[Module.BACK_LEFT].getPosition()
       },
-      new Pose2d(0, 0, Rotation2d.fromDegrees(0)));
+      new Pose2d(0, 0, Rotation2d.fromDegrees(0)),
+      createStateStdDevs(
+          Constants.Vision.k_positionStdDevX,
+          Constants.Vision.k_positionStdDevY,
+          Constants.Vision.k_positionStdDevTheta),
+      createVisionMeasurementStdDevs(
+          Constants.Vision.k_visionStdDevX,
+          Constants.Vision.k_visionStdDevY,
+          Constants.Vision.k_visionStdDevTheta));
 
-  private final ProfiledPIDController k_rotController = new ProfiledPIDController(
+  private final PIDController k_rotController = new PIDController(
       Constants.AutoAim.Rotation.k_P,
       Constants.AutoAim.Rotation.k_I,
-      Constants.AutoAim.Rotation.k_D,
-      new TrapezoidProfile.Constraints(
-          Constants.SwerveDrive.k_maxAngularSpeed,
-          Constants.SwerveDrive.k_maxAngularAcceleration),
-      (1.0 / 50.0));
+      Constants.AutoAim.Rotation.k_D);
 
   private boolean m_hasSetPose = false;
 
   private SwerveDrive() {
     super(m_modules, "SwerveDrive");
+
+    k_rotController.enableContinuousInput(-Math.PI, Math.PI);
 
     m_rotationTarget = m_gyro.getRotation2d();
 
@@ -124,11 +132,11 @@ public class SwerveDrive extends SwerveSysId {
    * @param degreeMode If <code>true</code>, return result in degrees; otherwise,
    *                   return in radians
    */
-  public double calculateAutoAimAngle(boolean degreeMode, int tagID) {
+  public double calculateSpeakerAutoAimAngle(boolean degreeMode) {
     double botX = m_poseEstimator.getEstimatedPosition().getX();
     double botY = m_poseEstimator.getEstimatedPosition().getY();
-    double targetX = AprilTagLocations.getPosition(tagID).getX();
-    double targetY = AprilTagLocations.getPosition(tagID).getY();
+    double targetX = Constants.Auto.k_blueCenterPose2d.getX(); // TODO: Work on red
+    double targetY = Constants.Auto.k_blueCenterPose2d.getY();
 
     double x = targetX - botX;
     double distance = Math.sqrt(Math.pow(x, 2) + Math.pow(targetY - botY, 2));
@@ -217,17 +225,27 @@ public class SwerveDrive extends SwerveSysId {
         m_modules[Module.BACK_LEFT].getState());
   }
 
-  public void driveLockedHeading(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
+  public void driveLockedHeading(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean autoAim) {
     double rotationFeedback = 0.0;
     double rotationFF = rot;
 
-    if (Math.abs(rot) > 0.1) {
-      m_rotationTarget = m_gyro.getRotation2d().plus(m_rotationTarget.plus(new Rotation2d(rot * (1.0 / 50.0))));
+    if (autoAim) {
+      // m_rotationTarget = new Rotation2d(calculateSpeakerAutoAimAngle(false));
+      m_rotationTarget = new Rotation2d(
+          getPose().getTranslation().getX() - Constants.Field.k_blueSpeakerPose.getTranslation().getX(),
+          getPose().getTranslation().getY() - Constants.Field.k_blueSpeakerPose.getTranslation().getY());
     }
 
-    rotationFeedback = k_rotController.calculate(
-        getPose().getRotation().getRadians(),
-        new TrapezoidProfile.State(m_rotationTarget.getRadians(), rot));
+    if (Math.abs(rot) > 0.03 * Constants.SwerveDrive.k_maxAngularSpeed) {
+      m_rotationTarget = m_gyro.getRotation2d().plus(new Rotation2d(rot * (1.0 / 50.0)));
+    } else {
+      rotationFeedback = k_rotController.calculate(
+          m_gyro.getRotation2d().getRadians(),
+          m_rotationTarget.getRadians());
+    }
+    Logger.recordOutput("SwerveDrive/HeadingLock/RotFeedback", rotationFeedback);
+    Logger.recordOutput("SwerveDrive/HeadingLock/RotFeedforward", rotationFF);
+    Logger.recordOutput("SwerveDrive/HeadingLock/Target", m_rotationTarget);
     // rotationFF = rot; // k_rotController.getSetpoint().velocity;
 
     SwerveModuleState[] swerveModuleStates = m_kinematics.toSwerveModuleStates(
@@ -310,17 +328,17 @@ public class SwerveDrive extends SwerveSysId {
     // m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.7,0.7,99999));
     // TODO: Check this, Limelight docs use these values
 
-    if (LL1Pose.invalid == false) {
-      m_poseEstimator.addVisionMeasurement(LL1Pose.pose, LL1Pose.timestampSeconds);
-    }
+    // if (LL1Pose.invalid == false) {
+    // m_poseEstimator.addVisionMeasurement(LL1Pose.pose, LL1Pose.timestampSeconds);
+    // }
 
-    if (LL2Pose.invalid == false) {
-      m_poseEstimator.addVisionMeasurement(LL2Pose.pose, LL2Pose.timestampSeconds);
-    }
+    // if (LL2Pose.invalid == false) {
+    // m_poseEstimator.addVisionMeasurement(LL2Pose.pose, LL2Pose.timestampSeconds);
+    // }
 
-    if (LL3Pose.invalid == false) {
-      m_poseEstimator.addVisionMeasurement(LL3Pose.pose, LL3Pose.timestampSeconds);
-    }
+    // if (LL3Pose.invalid == false) {
+    // m_poseEstimator.addVisionMeasurement(LL3Pose.pose, LL3Pose.timestampSeconds);
+    // }
 
     if (RobotBase.isReal()) {
       m_poseEstimator.updateWithTime(
@@ -417,18 +435,26 @@ public class SwerveDrive extends SwerveSysId {
     return m_poseEstimator.getEstimatedPosition();
   }
 
-  int tagThreshold = 1;
+  public Vector<N3> createStateStdDevs(double x, double y, double theta) {
+    return VecBuilder.fill(x, y, Units.degreesToRadians(theta));
+  }
+
+  public Vector<N3> createVisionMeasurementStdDevs(double x, double y, double theta) {
+    return VecBuilder.fill(x, y, Units.degreesToRadians(theta));
+  }
+
+  int tagThreshold = 2;
   double poseDistanceDiffThreshold = 10.0; // meters
-  double robotSpeedThreshold = 3.0; // meters per second
-  double maxTargetDistance = 5.0; // meters
+  double robotSpeedThreshold = 1.0; // meters per second
+  double maxTargetDistance = 4.0; // meters
   double maxLatency = 500; // milliseconds
 
   public PoseEstimate filteredLLPoseEstimate(PoseEstimate poseEstimate) {
     // // Only use the pose if we can see a certain number of tags
-    // if (poseEstimate.tagCount >= tagThreshold) {
-    // poseEstimate.invalid = true;
-    // return poseEstimate;
-    // }
+    if (poseEstimate.tagCount >= tagThreshold) {
+      poseEstimate.invalid = true;
+      return poseEstimate;
+    }
 
     // // Only use the pose if it's within a certain distance of our current pose
     // if (poseEstimate.pose.getTranslation().getDistance(
@@ -446,8 +472,8 @@ public class SwerveDrive extends SwerveSysId {
 
     // // Only use the pose if we're not moving too fast (robot go weeeeeeee-Andrew)
     // ChassisSpeeds chassisSpeeds = getChassisSpeeds();
-    // double robotSpeed = Math
-    // .sqrt(Math.pow(chassisSpeeds.vxMetersPerSecond, 2) +
+    // double robotSpeed = Math.sqrt(
+    // Math.pow(chassisSpeeds.vxMetersPerSecond, 2) +
     // Math.pow(chassisSpeeds.vyMetersPerSecond, 2));
     // if (robotSpeed >= robotSpeedThreshold) {
     // poseEstimate.invalid = true;

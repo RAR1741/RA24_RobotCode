@@ -1,5 +1,4 @@
 
-
 package frc.robot;
 
 import java.util.ArrayList;
@@ -58,7 +57,7 @@ public class Robot extends LoggedRobot {
   // Auto things
   AutoChooser m_autoChooser = new AutoChooser();
 
-  //Misc vars
+  // Misc vars
   private boolean m_lockHeading = true;
   private boolean m_intaking = false;
 
@@ -142,7 +141,7 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void teleopInit() {
-    // m_swerve.resetGyro();1
+    // m_swerve.resetGyro();
     m_swerve.setBrakeMode(false);
     m_swerve.drive(0, 0, 0, false);
   }
@@ -165,7 +164,7 @@ public class Robot extends LoggedRobot {
     rot *= slowScaler;
 
     if (m_lockHeading) {
-      m_swerve.driveLockedHeading(xSpeed, ySpeed, rot, true);
+      m_swerve.driveLockedHeading(xSpeed, ySpeed, rot, true, m_driverController.getWantsPointToShooter());
     } else {
       m_swerve.drive(xSpeed, ySpeed, rot, true);
     }

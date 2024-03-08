@@ -93,4 +93,8 @@ public class DriverController extends FilteredController {
   public boolean getWantsShoot() {
     return this.getRawButton(Button.A);
   }
+
+  public boolean getWantsPointToShooter() {
+    return this.getRawButton(Button.X);
+  }
 }
