@@ -115,6 +115,9 @@ public class Robot extends LoggedRobot {
     // Start the first task
     if (m_currentTask != null) {
       m_currentTask.start();
+      m_swerve.m_limelightLeft.setLightEnabled(false);
+      m_swerve.m_limelightRight.setLightEnabled(false);
+      m_swerve.m_limelightShooter.setLightEnabled(false);
     }
   }
 
@@ -133,6 +136,10 @@ public class Robot extends LoggedRobot {
 
         // Start the next task
         if (m_currentTask != null) {
+          m_swerve.m_limelightLeft.setLightEnabled(!m_swerve.m_limelightLeft.getLightEnabled());
+          m_swerve.m_limelightRight.setLightEnabled(!m_swerve.m_limelightRight.getLightEnabled());
+          m_swerve.m_limelightShooter.setLightEnabled(!m_swerve.m_limelightShooter.getLightEnabled());
+
           m_currentTask.start();
         }
       }
@@ -164,9 +171,13 @@ public class Robot extends LoggedRobot {
     rot *= slowScaler;
 
     if (m_lockHeading) {
-      m_swerve.driveLockedHeading(xSpeed, ySpeed, rot, true, m_driverController.getWantsPointToShooter());
+      m_swerve.driveLockedHeading(xSpeed, ySpeed, rot, true, m_driverController.getWantsAutoAim());
     } else {
       m_swerve.drive(xSpeed, ySpeed, rot, true);
+    }
+
+    if (m_driverController.getWantsAutoAim()) {
+      m_shooter.setAngle(m_shooter.getSpeakerAutoAimAngle(m_swerve.getPose()));
     }
 
     if (m_driverController.getWantsResetGyro()) {

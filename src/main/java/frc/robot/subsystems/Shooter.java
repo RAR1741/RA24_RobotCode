@@ -12,9 +12,12 @@ import com.revrobotics.SparkPIDController;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Preferences;
+import frc.robot.AllianceHelpers;
 import frc.robot.Constants;
 import frc.robot.Helpers;
 import frc.robot.REVThroughBoreEncoder;
@@ -138,7 +141,7 @@ public class Shooter extends Subsystem {
 
       double pivotRelRotations = targetAngleToRelRotations(m_periodicIO.pivot_angle);
 
-      if(m_cycles % 10 == 0) { // TODO: maybe tweak this?
+      if (m_cycles % 10 == 0) { // TODO: maybe tweak this?
         setPivotAbsOffset();
       }
 
@@ -183,7 +186,8 @@ public class Shooter extends Subsystem {
     angle = Units.degreesToRadians(angle);
 
     double theta = Math.acos(8.75 / 10.5);
-    double distanceInches = Math.sqrt(Math.pow(10.5, 2.0) + Math.pow(7, 2.0) - (2.0 * 10.5 * 7.0 * Math.cos(theta + angle)));
+    double distanceInches = Math
+        .sqrt(Math.pow(10.5, 2.0) + Math.pow(7, 2.0) - (2.0 * 10.5 * 7.0 * Math.cos(theta + angle)));
 
     // Result in relative encoder rotations
     return Constants.Shooter.k_relRotationsToMaxExtension - (distanceInches * Constants.Shooter.k_rotationsPerInch);
@@ -227,6 +231,42 @@ public class Shooter extends Subsystem {
         stopShooter();
         break;
     }
+  }
+
+  public double getSpeakerAutoAimAngle(Pose2d currentPose) {
+    // diffPose.getX() needs to be the distance from the robot to the speaker
+    double distanceToTarget = currentPose.minus(AllianceHelpers.getAllianceSpeakerPose2d()).getTranslation().getNorm();
+
+    // Use the distance between the robot and the speaker to calculate the angle to
+    // aim the shooter at
+    Pose2d[] aimingPoses = {
+        new Pose2d(1.485, 60.0, new Rotation2d()), // Speaker (1.36)
+        new Pose2d(1.666, 56.0, new Rotation2d()), // Speaker Corner (1.47)
+        new Pose2d(2.860, 39.5, new Rotation2d()), // Podium (2.74)
+        new Pose2d(3.702, 32.5, new Rotation2d()), // Stage Left Close ()
+        new Pose2d(4.502, 31.0, new Rotation2d()), // Stage Left ()
+        new Pose2d(5.723, 30.0, new Rotation2d()), // Wing shot (5.59)
+    };
+
+    // Find the upper and lower bounds of the aimingPoses array using the
+    // distanceToTarget
+    Pose2d upperBound = aimingPoses[aimingPoses.length - 1];
+    Pose2d lowerBound = aimingPoses[0];
+
+    for (int i = 0; i < aimingPoses.length; i++) {
+      if (distanceToTarget > aimingPoses[i].getX()) {
+        lowerBound = aimingPoses[i];
+      }
+      if (distanceToTarget < aimingPoses[i].getX()) {
+        upperBound = aimingPoses[i];
+        break;
+      }
+    }
+
+    // Clamped between [0, 1] (should be a %)
+    double t = (distanceToTarget - lowerBound.getX()) / (upperBound.getX() - lowerBound.getX());
+
+    return MathUtil.interpolate(lowerBound.getY(), upperBound.getY(), t); // may the java gods have mercy on us
   }
 
   public void stopShooter() {

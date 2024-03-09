@@ -45,12 +45,12 @@ public final class Constants {
     // Increase these numbers to trust your model's state estimates less.
     public static final double k_positionStdDevX = 0.1;
     public static final double k_positionStdDevY = 0.1;
-    public static final double k_positionStdDevTheta = 10;
+    public static final double k_positionStdDevTheta = 10.0;
 
     // Increase these numbers to trust global measurements from vision less.
-    public static final double k_visionStdDevX = 5;
-    public static final double k_visionStdDevY = 5;
-    public static final double k_visionStdDevTheta = 500;
+    public static final double k_visionStdDevX = 4.0;
+    public static final double k_visionStdDevY = 4.0;
+    public static final double k_visionStdDevTheta = 400.0;
   }
 
   public class SwerveDrive {
@@ -137,7 +137,7 @@ public final class Constants {
     }
 
     public class Rotation {
-      public static final double k_P = 3.0;
+      public static final double k_P = 3.0; // 5.0 works well for telleop, 3.0 for auto
       public static final double k_I = 0.0;
       public static final double k_D = 0.0;
     }
@@ -187,7 +187,7 @@ public final class Constants {
 
     public static final int k_pivotEncoderId = 4;
 
-    public static final double k_stowPivotAngle = 264.0;
+    public static final double k_stowPivotAngle = 267.0;
     public static final double k_groundPivotAngle = 41.0;
     public static final double k_sourcePivotAngle = 180.0;
     // public static final double k_sourcePivotAngle = k_stowPivotAngle;
@@ -238,7 +238,7 @@ public final class Constants {
     public static final int k_topMotorId = 16;
     public static final int k_bottomMotorId = 17;
 
-    public static final double k_shooterMotorP = 0.0005;
+    public static final double k_shooterMotorP = 0.00075;
     public static final double k_shooterMotorI = 0.0000008;
     public static final double k_shooterMotorD = 0.0;
     public static final double k_shooterMotorFF = 0.00015;

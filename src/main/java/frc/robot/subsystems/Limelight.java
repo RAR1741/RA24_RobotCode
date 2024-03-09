@@ -82,4 +82,8 @@ public class Limelight {
   public double getLatency() {
     return LimelightHelpers.getLatency_Capture(m_name) + LimelightHelpers.getLatency_Pipeline(m_name);
   }
+
+  public boolean getLightEnabled() {
+    return m_limelightTable.getEntry("ledMode").getDouble(1) == 3;
+  }
 }

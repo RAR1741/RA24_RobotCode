@@ -11,6 +11,7 @@ import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -25,6 +26,7 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
+import frc.robot.AllianceHelpers;
 import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
 import frc.robot.LimelightHelpers.PoseEstimate;
@@ -61,9 +63,9 @@ public class SwerveDrive extends SwerveSysId {
   };
 
   private final AHRS m_gyro = new AHRS(SPI.Port.kMXP);
-  private final Limelight m_limelightLeft = new Limelight("limelight-left");
-  private final Limelight m_limelightRight = new Limelight("limelight-right");
-  private final Limelight m_limelightShooter = new Limelight("limelight-shooter");
+  public final Limelight m_limelightLeft = new Limelight("limelight-left");
+  public final Limelight m_limelightRight = new Limelight("limelight-right");
+  public final Limelight m_limelightShooter = new Limelight("limelight-shooter");
 
   private SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
       m_moduleLocations[Module.FRONT_LEFT],
@@ -314,6 +316,7 @@ public class SwerveDrive extends SwerveSysId {
 
   public void resetGyro() {
     m_gyro.reset();
+    m_rotationTarget = new Rotation2d(0.0); // jitter go brr
     // setGyroAngleAdjustment(0);
     setAllianceGyroAngleAdjustment();
   }
@@ -321,24 +324,24 @@ public class SwerveDrive extends SwerveSysId {
   @Override
   public void periodic() {
     double currentTime = Timer.getFPGATimestamp();
-    LimelightHelpers.PoseEstimate LL1Pose = filteredLLPoseEstimate(m_limelightLeft.getPoseEstimation());
-    LimelightHelpers.PoseEstimate LL2Pose = filteredLLPoseEstimate(m_limelightRight.getPoseEstimation());
-    LimelightHelpers.PoseEstimate LL3Pose = filteredLLPoseEstimate(m_limelightShooter.getPoseEstimation());
+    LimelightHelpers.PoseEstimate leftPose = filteredLLPoseEstimate(m_limelightLeft.getPoseEstimation());
+    LimelightHelpers.PoseEstimate rightPose = filteredLLPoseEstimate(m_limelightRight.getPoseEstimation());
+    LimelightHelpers.PoseEstimate shooterPose = filteredLLPoseEstimate(m_limelightShooter.getPoseEstimation());
 
     // m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.7,0.7,99999));
     // TODO: Check this, Limelight docs use these values
 
-    // if (LL1Pose.invalid == false) {
-    // m_poseEstimator.addVisionMeasurement(LL1Pose.pose, LL1Pose.timestampSeconds);
-    // }
+    if (leftPose.invalid == false) {
+      m_poseEstimator.addVisionMeasurement(leftPose.pose, leftPose.timestampSeconds);
+    }
 
-    // if (LL2Pose.invalid == false) {
-    // m_poseEstimator.addVisionMeasurement(LL2Pose.pose, LL2Pose.timestampSeconds);
-    // }
+    if (rightPose.invalid == false) {
+      m_poseEstimator.addVisionMeasurement(rightPose.pose, rightPose.timestampSeconds);
+    }
 
-    // if (LL3Pose.invalid == false) {
-    // m_poseEstimator.addVisionMeasurement(LL3Pose.pose, LL3Pose.timestampSeconds);
-    // }
+    if (shooterPose.invalid == false) {
+      m_poseEstimator.addVisionMeasurement(shooterPose.pose, shooterPose.timestampSeconds);
+    }
 
     if (RobotBase.isReal()) {
       m_poseEstimator.updateWithTime(
@@ -443,60 +446,59 @@ public class SwerveDrive extends SwerveSysId {
     return VecBuilder.fill(x, y, Units.degreesToRadians(theta));
   }
 
-  int tagThreshold = 2;
+  int tagThreshold = 1;
   double poseDistanceDiffThreshold = 10.0; // meters
   double robotSpeedThreshold = 1.0; // meters per second
   double maxTargetDistance = 4.0; // meters
   double maxLatency = 500; // milliseconds
 
   public PoseEstimate filteredLLPoseEstimate(PoseEstimate poseEstimate) {
-    // // Only use the pose if we can see a certain number of tags
-    if (poseEstimate.tagCount >= tagThreshold) {
+    // Only use the pose if we can see a certain number of tags
+    if (poseEstimate.tagCount < tagThreshold) {
       poseEstimate.invalid = true;
       return poseEstimate;
     }
 
-    // // Only use the pose if it's within a certain distance of our current pose
-    // if (poseEstimate.pose.getTranslation().getDistance(
-    // m_poseEstimator.getEstimatedPosition().getTranslation()) >=
-    // poseDistanceDiffThreshold) {
-    // poseEstimate.invalid = true;
-    // return poseEstimate;
-    // }
+    // Only use the pose if it's within a certain distance of our current pose
+    if (poseEstimate.pose.getTranslation().getDistance(
+        m_poseEstimator.getEstimatedPosition().getTranslation()) >= poseDistanceDiffThreshold) {
+      poseEstimate.invalid = true;
+      return poseEstimate;
+    }
 
-    // // Only use the pose if the target is within a certain distance
-    // if (poseEstimate.avgTagDist >= maxTargetDistance) {
-    // poseEstimate.invalid = true;
-    // return poseEstimate;
-    // }
+    // Only use the pose if the target is within a certain distance
+    if (poseEstimate.avgTagDist >= maxTargetDistance) {
+      poseEstimate.invalid = true;
+      return poseEstimate;
+    }
 
-    // // Only use the pose if we're not moving too fast (robot go weeeeeeee-Andrew)
-    // ChassisSpeeds chassisSpeeds = getChassisSpeeds();
-    // double robotSpeed = Math.sqrt(
-    // Math.pow(chassisSpeeds.vxMetersPerSecond, 2) +
-    // Math.pow(chassisSpeeds.vyMetersPerSecond, 2));
-    // if (robotSpeed >= robotSpeedThreshold) {
-    // poseEstimate.invalid = true;
-    // return poseEstimate;
-    // }
+    // Only use the pose if we're not moving too fast (robot go weeeeeeee-Andrew)
+    ChassisSpeeds chassisSpeeds = getChassisSpeeds();
+    double robotSpeed = Math.sqrt(
+        Math.pow(chassisSpeeds.vxMetersPerSecond, 2) +
+            Math.pow(chassisSpeeds.vyMetersPerSecond, 2));
+    if (robotSpeed >= robotSpeedThreshold) {
+      poseEstimate.invalid = true;
+      return poseEstimate;
+    }
 
-    // // Only use the pose if the latency is within a certain threshold
-    // if (poseEstimate.latency >= maxLatency) {
-    // poseEstimate.invalid = true;
-    // return poseEstimate;
-    // }
+    // TODO: add max rotation rate limiting
 
-    // // Only use the pose if it's legally on the field
-    // if (poseEstimate.pose.getY() < 0 || poseEstimate.pose.getY() >
-    // Constants.Field.k_length) {
-    // poseEstimate.invalid = true;
-    // return poseEstimate;
-    // }
-    // if (poseEstimate.pose.getX() < 0 || poseEstimate.pose.getX() >
-    // Constants.Field.k_width) {
-    // poseEstimate.invalid = true;
-    // return poseEstimate;
-    // }
+    // Only use the pose if the latency (ms) is within a certain threshold
+    if (poseEstimate.latency >= maxLatency) {
+      poseEstimate.invalid = true;
+      return poseEstimate;
+    }
+
+    // Only use the pose if it's legally on the field
+    if (poseEstimate.pose.getY() < 0 || poseEstimate.pose.getY() > Constants.Field.k_length) {
+      poseEstimate.invalid = true;
+      return poseEstimate;
+    }
+    if (poseEstimate.pose.getX() < 0 || poseEstimate.pose.getX() > Constants.Field.k_width) {
+      poseEstimate.invalid = true;
+      return poseEstimate;
+    }
 
     return poseEstimate;
   }
@@ -514,5 +516,14 @@ public class SwerveDrive extends SwerveSysId {
   @AutoLogOutput
   public Pose2d getLLShooterCurrentPose() {
     return m_limelightShooter.getPoseEstimation().pose;
+  }
+
+  @AutoLogOutput
+  public double getDistanceFromSpeaker() {
+    Pose2d pose = getPose();
+    Pose3d speakerPose = AllianceHelpers.getAllianceSpeakerPose3d();
+
+    return Math.sqrt(Math.pow(pose.getX() - speakerPose.getX(), 2) +
+        Math.pow(pose.getY() - speakerPose.getY(), 2));
   }
 }

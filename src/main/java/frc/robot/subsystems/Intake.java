@@ -30,7 +30,7 @@ public class Intake extends Subsystem {
   private final ProfiledPIDController m_pivotMotorPID;
   private final ArmFeedforward m_pivotFeedForward;
 
-  private final double k_pivotThreshold = 2.0;
+  private final double k_pivotThreshold = 3.0;
   private final double k_intakeSpeedThreshold = 0.1;
 
   private PeriodicIO m_periodicIO;
@@ -70,7 +70,7 @@ public class Intake extends Subsystem {
     m_pivotFeedForward = new ArmFeedforward(
       Constants.Intake.k_pivotMotorKS,
       Constants.Intake.k_pivotMotorKG,
-      Constants.Intake.k_pivotMotorKV, 
+      Constants.Intake.k_pivotMotorKV,
       Constants.Intake.k_pivotMotorKA);
 
     m_periodicIO = new PeriodicIO();
@@ -97,7 +97,7 @@ public class Intake extends Subsystem {
       double target_pivot_angle = getAngleFromTarget(m_periodicIO.pivot_target);
 
       double pidCalc = m_pivotMotorPID.calculate(getPivotAngle(), target_pivot_angle);
-      double ffCalc = m_pivotFeedForward.calculate(Math.toRadians(getPivotReferenceToHorizontal()), 
+      double ffCalc = m_pivotFeedForward.calculate(Math.toRadians(getPivotReferenceToHorizontal()),
         Math.toRadians(m_pivotMotorPID.getSetpoint().velocity));
 
       m_periodicIO.pivot_voltage = pidCalc + ffCalc;

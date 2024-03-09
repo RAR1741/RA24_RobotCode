@@ -2,10 +2,6 @@ package frc.robot.autonomous.modes;
 
 import java.util.ArrayList;
 
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import frc.robot.Constants.Field;
 import frc.robot.autonomous.tasks.Task;
 
 public abstract class AutoModeBase {
@@ -29,12 +25,4 @@ public abstract class AutoModeBase {
   }
 
   public abstract void queueTasks();
-
-  public Pose3d getAllianceSpeakerPose() {
-    if (DriverStation.getAlliance().get() == Alliance.Blue) {
-      return Field.k_blueSpeakerPose;
-    } else {
-      return Field.k_redSpeakerPose;
-    }
-  }
 }

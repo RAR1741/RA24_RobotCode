@@ -1,5 +1,6 @@
 package frc.robot.autonomous.modes;
 
+import frc.robot.AllianceHelpers;
 import frc.robot.Constants;
 import frc.robot.autonomous.tasks.AutoTargetTask;
 import frc.robot.autonomous.tasks.DriveForwardTask;
@@ -28,7 +29,7 @@ public class CenterTwoNoteMidringMode extends AutoModeBase {
         new DriveTrajectoryTask("Shoot, MidRing")));
     queueTask(new ParallelTask(
         new IntakeTask(IntakePivotTarget.STOW, IntakeState.NONE),
-        new AutoTargetTask(getAllianceSpeakerPose())));
+        new AutoTargetTask(AllianceHelpers.getAllianceSpeakerPose3d())));
     queueTask(new WaitTask(Constants.Auto.Timing.k_intakeBounceTime));
     queueTask(new IntakeTask(IntakePivotTarget.STOW, IntakeState.FEED_SHOOTER));
     queueTask(new WaitTask(Constants.Auto.Timing.k_shootFeedTime));
