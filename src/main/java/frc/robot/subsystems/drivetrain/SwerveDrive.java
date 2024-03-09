@@ -557,6 +557,7 @@ public class SwerveDrive extends SwerveSysId {
     return m_limelightShooter.getPoseEstimation().pose;
   }
 
+  @AutoLogOutput
   public double getDistanceFromSpeaker() {
     Pose2d pose = getPose();
     Pose3d speakerPose = AllianceHelpers.getAllianceSpeakerPose3d();

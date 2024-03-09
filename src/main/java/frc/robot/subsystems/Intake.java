@@ -168,8 +168,6 @@ public class Intake extends Subsystem {
     IntakeState intake_state = IntakeState.NONE;
 
     double intake_speed = 0.0;
-
-    boolean wantsToEject = false;
   }
 
   public enum IntakePivotTarget {
@@ -189,10 +187,6 @@ public class Intake extends Subsystem {
     FEED_SHOOTER
   }
 
-  public void wantsToEject(boolean eject) {
-    m_periodicIO.wantsToEject = eject;
-  }
-
   /*---------------------------------- Custom Private Functions ---------------------------------*/
   private void checkAutoTasks() {
     // If the intake is set to GROUND, and the intake has a note, and the pivot is
@@ -204,23 +198,6 @@ public class Intake extends Subsystem {
       setIntakeState(IntakeState.NONE);
       // m_leds.setColor(Color.kGreen);
     }
-
-    // if (wantsToEject()) {
-    // if ((m_periodicIO.pivot_target == IntakePivotTarget.STOW &&
-    // isAtPivotTarget()) ||
-    // (m_periodicIO.pivot_target == IntakePivotTarget.GROUND && isAtPivotTarget()))
-    // {
-    // setPivotTarget(IntakePivotTarget.AMP);
-    // setIntakeState(IntakeState.NONE);
-    // } else if (m_periodicIO.pivot_target == IntakePivotTarget.AMP &&
-    // isAtPivotTarget()) {
-    // setIntakeState(IntakeState.EJECT);
-    // }
-    // } else if (m_periodicIO.pivot_target == IntakePivotTarget.EJECT &&
-    // isAtPivotTarget()) {
-    // setIntakeState(IntakeState.NONE);
-    // setPivotTarget(IntakePivotTarget.STOW);
-    // }
   }
 
   // Logged
@@ -264,11 +241,6 @@ public class Intake extends Subsystem {
     double target_angle = getAngleFromTarget(m_periodicIO.pivot_target);
 
     return Math.abs(target_angle - current_angle) <= k_pivotThreshold;
-  }
-
-  @AutoLogOutput
-  public boolean wantsToEject() {
-    return m_periodicIO.wantsToEject;
   }
 
   @AutoLogOutput

@@ -177,7 +177,7 @@ public class Robot extends LoggedRobot {
     rot *= slowScaler;
 
     boolean wantsSpeakerAutoAim = m_driverController.getWantsAutoAim();
-    m_wantsAmpAutoAim = m_driverController.getWantsEjectPivot();
+    m_wantsAmpAutoAim = m_driverController.getWantsAmpPivot();
 
     if (m_lockHeading) {
       m_swerve.driveLockedHeading(xSpeed, ySpeed, rot, true, wantsSpeakerAutoAim, m_wantsAmpAutoAim);
@@ -229,14 +229,18 @@ public class Robot extends LoggedRobot {
         System.out.println("It's ampin' time"); // -andy
       }
       m_intaking = false;
-    } else if ((m_driverController.getWantsShoot() || m_operatorController.getWantsShoot()) &&
+    } else if (m_operatorController.getWantsShoot() &&
         m_intake.isAtPivotTarget() &&
         m_intake.getPivotTarget() == IntakePivotTarget.STOW) {
       m_intake.setIntakeState(IntakeState.FEED_SHOOTER);
       m_intaking = false;
     } else if (!m_intaking) {
       m_intake.setIntakeState(IntakeState.NONE);
-      m_intake.wantsToEject(false);
+    }
+
+    if (m_driverController.getWantsEjectPivot()) {
+      m_intake.setPivotTarget(IntakePivotTarget.EJECT);
+      m_intaking = false;
     }
 
     m_shooter.changePivotByAngle(m_operatorController.getWantsManualShooterPivot(0.5));

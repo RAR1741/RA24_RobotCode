@@ -239,11 +239,11 @@ public class Shooter extends Subsystem {
     // aim the shooter at
     Pose2d[] aimingPoses = {
         new Pose2d(1.485, 60.0, new Rotation2d()), // Speaker (1.36)
-        new Pose2d(1.666, 56.0, new Rotation2d()), // Speaker Corner (1.47)
+        new Pose2d(1.686, 56.0, new Rotation2d()), // Speaker Corner (1.47)
         new Pose2d(2.860, 39.5, new Rotation2d()), // Podium (2.74)
-        new Pose2d(3.702, 32.5, new Rotation2d()), // Stage Left Close ()
-        new Pose2d(4.502, 31.0, new Rotation2d()), // Stage Left ()
-        new Pose2d(5.723, 30.0, new Rotation2d()), // Wing shot (5.59)
+        new Pose2d(3.702, 34.1, new Rotation2d()), // Stage Left Close ()
+        new Pose2d(3.972, 31.7, new Rotation2d()), // Stage Left ()
+        new Pose2d(5.123, 29.5, new Rotation2d()), // Wing shot Close (5.59)
     };
 
     // Find the upper and lower bounds of the aimingPoses array using the

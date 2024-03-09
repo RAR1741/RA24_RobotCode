@@ -90,7 +90,7 @@ public class DriverController extends FilteredController {
     return this.getRawButton(Button.B);
   }
 
-  public boolean getWantsShoot() {
+  public boolean getWantsEjectPivot() {
     return this.getRawButton(Button.A);
   }
 
@@ -98,7 +98,7 @@ public class DriverController extends FilteredController {
     return this.getRawButton(Button.X);
   }
 
-  public boolean getWantsEjectPivot() {
+  public boolean getWantsAmpPivot() {
     return this.getRawButtonPressed(Button.Y);
   }
 }
