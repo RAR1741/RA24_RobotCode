@@ -53,6 +53,12 @@ public final class Constants {
     public static final double k_visionStdDevX = 4.0;
     public static final double k_visionStdDevY = 4.0;
     public static final double k_visionStdDevTheta = 400.0;
+
+    public class Rotation {
+      public static final double k_P = 5.0;
+      public static final double k_I = 0.0;
+      public static final double k_D = 0.0;
+    }
   }
 
   public class SwerveDrive {
@@ -139,7 +145,7 @@ public final class Constants {
     }
 
     public class Rotation {
-      public static final double k_P = 3.0; // 5.0 works well for telleop, 3.0 for auto
+      public static final double k_P = 3.0;
       public static final double k_I = 0.0;
       public static final double k_D = 0.0;
     }
@@ -194,10 +200,10 @@ public final class Constants {
     public static final double k_sourcePivotAngle = 180.0;
     // public static final double k_sourcePivotAngle = k_stowPivotAngle;
     public static final double k_ejectPivotAngle = 110.0;
-    public static final double k_ampPivotAngle = k_stowPivotAngle;
+    public static final double k_ampPivotAngle = 181.0;
 
     public static final double k_intakeSpeed = 0.4;
-    public static final double k_ejectSpeed = -0.25;
+    public static final double k_ejectSpeed = -0.525;
     public static final double k_feedShooterSpeed = -0.5;
 
     public static final double k_pivotMotorP = 0.035;

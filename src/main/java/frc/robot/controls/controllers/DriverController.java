@@ -97,4 +97,8 @@ public class DriverController extends FilteredController {
   public boolean getWantsAutoAim() {
     return this.getRawButton(Button.X);
   }
+
+  public boolean getWantsEjectPivot() {
+    return this.getRawButtonPressed(Button.Y);
+  }
 }

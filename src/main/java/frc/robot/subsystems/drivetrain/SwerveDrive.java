@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.AllianceHelpers;
+import frc.robot.AprilTagLocations;
 import frc.robot.Constants;
 import frc.robot.LimelightHelpers.PoseEstimate;
 import frc.robot.subsystems.Limelight;
@@ -153,6 +154,22 @@ public class SwerveDrive extends SwerveSysId {
     return degreeMode ? Units.radiansToDegrees(theta) : theta;
   }
 
+  public double calculateAmpAutoAimAngle(boolean degreeMode) {
+    double botX = m_poseEstimator.getEstimatedPosition().getX();
+    double botY = m_poseEstimator.getEstimatedPosition().getY();
+    double targetX = AprilTagLocations.Blue.k_ampTag6.getX(); // TODO: Work on red
+    double targetY = AprilTagLocations.Blue.k_ampTag6.getY();
+
+    double x = targetX - botX;
+    double distance = Math.sqrt(Math.pow(x, 2) + Math.pow(targetY - botY, 2));
+
+    double theta = Math.acos(x / distance);
+
+    putNumber("AutoAimAngle", Units.radiansToDegrees(theta));
+
+    return degreeMode ? Units.radiansToDegrees(theta) : theta;
+  }
+
   public void resetPose() {
     resetGyro();
     resetOdometry(new Pose2d(0, 0, new Rotation2d(0)), false);
@@ -230,22 +247,29 @@ public class SwerveDrive extends SwerveSysId {
         m_modules[Module.BACK_LEFT].getState());
   }
 
-  public void driveLockedHeading(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean autoAim) {
+  public void driveLockedHeading(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean speakerAim,
+      boolean ampAim) {
     double rotationFeedback = 0.0;
     double rotationFF = rot;
+    Rotation2d currentRotation;
 
-    if (autoAim) {
-      // m_rotationTarget = new Rotation2d(calculateSpeakerAutoAimAngle(false));
+    if (speakerAim) {
       m_rotationTarget = new Rotation2d(
-          getPose().getTranslation().getX() - Constants.Field.k_blueSpeakerPose.getTranslation().getX(),
-          getPose().getTranslation().getY() - Constants.Field.k_blueSpeakerPose.getTranslation().getY());
+          getPose().getTranslation().getX() - AllianceHelpers.getAllianceSpeakerPose2d().getTranslation().getX(),
+          getPose().getTranslation().getY() - AllianceHelpers.getAllianceSpeakerPose2d().getTranslation().getY());
+      currentRotation = getPose().getRotation();
+    } else if (ampAim) {
+      m_rotationTarget = AllianceHelpers.getAllianceAmpRotation();
+      currentRotation = getPose().getRotation();
+    } else {
+      currentRotation = m_gyro.getRotation2d();
     }
 
     if (Math.abs(rot) > 0.03 * Constants.SwerveDrive.k_maxAngularSpeed) {
-      m_rotationTarget = m_gyro.getRotation2d().plus(new Rotation2d(rot * (1.0 / 50.0)));
+      m_rotationTarget = currentRotation.plus(new Rotation2d(rot * (1.0 / 50.0)));
     } else {
       rotationFeedback = k_rotController.calculate(
-          m_gyro.getRotation2d().getRadians(),
+          currentRotation.getRadians(),
           m_rotationTarget.getRadians());
     }
     Logger.recordOutput("SwerveDrive/HeadingLock/RotFeedback", rotationFeedback);
@@ -253,17 +277,7 @@ public class SwerveDrive extends SwerveSysId {
     Logger.recordOutput("SwerveDrive/HeadingLock/Target", m_rotationTarget);
     // rotationFF = rot; // k_rotController.getSetpoint().velocity;
 
-    SwerveModuleState[] swerveModuleStates = m_kinematics.toSwerveModuleStates(
-        fieldRelative
-            ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotationFeedback + rotationFF,
-                m_gyro.getRotation2d())
-            : new ChassisSpeeds(xSpeed, ySpeed, rotationFeedback + rotationFF));
-
-    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.SwerveDrive.k_maxBoostSpeed);
-
-    for (int i = 0; i < m_modules.length; i++) {
-      m_modules[i].setDesiredState(swerveModuleStates[i]);
-    }
+    drive(xSpeed, ySpeed, rotationFeedback + rotationFF, fieldRelative);
   }
 
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
@@ -320,31 +334,11 @@ public class SwerveDrive extends SwerveSysId {
   public void resetGyro() {
     m_gyro.reset();
     m_rotationTarget = new Rotation2d(0.0); // jitter go brr
-    // setGyroAngleAdjustment(0);
     setAllianceGyroAngleAdjustment();
   }
 
   @Override
   public void periodic() {
-    // LimelightHelpers.PoseEstimate leftPose =
-    // filteredLLPoseEstimate(m_limelightLeft.getPoseEstimation());
-    // LimelightHelpers.PoseEstimate rightPose =
-    // filteredLLPoseEstimate(m_limelightRight.getPoseEstimation());
-    // LimelightHelpers.PoseEstimate shooterPose =
-    // filteredLLPoseEstimate(m_limelightShooter.getPoseEstimation());
-
-    // if (leftPose.invalid == false)
-    // m_poseEstimator.addVisionMeasurement(leftPose.pose,
-    // leftPose.timestampSeconds);
-
-    // if (rightPose.invalid == false)
-    // m_poseEstimator.addVisionMeasurement(rightPose.pose,
-    // rightPose.timestampSeconds);
-
-    // if (shooterPose.invalid == false)
-    // m_poseEstimator.addVisionMeasurement(shooterPose.pose,
-    // shooterPose.timestampSeconds);
-
     updateVisionPoseWithStdDev(m_limelightLeft.getPoseEstimation(), VisionInstance.LEFT);
     updateVisionPoseWithStdDev(m_limelightRight.getPoseEstimation(), VisionInstance.RIGHT);
     updateVisionPoseWithStdDev(m_limelightShooter.getPoseEstimation(), VisionInstance.SHOOTER);
@@ -452,62 +446,65 @@ public class SwerveDrive extends SwerveSysId {
     return VecBuilder.fill(x, y, Units.degreesToRadians(theta));
   }
 
-  int tagThreshold = 1;
-  double poseDistanceDiffThreshold = 10.0; // meters
-  double robotSpeedThreshold = 1.0; // meters per second
-  double maxTargetDistance = 4.0; // meters
-  double maxLatency = 500; // milliseconds
+  // int tagThreshold = 1;
+  // double poseDistanceDiffThreshold = 10.0; // meters
+  // double robotSpeedThreshold = 1.0; // meters per second
+  // double maxTargetDistance = 4.0; // meters
+  // double maxLatency = 500; // milliseconds
 
-  public PoseEstimate filteredLLPoseEstimate(PoseEstimate poseEstimate) {
-    // Only use the pose if we can see a certain number of tags
-    if (poseEstimate.tagCount < tagThreshold) {
-      poseEstimate.invalid = true;
-      return poseEstimate;
-    }
+  // public PoseEstimate filteredLLPoseEstimate(PoseEstimate poseEstimate) {
+  // // Only use the pose if we can see a certain number of tags
+  // if (poseEstimate.tagCount < tagThreshold) {
+  // poseEstimate.invalid = true;
+  // return poseEstimate;
+  // }
 
-    // Only use the pose if it's within a certain distance of our current pose
-    if (poseEstimate.pose.getTranslation().getDistance(
-        m_poseEstimator.getEstimatedPosition().getTranslation()) >= poseDistanceDiffThreshold) {
-      poseEstimate.invalid = true;
-      return poseEstimate;
-    }
+  // // Only use the pose if it's within a certain distance of our current pose
+  // if (poseEstimate.pose.getTranslation().getDistance(
+  // m_poseEstimator.getEstimatedPosition().getTranslation()) >=
+  // poseDistanceDiffThreshold) {
+  // poseEstimate.invalid = true;
+  // return poseEstimate;
+  // }
 
-    // Only use the pose if the target is within a certain distance
-    if (poseEstimate.avgTagDist >= maxTargetDistance) {
-      poseEstimate.invalid = true;
-      return poseEstimate;
-    }
+  // // Only use the pose if the target is within a certain distance
+  // if (poseEstimate.avgTagDist >= maxTargetDistance) {
+  // poseEstimate.invalid = true;
+  // return poseEstimate;
+  // }
 
-    // Only use the pose if we're not moving too fast (robot go weeeeeeee-Andrew)
-    ChassisSpeeds chassisSpeeds = getChassisSpeeds();
-    double robotSpeed = Math.sqrt(
-        Math.pow(chassisSpeeds.vxMetersPerSecond, 2) +
-            Math.pow(chassisSpeeds.vyMetersPerSecond, 2));
-    if (robotSpeed >= robotSpeedThreshold) {
-      poseEstimate.invalid = true;
-      return poseEstimate;
-    }
+  // // Only use the pose if we're not moving too fast (robot go weeeeeeee-Andrew)
+  // ChassisSpeeds chassisSpeeds = getChassisSpeeds();
+  // double robotSpeed = Math.sqrt(
+  // Math.pow(chassisSpeeds.vxMetersPerSecond, 2) +
+  // Math.pow(chassisSpeeds.vyMetersPerSecond, 2));
+  // if (robotSpeed >= robotSpeedThreshold) {
+  // poseEstimate.invalid = true;
+  // return poseEstimate;
+  // }
 
-    // TODO: add max rotation rate limiting
+  // // TODO: add max rotation rate limiting
 
-    // Only use the pose if the latency (ms) is within a certain threshold
-    if (poseEstimate.latency >= maxLatency) {
-      poseEstimate.invalid = true;
-      return poseEstimate;
-    }
+  // // Only use the pose if the latency (ms) is within a certain threshold
+  // if (poseEstimate.latency >= maxLatency) {
+  // poseEstimate.invalid = true;
+  // return poseEstimate;
+  // }
 
-    // Only use the pose if it's legally on the field
-    if (poseEstimate.pose.getY() < 0 || poseEstimate.pose.getY() > Constants.Field.k_length) {
-      poseEstimate.invalid = true;
-      return poseEstimate;
-    }
-    if (poseEstimate.pose.getX() < 0 || poseEstimate.pose.getX() > Constants.Field.k_width) {
-      poseEstimate.invalid = true;
-      return poseEstimate;
-    }
+  // // Only use the pose if it's legally on the field
+  // if (poseEstimate.pose.getY() < 0 || poseEstimate.pose.getY() >
+  // Constants.Field.k_length) {
+  // poseEstimate.invalid = true;
+  // return poseEstimate;
+  // }
+  // if (poseEstimate.pose.getX() < 0 || poseEstimate.pose.getX() >
+  // Constants.Field.k_width) {
+  // poseEstimate.invalid = true;
+  // return poseEstimate;
+  // }
 
-    return poseEstimate;
-  }
+  // return poseEstimate;
+  // }
 
   private double xyStdDevCoefficient = 0.005;
   private double thetaStdDevCoefficient = 0.01;

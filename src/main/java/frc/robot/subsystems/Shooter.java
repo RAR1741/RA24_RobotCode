@@ -160,8 +160,6 @@ public class Shooter extends Subsystem {
     // If the pivot absolute encoder isn't connected
     if (!m_pivotAbsEncoder.isConnected()) {
       // SAFETY
-
-      // TODO: figure out what should go here
     }
 
     m_sim.updateAngle(getPivotAngle());

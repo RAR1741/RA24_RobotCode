@@ -151,7 +151,13 @@ public class Robot extends LoggedRobot {
     // m_swerve.resetGyro();
     m_swerve.setBrakeMode(false);
     m_swerve.drive(0, 0, 0, false);
+
+    m_swerve.m_limelightLeft.setLightEnabled(false);
+    m_swerve.m_limelightRight.setLightEnabled(false);
+    m_swerve.m_limelightShooter.setLightEnabled(false);
   }
+
+  boolean m_wantsAmpAutoAim = false;
 
   @Override
   public void teleopPeriodic() {
@@ -170,13 +176,16 @@ public class Robot extends LoggedRobot {
     ySpeed *= slowScaler;
     rot *= slowScaler;
 
+    boolean wantsSpeakerAutoAim = m_driverController.getWantsAutoAim();
+    m_wantsAmpAutoAim = m_driverController.getWantsEjectPivot();
+
     if (m_lockHeading) {
-      m_swerve.driveLockedHeading(xSpeed, ySpeed, rot, true, m_driverController.getWantsAutoAim());
+      m_swerve.driveLockedHeading(xSpeed, ySpeed, rot, true, wantsSpeakerAutoAim, m_wantsAmpAutoAim);
     } else {
       m_swerve.drive(xSpeed, ySpeed, rot, true);
     }
 
-    if (m_driverController.getWantsAutoAim()) {
+    if (wantsSpeakerAutoAim) {
       m_shooter.setAngle(m_shooter.getSpeakerAutoAimAngle(m_swerve.getPose()));
     }
 
@@ -189,15 +198,21 @@ public class Robot extends LoggedRobot {
     }
 
     if (m_driverController.getWantsIntakePivotToggle()) {
+      m_wantsAmpAutoAim = false;
       if (m_intake.getPivotTarget() == IntakePivotTarget.STOW) {
         m_intake.setPivotTarget(IntakePivotTarget.GROUND);
         m_intake.setIntakeState(IntakeState.INTAKE);
         m_intaking = true;
-      } else if (m_intake.getPivotTarget() == IntakePivotTarget.GROUND) {
+      } else {
         m_intake.setPivotTarget(IntakePivotTarget.STOW);
         m_intake.setIntakeState(IntakeState.NONE);
         m_intaking = false;
       }
+    }
+
+    if (m_wantsAmpAutoAim) {
+      m_shooter.setAngle(ShooterPivotTarget.MIN);
+      m_intake.setPivotTarget(IntakePivotTarget.AMP);
     }
 
     if (m_driverController.getWantsStopIntake()) {
@@ -209,7 +224,10 @@ public class Robot extends LoggedRobot {
       m_intake.setIntakeState(IntakeState.INTAKE);
       m_intaking = true;
     } else if (m_driverController.getWantsEject() || m_operatorController.getWantsEject()) {
-      m_intake.wantsToEject(true);
+      m_intake.setIntakeState(IntakeState.EJECT);
+      if (m_intake.isAtPivotTarget() && m_intake.getPivotTarget() == IntakePivotTarget.AMP) {
+        System.out.println("It's ampin' time"); // -andy
+      }
       m_intaking = false;
     } else if ((m_driverController.getWantsShoot() || m_operatorController.getWantsShoot()) &&
         m_intake.isAtPivotTarget() &&

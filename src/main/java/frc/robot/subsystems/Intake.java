@@ -205,18 +205,22 @@ public class Intake extends Subsystem {
       // m_leds.setColor(Color.kGreen);
     }
 
-    if (wantsToEject()) {
-      if ((m_periodicIO.pivot_target == IntakePivotTarget.STOW && isAtPivotTarget()) ||
-          (m_periodicIO.pivot_target == IntakePivotTarget.GROUND && isAtPivotTarget())) {
-        setPivotTarget(IntakePivotTarget.EJECT);
-        setIntakeState(IntakeState.NONE);
-      } else if (m_periodicIO.pivot_target == IntakePivotTarget.EJECT && isAtPivotTarget()) {
-        setIntakeState(IntakeState.EJECT);
-      }
-    } else if (m_periodicIO.pivot_target == IntakePivotTarget.EJECT && isAtPivotTarget()) {
-      setIntakeState(IntakeState.NONE);
-      setPivotTarget(IntakePivotTarget.STOW);
-    }
+    // if (wantsToEject()) {
+    // if ((m_periodicIO.pivot_target == IntakePivotTarget.STOW &&
+    // isAtPivotTarget()) ||
+    // (m_periodicIO.pivot_target == IntakePivotTarget.GROUND && isAtPivotTarget()))
+    // {
+    // setPivotTarget(IntakePivotTarget.AMP);
+    // setIntakeState(IntakeState.NONE);
+    // } else if (m_periodicIO.pivot_target == IntakePivotTarget.AMP &&
+    // isAtPivotTarget()) {
+    // setIntakeState(IntakeState.EJECT);
+    // }
+    // } else if (m_periodicIO.pivot_target == IntakePivotTarget.EJECT &&
+    // isAtPivotTarget()) {
+    // setIntakeState(IntakeState.NONE);
+    // setPivotTarget(IntakePivotTarget.STOW);
+    // }
   }
 
   // Logged
