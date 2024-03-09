@@ -63,15 +63,15 @@ public class Intake extends Subsystem {
         Constants.Intake.k_pivotMotorI,
         Constants.Intake.k_pivotMotorD,
         new TrapezoidProfile.Constraints(
-          Constants.Intake.k_maxVelocity,
-          Constants.Intake.k_maxAcceleration));
+            Constants.Intake.k_maxVelocity,
+            Constants.Intake.k_maxAcceleration));
 
     // Pivot Feedforward
     m_pivotFeedForward = new ArmFeedforward(
-      Constants.Intake.k_pivotMotorKS,
-      Constants.Intake.k_pivotMotorKG,
-      Constants.Intake.k_pivotMotorKV,
-      Constants.Intake.k_pivotMotorKA);
+        Constants.Intake.k_pivotMotorKS,
+        Constants.Intake.k_pivotMotorKG,
+        Constants.Intake.k_pivotMotorKV,
+        Constants.Intake.k_pivotMotorKA);
 
     m_periodicIO = new PeriodicIO();
 
@@ -98,7 +98,7 @@ public class Intake extends Subsystem {
 
       double pidCalc = m_pivotMotorPID.calculate(getPivotAngle(), target_pivot_angle);
       double ffCalc = m_pivotFeedForward.calculate(Math.toRadians(getPivotReferenceToHorizontal()),
-        Math.toRadians(m_pivotMotorPID.getSetpoint().velocity));
+          Math.toRadians(m_pivotMotorPID.getSetpoint().velocity));
 
       m_periodicIO.pivot_voltage = pidCalc + ffCalc;
 

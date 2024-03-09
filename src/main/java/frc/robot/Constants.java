@@ -47,6 +47,8 @@ public final class Constants {
     public static final double k_positionStdDevY = 0.1;
     public static final double k_positionStdDevTheta = 10.0;
 
+    // TODO: try this: 0.003, 0.003, 0.0002
+
     // Increase these numbers to trust global measurements from vision less.
     public static final double k_visionStdDevX = 4.0;
     public static final double k_visionStdDevY = 4.0;

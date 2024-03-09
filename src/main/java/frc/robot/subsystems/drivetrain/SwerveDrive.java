@@ -28,7 +28,6 @@ import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.AllianceHelpers;
 import frc.robot.Constants;
-import frc.robot.LimelightHelpers;
 import frc.robot.LimelightHelpers.PoseEstimate;
 import frc.robot.subsystems.Limelight;
 
@@ -97,6 +96,10 @@ public class SwerveDrive extends SwerveSysId {
       Constants.AutoAim.Rotation.k_P,
       Constants.AutoAim.Rotation.k_I,
       Constants.AutoAim.Rotation.k_D);
+
+  enum VisionInstance {
+    SHOOTER, LEFT, RIGHT;
+  }
 
   private boolean m_hasSetPose = false;
 
@@ -323,29 +326,32 @@ public class SwerveDrive extends SwerveSysId {
 
   @Override
   public void periodic() {
-    double currentTime = Timer.getFPGATimestamp();
-    LimelightHelpers.PoseEstimate leftPose = filteredLLPoseEstimate(m_limelightLeft.getPoseEstimation());
-    LimelightHelpers.PoseEstimate rightPose = filteredLLPoseEstimate(m_limelightRight.getPoseEstimation());
-    LimelightHelpers.PoseEstimate shooterPose = filteredLLPoseEstimate(m_limelightShooter.getPoseEstimation());
+    // LimelightHelpers.PoseEstimate leftPose =
+    // filteredLLPoseEstimate(m_limelightLeft.getPoseEstimation());
+    // LimelightHelpers.PoseEstimate rightPose =
+    // filteredLLPoseEstimate(m_limelightRight.getPoseEstimation());
+    // LimelightHelpers.PoseEstimate shooterPose =
+    // filteredLLPoseEstimate(m_limelightShooter.getPoseEstimation());
 
-    // m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.7,0.7,99999));
-    // TODO: Check this, Limelight docs use these values
+    // if (leftPose.invalid == false)
+    // m_poseEstimator.addVisionMeasurement(leftPose.pose,
+    // leftPose.timestampSeconds);
 
-    if (leftPose.invalid == false) {
-      m_poseEstimator.addVisionMeasurement(leftPose.pose, leftPose.timestampSeconds);
-    }
+    // if (rightPose.invalid == false)
+    // m_poseEstimator.addVisionMeasurement(rightPose.pose,
+    // rightPose.timestampSeconds);
 
-    if (rightPose.invalid == false) {
-      m_poseEstimator.addVisionMeasurement(rightPose.pose, rightPose.timestampSeconds);
-    }
+    // if (shooterPose.invalid == false)
+    // m_poseEstimator.addVisionMeasurement(shooterPose.pose,
+    // shooterPose.timestampSeconds);
 
-    if (shooterPose.invalid == false) {
-      m_poseEstimator.addVisionMeasurement(shooterPose.pose, shooterPose.timestampSeconds);
-    }
+    updateVisionPoseWithStdDev(m_limelightLeft.getPoseEstimation(), VisionInstance.LEFT);
+    updateVisionPoseWithStdDev(m_limelightRight.getPoseEstimation(), VisionInstance.RIGHT);
+    updateVisionPoseWithStdDev(m_limelightShooter.getPoseEstimation(), VisionInstance.SHOOTER);
 
     if (RobotBase.isReal()) {
       m_poseEstimator.updateWithTime(
-          currentTime,
+          Timer.getFPGATimestamp(),
           m_gyro.getRotation2d(),
           new SwerveModulePosition[] {
               m_modules[Module.FRONT_LEFT].getPosition(),
@@ -503,6 +509,42 @@ public class SwerveDrive extends SwerveSysId {
     return poseEstimate;
   }
 
+  private double xyStdDevCoefficient = 0.005;
+  private double thetaStdDevCoefficient = 0.01;
+  double[] stdDevFactors = { 0.6, 2.0, 2.0 }; // shooter, left, right
+  boolean useVisionRotation = true;
+
+  public void updateVisionPoseWithStdDev(PoseEstimate poseEstimate, VisionInstance instanceIndex) {
+    // Add observation to list
+    double avgDistance = poseEstimate.avgTagDist;
+    double avgArea = poseEstimate.avgTagArea;
+
+    if (poseEstimate.tagCount < 1) {
+      return;
+    }
+
+    if (avgDistance >= 4.0) {
+      return;
+    }
+
+    double xyStdDev = xyStdDevCoefficient
+        * Math.pow(avgDistance, 2.0)
+        / poseEstimate.tagCount
+        * stdDevFactors[instanceIndex.ordinal()];
+
+    double thetaStdDev = useVisionRotation
+        ? thetaStdDevCoefficient
+            * Math.pow(avgDistance, 2.0)
+            / poseEstimate.tagCount
+            * stdDevFactors[instanceIndex.ordinal()]
+        : Double.POSITIVE_INFINITY;
+
+    m_poseEstimator.addVisionMeasurement(
+        poseEstimate.pose,
+        poseEstimate.timestampSeconds,
+        createVisionMeasurementStdDevs(xyStdDev, xyStdDev, thetaStdDev));
+  }
+
   @AutoLogOutput
   public Pose2d getLLLeftCurrentPose() {
     return m_limelightLeft.getPoseEstimation().pose;
@@ -518,7 +560,6 @@ public class SwerveDrive extends SwerveSysId {
     return m_limelightShooter.getPoseEstimation().pose;
   }
 
-  @AutoLogOutput
   public double getDistanceFromSpeaker() {
     Pose2d pose = getPose();
     Pose3d speakerPose = AllianceHelpers.getAllianceSpeakerPose3d();
