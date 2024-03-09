@@ -55,9 +55,9 @@ public final class Constants {
     public static final double k_visionStdDevTheta = 400.0;
 
     public class Rotation {
-      public static final double k_P = 5.0;
+      public static final double k_P = 7.0;
       public static final double k_I = 0.0;
-      public static final double k_D = 0.0;
+      public static final double k_D = 0.02;
     }
   }
 
@@ -204,7 +204,7 @@ public final class Constants {
 
     public static final double k_intakeSpeed = 0.4;
     public static final double k_ejectSpeed = -0.525;
-    public static final double k_feedShooterSpeed = -0.5;
+    public static final double k_feedShooterSpeed = -1.0;
 
     public static final double k_pivotMotorP = 0.035;
     public static final double k_pivotMotorI = 0.0;
@@ -246,10 +246,10 @@ public final class Constants {
     public static final int k_topMotorId = 16;
     public static final int k_bottomMotorId = 17;
 
-    public static final double k_shooterMotorP = 0.00075;
-    public static final double k_shooterMotorI = 0.0000008;
-    public static final double k_shooterMotorD = 0.0;
-    public static final double k_shooterMotorFF = 0.00015;
+    public static final double k_shooterMotorP = 0.0007500;
+    public static final double k_shooterMotorI = 0.00000008;
+    public static final double k_shooterMotorD = 0.0002000;
+    public static final double k_shooterMotorFF = 0.000100;
 
     public static final double k_shooterMinOutput = 0.0;
     public static final double k_shooterMaxOutput = 1.0;

@@ -94,9 +94,9 @@ public class SwerveDrive extends SwerveSysId {
           Constants.Vision.k_visionStdDevTheta));
 
   private final PIDController k_rotController = new PIDController(
-      Constants.AutoAim.Rotation.k_P,
-      Constants.AutoAim.Rotation.k_I,
-      Constants.AutoAim.Rotation.k_D);
+      Constants.Vision.Rotation.k_P,
+      Constants.Vision.Rotation.k_I,
+      Constants.Vision.Rotation.k_D);
 
   enum VisionInstance {
     SHOOTER, LEFT, RIGHT;

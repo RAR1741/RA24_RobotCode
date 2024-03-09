@@ -233,6 +233,7 @@ public class Robot extends LoggedRobot {
         m_intake.isAtPivotTarget() &&
         m_intake.getPivotTarget() == IntakePivotTarget.STOW) {
       m_intake.setIntakeState(IntakeState.FEED_SHOOTER);
+      m_intaking = false;
     } else if (!m_intaking) {
       m_intake.setIntakeState(IntakeState.NONE);
       m_intake.wantsToEject(false);
