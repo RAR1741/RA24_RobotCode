@@ -19,19 +19,33 @@ public class CenterlineOutsideNoteMode extends AutoModeBase {
     // Note one (preload)
     queueTask(new ShooterTask(ShooterPivotTarget.PODIUM, ShooterSpeedTarget.MAX));
     queueTask(new IntakeTask(IntakePivotTarget.STOW, IntakeState.NONE));
-    // queueTask(new DriveTrajectoryTask("Dummy"));
-    queueTask(new ParallelTask( // Ensure shooter is revved before going on to feeding shooter
-        new WaitTask(Constants.Auto.Timing.k_shootRevTime),
-        new AutoTargetTask(AllianceHelpers.getAllianceSpeakerPose3d())));
+    queueTask(new WaitTask(Constants.Auto.Timing.k_shootRevTime));
+    queueTask(new AutoTargetTask(AllianceHelpers.getAllianceSpeakerPose3d()));
     queueTask(new IntakeTask(IntakePivotTarget.STOW, IntakeState.FEED_SHOOTER));
     queueTask(new WaitTask(Constants.Auto.Timing.k_shootFeedTime));
 
     // Note two
     queueTask(new ParallelTask(
-        new DriveTrajectoryTask("UntestedShotInTheDark1"),
+        new DriveTrajectoryTask("CenterFieldMiddle, Center 4"),
         new IntakeTask(IntakePivotTarget.GROUND, IntakeState.INTAKE)));
+    queueTask(new WaitTask(0.5));
     queueTask(new ParallelTask(
-        new DriveTrajectoryTask("UntestedShotInTheDark2"),
+        new DriveTrajectoryTask("Center 4, Shoot Stage Right"),
+        new IntakeTask(IntakePivotTarget.STOW, IntakeState.NONE)));
+    queueTask(new AutoTargetTask(AllianceHelpers.getAllianceSpeakerPose3d()));
+    queueTask(new DriveForwardTask(0, 0));
+    queueTask(new IntakeTask(IntakePivotTarget.STOW, IntakeState.FEED_SHOOTER));
+
+    queueTask(new WaitTask(Constants.Auto.Timing.k_shootFeedTime));
+    queueTask(new IntakeTask(IntakePivotTarget.STOW, IntakeState.NONE));
+
+    // Note two
+    queueTask(new ParallelTask(
+        new DriveTrajectoryTask("Shoot Stage Right, Center 5"),
+        new IntakeTask(IntakePivotTarget.GROUND, IntakeState.INTAKE)));
+    queueTask(new WaitTask(0.5));
+    queueTask(new ParallelTask(
+        new DriveTrajectoryTask("Center 5, Shoot Stage Right"),
         new IntakeTask(IntakePivotTarget.STOW, IntakeState.NONE)));
     queueTask(new AutoTargetTask(AllianceHelpers.getAllianceSpeakerPose3d()));
     queueTask(new DriveForwardTask(0, 0));

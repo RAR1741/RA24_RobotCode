@@ -1,4 +1,3 @@
-
 package frc.robot;
 
 import java.util.ArrayList;
@@ -115,9 +114,6 @@ public class Robot extends LoggedRobot {
     // Start the first task
     if (m_currentTask != null) {
       m_currentTask.start();
-      m_swerve.m_limelightLeft.setLightEnabled(false);
-      m_swerve.m_limelightRight.setLightEnabled(false);
-      m_swerve.m_limelightShooter.setLightEnabled(false);
     }
   }
 
@@ -129,6 +125,8 @@ public class Robot extends LoggedRobot {
       m_currentTask.update();
       m_currentTask.updateSim();
 
+      m_shooter.setAngle(m_shooter.getSpeakerAutoAimAngle(m_swerve.getPose()));
+
       // If the current task is finished, get the next task
       if (m_currentTask.isFinished()) {
         m_currentTask.done();
@@ -136,9 +134,9 @@ public class Robot extends LoggedRobot {
 
         // Start the next task
         if (m_currentTask != null) {
-          m_swerve.m_limelightLeft.setLightEnabled(!m_swerve.m_limelightLeft.getLightEnabled());
-          m_swerve.m_limelightRight.setLightEnabled(!m_swerve.m_limelightRight.getLightEnabled());
-          m_swerve.m_limelightShooter.setLightEnabled(!m_swerve.m_limelightShooter.getLightEnabled());
+          // m_swerve.m_limelightLeft.setLightEnabled(!m_swerve.m_limelightLeft.getLightEnabled());
+          // m_swerve.m_limelightRight.setLightEnabled(!m_swerve.m_limelightRight.getLightEnabled());
+          // m_swerve.m_limelightShooter.setLightEnabled(!m_swerve.m_limelightShooter.getLightEnabled());
 
           m_currentTask.start();
         }
@@ -151,10 +149,6 @@ public class Robot extends LoggedRobot {
     // m_swerve.resetGyro();
     m_swerve.setBrakeMode(false);
     m_swerve.drive(0, 0, 0, false);
-
-    m_swerve.m_limelightLeft.setLightEnabled(false);
-    m_swerve.m_limelightRight.setLightEnabled(false);
-    m_swerve.m_limelightShooter.setLightEnabled(false);
   }
 
   boolean m_wantsAmpAutoAim = false;
@@ -291,6 +285,10 @@ public class Robot extends LoggedRobot {
   @Override
   public void disabledInit() {
     m_allSubsystems.forEach(subsystem -> subsystem.stop());
+
+    m_swerve.m_limelightLeft.setLightEnabled(false);
+    m_swerve.m_limelightRight.setLightEnabled(false);
+    m_swerve.m_limelightShooter.setLightEnabled(false);
   }
 
   @Override

@@ -39,7 +39,7 @@ public class ShooterTask extends Task {
 
 	@Override
 	public void update() {
-		m_shooter.periodic();
+		// m_shooter.periodic();
 	}
 
 	@Override

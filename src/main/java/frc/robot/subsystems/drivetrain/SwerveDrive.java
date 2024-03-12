@@ -438,6 +438,11 @@ public class SwerveDrive extends SwerveSysId {
     return m_poseEstimator.getEstimatedPosition();
   }
 
+  @AutoLogOutput
+  public Rotation2d getRotationTarget() {
+    return m_rotationTarget;
+  }
+
   public Vector<N3> createStateStdDevs(double x, double y, double theta) {
     return VecBuilder.fill(x, y, Units.degreesToRadians(theta));
   }
@@ -508,20 +513,30 @@ public class SwerveDrive extends SwerveSysId {
 
   private double xyStdDevCoefficient = 0.005;
   private double thetaStdDevCoefficient = 0.01;
-  double[] stdDevFactors = { 0.6, 2.0, 2.0 }; // shooter, left, right
-  boolean useVisionRotation = true;
+  private double[] stdDevFactors = { 0.6, 2.0, 2.0 }; // shooter, left, right
+  private boolean useVisionRotation = true;
+  private int minTagCount = 1;
+  private double minAvgDistance = 4.0;
 
   public void updateVisionPoseWithStdDev(PoseEstimate poseEstimate, VisionInstance instanceIndex) {
     // Add observation to list
     double avgDistance = poseEstimate.avgTagDist;
     double avgArea = poseEstimate.avgTagArea;
+    double autoTranslationMax = 2.0;
 
-    if (poseEstimate.tagCount < 1) {
+    if (poseEstimate.tagCount < minTagCount) {
       return;
     }
 
-    if (avgDistance >= 4.0) {
+    if (avgDistance >= minAvgDistance) {
       return;
+    }
+
+    if (DriverStation.isAutonomous()) {
+      if (getChassisSpeeds().vxMetersPerSecond > autoTranslationMax
+          || getChassisSpeeds().vyMetersPerSecond > autoTranslationMax) {
+        return;
+      }
     }
 
     double xyStdDev = xyStdDevCoefficient
