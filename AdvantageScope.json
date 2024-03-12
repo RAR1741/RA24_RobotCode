@@ -16,12 +16,19 @@
             "/AdvantageKit/RealOutputs",
             "/AdvantageKit/RealOutputs/SwerveDrive",
             "/RealOutputs/SwerveDrive/Modules/BL/Abs",
-            "/RealOutputs/SwerveDrive/Modules",
             "/SystemStats/CANBus",
-            "/RealOutputs/Auto",
-            "/RealOutputs/Climber",
             "/RealOutputs/Auto/AutoTarget",
-            "/RealOutputs/Auto/DriveTrajectory"
+            "/RealOutputs/Auto/DriveTrajectory",
+            "/RealOutputs/SwerveDrive/LL1CurrentPose",
+            "/RealOutputs/SwerveDrive/LL1CurrentPose/translation",
+            "/RealOutputs/SwerveDrive/LL2CurrentPose",
+            "/RealOutputs/SwerveDrive/LL2CurrentPose/translation",
+            "/RealOutputs/SwerveDrive/LL3CurrentPose",
+            "/RealOutputs/SwerveDrive/LL3CurrentPose/translation",
+            "/RealOutputs/SwerveDrive/LLLeftCurrentPose/translation",
+            "/RealOutputs/SwerveDrive/LLShooterCurrentPose/translation",
+            "/RealOutputs/SwerveDrive/Pose/translation",
+            "/RealOutputs/SwerveDrive"
           ]
         },
         "tabs": {
@@ -38,7 +45,7 @@
             },
             {
               "type": 1,
-              "legendHeight": 0.2260343087790111,
+              "legendHeight": 0.4066599394550959,
               "legends": {
                 "left": {
                   "lockedRange": null,
@@ -54,13 +61,18 @@
                     },
                     {
                       "key": "/RealOutputs/Auto/DriveTrajectory/TargetRotationDegrees",
-                      "color": "#af2437",
-                      "show": true
+                      "color": "#e5b31b",
+                      "show": false
                     },
                     {
                       "key": "/RealOutputs/Auto/DriveTrajectory/ActualRotationDegrees",
-                      "color": "#80588e",
-                      "show": true
+                      "color": "#af2437",
+                      "show": false
+                    },
+                    {
+                      "key": "/RealOutputs/Auto/DriveTrajectory/ActualRotationDegrees2",
+                      "color": "#858584",
+                      "show": false
                     }
                   ]
                 },
@@ -76,7 +88,17 @@
                   "fields": [
                     {
                       "key": "/RealOutputs/Auto/DriveTrajectory/ChassisRotationDPS",
+                      "color": "#80588e",
+                      "show": false
+                    },
+                    {
+                      "key": "/RealOutputs/Auto/DriveTrajectory/RotationFF",
                       "color": "#e48b32",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/Auto/DriveTrajectory/RotationFeedback",
+                      "color": "#aacaee",
                       "show": true
                     }
                   ]
@@ -109,12 +131,12 @@
                 "unitDistance": "meters",
                 "unitRotation": "radians",
                 "origin": "right",
-                "size": 0.75,
+                "size": 0.91,
                 "allianceBumpers": "auto",
                 "allianceOrigin": "blue",
                 "orientation": "blue left, red right"
               },
-              "configHidden": true,
+              "configHidden": false,
               "visualizer": null,
               "title": "Odometry"
             },
@@ -137,6 +159,24 @@
                     "key": "/RealOutputs/SwerveDrive/Pose",
                     "sourceTypeIndex": 1,
                     "sourceType": "Pose2d"
+                  },
+                  {
+                    "type": "Yellow Ghost",
+                    "key": "/RealOutputs/SwerveDrive/LLLeftCurrentPose",
+                    "sourceTypeIndex": 1,
+                    "sourceType": "Pose2d"
+                  },
+                  {
+                    "type": "Blue Ghost",
+                    "key": "/RealOutputs/SwerveDrive/LLRightCurrentPose",
+                    "sourceTypeIndex": 1,
+                    "sourceType": "Pose2d"
+                  },
+                  {
+                    "type": "Green Ghost",
+                    "key": "/RealOutputs/SwerveDrive/LLShooterCurrentPose",
+                    "sourceTypeIndex": 1,
+                    "sourceType": "Pose2d"
                   }
                 ]
               ],
@@ -147,19 +187,19 @@
                 "unitDistance": "meters",
                 "unitRotation": "radians"
               },
-              "configHidden": false,
+              "configHidden": true,
               "visualizer": {
                 "cameraIndex": -1,
                 "orbitFov": 90,
                 "cameraPosition": [
-                  4.552791546406839,
-                  2.3098210259608196,
-                  3.5538578009742863
+                  6.395619728604524,
+                  5.21064222650566,
+                  -1.6526039424903638
                 ],
                 "cameraTarget": [
-                  6.250070750468865,
-                  0.6015271943636625,
-                  2.3513849860224583
+                  4.304699147733509,
+                  -1.4894321445002614,
+                  -0.3813281901428019
                 ]
               },
               "title": "3D Field"
@@ -182,17 +222,17 @@
                     },
                     {
                       "key": "/RealOutputs/SwerveDrive/Modules/FR/Abs/Frequency",
-                      "color": "#af2437",
+                      "color": "#e5b31b",
                       "show": true
                     },
                     {
                       "key": "/RealOutputs/SwerveDrive/Modules/BR/Abs/Frequency",
-                      "color": "#e48b32",
+                      "color": "#af2437",
                       "show": true
                     },
                     {
                       "key": "/RealOutputs/SwerveDrive/Modules/BL/Abs/Frequency",
-                      "color": "#c0b487",
+                      "color": "#80588e",
                       "show": true
                     }
                   ]
@@ -201,17 +241,17 @@
                   "fields": [
                     {
                       "key": "/RealOutputs/SwerveDrive/Modules/FL/Abs/isConnected",
-                      "color": "#e5b31b",
+                      "color": "#e48b32",
                       "show": true
                     },
                     {
                       "key": "/RealOutputs/SwerveDrive/Modules/FR/Abs/isConnected",
-                      "color": "#80588e",
+                      "color": "#aacaee",
                       "show": true
                     },
                     {
                       "key": "/RealOutputs/SwerveDrive/Modules/BR/Abs/isConnected",
-                      "color": "#aacaee",
+                      "color": "#c0b487",
                       "show": true
                     },
                     {
@@ -476,7 +516,7 @@
                     },
                     {
                       "key": "/RealOutputs/Shooter/IsAtTarget",
-                      "color": "#aacaee",
+                      "color": "#80588e",
                       "show": true
                     }
                   ]
@@ -490,12 +530,12 @@
                   "fields": [
                     {
                       "key": "/RealOutputs/Shooter/PivotRelRotations",
-                      "color": "#80588e",
+                      "color": "#e48b32",
                       "show": true
                     },
                     {
                       "key": "/RealOutputs/Shooter/PivotRelTarget",
-                      "color": "#e48b32",
+                      "color": "#aacaee",
                       "show": true
                     }
                   ]
@@ -572,7 +612,7 @@
                     },
                     {
                       "key": "/RealOutputs/Intake/IsAtPivotTarget",
-                      "color": "#80588e",
+                      "color": "#af2437",
                       "show": true
                     }
                   ]
@@ -586,8 +626,8 @@
                   "fields": [
                     {
                       "key": "/RealOutputs/Intake/IntakeProximity",
-                      "color": "#af2437",
-                      "show": true
+                      "color": "#80588e",
+                      "show": false
                     }
                   ]
                 }
@@ -607,12 +647,12 @@
                   "fields": [
                     {
                       "key": "/RealOutputs/Climber/LeftMotorSpeed",
-                      "color": "#e5b31b",
+                      "color": "#2b66a2",
                       "show": false
                     },
                     {
                       "key": "/RealOutputs/Climber/RightMotorSpeed",
-                      "color": "#80588e",
+                      "color": "#e5b31b",
                       "show": false
                     }
                   ]
@@ -629,12 +669,12 @@
                   "fields": [
                     {
                       "key": "/RealOutputs/Climber/LeftMotorCurrent",
-                      "color": "#2b66a2",
+                      "color": "#af2437",
                       "show": true
                     },
                     {
                       "key": "/RealOutputs/Climber/RightMotorCurrent",
-                      "color": "#af2437",
+                      "color": "#80588e",
                       "show": true
                     }
                   ]
@@ -647,18 +687,6 @@
       }
     }
   ],
-  "satellites": [
-    {
-      "x": 1156,
-      "y": 805,
-      "width": 572,
-      "height": 312,
-      "state": {
-        "type": 5,
-        "visualizer": null
-      },
-      "uuid": "bnv416jy5f1t1u41qg0hldeyz962nriv"
-    }
-  ],
+  "satellites": [],
   "version": "3.2.0"
 }
