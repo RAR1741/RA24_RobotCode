@@ -10,6 +10,7 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.I2C;
@@ -36,6 +37,8 @@ public class Intake extends Subsystem {
   private PeriodicIO m_periodicIO;
 
   private final I2C.Port k_colorSensorPort = I2C.Port.kMXP;
+  private final DigitalInput m_noteTOF1 = new DigitalInput(6);
+  private final DigitalInput m_noteTOF2 = new DigitalInput(7);
 
   private ColorSensorV3 m_colorSensor;
 
@@ -302,7 +305,7 @@ public class Intake extends Subsystem {
 
   @AutoLogOutput
   public boolean isHoldingNote() {
-    return m_colorSensor.getProximity() >= Constants.Intake.k_sensorThreshold;
+    return m_colorSensor.getProximity() >= Constants.Intake.k_sensorThreshold || (m_noteTOF1.get() || m_noteTOF2.get());
   }
 
   @AutoLogOutput
