@@ -109,7 +109,7 @@ public class SwerveDrive extends SwerveSysId {
 
     k_rotController.enableContinuousInput(-Math.PI, Math.PI);
 
-    m_rotationTarget = m_gyro.getRotation2d();
+    resetRotationTarget();
 
     resetTurnOffsets();
     reset();
@@ -335,6 +335,11 @@ public class SwerveDrive extends SwerveSysId {
     m_gyro.reset();
     m_rotationTarget = new Rotation2d(0.0); // jitter go brr
     setAllianceGyroAngleAdjustment();
+  }
+
+  // set rotation target
+  public void resetRotationTarget() {
+    m_rotationTarget = m_gyro.getRotation2d();
   }
 
   @Override

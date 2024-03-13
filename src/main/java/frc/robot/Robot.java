@@ -149,6 +149,7 @@ public class Robot extends LoggedRobot {
     // m_swerve.resetGyro();
     m_swerve.setBrakeMode(false);
     m_swerve.drive(0, 0, 0, false);
+    m_swerve.resetRotationTarget();
   }
 
   boolean m_wantsAmpAutoAim = false;

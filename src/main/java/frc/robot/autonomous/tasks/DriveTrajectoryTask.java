@@ -151,5 +151,6 @@ public class DriveTrajectoryTask extends Task {
 
     DriverStation.reportWarning("Auto trajectory done", false);
     m_swerve.drive(0, 0, 0, true);
+    // m_swerve.setRotationTarget(m_swerve.getPose().getRotation());
   }
 }

@@ -17,8 +17,6 @@
             "/AdvantageKit/RealOutputs/SwerveDrive",
             "/RealOutputs/SwerveDrive/Modules/BL/Abs",
             "/SystemStats/CANBus",
-            "/RealOutputs/Auto/AutoTarget",
-            "/RealOutputs/Auto/DriveTrajectory",
             "/RealOutputs/SwerveDrive/LL1CurrentPose",
             "/RealOutputs/SwerveDrive/LL1CurrentPose/translation",
             "/RealOutputs/SwerveDrive/LL2CurrentPose",
@@ -28,11 +26,14 @@
             "/RealOutputs/SwerveDrive/LLLeftCurrentPose/translation",
             "/RealOutputs/SwerveDrive/LLShooterCurrentPose/translation",
             "/RealOutputs/SwerveDrive/Pose/translation",
-            "/RealOutputs/SwerveDrive"
+            "/RealOutputs/Auto",
+            "/RealOutputs/SwerveDrive",
+            "/RealOutputs/SwerveDrive/HeadingLock",
+            "/RealOutputs/SwerveDrive/HeadingLock/Target"
           ]
         },
         "tabs": {
-          "selected": 3,
+          "selected": 8,
           "tabs": [
             {
               "type": 0,
@@ -71,13 +72,44 @@
                     },
                     {
                       "key": "/RealOutputs/Auto/DriveTrajectory/ActualRotationDegrees2",
-                      "color": "#858584",
+                      "color": "#80588e",
                       "show": false
                     }
                   ]
                 },
                 "discrete": {
-                  "fields": []
+                  "fields": [
+                    {
+                      "key": "/RealOutputs/Auto/Tasks/AutoTargetTask",
+                      "color": "#858584",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/Auto/Tasks/DriveForwardTask",
+                      "color": "#3b875a",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/Auto/Tasks/DriveTrajectoryTask",
+                      "color": "#d993aa",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/Auto/Tasks/IntakeTask",
+                      "color": "#eb987e",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/Auto/Tasks/ShooterTask",
+                      "color": "#5d4f92",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/Auto/Tasks/WaitTask",
+                      "color": "#a64b6b",
+                      "show": true
+                    }
+                  ]
                 },
                 "right": {
                   "lockedRange": null,
@@ -88,17 +120,17 @@
                   "fields": [
                     {
                       "key": "/RealOutputs/Auto/DriveTrajectory/ChassisRotationDPS",
-                      "color": "#80588e",
+                      "color": "#e48b32",
                       "show": false
                     },
                     {
                       "key": "/RealOutputs/Auto/DriveTrajectory/RotationFF",
-                      "color": "#e48b32",
+                      "color": "#aacaee",
                       "show": true
                     },
                     {
                       "key": "/RealOutputs/Auto/DriveTrajectory/RotationFeedback",
-                      "color": "#aacaee",
+                      "color": "#c0b487",
                       "show": true
                     }
                   ]
@@ -123,6 +155,12 @@
                     "key": "/RealOutputs/Auto/DriveTrajectory/TargetPose",
                     "sourceTypeIndex": 1,
                     "sourceType": "Pose2d"
+                  },
+                  {
+                    "type": "Trajectory",
+                    "key": "/RealOutputs/Auto/DriveTrajectory/TargetTrajectory",
+                    "sourceTypeIndex": 7,
+                    "sourceType": "Trajectory"
                   }
                 ]
               ],
@@ -136,7 +174,7 @@
                 "allianceOrigin": "blue",
                 "orientation": "blue left, red right"
               },
-              "configHidden": false,
+              "configHidden": true,
               "visualizer": null,
               "title": "Odometry"
             },
@@ -177,6 +215,12 @@
                     "key": "/RealOutputs/SwerveDrive/LLShooterCurrentPose",
                     "sourceTypeIndex": 1,
                     "sourceType": "Pose2d"
+                  },
+                  {
+                    "type": "Trajectory",
+                    "key": "/RealOutputs/Auto/DriveTrajectory/TargetTrajectory",
+                    "sourceTypeIndex": 7,
+                    "sourceType": "Trajectory"
                   }
                 ]
               ],
@@ -192,14 +236,14 @@
                 "cameraIndex": -1,
                 "orbitFov": 90,
                 "cameraPosition": [
-                  6.395619728604524,
-                  5.21064222650566,
-                  -1.6526039424903638
+                  7.317370009487547,
+                  4.159245530962072,
+                  2.751458021163852
                 ],
                 "cameraTarget": [
-                  4.304699147733509,
-                  -1.4894321445002614,
-                  -0.3813281901428019
+                  4.9563435924370625,
+                  -1.9150955632174815,
+                  -0.1480284886475879
                 ]
               },
               "title": "3D Field"
@@ -372,7 +416,7 @@
             },
             {
               "type": 1,
-              "legendHeight": 0.15,
+              "legendHeight": 0.2885973763874874,
               "legends": {
                 "left": {
                   "lockedRange": null,
@@ -478,6 +522,11 @@
                       "key": "/RealOutputs/SwerveDrive/Modules/BL/Turn/Voltage",
                       "color": "#5f4528",
                       "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/SwerveDrive/HeadingLock/Target/value",
+                      "color": "#2e3b28",
+                      "show": false
                     }
                   ]
                 }
