@@ -17,23 +17,31 @@ import frc.robot.subsystems.Shooter.ShooterSpeedTarget;
 public class CenterlineOutsideNoteMode extends AutoModeBase {
   public void queueTasks() {
     // Note one (preload)
-    queueTask(new ShooterTask(ShooterPivotTarget.PODIUM, ShooterSpeedTarget.MAX));
-    queueTask(new IntakeTask(IntakePivotTarget.STOW, IntakeState.NONE));
-    queueTask(new WaitTask(Constants.Auto.Timing.k_shootRevTime));
-    queueTask(new AutoTargetTask(AllianceHelpers.getAllianceSpeakerPose3d()));
-    queueTask(new IntakeTask(IntakePivotTarget.STOW, IntakeState.FEED_SHOOTER));
-    queueTask(new WaitTask(Constants.Auto.Timing.k_shootFeedTime));
+    queueTask(new ParallelTask(
+        new ShooterTask(ShooterPivotTarget.PODIUM, ShooterSpeedTarget.MAX),
+        new IntakeTask(IntakePivotTarget.STOW, IntakeState.NONE),
+        new WaitTask(Constants.Auto.Timing.k_shootRevTime),
+        new AutoTargetTask(AllianceHelpers.getAllianceSpeakerPose3d())));
+    queueTask(new DriveForwardTask(0, 0));
+
+    queueTask(new ParallelTask(
+        new IntakeTask(IntakePivotTarget.STOW, IntakeState.FEED_SHOOTER),
+        new WaitTask(Constants.Auto.Timing.k_shootFeedTime)));
 
     // Note two
     queueTask(new ParallelTask(
         new DriveTrajectoryTask("CenterFieldMiddle, Center 4"),
         new IntakeTask(IntakePivotTarget.GROUND, IntakeState.INTAKE)));
-    queueTask(new WaitTask(0.5));
+    queueTask(new DriveForwardTask(0, 0));
     queueTask(new ParallelTask(
         new DriveTrajectoryTask("Center 4, Shoot Stage Right"),
         new IntakeTask(IntakePivotTarget.STOW, IntakeState.NONE)));
-    queueTask(new AutoTargetTask(AllianceHelpers.getAllianceSpeakerPose3d()));
     queueTask(new DriveForwardTask(0, 0));
+    queueTask(new ParallelTask(
+        new ShooterTask(ShooterPivotTarget.PODIUM, ShooterSpeedTarget.MAX),
+        new AutoTargetTask(AllianceHelpers.getAllianceSpeakerPose3d())));
+    queueTask(new DriveForwardTask(0, 0));
+    queueTask(new WaitTask(0.5));
     queueTask(new IntakeTask(IntakePivotTarget.STOW, IntakeState.FEED_SHOOTER));
 
     queueTask(new WaitTask(Constants.Auto.Timing.k_shootFeedTime));
@@ -43,14 +51,18 @@ public class CenterlineOutsideNoteMode extends AutoModeBase {
     queueTask(new ParallelTask(
         new DriveTrajectoryTask("Shoot Stage Right, Center 5"),
         new IntakeTask(IntakePivotTarget.GROUND, IntakeState.INTAKE)));
-    queueTask(new WaitTask(0.5));
+    queueTask(new DriveForwardTask(0, 0));
+    // queueTask(new DriveForwardTask(0,0));
     queueTask(new ParallelTask(
         new DriveTrajectoryTask("Center 5, Shoot Stage Right"),
         new IntakeTask(IntakePivotTarget.STOW, IntakeState.NONE)));
-    queueTask(new AutoTargetTask(AllianceHelpers.getAllianceSpeakerPose3d()));
     queueTask(new DriveForwardTask(0, 0));
+    queueTask(new ParallelTask(
+        new ShooterTask(ShooterPivotTarget.PODIUM, ShooterSpeedTarget.MAX),
+        new AutoTargetTask(AllianceHelpers.getAllianceSpeakerPose3d())));
+    queueTask(new DriveForwardTask(0, 0));
+    queueTask(new WaitTask(0.5));
     queueTask(new IntakeTask(IntakePivotTarget.STOW, IntakeState.FEED_SHOOTER));
-
     queueTask(new WaitTask(Constants.Auto.Timing.k_shootFeedTime));
     queueTask(new IntakeTask(IntakePivotTarget.STOW, IntakeState.NONE));
   }

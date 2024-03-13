@@ -1,15 +1,9 @@
 package frc.robot;
 
-import com.pathplanner.lib.path.PathConstraints;
-
-import edu.wpi.first.math.controller.HolonomicDriveController;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 
 public final class Constants {
@@ -50,9 +44,9 @@ public final class Constants {
     // TODO: try this: 0.003, 0.003, 0.0002
 
     // Increase these numbers to trust global measurements from vision less.
-    public static final double k_visionStdDevX = 4.0;
-    public static final double k_visionStdDevY = 4.0;
-    public static final double k_visionStdDevTheta = 400.0;
+    public static final double k_visionStdDevX = 0.0;
+    public static final double k_visionStdDevY = 0.0;
+    public static final double k_visionStdDevTheta = 0.0;
 
     public class Rotation {
       public static final double k_P = 7.0;
@@ -165,27 +159,30 @@ public final class Constants {
 
     // Use these values as overrides in DriveTrajectoryTask
     // These are the current PathPlanner values
-    public static final PathConstraints k_pathConstraints = new PathConstraints(
-        k_maxSpeed,
-        k_maxLinearAcceleration,
-        k_maxAngularSpeed,
-        k_maxAngularAcceleration);
+    // public static final PathConstraints k_pathConstraints = new PathConstraints(
+    // k_maxSpeed,
+    // k_maxLinearAcceleration,
+    // k_maxAngularSpeed,
+    // k_maxAngularAcceleration);
 
-    public static final PIDController translationPIDController = new PIDController(
-        Translation.k_P,
-        Translation.k_I,
-        Translation.k_D);
+    // public static final PIDController translationPIDController = new
+    // PIDController(
+    // Translation.k_P,
+    // Translation.k_I,
+    // Translation.k_D);
 
-    public static final ProfiledPIDController rotationPIDController = new ProfiledPIDController(
-        Rotation.k_P,
-        Rotation.k_I,
-        Rotation.k_D,
-        new Constraints(k_maxSpeed, k_maxLinearAcceleration));
+    // public static final ProfiledPIDController rotationPIDController = new
+    // ProfiledPIDController(
+    // Rotation.k_P,
+    // Rotation.k_I,
+    // Rotation.k_D,
+    // new Constraints(k_maxSpeed, k_maxLinearAcceleration));
 
-    public static final HolonomicDriveController k_autoTargetController = new HolonomicDriveController(
-        translationPIDController,
-        translationPIDController,
-        rotationPIDController);
+    // public static final HolonomicDriveController k_autoTargetController = new
+    // HolonomicDriveController(
+    // translationPIDController,
+    // translationPIDController,
+    // rotationPIDController);
   }
 
   public class Intake {
@@ -243,14 +240,16 @@ public final class Constants {
   public class Shooter {
     public static final double k_maxRPM = 6000.0; // but that's just a theory
 
+    public static final int k_shooterSpeedTolerance = 50; // 1,000 is "in", 2000 is max
+
     public static final int k_pivotMotorId = 15;
     public static final int k_topMotorId = 16;
     public static final int k_bottomMotorId = 17;
 
-    public static final double k_shooterMotorP = 0.0007500;
+    public static final double k_shooterMotorP = 0.0009300;
     public static final double k_shooterMotorI = 0.00000008;
-    public static final double k_shooterMotorD = 0.0002000;
-    public static final double k_shooterMotorFF = 0.000100;
+    public static final double k_shooterMotorD = 0.0001000;
+    public static final double k_shooterMotorFF = 0.00013;
 
     public static final double k_shooterMinOutput = 0.0;
     public static final double k_shooterMaxOutput = 1.0;

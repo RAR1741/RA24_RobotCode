@@ -513,18 +513,27 @@ public class SwerveDrive extends SwerveSysId {
 
   private double xyStdDevCoefficient = 0.005;
   private double thetaStdDevCoefficient = 0.01;
-  private double[] stdDevFactors = { 0.6, 2.0, 2.0 }; // shooter, left, right
+  private double[] stdDevFactors = {
+      0.6,
+      2.0,
+      2.0
+  }; // shooter, left, right
   private boolean useVisionRotation = true;
   private int minTagCount = 1;
   private double minAvgDistance = 4.0;
+  private double autoStdDevScale = 32.0;
 
   public void updateVisionPoseWithStdDev(PoseEstimate poseEstimate, VisionInstance instanceIndex) {
     // Add observation to list
     double avgDistance = poseEstimate.avgTagDist;
-    double avgArea = poseEstimate.avgTagArea;
-    double autoTranslationMax = 2.0;
+    // double avgArea = poseEstimate.avgTagArea;
+    // double autoTranslationMax = 2.0;
 
     if (poseEstimate.tagCount < minTagCount) {
+      return;
+    }
+
+    if (DriverStation.isAutonomous() && poseEstimate.tagCount < 2) {
       return;
     }
 
@@ -532,23 +541,25 @@ public class SwerveDrive extends SwerveSysId {
       return;
     }
 
-    if (DriverStation.isAutonomous()) {
-      if (getChassisSpeeds().vxMetersPerSecond > autoTranslationMax
-          || getChassisSpeeds().vyMetersPerSecond > autoTranslationMax) {
-        return;
-      }
-    }
+    // if (DriverStation.isAutonomous()) {
+    // if (getChassisSpeeds().vxMetersPerSecond > autoTranslationMax
+    // || getChassisSpeeds().vyMetersPerSecond > autoTranslationMax) {
+    // return;
+    // }
+    // }
 
     double xyStdDev = xyStdDevCoefficient
         * Math.pow(avgDistance, 2.0)
         / poseEstimate.tagCount
-        * stdDevFactors[instanceIndex.ordinal()];
+        * stdDevFactors[instanceIndex.ordinal()]
+        * (DriverStation.isAutonomous() ? autoStdDevScale : 1.0);
 
     double thetaStdDev = useVisionRotation
         ? thetaStdDevCoefficient
             * Math.pow(avgDistance, 2.0)
             / poseEstimate.tagCount
             * stdDevFactors[instanceIndex.ordinal()]
+            * (DriverStation.isAutonomous() ? autoStdDevScale : 1.0)
         : Double.POSITIVE_INFINITY;
 
     m_poseEstimator.addVisionMeasurement(

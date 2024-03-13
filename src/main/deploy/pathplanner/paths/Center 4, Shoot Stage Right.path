@@ -3,53 +3,37 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.801686764846617,
-        "y": 2.4412255056804724
+        "x": 8.053147254442658,
+        "y": 2.39224028448057
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.731622099068635,
-        "y": 2.4345481668424793
+        "x": 6.835114276710034,
+        "y": 0.5077364321395313
       },
       "isLocked": false,
       "linkedName": "Note4"
     },
     {
       "anchor": {
-        "x": 5.858835101929463,
-        "y": 1.3139387482478675
+        "x": 2.446252434171535,
+        "y": 2.841067413616309
       },
       "prevControl": {
-        "x": 7.506000807549648,
-        "y": 1.3139387482478675
-      },
-      "nextControl": {
-        "x": 5.060243926189125,
-        "y": 1.3139387482478675
-      },
-      "isLocked": false,
-      "linkedName": "PassStageFar"
-    },
-    {
-      "anchor": {
-        "x": 3.5757433042643862,
-        "y": 2.560298074299853
-      },
-      "prevControl": {
-        "x": 4.338230199936956,
-        "y": 1.9304101612274889
+        "x": 3.1221654248864055,
+        "y": 2.1045823573128626
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "CenterNote4"
+      "linkedName": "ShootStageRight"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 5.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 2.0,
+    "maxAcceleration": 1.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
@@ -61,7 +45,7 @@
   "reversed": false,
   "folder": null,
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": 31.626409578838526,
     "velocity": 0
   },
   "useDefaultConstraints": true

@@ -343,6 +343,14 @@ public class Shooter extends Subsystem {
   }
 
   @AutoLogOutput
+  public boolean isAtSpeed() {
+    return Math
+        .abs(m_topMotorEncoder.getVelocity() - m_periodicIO.shooter_rpm) <= Constants.Shooter.k_shooterSpeedTolerance
+        && Math.abs(
+            m_bottomMotorEncoder.getVelocity() - m_periodicIO.shooter_rpm) <= Constants.Shooter.k_shooterSpeedTolerance;
+  }
+
+  @AutoLogOutput
   public boolean getIsPivotAsbConnected() {
     return m_pivotAbsEncoder.isConnected();
   }
