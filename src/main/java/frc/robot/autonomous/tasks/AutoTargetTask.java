@@ -70,6 +70,8 @@ public class AutoTargetTask extends Task {
 
   @Override
   public void update() {
+    log(true);
+
     // Rotation2d diff = m_targetRotation.minus(m_swerve.getRotation2d());
 
     // m_swerve.drive(0, 0, diff.getRadians() * 5.0, true);
@@ -99,6 +101,8 @@ public class AutoTargetTask extends Task {
 
   @Override
   public void done() {
+    log(false);
+
     DriverStation.reportWarning("Auto target done", false);
     m_swerve.drive(0, 0, 0, true);
   }

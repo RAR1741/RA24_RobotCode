@@ -17,6 +17,7 @@ public class PointForwardTask extends Task {
 
   @Override
   public void update() {
+    log(true);
   }
 
   @Override
@@ -26,6 +27,8 @@ public class PointForwardTask extends Task {
 
   @Override
   public void done() {
+    log(false);
+
     DriverStation.reportWarning("Auto point forward done", false);
   }
 }

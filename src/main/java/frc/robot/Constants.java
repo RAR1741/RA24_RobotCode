@@ -249,7 +249,7 @@ public final class Constants {
     public static final double k_shooterMotorP = 0.0009300;
     public static final double k_shooterMotorI = 0.00000008;
     public static final double k_shooterMotorD = 0.0001000;
-    public static final double k_shooterMotorFF = 0.00013;
+    public static final double k_shooterMotorFF = 0.00015;
 
     public static final double k_shooterMinOutput = 0.0;
     public static final double k_shooterMaxOutput = 1.0;

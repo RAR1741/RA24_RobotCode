@@ -73,6 +73,8 @@ public class DriveTrajectoryTask extends Task {
 
   @Override
   public void update() {
+    log(true);
+
     if (m_autoTrajectory != null) {
       State goal = m_autoTrajectory.sample(m_runningTimer.get());
       Pose2d pose = m_swerve.getPose();
@@ -128,6 +130,8 @@ public class DriveTrajectoryTask extends Task {
 
   @Override
   public void done() {
+    log(false);
+
     DriverStation.reportWarning("Auto trajectory done", false);
     m_swerve.drive(0, 0, 0, true);
   }

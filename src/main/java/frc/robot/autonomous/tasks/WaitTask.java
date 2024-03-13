@@ -21,6 +21,8 @@ public class WaitTask extends Task {
 
   @Override
   public void update() {
+    log(true);
+
     m_swerve.drive(0, 0, 0, false);
   }
 
@@ -30,7 +32,9 @@ public class WaitTask extends Task {
   }
 
   @Override
-	public void done() {
-		DriverStation.reportWarning("Auto wait done", false);
-	}
+  public void done() {
+    log(false);
+
+    DriverStation.reportWarning("Auto wait done", false);
+  }
 }

@@ -18,6 +18,7 @@ public class BrakeTask extends Task {
 
   @Override
   public void update() {
+    log(true);
   }
 
   @Override
@@ -27,6 +28,8 @@ public class BrakeTask extends Task {
 
   @Override
   public void done() {
+    log(false);
+
     m_swerve.drive(0, 0, 0, false);
   }
 }

@@ -39,6 +39,8 @@ public class ShooterTask extends Task {
 
   @Override
   public void update() {
+    log(true);
+
     // m_shooter.periodic();
   }
 
@@ -60,6 +62,8 @@ public class ShooterTask extends Task {
 
   @Override
   public void done() {
+    log(false);
+
     DriverStation.reportWarning("Auto shooter done", false);
   }
 }

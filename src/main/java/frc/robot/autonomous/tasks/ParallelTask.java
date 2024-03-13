@@ -57,7 +57,7 @@ public class ParallelTask extends Task {
     for (Task task : m_tasks) {
       task.done();
     }
-		DriverStation.reportWarning("Parallel task done", false);
+    DriverStation.reportWarning("Parallel task done", false);
   }
 
   public Task[] getTasks() {
