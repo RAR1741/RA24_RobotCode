@@ -1,5 +1,7 @@
 package frc.robot.autonomous.tasks;
 
+import java.util.ArrayList;
+
 import org.littletonrobotics.junction.Logger;
 
 import com.pathplanner.lib.path.PathPlannerPath;
@@ -9,6 +11,9 @@ import com.pathplanner.lib.util.PIDConstants;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -60,6 +65,18 @@ public class DriveTrajectoryTask extends Task {
         new ChassisSpeeds(),
         m_swerve.getGyro().getRotation2d());
 
+    ArrayList<Pose2d> newStates = new ArrayList<>();
+    for (State state : m_autoTrajectory.getStates()) {
+      newStates.add(state.getTargetHolonomicPose());
+    }
+
+    Trajectory adjustedTrajectory = TrajectoryGenerator.generateTrajectory(
+        newStates,
+        new TrajectoryConfig(
+            m_autoPath.getGlobalConstraints().getMaxVelocityMps(),
+            m_autoPath.getGlobalConstraints().getMaxAccelerationMpsSq()));
+
+    Logger.recordOutput("Auto/DriveTrajectory/TargetTrajectory", adjustedTrajectory);
     Logger.recordOutput("Auto/DriveTrajectory/StartingTargetPose", getStartingPose());
 
     // TODO: we probably want to do this all the time?
