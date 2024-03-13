@@ -123,14 +123,14 @@ public class Shooter extends Subsystem {
 
   @Override
   public void stop() {
-    // m_periodicIO.pivot_voltage = 0.0;
-
     stopShooter();
   }
 
   @Override
   public void writePeriodicOutputs() {
-    m_periodicIO.pivot_angle = MathUtil.clamp(m_periodicIO.pivot_angle, Constants.Shooter.k_minAngle,
+    m_periodicIO.pivot_angle = MathUtil.clamp(
+        m_periodicIO.pivot_angle,
+        Constants.Shooter.k_minAngle,
         Constants.Shooter.k_maxAngle);
 
     if (!(Preferences.getString("Test Mode", "NONE").contains("SHOOTER_") && DriverStation.isTest())) {
@@ -139,9 +139,14 @@ public class Shooter extends Subsystem {
       m_topShooterMotorPID.setReference(limited_speed, ControlType.kVelocity);
       m_bottomShooterMotorPID.setReference(limited_speed, ControlType.kVelocity);
 
-      double pivotRelRotations = targetAngleToRelRotations(m_periodicIO.pivot_angle);
+      double targetPivot = MathUtil.clamp(
+          m_periodicIO.pivot_angle + m_periodicIO.manualPivotOffset,
+          Constants.Shooter.k_minAngle,
+          Constants.Shooter.k_maxAngle);
 
-      if (m_cycles % 10 == 0) { // TODO: maybe tweak this?
+      double pivotRelRotations = targetAngleToRelRotations(targetPivot);
+
+      if (m_cycles % 10 == 0) {
         setPivotAbsOffset();
       }
 
@@ -163,7 +168,6 @@ public class Shooter extends Subsystem {
     }
 
     m_sim.updateAngle(getPivotAngle());
-    // m_pivotMotor.setVoltage(m_periodicIO.pivot_voltage);
   }
 
   @Override
@@ -192,7 +196,8 @@ public class Shooter extends Subsystem {
   }
 
   public void changePivotByAngle(double alpha) {
-    m_periodicIO.pivot_angle += alpha;
+    m_periodicIO.manualPivotOffset += alpha;
+    // m_periodicIO.pivot_angle += alpha;
   }
 
   public void setAngle(double angle) {
@@ -282,8 +287,10 @@ public class Shooter extends Subsystem {
   public double getAngleFromTarget(ShooterPivotTarget target) {
     switch (target) {
       case MAX:
+        m_periodicIO.manualPivotOffset = 0.0; // :(
         return Constants.Shooter.k_maxAngle;
       case MIN:
+        m_periodicIO.manualPivotOffset = 0.0;
         return Constants.Shooter.k_minAngle;
       case AMP:
         return Constants.Shooter.k_ampPivotAngle;
@@ -304,7 +311,7 @@ public class Shooter extends Subsystem {
     double pivot_speed = 0.0;
     double shoot_speed = 0.0;
 
-    // double pivot_voltage = 0.0;
+    double manualPivotOffset = 0.0;
   }
 
   public enum ShooterSpeedTarget {
@@ -398,5 +405,10 @@ public class Shooter extends Subsystem {
   @AutoLogOutput
   public double getShooterTargetSpeed() {
     return m_periodicIO.shooter_rpm;
+  }
+
+  @AutoLogOutput
+  public double getManualPivotOffset() {
+    return m_periodicIO.manualPivotOffset;
   }
 }

@@ -237,7 +237,7 @@ public class Robot extends LoggedRobot {
       m_intaking = false;
     }
 
-    m_shooter.changePivotByAngle(m_operatorController.getWantsManualShooterPivot(0.5));
+    m_shooter.changePivotByAngle(m_operatorController.getWantsManualShooterPivot(0.1));
 
     if (m_operatorController.getWantsPodiumAngle()) {
       m_shooter.setAngle(ShooterPivotTarget.PODIUM);
