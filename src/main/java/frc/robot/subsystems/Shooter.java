@@ -45,6 +45,8 @@ public class Shooter extends Subsystem {
   private PeriodicIO m_periodicIO;
   private boolean m_hasSetPivotRelEncoder = false;
 
+  private int m_cycles = 0;
+
   private Shooter() {
     super("Shooter");
 
@@ -63,7 +65,7 @@ public class Shooter extends Subsystem {
     m_pivotMotor = new CANSparkFlex(Constants.Shooter.k_pivotMotorId, MotorType.kBrushless);
     m_pivotMotor.restoreFactoryDefaults();
     m_pivotMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
-    m_pivotMotor.setSmartCurrentLimit(30);
+    m_pivotMotor.setSmartCurrentLimit(40);
     m_pivotMotor.setInverted(true);
 
     m_topMotorEncoder = m_topShooterMotor.getEncoder();
@@ -111,6 +113,8 @@ public class Shooter extends Subsystem {
       setPivotAbsOffset();
     }
 
+    m_cycles++;
+
     if (!m_bottomShooterMotor.getInverted()) {
       m_bottomShooterMotor.setInverted(true);
     }
@@ -142,6 +146,10 @@ public class Shooter extends Subsystem {
           Constants.Shooter.k_maxAngle);
 
       double pivotRelRotations = targetAngleToRelRotations(targetPivot);
+
+      if (m_cycles % 10 == 0) {
+        setPivotAbsOffset();
+      }
 
       m_pivotMotorPID.setReference(pivotRelRotations, ControlType.kPosition);
     } else {
@@ -179,8 +187,8 @@ public class Shooter extends Subsystem {
 
   public double targetAngleToRelRotations(double angle) {
     angle = Units.degreesToRadians(angle);
-    double a = 6.3396694709;
-    double theta = Math.atan(3.153 / 5.5);
+    double a = 7.90594;
+    double theta = Math.atan(3.153 / 7.25);
     double distanceInches = Math
         .sqrt(Math.pow(a, 2.0) + Math.pow(7, 2.0) - (2.0 * a * 7.0 * Math.cos(theta + angle)));
 

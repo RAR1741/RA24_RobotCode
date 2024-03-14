@@ -285,7 +285,7 @@ public final class Constants {
     static double helices = 1.0;
     public static final double k_rotationsPerInch = threadsPerInch / helices;
 
-    static double maxPivotExtensionInches = 12.5;
+    static double maxPivotExtensionInches = 12.5643;
     public static final double k_relRotationsToMaxExtension = maxPivotExtensionInches * k_rotationsPerInch;
 
     // Shooter angle lookup table, V2
