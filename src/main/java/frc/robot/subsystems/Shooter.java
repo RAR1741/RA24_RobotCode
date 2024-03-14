@@ -31,7 +31,6 @@ public class Shooter extends Subsystem {
   private CANSparkFlex m_topShooterMotor;
   private CANSparkFlex m_bottomShooterMotor;
   private CANSparkFlex m_pivotMotor;
-  private int m_cycles = 0;
 
   private RelativeEncoder m_topMotorEncoder;
   private RelativeEncoder m_bottomMotorEncoder;
@@ -112,8 +111,6 @@ public class Shooter extends Subsystem {
       setPivotAbsOffset();
     }
 
-    // m_cycles++;
-
     if (!m_bottomShooterMotor.getInverted()) {
       m_bottomShooterMotor.setInverted(true);
     }
@@ -146,10 +143,6 @@ public class Shooter extends Subsystem {
 
       double pivotRelRotations = targetAngleToRelRotations(targetPivot);
 
-      // if (m_cycles % 10 == 0) {
-      //   setPivotAbsOffset();
-      // }
-
       m_pivotMotorPID.setReference(pivotRelRotations, ControlType.kPosition);
     } else {
       // Test mode
@@ -164,7 +157,7 @@ public class Shooter extends Subsystem {
 
     // If the pivot absolute encoder isn't connected
     if (!m_pivotAbsEncoder.isConnected()) {
-      // SAFETY
+      DriverStation.reportWarning("THE SHOOTER PIVOT IS BROKEN", false);
     }
 
     m_sim.updateAngle(getPivotAngle());
@@ -197,7 +190,6 @@ public class Shooter extends Subsystem {
 
   public void changePivotByAngle(double alpha) {
     m_periodicIO.manualPivotOffset += alpha;
-    // m_periodicIO.pivot_angle += alpha;
   }
 
   public void setAngle(double angle) {
