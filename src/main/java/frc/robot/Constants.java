@@ -241,7 +241,7 @@ public final class Constants {
   public class Shooter {
     public static final double k_maxRPM = 6000.0; // but that's just a theory
 
-    public static final int k_shooterSpeedTolerance = 150; // 1,000 is "in", 2000 is max
+    public static final int k_shooterSpeedTolerance = 100; // 1,000 is "in", 2000 is max
 
     public static final int k_pivotMotorId = 15;
     public static final int k_topMotorId = 16;

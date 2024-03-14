@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.446252434171535,
-        "y": 2.841067413616309
+        "x": 2.4148974825727434,
+        "y": 3.378614803525904
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.9031887647108623,
-        "y": 0.6047705058373081
+        "x": 3.8718338131120706,
+        "y": 1.142317895746903
       },
       "isLocked": false,
       "linkedName": "ShootStageRight"
     },
     {
       "anchor": {
-        "x": 7.8982727965455926,
-        "y": 1.016482398705538
+        "x": 8.462602540945822,
+        "y": 0.8429612461076774
       },
       "prevControl": {
-        "x": 6.872704588001768,
-        "y": 1.6924547737984361
+        "x": 7.138390295299109,
+        "y": 0.8959321113086668
       },
       "nextControl": null,
       "isLocked": false,
@@ -31,7 +31,7 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 0.5,
-      "rotationDegrees": -28.522620839078318,
+      "rotationDegrees": -2.5165120288437173,
       "rotateFast": false
     }
   ],
@@ -45,7 +45,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -34.3625830358809,
+    "rotation": 0.25622109289190814,
     "rotateFast": false
   },
   "reversed": false,

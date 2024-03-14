@@ -1,7 +1,5 @@
 package frc.robot.autonomous.modes;
 
-import frc.robot.autonomous.tasks.DriveForwardTask;
-
 public class CenterFourNote extends AutoModeBase {
   public void queueTasks() {
     // Note 1 (preload)
@@ -26,6 +24,6 @@ public class CenterFourNote extends AutoModeBase {
     // Done
     queueDriveAndIntake("BotRing, Mid");
 
-    queueTask(new DriveForwardTask(0, 0));
+    queueEnd();
   }
 }

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import frc.robot.AllianceHelpers;
 import frc.robot.Constants;
 import frc.robot.autonomous.tasks.AutoTargetTask;
+import frc.robot.autonomous.tasks.DriveForwardTask;
 import frc.robot.autonomous.tasks.DriveTrajectoryTask;
 import frc.robot.autonomous.tasks.IntakeTask;
 import frc.robot.autonomous.tasks.ParallelTask;
@@ -51,17 +52,27 @@ public abstract class AutoModeBase {
             new DriveTrajectoryTask(path))));
   }
 
+  public void queueDrive(String path) {
+    queueTask(new DriveTrajectoryTask(path));
+  }
+
   public void queueAutoTarget() {
     queueTask(new ParallelTask(
         new IntakeTask(IntakePivotTarget.STOW, IntakeState.NONE),
         new AutoTargetTask(AllianceHelpers.getAllianceSpeakerPose3d()),
         new WaitTask(Constants.Auto.Timing.k_intakeBounceTime)));
+
+    queueTask(new DriveForwardTask(0, 0));
   }
 
   public void queueShooterSpinUp() {
     queueTask(new ParallelTask(
         new ShooterTask(ShooterPivotTarget.SUBWOOFER, ShooterSpeedTarget.MAX),
         new IntakeTask(IntakePivotTarget.STOW, IntakeState.NONE)));
+  }
+
+  public void queueEnd() {
+    queueTask(new DriveForwardTask(0, 0));
   }
 
   public abstract void queueTasks();
