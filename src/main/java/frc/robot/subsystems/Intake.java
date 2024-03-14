@@ -309,6 +309,16 @@ public class Intake extends Subsystem {
   }
 
   @AutoLogOutput
+  public boolean getTOFOne() {
+    return m_noteTOF1.get();
+  }
+
+  @AutoLogOutput
+  public boolean getTOFTwo() {
+    return m_noteTOF2.get();
+  }
+
+  @AutoLogOutput
   public int getIntakeProximity() {
     return m_colorSensor.getProximity();
   }
