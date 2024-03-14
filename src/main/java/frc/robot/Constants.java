@@ -281,11 +281,11 @@ public final class Constants {
     // Offset, -90, since that's where we want to start
     public static final double k_absPivotOffset = 208.587 - 90;
 
-    static double threadsPerInch = 10.0;
-    static double helices = 2.0;
+    static double threadsPerInch = 8.0;
+    static double helices = 1.0;
     public static final double k_rotationsPerInch = threadsPerInch / helices;
 
-    static double maxPivotExtensionInches = 15.5;
+    static double maxPivotExtensionInches = 12.5;
     public static final double k_relRotationsToMaxExtension = maxPivotExtensionInches * k_rotationsPerInch;
 
     // Shooter angle lookup table, V2

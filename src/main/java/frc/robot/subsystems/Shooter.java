@@ -146,9 +146,9 @@ public class Shooter extends Subsystem {
 
       double pivotRelRotations = targetAngleToRelRotations(targetPivot);
 
-      if (m_cycles % 10 == 0) {
-        setPivotAbsOffset();
-      }
+      // if (m_cycles % 10 == 0) {
+      //   setPivotAbsOffset();
+      // }
 
       m_pivotMotorPID.setReference(pivotRelRotations, ControlType.kPosition);
     } else {
@@ -186,10 +186,10 @@ public class Shooter extends Subsystem {
 
   public double targetAngleToRelRotations(double angle) {
     angle = Units.degreesToRadians(angle);
-
-    double theta = Math.acos(8.75 / 10.5);
+    double a = 6.3396694709;
+    double theta = Math.atan(3.153 / 5.5);
     double distanceInches = Math
-        .sqrt(Math.pow(10.5, 2.0) + Math.pow(7, 2.0) - (2.0 * 10.5 * 7.0 * Math.cos(theta + angle)));
+        .sqrt(Math.pow(a, 2.0) + Math.pow(7, 2.0) - (2.0 * a * 7.0 * Math.cos(theta + angle)));
 
     // Result in relative encoder rotations
     return Constants.Shooter.k_relRotationsToMaxExtension - (distanceInches * Constants.Shooter.k_rotationsPerInch);
