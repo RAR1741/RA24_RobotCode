@@ -38,7 +38,7 @@ public class Intake extends Subsystem {
 
   private final I2C.Port k_colorSensorPort = I2C.Port.kMXP;
   private final DigitalInput m_noteTOF1 = new DigitalInput(6);
-  private final DigitalInput m_noteTOF2 = new DigitalInput(7);
+  // private final DigitalInput m_noteTOF2 = new DigitalInput(7);
 
   private ColorSensorV3 m_colorSensor;
 
@@ -305,17 +305,12 @@ public class Intake extends Subsystem {
 
   @AutoLogOutput
   public boolean isHoldingNote() {
-    return m_colorSensor.getProximity() >= Constants.Intake.k_sensorThreshold || (m_noteTOF1.get() || m_noteTOF2.get());
+    return m_colorSensor.getProximity() >= Constants.Intake.k_sensorThreshold || (m_noteTOF1.get());
   }
 
   @AutoLogOutput
   public boolean getTOFOne() {
     return m_noteTOF1.get();
-  }
-
-  @AutoLogOutput
-  public boolean getTOFTwo() {
-    return m_noteTOF2.get();
   }
 
   @AutoLogOutput

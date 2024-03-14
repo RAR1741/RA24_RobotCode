@@ -112,7 +112,7 @@ public class Shooter extends Subsystem {
       setPivotAbsOffset();
     }
 
-    m_cycles++;
+    // m_cycles++;
 
     if (!m_bottomShooterMotor.getInverted()) {
       m_bottomShooterMotor.setInverted(true);
