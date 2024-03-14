@@ -229,6 +229,12 @@ public class SwerveDrive extends SwerveSysId {
     }
   }
 
+  public void pointForward() {
+    for(SwerveModule module : m_modules) {
+      module.pointForward();
+    }
+  }
+
   public void drive(ChassisSpeeds speeds) {
     SwerveModuleState[] swerveModuleStates = m_kinematics.toSwerveModuleStates(speeds);
 
@@ -275,7 +281,6 @@ public class SwerveDrive extends SwerveSysId {
     Logger.recordOutput("SwerveDrive/HeadingLock/RotFeedback", rotationFeedback);
     Logger.recordOutput("SwerveDrive/HeadingLock/RotFeedforward", rotationFF);
     Logger.recordOutput("SwerveDrive/HeadingLock/Target", m_rotationTarget);
-    // rotationFF = rot; // k_rotController.getSetpoint().velocity;
 
     drive(xSpeed, ySpeed, rotationFeedback + rotationFF, fieldRelative);
   }
@@ -455,66 +460,6 @@ public class SwerveDrive extends SwerveSysId {
   public Vector<N3> createVisionMeasurementStdDevs(double x, double y, double theta) {
     return VecBuilder.fill(x, y, Units.degreesToRadians(theta));
   }
-
-  // int tagThreshold = 1;
-  // double poseDistanceDiffThreshold = 10.0; // meters
-  // double robotSpeedThreshold = 1.0; // meters per second
-  // double maxTargetDistance = 4.0; // meters
-  // double maxLatency = 500; // milliseconds
-
-  // public PoseEstimate filteredLLPoseEstimate(PoseEstimate poseEstimate) {
-  // // Only use the pose if we can see a certain number of tags
-  // if (poseEstimate.tagCount < tagThreshold) {
-  // poseEstimate.invalid = true;
-  // return poseEstimate;
-  // }
-
-  // // Only use the pose if it's within a certain distance of our current pose
-  // if (poseEstimate.pose.getTranslation().getDistance(
-  // m_poseEstimator.getEstimatedPosition().getTranslation()) >=
-  // poseDistanceDiffThreshold) {
-  // poseEstimate.invalid = true;
-  // return poseEstimate;
-  // }
-
-  // // Only use the pose if the target is within a certain distance
-  // if (poseEstimate.avgTagDist >= maxTargetDistance) {
-  // poseEstimate.invalid = true;
-  // return poseEstimate;
-  // }
-
-  // // Only use the pose if we're not moving too fast (robot go weeeeeeee-Andrew)
-  // ChassisSpeeds chassisSpeeds = getChassisSpeeds();
-  // double robotSpeed = Math.sqrt(
-  // Math.pow(chassisSpeeds.vxMetersPerSecond, 2) +
-  // Math.pow(chassisSpeeds.vyMetersPerSecond, 2));
-  // if (robotSpeed >= robotSpeedThreshold) {
-  // poseEstimate.invalid = true;
-  // return poseEstimate;
-  // }
-
-  // // TODO: add max rotation rate limiting
-
-  // // Only use the pose if the latency (ms) is within a certain threshold
-  // if (poseEstimate.latency >= maxLatency) {
-  // poseEstimate.invalid = true;
-  // return poseEstimate;
-  // }
-
-  // // Only use the pose if it's legally on the field
-  // if (poseEstimate.pose.getY() < 0 || poseEstimate.pose.getY() >
-  // Constants.Field.k_length) {
-  // poseEstimate.invalid = true;
-  // return poseEstimate;
-  // }
-  // if (poseEstimate.pose.getX() < 0 || poseEstimate.pose.getX() >
-  // Constants.Field.k_width) {
-  // poseEstimate.invalid = true;
-  // return poseEstimate;
-  // }
-
-  // return poseEstimate;
-  // }
 
   private double xyStdDevCoefficient = 0.005;
   private double thetaStdDevCoefficient = 0.01;

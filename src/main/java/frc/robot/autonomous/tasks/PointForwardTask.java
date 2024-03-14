@@ -12,7 +12,7 @@ public class PointForwardTask extends Task {
 
   @Override
   public void start() {
-    m_swerve.pointModules(1, 0, 0, true);
+    m_swerve.pointForward();
   }
 
   @Override
