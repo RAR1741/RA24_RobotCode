@@ -240,6 +240,7 @@ public final class Constants {
 
   public class Shooter {
     public static final double k_maxRPM = 6000.0; // but that's just a theory
+    public static final double k_passRPM = 4000.0;
 
     public static final int k_shooterSpeedTolerance = 100; // 1,000 is "in", 2000 is max
 
@@ -266,6 +267,7 @@ public final class Constants {
     public static final double k_wingPivotAngle = 26.0;
     public static final double k_subwooferPivotAngle = 62.0;
     public static final double k_podiumPivotAngle = 46.0;
+    public static final double k_passPivotAngle = 50.0;
 
     public static final double k_length = 11.94335; // in inches
     public static final double k_mass = 5.44311; // in kg
@@ -329,6 +331,9 @@ public final class Constants {
     private static final double speakerHeight = 2.032; // Meters
     public static final Pose3d k_redSpeakerPose = new Pose3d(16.579342, 5.547868, speakerHeight, new Rotation3d());
     public static final Pose3d k_blueSpeakerPose = new Pose3d(-0.0381, 5.547868, speakerHeight, new Rotation3d());
+
+    public static final Pose2d k_redPassPose = new Pose2d(14.71, 6.0, new Rotation2d());
+    public static final Pose2d k_bluePassPose = new Pose2d(1.75, 6.0, new Rotation2d());
   }
 
   public static class Limelight {

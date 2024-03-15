@@ -76,7 +76,7 @@ public class AutoTargetTask extends Task {
 
     // m_swerve.drive(0, 0, diff.getRadians() * 5.0, true);
 
-    m_swerve.driveLockedHeading(0, 0, 0, true, true, false);
+    m_swerve.driveLockedHeading(0, 0, 0, true, true, false, false);
   }
 
   @Override

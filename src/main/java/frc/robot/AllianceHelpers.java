@@ -19,6 +19,13 @@ public class AllianceHelpers {
     return getAllianceSpeakerPose3d().toPose2d();
   }
 
+  public static Pose2d getAlliancePassPose2d() {
+    if (!DriverStation.getAlliance().isPresent() || DriverStation.getAlliance().get() == Alliance.Blue) {
+      return Field.k_bluePassPose;
+    }
+    return Field.k_redPassPose;
+  }
+
   public static Rotation2d getAllianceAmpRotation() {
     return new Rotation2d(Math.PI / 2);
   }

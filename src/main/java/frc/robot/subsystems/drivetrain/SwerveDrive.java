@@ -230,7 +230,7 @@ public class SwerveDrive extends SwerveSysId {
   }
 
   public void pointForward() {
-    for(SwerveModule module : m_modules) {
+    for (SwerveModule module : m_modules) {
       module.pointForward();
     }
   }
@@ -254,7 +254,7 @@ public class SwerveDrive extends SwerveSysId {
   }
 
   public void driveLockedHeading(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean speakerAim,
-      boolean ampAim) {
+      boolean ampAim, boolean passAim) {
     double rotationFeedback = 0.0;
     double rotationFF = rot;
     Rotation2d currentRotation;
@@ -266,6 +266,11 @@ public class SwerveDrive extends SwerveSysId {
       currentRotation = getPose().getRotation();
     } else if (ampAim) {
       m_rotationTarget = AllianceHelpers.getAllianceAmpRotation();
+      currentRotation = getPose().getRotation();
+    } else if (passAim) {
+      m_rotationTarget = new Rotation2d(
+          getPose().getTranslation().getX() - AllianceHelpers.getAlliancePassPose2d().getTranslation().getX(),
+          getPose().getTranslation().getY() - AllianceHelpers.getAlliancePassPose2d().getTranslation().getY());
       currentRotation = getPose().getRotation();
     } else {
       currentRotation = m_gyro.getRotation2d();

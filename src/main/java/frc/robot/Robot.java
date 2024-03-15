@@ -152,8 +152,6 @@ public class Robot extends LoggedRobot {
     m_swerve.resetRotationTarget();
   }
 
-  boolean m_wantsAmpAutoAim = false;
-
   @Override
   public void teleopPeriodic() {
     double maxSpeed = Constants.SwerveDrive.k_maxSpeed + ((Constants.SwerveDrive.k_maxBoostSpeed -
@@ -172,16 +170,23 @@ public class Robot extends LoggedRobot {
     rot *= slowScaler;
 
     boolean wantsSpeakerAutoAim = m_driverController.getWantsAutoAim();
-    m_wantsAmpAutoAim = m_driverController.getWantsAmpPivot();
+    boolean wantsAmpAutoAim = m_driverController.getWantsAmpPivot();
+    boolean wantsPassAutoAim = m_driverController.getWantsShooterPass();
 
     if (m_lockHeading) {
-      m_swerve.driveLockedHeading(xSpeed, ySpeed, rot, true, wantsSpeakerAutoAim, m_wantsAmpAutoAim);
+      m_swerve.driveLockedHeading(
+          xSpeed, ySpeed, rot, true,
+          wantsSpeakerAutoAim, wantsAmpAutoAim, wantsPassAutoAim);
     } else {
       m_swerve.drive(xSpeed, ySpeed, rot, true);
     }
 
     if (wantsSpeakerAutoAim) {
       m_shooter.setAngle(m_shooter.getSpeakerAutoAimAngle(m_swerve.getPose()));
+      m_shooter.setSpeed(ShooterSpeedTarget.MAX);
+    } else if (wantsPassAutoAim) {
+      m_shooter.setAngle(Constants.Shooter.k_passPivotAngle);
+      m_shooter.setSpeed(Constants.Shooter.k_passRPM);
     }
 
     if (m_driverController.getWantsResetGyro()) {
@@ -193,7 +198,7 @@ public class Robot extends LoggedRobot {
     }
 
     if (m_driverController.getWantsIntakePivotToggle()) {
-      m_wantsAmpAutoAim = false;
+      wantsAmpAutoAim = false;
       if (m_intake.getPivotTarget() == IntakePivotTarget.STOW) {
         m_intake.setPivotTarget(IntakePivotTarget.GROUND);
         m_intake.setIntakeState(IntakeState.INTAKE);
@@ -205,7 +210,7 @@ public class Robot extends LoggedRobot {
       }
     }
 
-    if (m_wantsAmpAutoAim) {
+    if (wantsAmpAutoAim) {
       m_shooter.setAngle(ShooterPivotTarget.MIN);
       m_intake.setPivotTarget(IntakePivotTarget.AMP);
     }
@@ -233,10 +238,10 @@ public class Robot extends LoggedRobot {
       m_intake.setIntakeState(IntakeState.NONE);
     }
 
-    if (m_driverController.getWantsEjectPivot()) {
-      m_intake.setPivotTarget(IntakePivotTarget.EJECT);
-      m_intaking = false;
-    }
+    // if (m_driverController.getWantsEjectPivot()) {
+    // m_intake.setPivotTarget(IntakePivotTarget.EJECT);
+    // m_intaking = false;
+    // }
 
     m_shooter.changePivotByAngle(m_operatorController.getWantsManualShooterPivot(0.1));
 
