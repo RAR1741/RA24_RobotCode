@@ -287,10 +287,10 @@ public class Shooter extends Subsystem {
   public double getAngleFromTarget(ShooterPivotTarget target) {
     switch (target) {
       case MAX:
-        m_periodicIO.manualPivotOffset = 0.0; // :(
+        m_periodicIO.manualPivotOffset = Constants.Shooter.k_initalPivotOffset; // :(
         return Constants.Shooter.k_maxAngle;
       case MIN:
-        m_periodicIO.manualPivotOffset = 0.0;
+        m_periodicIO.manualPivotOffset = Constants.Shooter.k_initalPivotOffset;
         return Constants.Shooter.k_minAngle;
       case AMP:
         return Constants.Shooter.k_ampPivotAngle;
@@ -311,7 +311,7 @@ public class Shooter extends Subsystem {
     double pivot_speed = 0.0;
     double shoot_speed = 0.0;
 
-    double manualPivotOffset = 0.0;
+    double manualPivotOffset = Constants.Shooter.k_initalPivotOffset;
   }
 
   public enum ShooterSpeedTarget {

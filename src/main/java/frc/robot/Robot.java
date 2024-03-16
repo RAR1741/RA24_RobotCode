@@ -210,6 +210,8 @@ public class Robot extends LoggedRobot {
       }
     }
 
+    m_intake.overrideAutoFlip(m_driverController.getWantsIntakeAutoFlipOverride());
+
     if (wantsAmpAutoAim) {
       m_shooter.setAngle(ShooterPivotTarget.MIN);
       m_intake.setPivotTarget(IntakePivotTarget.AMP);

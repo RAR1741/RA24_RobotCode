@@ -190,12 +190,17 @@ public class Intake extends Subsystem {
     FEED_SHOOTER
   }
 
+  private boolean m_override = false;
+  public void overrideAutoFlip(boolean override) {
+    m_override = override;
+  }
+
   /*---------------------------------- Custom Private Functions ---------------------------------*/
   private void checkAutoTasks() {
     // If the intake is set to GROUND, and the intake has a note, and the pivot is
     // close to it's target
     // Stop the intake and go to the SOURCE position
-    if (m_periodicIO.pivot_target == IntakePivotTarget.GROUND && isHoldingNote() && isAtPivotTarget()) {
+    if (m_periodicIO.pivot_target == IntakePivotTarget.GROUND && isHoldingNote() && isAtPivotTarget() && !m_override) {
 
       setPivotTarget(IntakePivotTarget.STOW);
       setIntakeState(IntakeState.NONE);
@@ -305,7 +310,7 @@ public class Intake extends Subsystem {
 
   @AutoLogOutput
   public boolean isHoldingNote() {
-    return m_colorSensor.getProximity() >= Constants.Intake.k_sensorThreshold || (m_noteTOF1.get());
+    return m_colorSensor.getProximity() >= Constants.Intake.k_sensorThreshold /*|| getTOFOne()*/;
   }
 
   @AutoLogOutput

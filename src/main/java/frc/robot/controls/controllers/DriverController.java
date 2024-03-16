@@ -78,6 +78,10 @@ public class DriverController extends FilteredController {
     return this.getRawButtonPressed(Button.LEFT_BUMPER);
   }
 
+  public boolean getWantsIntakeAutoFlipOverride() {
+    return this.getRawButton(Button.LEFT_BUMPER);
+  }
+
   public boolean getWantsIntake() {
     return this.getRawButton(Button.RIGHT_BUMPER);
   }

@@ -194,7 +194,7 @@ public final class Constants {
 
     public static final int k_pivotEncoderId = 4;
 
-    public static final double k_stowPivotAngle = 267.0;
+    public static final double k_stowPivotAngle = 263.0;
     public static final double k_groundPivotAngle = 41.0;
     public static final double k_sourcePivotAngle = 180.0;
     // public static final double k_sourcePivotAngle = k_stowPivotAngle;
@@ -282,6 +282,8 @@ public final class Constants {
 
     // Offset, -90, since that's where we want to start
     public static final double k_absPivotOffset = 208.587 - 90;
+
+    public static final double k_initalPivotOffset = -0.55;
 
     static double threadsPerInch = 8.0;
     static double helices = 1.0;
