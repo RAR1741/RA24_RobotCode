@@ -310,12 +310,25 @@ public class Intake extends Subsystem {
 
   @AutoLogOutput
   public boolean isHoldingNote() {
-    return m_colorSensor.getProximity() >= Constants.Intake.k_sensorThreshold /*|| getTOFOne()*/;
+    return getColorSensor() || getTOFOne();
+  }
+
+  @AutoLogOutput
+  public boolean getColorSensor() {
+    if (isColorSensorConnected()) {
+      return m_colorSensor.getProximity() >= Constants.Intake.k_sensorThreshold;
+    }
+    return false;
   }
 
   @AutoLogOutput
   public boolean getTOFOne() {
-    return m_noteTOF1.get();
+    return !m_noteTOF1.get();
+  }
+
+  @AutoLogOutput
+  public boolean isColorSensorConnected() {
+    return m_colorSensor.isConnected();
   }
 
   @AutoLogOutput
