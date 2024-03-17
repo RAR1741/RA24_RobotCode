@@ -46,6 +46,7 @@ public class Shooter extends Subsystem {
   private boolean m_hasSetPivotRelEncoder = false;
 
   private int m_cycles = 0;
+  private final double k_highVelocity = 500.0;
 
   private Shooter() {
     super("Shooter");
@@ -147,7 +148,10 @@ public class Shooter extends Subsystem {
 
       double pivotRelRotations = targetAngleToRelRotations(targetPivot);
 
-      if (m_cycles % 10 == 0) {
+      if (exceedingVelocity()) {
+        m_cycles = 0;
+      } else if (m_cycles == 10) {
+        m_cycles = 0;
         setPivotAbsOffset();
       }
 
@@ -415,5 +419,10 @@ public class Shooter extends Subsystem {
   @AutoLogOutput
   public double getPivotMotorVelocity() {
     return m_pivotMotor.getEncoder().getVelocity();
+  }
+
+  @AutoLogOutput
+  private boolean exceedingVelocity() {
+    return Math.abs(getPivotMotorVelocity()) > k_highVelocity;
   }
 }
