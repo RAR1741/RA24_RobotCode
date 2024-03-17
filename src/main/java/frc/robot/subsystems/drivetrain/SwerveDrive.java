@@ -6,6 +6,7 @@ import org.littletonrobotics.junction.Logger;
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkBase.IdleMode;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.controller.PIDController;
@@ -29,6 +30,7 @@ import edu.wpi.first.wpilibj.Timer;
 import frc.robot.AllianceHelpers;
 import frc.robot.AprilTagLocations;
 import frc.robot.Constants;
+import frc.robot.Constants.Field;
 import frc.robot.LimelightHelpers.PoseEstimate;
 import frc.robot.subsystems.Limelight;
 
@@ -358,6 +360,8 @@ public class SwerveDrive extends SwerveSysId {
     updateVisionPoseWithStdDev(m_limelightRight.getPoseEstimation(), VisionInstance.RIGHT);
     updateVisionPoseWithStdDev(m_limelightShooter.getPoseEstimation(), VisionInstance.SHOOTER);
 
+    // clampPose(getPose());
+
     if (RobotBase.isReal()) {
       m_poseEstimator.updateWithTime(
           Timer.getFPGATimestamp(),
@@ -496,6 +500,14 @@ public class SwerveDrive extends SwerveSysId {
       return;
     }
 
+    if (poseEstimate.pose.getX() < 0 || poseEstimate.pose.getX() > Constants.Field.k_width) {
+      return;
+    }
+    
+    if (poseEstimate.pose.getY() < 0 || poseEstimate.pose.getY() > Constants.Field.k_length) {
+      return;
+    }
+
     // if (DriverStation.isAutonomous()) {
     // if (getChassisSpeeds().vxMetersPerSecond > autoTranslationMax
     // || getChassisSpeeds().vyMetersPerSecond > autoTranslationMax) {
@@ -521,6 +533,10 @@ public class SwerveDrive extends SwerveSysId {
         poseEstimate.pose,
         poseEstimate.timestampSeconds,
         createVisionMeasurementStdDevs(xyStdDev, xyStdDev, thetaStdDev));
+  }
+
+  private Pose2d clampPose(Pose2d pose) {
+    return new Pose2d(MathUtil.clamp(pose.getX(), 0, Field.k_width), MathUtil.clamp(pose.getY(), 0, Field.k_length), getPose().getRotation());
   }
 
   @AutoLogOutput
