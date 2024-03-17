@@ -411,4 +411,9 @@ public class Shooter extends Subsystem {
   public double getManualPivotOffset() {
     return m_periodicIO.manualPivotOffset;
   }
+
+  @AutoLogOutput
+  public double getPivotMotorVelocity() {
+    return m_pivotMotor.getEncoder().getVelocity();
+  }
 }
