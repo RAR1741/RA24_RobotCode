@@ -2,8 +2,6 @@ package frc.robot.subsystems;
 
 import java.util.Arrays;
 
-import org.littletonrobotics.junction.AutoLogOutput;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTable;
@@ -46,7 +44,6 @@ public class Limelight {
    *
    * @return If there is a visible AprilTag
    */
-  @AutoLogOutput
   public boolean seesAprilTag() {
     return m_limelightTable.getEntry("tv").getInteger(0) == 1;
   }

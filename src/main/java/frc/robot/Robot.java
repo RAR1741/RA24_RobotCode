@@ -176,7 +176,7 @@ public class Robot extends LoggedRobot {
     if (m_lockHeading) {
       m_swerve.driveLockedHeading(
           xSpeed, ySpeed, rot, true,
-          wantsSpeakerAutoAim, wantsAmpAutoAim, wantsPassAutoAim);
+          wantsSpeakerAutoAim, false, wantsPassAutoAim);
     } else {
       m_swerve.drive(xSpeed, ySpeed, rot, true);
     }

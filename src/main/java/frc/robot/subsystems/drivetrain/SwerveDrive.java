@@ -284,7 +284,7 @@ public class SwerveDrive extends SwerveSysId {
       rotationFeedback = k_rotController.calculate(
           currentRotation.getRadians(),
           m_rotationTarget.getRadians());
-    }
+    } 
     Logger.recordOutput("SwerveDrive/HeadingLock/RotFeedback", rotationFeedback);
     Logger.recordOutput("SwerveDrive/HeadingLock/RotFeedforward", rotationFF);
     Logger.recordOutput("SwerveDrive/HeadingLock/Target", m_rotationTarget);
@@ -356,6 +356,11 @@ public class SwerveDrive extends SwerveSysId {
 
   @Override
   public void periodic() {
+
+    Logger.recordOutput("SwerveDrive/Limelights/Left/seesAprilTag", m_limelightLeft.seesAprilTag());
+    Logger.recordOutput("SwerveDrive/Limelights/Right/seesAprilTag", m_limelightRight.seesAprilTag());
+    Logger.recordOutput("SwerveDrive/Limelights/Shooter/seesAprilTag", m_limelightShooter.seesAprilTag());
+
     updateVisionPoseWithStdDev(m_limelightLeft.getPoseEstimation(), VisionInstance.LEFT);
     updateVisionPoseWithStdDev(m_limelightRight.getPoseEstimation(), VisionInstance.RIGHT);
     updateVisionPoseWithStdDev(m_limelightShooter.getPoseEstimation(), VisionInstance.SHOOTER);
@@ -479,7 +484,7 @@ public class SwerveDrive extends SwerveSysId {
   }; // shooter, left, right
   private boolean useVisionRotation = true;
   private int minTagCount = 1;
-  private double minAvgDistance = 4.0;
+  private double maxAvgDistance = 4.0;
   private double autoStdDevScale = 32.0;
 
   public void updateVisionPoseWithStdDev(PoseEstimate poseEstimate, VisionInstance instanceIndex) {
@@ -496,14 +501,14 @@ public class SwerveDrive extends SwerveSysId {
       return;
     }
 
-    if (avgDistance >= minAvgDistance) {
+    if (avgDistance >= maxAvgDistance) {
       return;
     }
 
     if (poseEstimate.pose.getX() < 0 || poseEstimate.pose.getX() > Constants.Field.k_width) {
       return;
     }
-    
+
     if (poseEstimate.pose.getY() < 0 || poseEstimate.pose.getY() > Constants.Field.k_length) {
       return;
     }
