@@ -83,7 +83,7 @@ public class Robot extends LoggedRobot {
 
     m_allSubsystems.add(m_swerve);
     m_allSubsystems.add(m_intake);
-    m_allSubsystems.add(m_shooter);
+    m_allSubsystems.add(m_shooter); 
     m_allSubsystems.add(m_climber);
   }
 

@@ -36,4 +36,8 @@ public class AllianceHelpers {
     }
     return new Rotation2d(0.0);
   }
+
+  public static Rotation2d getAlliancePassRotation() {
+    return new Rotation2d(Math.toRadians(12.0));
+  }
 }

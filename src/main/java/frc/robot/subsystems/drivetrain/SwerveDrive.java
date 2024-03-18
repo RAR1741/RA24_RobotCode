@@ -270,9 +270,7 @@ public class SwerveDrive extends SwerveSysId {
       m_rotationTarget = AllianceHelpers.getAllianceAmpRotation();
       currentRotation = getPose().getRotation();
     } else if (passAim) {
-      m_rotationTarget = new Rotation2d(
-          getPose().getTranslation().getX() - AllianceHelpers.getAlliancePassPose2d().getTranslation().getX(),
-          getPose().getTranslation().getY() - AllianceHelpers.getAlliancePassPose2d().getTranslation().getY());
+      m_rotationTarget = AllianceHelpers.getAlliancePassRotation();
       currentRotation = getPose().getRotation();
     } else {
       currentRotation = m_gyro.getRotation2d();
