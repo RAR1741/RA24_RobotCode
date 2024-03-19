@@ -25,6 +25,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.AllianceHelpers;
@@ -354,7 +356,6 @@ public class SwerveDrive extends SwerveSysId {
 
   @Override
   public void periodic() {
-
     Logger.recordOutput("SwerveDrive/Limelights/Left/seesAprilTag", m_limelightLeft.seesAprilTag());
     Logger.recordOutput("SwerveDrive/Limelights/Right/seesAprilTag", m_limelightRight.seesAprilTag());
     Logger.recordOutput("SwerveDrive/Limelights/Shooter/seesAprilTag", m_limelightShooter.seesAprilTag());
@@ -364,6 +365,14 @@ public class SwerveDrive extends SwerveSysId {
     updateVisionPoseWithStdDev(m_limelightShooter.getPoseEstimation(), VisionInstance.SHOOTER);
 
     // clampPose(getPose());
+
+    if(m_gyro.isMoving() && (Math.abs(getAccelerometerVelocityX()) > 0.5 || Math.abs(getAccelerometerVelocityY()) > 0.5)) {
+      m_poseEstimator.addVisionMeasurement(new Pose2d(
+        getPose().getX() + ((getAccelerometerVelocityX() * Math.cos(m_gyro.getRotation2d().getRadians())) / Math.pow(50.0,2.0)), 
+        getPose().getY() + ((getAccelerometerVelocityY() * Math.sin(m_gyro.getRotation2d().getRadians())) / Math.pow(50.0,2.0)), 
+        m_gyro.getRotation2d()), getNavXTimestamp(),
+        createVisionMeasurementStdDevs(100, 100, 9999.999999));
+    }
 
     if (RobotBase.isReal()) {
       m_poseEstimator.updateWithTime(
@@ -408,61 +417,6 @@ public class SwerveDrive extends SwerveSysId {
     int FRONT_RIGHT = 1;
     int BACK_RIGHT = 2;
     int BACK_LEFT = 3;
-  }
-
-  // Logged
-  @AutoLogOutput
-  public Rotation2d getRotation2d() {
-    return m_poseEstimator.getEstimatedPosition().getRotation();
-  }
-
-  @AutoLogOutput
-  private SwerveModuleState[] getCurrentStates() {
-    SwerveModuleState[] currentStates = {
-        m_modules[Module.FRONT_LEFT].getState(),
-        m_modules[Module.FRONT_RIGHT].getState(),
-        m_modules[Module.BACK_RIGHT].getState(),
-        m_modules[Module.BACK_LEFT].getState()
-    };
-
-    return currentStates;
-  }
-
-  @AutoLogOutput
-  private SwerveModuleState[] getDesiredStates() {
-    SwerveModuleState[] desiredStates = {
-        m_modules[Module.FRONT_LEFT].getDesiredState(),
-        m_modules[Module.FRONT_RIGHT].getDesiredState(),
-        m_modules[Module.BACK_RIGHT].getDesiredState(),
-        m_modules[Module.BACK_LEFT].getDesiredState()
-    };
-
-    return desiredStates;
-  }
-
-  @AutoLogOutput
-  public boolean hasSetPose() {
-    return m_hasSetPose;
-  }
-
-  @AutoLogOutput
-  private double getGyroYaw() {
-    return m_gyro.getRotation2d().getDegrees();
-  }
-
-  @AutoLogOutput
-  private double getGyroPitch() {
-    return m_gyro.getPitch();
-  }
-
-  @AutoLogOutput
-  public Pose2d getPose() {
-    return m_poseEstimator.getEstimatedPosition();
-  }
-
-  @AutoLogOutput
-  public Rotation2d getRotationTarget() {
-    return m_rotationTarget;
   }
 
   public Vector<N3> createStateStdDevs(double x, double y, double theta) {
@@ -540,6 +494,81 @@ public class SwerveDrive extends SwerveSysId {
 
   private Pose2d clampPose(Pose2d pose) {
     return new Pose2d(MathUtil.clamp(pose.getX(), 0, Field.k_width), MathUtil.clamp(pose.getY(), 0, Field.k_length), getPose().getRotation());
+  }
+
+  // Logged
+  @AutoLogOutput
+  public Rotation2d getRotation2d() {
+    return m_poseEstimator.getEstimatedPosition().getRotation();
+  }
+
+  @AutoLogOutput
+  private SwerveModuleState[] getCurrentStates() {
+    SwerveModuleState[] currentStates = {
+        m_modules[Module.FRONT_LEFT].getState(),
+        m_modules[Module.FRONT_RIGHT].getState(),
+        m_modules[Module.BACK_RIGHT].getState(),
+        m_modules[Module.BACK_LEFT].getState()
+    };
+
+    return currentStates;
+  }
+
+  @AutoLogOutput
+  private SwerveModuleState[] getDesiredStates() {
+    SwerveModuleState[] desiredStates = {
+        m_modules[Module.FRONT_LEFT].getDesiredState(),
+        m_modules[Module.FRONT_RIGHT].getDesiredState(),
+        m_modules[Module.BACK_RIGHT].getDesiredState(),
+        m_modules[Module.BACK_LEFT].getDesiredState()
+    };
+
+    return desiredStates;
+  }
+
+  @AutoLogOutput
+  public boolean hasSetPose() {
+    return m_hasSetPose;
+  }
+
+  @AutoLogOutput
+  private double getGyroYaw() {
+    return m_gyro.getRotation2d().getDegrees();
+  }
+
+  @AutoLogOutput
+  private double getGyroPitch() {
+    return m_gyro.getPitch();
+  }
+
+  @AutoLogOutput
+  public Pose2d getPose() {
+    return m_poseEstimator.getEstimatedPosition();
+  }
+
+  @AutoLogOutput
+  public Rotation2d getRotationTarget() {
+    return m_rotationTarget;
+  }
+
+  @AutoLogOutput
+  public double getNavXTimestamp() {
+    return (double) m_gyro.getLastSensorTimestamp();
+  }
+
+  @AutoLogOutput
+  public double getAccelerometerVelocityX() {
+    return m_gyro.getVelocityX();
+  }
+
+  @AutoLogOutput
+  public double getAccelerometerVelocityY() {
+    return m_gyro.getVelocityY();
+  }
+
+  @AutoLogOutput
+  public double getAccelerometerVelocityZ() {
+    return m_gyro.getVelocityZ();
   }
 
   @AutoLogOutput
