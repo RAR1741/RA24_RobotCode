@@ -14,7 +14,9 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -40,6 +42,7 @@ public class SwerveDrive extends SwerveSysId {
   private static SwerveDrive m_swerve = null;
 
   private Rotation2d m_rotationTarget;
+  private Pose2d m_accelerometerPose;
 
   private static final SwerveModule[] m_modules = {
       new SwerveModule(Constants.SwerveDrive.Drive.k_FLMotorId, Constants.SwerveDrive.Turn.k_FLMotorId,
@@ -114,6 +117,7 @@ public class SwerveDrive extends SwerveSysId {
     k_rotController.enableContinuousInput(-Math.PI, Math.PI);
 
     resetRotationTarget();
+    m_accelerometerPose = new Pose2d();
 
     resetTurnOffsets();
     reset();
@@ -347,12 +351,20 @@ public class SwerveDrive extends SwerveSysId {
     m_gyro.reset();
     m_rotationTarget = new Rotation2d(0.0); // jitter go brr
     setAllianceGyroAngleAdjustment();
+    resetAccelerometerPose();
   }
 
   // set rotation target
   public void resetRotationTarget() {
     m_rotationTarget = m_gyro.getRotation2d();
   }
+
+  public void resetAccelerometerPose() {
+    m_accelerometerPose = new Pose2d(getPose().getX(), getPose().getY(), new Rotation2d(0.0));
+  }
+
+  // double accelX = getAccelerometerVelocityX() * Math.sin(m_gyro.getRotation2d().getRadians()) / Math.pow(50.0,2.0);
+  // double accelY = getAccelerometerVelocityY() * Math.cos(m_gyro.getRotation2d().getRadians()) / Math.pow(50.0,2.0);
 
   @Override
   public void periodic() {
@@ -366,13 +378,21 @@ public class SwerveDrive extends SwerveSysId {
 
     // clampPose(getPose());
 
-    if(m_gyro.isMoving() && (Math.abs(getAccelerometerVelocityX()) > 0.5 || Math.abs(getAccelerometerVelocityY()) > 0.5)) {
-      m_poseEstimator.addVisionMeasurement(new Pose2d(
-        getPose().getX() + ((getAccelerometerVelocityX() * Math.cos(m_gyro.getRotation2d().getRadians())) / Math.pow(50.0,2.0)), 
-        getPose().getY() + ((getAccelerometerVelocityY() * Math.sin(m_gyro.getRotation2d().getRadians())) / Math.pow(50.0,2.0)), 
-        m_gyro.getRotation2d()), getNavXTimestamp(),
-        createVisionMeasurementStdDevs(100, 100, 9999.999999));
-    }
+    // Pose2d accelerometerPose = new Pose2d(
+    //     getPose().getX() + ((getAccelerometerVelocityX() * Math.sin(m_gyro.getRotation2d().getRadians())) / Math.pow(50.0,2.0)), 
+    //     getPose().getY() + ((getAccelerometerVelocityY() * Math.cos(m_gyro.getRotation2d().getRadians())) / Math.pow(50.0,2.0)), 
+    //   m_gyro.getRotation2d());
+
+    // accelX = getAccelerometerVelocityX() * Math.sin(m_gyro.getRotation2d().getRadians()) / Math.pow(50.0,2.0);
+    // accelY = getAccelerometerVelocityY() * Math.cos(m_gyro.getRotation2d().getRadians()) / Math.pow(50.0,2.0);
+    // m_accelerometerPose = m_accelerometerPose.plus(new Transform2d(accelX, accelY,new Rotation2d(0.0)));
+
+    // Logger.recordOutput("Accelerometer/Pose", m_accelerometerPose);
+
+    // if(m_gyro.isMoving() && (Math.abs(getAccelerometerVelocityX()) > 0.5 || Math.abs(getAccelerometerVelocityY()) > 0.5)) {
+      // m_poseEstimator.addVisionMeasurement(m_accelerometerPose, getNavXTimestamp(),
+        // createVisionMeasurementStdDevs(100, 100, 999999999));
+    // }
 
     if (RobotBase.isReal()) {
       m_poseEstimator.updateWithTime(
