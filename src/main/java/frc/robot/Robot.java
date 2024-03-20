@@ -108,6 +108,10 @@ public class Robot extends LoggedRobot {
     // m_swerve.resetGyro();
     m_swerve.setBrakeMode(false);
 
+    m_swerve.m_limelightLeft.setLightEnabled(true);
+    m_swerve.m_limelightRight.setLightEnabled(true);
+    m_swerve.m_limelightShooter.setLightEnabled(true);
+
     m_autoRunner.setAutoMode(m_autoChooser.getSelectedAuto());
     m_currentTask = m_autoRunner.getNextTask();
 
@@ -150,6 +154,11 @@ public class Robot extends LoggedRobot {
     m_swerve.setBrakeMode(false);
     m_swerve.drive(0, 0, 0, false);
     m_swerve.resetRotationTarget();
+    m_swerve.resetAccelerometerPose();
+
+    m_swerve.m_limelightLeft.setLightEnabled(false);
+    m_swerve.m_limelightRight.setLightEnabled(false);
+    m_swerve.m_limelightShooter.setLightEnabled(false);
   }
 
   @Override
