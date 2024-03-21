@@ -3,37 +3,59 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.609856395638717,
-        "y": 6.720945752076689
+        "x": 2.4957628097074376,
+        "y": 6.622308300172156
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.14187832311392,
-        "y": 6.720945752076689
+        "x": 4.027784737182641,
+        "y": 6.622308300172156
       },
       "isLocked": false,
       "linkedName": "BlueBotNote"
     },
     {
       "anchor": {
-        "x": 7.707840800296987,
-        "y": 7.449541822160567
+        "x": 5.835556425742482,
+        "y": 7.047144140584578
       },
       "prevControl": {
-        "x": 6.247464182012462,
-        "y": 7.449541822160567
+        "x": 5.282765937444894,
+        "y": 7.047144140584578
+      },
+      "nextControl": {
+        "x": 6.600068797493987,
+        "y": 7.047144140584578
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.085630509223982,
+        "y": 7.271914011420616
+      },
+      "prevControl": {
+        "x": 7.050917106463843,
+        "y": 7.306416335054893
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1,
+      "rotationDegrees": 0,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 5.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 4.0,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },

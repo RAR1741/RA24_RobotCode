@@ -31,6 +31,8 @@ public class DriveForwardTask extends Task {
 
   @Override
   public void update() {
+    log(true);
+
     Pose2d currentPose = m_swerve.getPose();
 
     double xSpeed = m_speed * Math.cos(currentPose.getRotation().getRadians());
@@ -69,6 +71,8 @@ public class DriveForwardTask extends Task {
 
   @Override
   public void done() {
+    log(false);
+
     DriverStation.reportWarning("Auto driving done", false);
     m_swerve.drive(0, 0, 0, true);
     m_swerve.pointModules(1, 0, 0, true);

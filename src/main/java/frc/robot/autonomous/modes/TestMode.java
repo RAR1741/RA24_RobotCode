@@ -1,7 +1,7 @@
 package frc.robot.autonomous.modes;
 
+import frc.robot.autonomous.tasks.DriveForwardTask;
 import frc.robot.autonomous.tasks.DriveTrajectoryTask;
-import frc.robot.autonomous.tasks.WaitTask;
 
 public class TestMode extends AutoModeBase {
   @Override
@@ -21,7 +21,7 @@ public class TestMode extends AutoModeBase {
     // queueTask(new ShooterTask(ShooterPivotTarget.SPEAKER,
     // ShooterSpeedTarget.MAX));
     // queueTask(new IntakeTask(IntakePivotTarget.STOW, IntakeState.NONE));
-    queueTask(new WaitTask(5));
+    // queueTask(new WaitTask(5));
     // queueTask(new IntakeTask(IntakePivotTarget.STOW, IntakeState.FEED_SHOOTER));
     // queueTask(new WaitTask(2));
 
@@ -29,9 +29,10 @@ public class TestMode extends AutoModeBase {
     // queueTask(new IntakeTask(IntakePivotTarget.GROUND, IntakeState.NONE));
 
     queueTask(new DriveTrajectoryTask("pleasegodihope"));
+    queueTask(new DriveForwardTask(0,0));
 
     // queueTask(new IntakeTask(IntakePivotTarget.GROUND, IntakeState.INTAKE));
-    queueTask(new WaitTask(0.5));
+    // queueTask(new WaitTask(0.5));
     // queueTask(new IntakeTask(IntakePivotTarget.STOW, IntakeState.NONE));
 
     // queueTask(new DriveTrajectoryTask("MidRing, Shoot"));

@@ -1,15 +1,9 @@
 package frc.robot;
 
-import com.pathplanner.lib.path.PathConstraints;
-
-import edu.wpi.first.math.controller.HolonomicDriveController;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 
 public final class Constants {
@@ -28,8 +22,9 @@ public final class Constants {
     public static final double k_maxAcceleration = 1.0; // NOT USED
 
     public class Timing {
-      public static final double k_shootFeedTime = 0.5; // seconds
+      public static final double k_shootFeedTime = 0.2; // seconds
       public static final double k_shootRevTime = 0.75; // seconds
+      public static final double k_intakeDeployTime = 0.1; // seconds
       public static final double k_intakeBounceTime = 0.2; // seconds
     }
 
@@ -39,6 +34,26 @@ public final class Constants {
 
     public static final Pose2d k_blueCenterPose2d = new Pose2d(1.27, 5.50,
         new Rotation2d(0));
+  }
+
+  public static class Vision {
+    // Increase these numbers to trust your model's state estimates less.
+    public static final double k_positionStdDevX = 0.1;
+    public static final double k_positionStdDevY = 0.1;
+    public static final double k_positionStdDevTheta = 10.0;
+
+    // TODO: try this: 0.003, 0.003, 0.0002
+
+    // Increase these numbers to trust global measurements from vision less.
+    public static final double k_visionStdDevX = 0.0;
+    public static final double k_visionStdDevY = 0.0;
+    public static final double k_visionStdDevTheta = 0.0;
+
+    public class Rotation {
+      public static final double k_P = 7.0;
+      public static final double k_I = 0.0;
+      public static final double k_D = 0.02;
+    }
   }
 
   public class SwerveDrive {
@@ -119,7 +134,7 @@ public final class Constants {
 
   public class AutoAim {
     public class Translation {
-      public static final double k_P = 10.0;
+      public static final double k_P = 3.0;
       public static final double k_I = 0.0;
       public static final double k_D = 0.0;
     }
@@ -131,6 +146,7 @@ public final class Constants {
     }
 
     public static final double k_autoAimDistanceThreshold = 1; // in meters
+    public static final double k_autoAimOmegaRPSThreshold = Math.PI / 8; // in radians
     public static final double k_autoAimAngleTolerance = Units.degreesToRadians(3.0);
 
     // Max speed
@@ -144,27 +160,30 @@ public final class Constants {
 
     // Use these values as overrides in DriveTrajectoryTask
     // These are the current PathPlanner values
-    public static final PathConstraints k_pathConstraints = new PathConstraints(
-        k_maxSpeed,
-        k_maxLinearAcceleration,
-        k_maxAngularSpeed,
-        k_maxAngularAcceleration);
+    // public static final PathConstraints k_pathConstraints = new PathConstraints(
+    // k_maxSpeed,
+    // k_maxLinearAcceleration,
+    // k_maxAngularSpeed,
+    // k_maxAngularAcceleration);
 
-    public static final PIDController translationPIDController = new PIDController(
-        Translation.k_P,
-        Translation.k_I,
-        Translation.k_D);
+    // public static final PIDController translationPIDController = new
+    // PIDController(
+    // Translation.k_P,
+    // Translation.k_I,
+    // Translation.k_D);
 
-    public static final ProfiledPIDController rotationPIDController = new ProfiledPIDController(
-        Rotation.k_P,
-        Rotation.k_I,
-        Rotation.k_D,
-        new Constraints(k_maxSpeed, k_maxLinearAcceleration));
+    // public static final ProfiledPIDController rotationPIDController = new
+    // ProfiledPIDController(
+    // Rotation.k_P,
+    // Rotation.k_I,
+    // Rotation.k_D,
+    // new Constraints(k_maxSpeed, k_maxLinearAcceleration));
 
-    public static final HolonomicDriveController k_autoTargetController = new HolonomicDriveController(
-        translationPIDController,
-        translationPIDController,
-        rotationPIDController);
+    // public static final HolonomicDriveController k_autoTargetController = new
+    // HolonomicDriveController(
+    // translationPIDController,
+    // translationPIDController,
+    // rotationPIDController);
   }
 
   public class Intake {
@@ -175,16 +194,16 @@ public final class Constants {
 
     public static final int k_pivotEncoderId = 4;
 
-    public static final double k_stowPivotAngle = 264.0;
+    public static final double k_stowPivotAngle = 263.0;
     public static final double k_groundPivotAngle = 41.0;
     public static final double k_sourcePivotAngle = 180.0;
     // public static final double k_sourcePivotAngle = k_stowPivotAngle;
     public static final double k_ejectPivotAngle = 110.0;
-    public static final double k_ampPivotAngle = k_stowPivotAngle;
+    public static final double k_ampPivotAngle = 100.0;
 
     public static final double k_intakeSpeed = 0.4;
-    public static final double k_ejectSpeed = -0.25;
-    public static final double k_feedShooterSpeed = -0.5;
+    public static final double k_ejectSpeed = -0.525;
+    public static final double k_feedShooterSpeed = -1.0;
 
     public static final double k_pivotMotorP = 0.035;
     public static final double k_pivotMotorI = 0.0;
@@ -221,14 +240,17 @@ public final class Constants {
 
   public class Shooter {
     public static final double k_maxRPM = 6000.0; // but that's just a theory
+    public static final double k_passRPM = 4000.0;
+
+    public static final int k_shooterSpeedTolerance = 100; // 1,000 is "in", 2000 is max
 
     public static final int k_pivotMotorId = 15;
     public static final int k_topMotorId = 16;
     public static final int k_bottomMotorId = 17;
 
-    public static final double k_shooterMotorP = 0.0005;
-    public static final double k_shooterMotorI = 0.0000008;
-    public static final double k_shooterMotorD = 0.0;
+    public static final double k_shooterMotorP = 0.0009300;
+    public static final double k_shooterMotorI = 0.00000008;
+    public static final double k_shooterMotorD = 0.0001000;
     public static final double k_shooterMotorFF = 0.00015;
 
     public static final double k_shooterMinOutput = 0.0;
@@ -236,15 +258,16 @@ public final class Constants {
 
     public static final int k_pivotEncoderId = 5;
 
-    public static final double k_pivotMotorP = 0.4;
+    public static final double k_pivotMotorP = 2.0;
     public static final double k_pivotMotorI = 0.0;
-    public static final double k_pivotMotorD = 0.0;
+    public static final double k_pivotMotorD = 0.001;
     public static final double k_pivotMotorIZone = 0.0;
 
     public static final double k_ampPivotAngle = 0.0; // TODO: get amp pivot angle
     public static final double k_wingPivotAngle = 26.0;
     public static final double k_subwooferPivotAngle = 62.0;
     public static final double k_podiumPivotAngle = 46.0;
+    public static final double k_passPivotAngle = 50.0;
 
     public static final double k_length = 11.94335; // in inches
     public static final double k_mass = 5.44311; // in kg
@@ -260,11 +283,13 @@ public final class Constants {
     // Offset, -90, since that's where we want to start
     public static final double k_absPivotOffset = 208.587 - 90;
 
-    static double threadsPerInch = 10.0;
-    static double helices = 2.0;
+    public static final double k_initalPivotOffset = -1.75;
+
+    static double threadsPerInch = 8.0;
+    static double helices = 1.0;
     public static final double k_rotationsPerInch = threadsPerInch / helices;
 
-    static double maxPivotExtensionInches = 15.5;
+    static double maxPivotExtensionInches = 12.5643;
     public static final double k_relRotationsToMaxExtension = maxPivotExtensionInches * k_rotationsPerInch;
 
     // Shooter angle lookup table, V2
@@ -308,6 +333,9 @@ public final class Constants {
     private static final double speakerHeight = 2.032; // Meters
     public static final Pose3d k_redSpeakerPose = new Pose3d(16.579342, 5.547868, speakerHeight, new Rotation3d());
     public static final Pose3d k_blueSpeakerPose = new Pose3d(-0.0381, 5.547868, speakerHeight, new Rotation3d());
+
+    public static final Pose2d k_redPassPose = new Pose2d(14.71, 6.0, new Rotation2d());
+    public static final Pose2d k_bluePassPose = new Pose2d(1.75, 6.0, new Rotation2d());
   }
 
   public static class Limelight {

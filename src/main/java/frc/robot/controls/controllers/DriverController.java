@@ -78,6 +78,10 @@ public class DriverController extends FilteredController {
     return this.getRawButtonPressed(Button.LEFT_BUMPER);
   }
 
+  public boolean getWantsIntakeAutoFlipOverride() {
+    return this.getRawButton(Button.LEFT_BUMPER);
+  }
+
   public boolean getWantsIntake() {
     return this.getRawButton(Button.RIGHT_BUMPER);
   }
@@ -90,7 +94,19 @@ public class DriverController extends FilteredController {
     return this.getRawButton(Button.B);
   }
 
-  public boolean getWantsShoot() {
+  // public boolean getWantsEjectPivot() {
+  // return this.getRawButton(Button.A);
+  // }
+
+  public boolean getWantsShooterPass() {
     return this.getRawButton(Button.A);
+  }
+
+  public boolean getWantsAutoAim() {
+    return this.getRawButton(Button.X);
+  }
+
+  public boolean getWantsAmpPivot() {
+    return this.getRawButtonPressed(Button.Y);
   }
 }

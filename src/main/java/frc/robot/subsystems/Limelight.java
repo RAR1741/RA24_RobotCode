@@ -6,8 +6,10 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.LimelightHelpers;
+import frc.robot.LimelightHelpers.PoseEstimate;
 
 public class Limelight {
   private NetworkTable m_limelightTable;
@@ -46,14 +48,8 @@ public class Limelight {
     return m_limelightTable.getEntry("tv").getInteger(0) == 1;
   }
 
-  public double getDistanceFromTag(int targetTagID) {
-    double distance = 0.0;
-
-    return distance;
-  }
-
-  public double getTimeOffset(double currentTime) {
-    return currentTime - LimelightHelpers.getLatency_Pipeline(m_name);
+  public double getTimeOffset() {
+    return Timer.getFPGATimestamp() - LimelightHelpers.getLatency_Pipeline(m_name);
   }
 
   public void outputTelemetry() {
@@ -74,5 +70,17 @@ public class Limelight {
    */
   private Pose2d toFieldPose(Pose2d pose) {
     return pose.relativeTo(new Pose2d(-8.2296, -8.2296 / 2, Rotation2d.fromDegrees(0)));
+  }
+
+  public PoseEstimate getPoseEstimation() {
+    return LimelightHelpers.getBotPoseEstimate_wpiBlue(m_name);
+  }
+
+  public double getLatency() {
+    return LimelightHelpers.getLatency_Capture(m_name) + LimelightHelpers.getLatency_Pipeline(m_name);
+  }
+
+  public boolean getLightEnabled() {
+    return m_limelightTable.getEntry("ledMode").getDouble(1) == 3;
   }
 }

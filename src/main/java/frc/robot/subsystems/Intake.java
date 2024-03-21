@@ -10,6 +10,7 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.I2C;
@@ -30,12 +31,14 @@ public class Intake extends Subsystem {
   private final ProfiledPIDController m_pivotMotorPID;
   private final ArmFeedforward m_pivotFeedForward;
 
-  private final double k_pivotThreshold = 2.0;
+  private final double k_pivotThreshold = 3.0;
   private final double k_intakeSpeedThreshold = 0.1;
 
   private PeriodicIO m_periodicIO;
 
   private final I2C.Port k_colorSensorPort = I2C.Port.kMXP;
+  private final DigitalInput m_noteTOF1 = new DigitalInput(6);
+  // private final DigitalInput m_noteTOF2 = new DigitalInput(7);
 
   private ColorSensorV3 m_colorSensor;
 
@@ -63,15 +66,15 @@ public class Intake extends Subsystem {
         Constants.Intake.k_pivotMotorI,
         Constants.Intake.k_pivotMotorD,
         new TrapezoidProfile.Constraints(
-          Constants.Intake.k_maxVelocity,
-          Constants.Intake.k_maxAcceleration));
+            Constants.Intake.k_maxVelocity,
+            Constants.Intake.k_maxAcceleration));
 
     // Pivot Feedforward
     m_pivotFeedForward = new ArmFeedforward(
-      Constants.Intake.k_pivotMotorKS,
-      Constants.Intake.k_pivotMotorKG,
-      Constants.Intake.k_pivotMotorKV, 
-      Constants.Intake.k_pivotMotorKA);
+        Constants.Intake.k_pivotMotorKS,
+        Constants.Intake.k_pivotMotorKG,
+        Constants.Intake.k_pivotMotorKV,
+        Constants.Intake.k_pivotMotorKA);
 
     m_periodicIO = new PeriodicIO();
 
@@ -97,8 +100,8 @@ public class Intake extends Subsystem {
       double target_pivot_angle = getAngleFromTarget(m_periodicIO.pivot_target);
 
       double pidCalc = m_pivotMotorPID.calculate(getPivotAngle(), target_pivot_angle);
-      double ffCalc = m_pivotFeedForward.calculate(Math.toRadians(getPivotReferenceToHorizontal()), 
-        Math.toRadians(m_pivotMotorPID.getSetpoint().velocity));
+      double ffCalc = m_pivotFeedForward.calculate(Math.toRadians(getPivotReferenceToHorizontal()),
+          Math.toRadians(m_pivotMotorPID.getSetpoint().velocity));
 
       m_periodicIO.pivot_voltage = pidCalc + ffCalc;
 
@@ -167,10 +170,7 @@ public class Intake extends Subsystem {
     IntakePivotTarget pivot_target = IntakePivotTarget.STOW;
     IntakeState intake_state = IntakeState.NONE;
 
-    // double intake_pivot_voltage = 0.0;
     double intake_speed = 0.0;
-
-    boolean wantsToEject = false;
   }
 
   public enum IntakePivotTarget {
@@ -190,8 +190,9 @@ public class Intake extends Subsystem {
     FEED_SHOOTER
   }
 
-  public void wantsToEject(boolean eject) {
-    m_periodicIO.wantsToEject = eject;
+  private boolean m_override = false;
+  public void overrideAutoFlip(boolean override) {
+    m_override = override;
   }
 
   /*---------------------------------- Custom Private Functions ---------------------------------*/
@@ -199,27 +200,11 @@ public class Intake extends Subsystem {
     // If the intake is set to GROUND, and the intake has a note, and the pivot is
     // close to it's target
     // Stop the intake and go to the SOURCE position
-    if (m_periodicIO.pivot_target == IntakePivotTarget.GROUND &&
-        isHoldingNote() &&
-        isAtPivotTarget()) {
+    if (m_periodicIO.pivot_target == IntakePivotTarget.GROUND && isHoldingNote() && isAtPivotTarget() && !m_override) {
 
       setPivotTarget(IntakePivotTarget.STOW);
       setIntakeState(IntakeState.NONE);
       // m_leds.setColor(Color.kGreen);
-    }
-
-    if (wantsToEject()) {
-      if ((m_periodicIO.pivot_target == IntakePivotTarget.STOW &&
-          isAtPivotTarget()) ||
-          (m_periodicIO.pivot_target == IntakePivotTarget.GROUND && isAtPivotTarget())) {
-        setPivotTarget(IntakePivotTarget.EJECT);
-        setIntakeState(IntakeState.NONE);
-      } else if (m_periodicIO.pivot_target == IntakePivotTarget.EJECT && isAtPivotTarget()) {
-        setIntakeState(IntakeState.EJECT);
-      }
-    } else if (m_periodicIO.pivot_target == IntakePivotTarget.EJECT && isAtPivotTarget()) {
-      setIntakeState(IntakeState.NONE);
-      setPivotTarget(IntakePivotTarget.STOW);
     }
   }
 
@@ -264,11 +249,6 @@ public class Intake extends Subsystem {
     double target_angle = getAngleFromTarget(m_periodicIO.pivot_target);
 
     return Math.abs(target_angle - current_angle) <= k_pivotThreshold;
-  }
-
-  @AutoLogOutput
-  public boolean wantsToEject() {
-    return m_periodicIO.wantsToEject;
   }
 
   @AutoLogOutput
@@ -330,7 +310,25 @@ public class Intake extends Subsystem {
 
   @AutoLogOutput
   public boolean isHoldingNote() {
-    return m_colorSensor.getProximity() >= Constants.Intake.k_sensorThreshold;
+    return getColorSensor() || getTOFOne();
+  }
+
+  @AutoLogOutput
+  public boolean getColorSensor() {
+    if (isColorSensorConnected()) {
+      return m_colorSensor.getProximity() >= Constants.Intake.k_sensorThreshold;
+    }
+    return false;
+  }
+
+  @AutoLogOutput
+  public boolean getTOFOne() {
+    return !m_noteTOF1.get();
+  }
+
+  @AutoLogOutput
+  public boolean isColorSensorConnected() {
+    return m_colorSensor.isConnected();
   }
 
   @AutoLogOutput

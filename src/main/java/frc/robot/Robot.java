@@ -10,7 +10,6 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.Preferences;
@@ -54,12 +53,12 @@ public class Robot extends LoggedRobot {
   private Task m_currentTask;
   private AutoRunner m_autoRunner = AutoRunner.getInstance();
 
-  // Misc. vars
-  private Alliance m_alliance;
-  private boolean m_autoAimEnabled = false;
-
   // Auto things
   AutoChooser m_autoChooser = new AutoChooser();
+
+  // Misc vars
+  private boolean m_lockHeading = true;
+  private boolean m_intaking = false;
 
   private final Field m_field = Field.getInstance();
 
@@ -84,7 +83,7 @@ public class Robot extends LoggedRobot {
 
     m_allSubsystems.add(m_swerve);
     m_allSubsystems.add(m_intake);
-    m_allSubsystems.add(m_shooter);
+    m_allSubsystems.add(m_shooter); 
     m_allSubsystems.add(m_climber);
   }
 
@@ -109,6 +108,10 @@ public class Robot extends LoggedRobot {
     // m_swerve.resetGyro();
     m_swerve.setBrakeMode(false);
 
+    m_swerve.m_limelightLeft.setLightEnabled(true);
+    m_swerve.m_limelightRight.setLightEnabled(true);
+    m_swerve.m_limelightShooter.setLightEnabled(true);
+
     m_autoRunner.setAutoMode(m_autoChooser.getSelectedAuto());
     m_currentTask = m_autoRunner.getNextTask();
 
@@ -126,6 +129,8 @@ public class Robot extends LoggedRobot {
       m_currentTask.update();
       m_currentTask.updateSim();
 
+      m_shooter.setAngle(m_shooter.getSpeakerAutoAimAngle(m_swerve.getPose()));
+
       // If the current task is finished, get the next task
       if (m_currentTask.isFinished()) {
         m_currentTask.done();
@@ -133,6 +138,10 @@ public class Robot extends LoggedRobot {
 
         // Start the next task
         if (m_currentTask != null) {
+          // m_swerve.m_limelightLeft.setLightEnabled(!m_swerve.m_limelightLeft.getLightEnabled());
+          // m_swerve.m_limelightRight.setLightEnabled(!m_swerve.m_limelightRight.getLightEnabled());
+          // m_swerve.m_limelightShooter.setLightEnabled(!m_swerve.m_limelightShooter.getLightEnabled());
+
           m_currentTask.start();
         }
       }
@@ -141,59 +150,25 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void teleopInit() {
-    // m_swerve.resetGyro();1
+    // m_swerve.resetGyro();
     m_swerve.setBrakeMode(false);
     m_swerve.drive(0, 0, 0, false);
+    m_swerve.resetRotationTarget();
+    m_swerve.resetAccelerometerPose();
 
-    m_alliance = DriverStation.getAlliance().get();
+    m_swerve.m_limelightLeft.setLightEnabled(false);
+    m_swerve.m_limelightRight.setLightEnabled(false);
+    m_swerve.m_limelightShooter.setLightEnabled(false);
   }
-
-  boolean m_lockHeading = false;
-
-  boolean m_intaking = false;
 
   @Override
   public void teleopPeriodic() {
-    double rot = 0.0;
-    double autoAimAngle = 0.0;
-
-    // if (m_driverController.getWantsAutoAim() && m_swerve.getPose().getX() >=
-    // Constants.AutoAim.k_autoAimDistanceThreshold && !autoAimEnabled) {
-    // autoAimEnabled = true;
-    // }
-    // if (autoAimEnabled && m_driverController.getWantsAutoAim() ||
-    // m_swerve.getPose().getX() <=
-    // Constants.AutoAim.k_autoAimDistanceThreshold) {
-    // autoAimEnabled = false;
-    // }
-
-    // TODO Uncomment this when ready to test heading locking
-    /*
-     * if (m_driverController.getTurnAxis() == 0.0) {
-     * m_swerve.updateFormerGyroPosition(m_lockHeading);
-     * m_lockHeading = true;
-     * } else {
-     * m_lockHeading = false;
-     * }
-     */
-    if (m_alliance.equals(Alliance.Red)) {
-      // autoAimAngle = m_swerve.calculateAutoAimAngle(false, 0);
-    } else {
-      // autoAimAngle = m_swerve.calculateAutoAimAngle(false, 0);
-    }
-
-    if (m_autoAimEnabled) {
-      rot = Constants.AutoAim.rotationPIDController.calculate(m_swerve.getRotation2d().getRadians(),
-          autoAimAngle);
-    } else {
-      rot = m_rotRateLimiter.calculate(m_driverController.getTurnAxis() * Constants.SwerveDrive.k_maxAngularSpeed);
-    }
-
     double maxSpeed = Constants.SwerveDrive.k_maxSpeed + ((Constants.SwerveDrive.k_maxBoostSpeed -
         Constants.SwerveDrive.k_maxSpeed) * m_driverController.getBoostScaler());
 
     double xSpeed = m_xRateLimiter.calculate(m_driverController.getForwardAxis() * maxSpeed);
     double ySpeed = m_yRateLimiter.calculate(m_driverController.getStrafeAxis() * maxSpeed);
+    double rot = m_rotRateLimiter.calculate(m_driverController.getTurnAxis() * Constants.SwerveDrive.k_maxAngularSpeed);
 
     // slowScaler should scale between k_slowScaler and 1
     double slowScaler = Constants.SwerveDrive.k_slowScaler
@@ -203,10 +178,24 @@ public class Robot extends LoggedRobot {
     ySpeed *= slowScaler;
     rot *= slowScaler;
 
+    boolean wantsSpeakerAutoAim = m_driverController.getWantsAutoAim();
+    boolean wantsAmpAutoAim = m_driverController.getWantsAmpPivot();
+    boolean wantsPassAutoAim = m_driverController.getWantsShooterPass();
+
     if (m_lockHeading) {
-      m_swerve.drive(xSpeed, ySpeed, rot, true, true);
+      m_swerve.driveLockedHeading(
+          xSpeed, ySpeed, rot, true,
+          wantsSpeakerAutoAim, false, wantsPassAutoAim);
     } else {
       m_swerve.drive(xSpeed, ySpeed, rot, true);
+    }
+
+    if (wantsSpeakerAutoAim) {
+      m_shooter.setAngle(m_shooter.getSpeakerAutoAimAngle(m_swerve.getPose()));
+      m_shooter.setSpeed(ShooterSpeedTarget.MAX);
+    } else if (wantsPassAutoAim) {
+      m_shooter.setAngle(Constants.Shooter.k_passPivotAngle);
+      m_shooter.setSpeed(Constants.Shooter.k_passRPM);
     }
 
     if (m_driverController.getWantsResetGyro()) {
@@ -217,20 +206,24 @@ public class Robot extends LoggedRobot {
       m_swerve.resetTurnOffsets();
     }
 
-    // if (m_driverController.getWantsAutoAim()) {
-    // m_autoAimEnabled = !m_autoAimEnabled;
-    // }
-
     if (m_driverController.getWantsIntakePivotToggle()) {
+      wantsAmpAutoAim = false;
       if (m_intake.getPivotTarget() == IntakePivotTarget.STOW) {
         m_intake.setPivotTarget(IntakePivotTarget.GROUND);
         m_intake.setIntakeState(IntakeState.INTAKE);
         m_intaking = true;
-      } else if (m_intake.getPivotTarget() == IntakePivotTarget.GROUND) {
+      } else {
         m_intake.setPivotTarget(IntakePivotTarget.STOW);
         m_intake.setIntakeState(IntakeState.NONE);
         m_intaking = false;
       }
+    }
+
+    m_intake.overrideAutoFlip(m_driverController.getWantsIntakeAutoFlipOverride());
+
+    if (wantsAmpAutoAim) {
+      m_shooter.setAngle(ShooterPivotTarget.MIN);
+      m_intake.setPivotTarget(IntakePivotTarget.AMP);
     }
 
     if (m_driverController.getWantsStopIntake()) {
@@ -242,18 +235,26 @@ public class Robot extends LoggedRobot {
       m_intake.setIntakeState(IntakeState.INTAKE);
       m_intaking = true;
     } else if (m_driverController.getWantsEject() || m_operatorController.getWantsEject()) {
-      m_intake.wantsToEject(true);
+      m_intake.setIntakeState(IntakeState.EJECT);
+      if (m_intake.isAtPivotTarget() && m_intake.getPivotTarget() == IntakePivotTarget.AMP) {
+        System.out.println("It's ampin' time"); // -andy
+      }
       m_intaking = false;
-    } else if ((m_driverController.getWantsShoot() || m_operatorController.getWantsShoot()) &&
+    } else if (m_operatorController.getWantsShoot() &&
         m_intake.isAtPivotTarget() &&
         m_intake.getPivotTarget() == IntakePivotTarget.STOW) {
       m_intake.setIntakeState(IntakeState.FEED_SHOOTER);
+      m_intaking = false;
     } else if (!m_intaking) {
       m_intake.setIntakeState(IntakeState.NONE);
-      m_intake.wantsToEject(false);
     }
 
-    m_shooter.changePivotByAngle(m_operatorController.getWantsManualShooterPivot(0.5));
+    // if (m_driverController.getWantsEjectPivot()) {
+    // m_intake.setPivotTarget(IntakePivotTarget.EJECT);
+    // m_intaking = false;
+    // }
+
+    m_shooter.changePivotByAngle(m_operatorController.getWantsManualShooterPivot(0.1));
 
     if (m_operatorController.getWantsPodiumAngle()) {
       m_shooter.setAngle(ShooterPivotTarget.PODIUM);
@@ -301,6 +302,10 @@ public class Robot extends LoggedRobot {
   @Override
   public void disabledInit() {
     m_allSubsystems.forEach(subsystem -> subsystem.stop());
+
+    m_swerve.m_limelightLeft.setLightEnabled(false);
+    m_swerve.m_limelightRight.setLightEnabled(false);
+    m_swerve.m_limelightShooter.setLightEnabled(false);
   }
 
   @Override

@@ -159,6 +159,13 @@ public class SwerveModule {
     return m_periodicIO.desiredState;
   }
 
+  public void pointForward() {
+    m_periodicIO.desiredState.speedMetersPerSecond = 0.0;
+    m_periodicIO.desiredState.angle = new Rotation2d(0.0);
+    m_periodicIO.desiredState = SwerveModuleState.optimize(m_periodicIO.desiredState, Rotation2d.fromRadians(getTurnPosition()));
+    m_periodicIO.shouldChangeState = true;
+  }
+
   public void periodic() {
     if (m_periodicIO.shouldChangeState) {
       double feedforward = m_drivingFeedForward.calculate(getDriveTargetVelocity());

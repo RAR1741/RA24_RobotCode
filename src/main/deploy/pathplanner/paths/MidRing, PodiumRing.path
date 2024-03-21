@@ -20,20 +20,26 @@
         "y": 4.421825570923869
       },
       "prevControl": {
-        "x": 1.9453667998245092,
-        "y": 4.757660424411759
+        "x": 1.802288238835737,
+        "y": 4.80775924514812
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "BluePodiumNote"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": -37.01339999515804,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 5.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 4.0,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },

@@ -12,11 +12,12 @@ public class PointForwardTask extends Task {
 
   @Override
   public void start() {
-    m_swerve.pointModules(1, 0, 0, true);
+    m_swerve.pointForward();
   }
 
   @Override
   public void update() {
+    log(true);
   }
 
   @Override
@@ -26,6 +27,8 @@ public class PointForwardTask extends Task {
 
   @Override
   public void done() {
+    log(false);
+
     DriverStation.reportWarning("Auto point forward done", false);
   }
 }
