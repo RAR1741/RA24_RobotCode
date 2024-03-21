@@ -1,4 +1,4 @@
-package frc.robot;
+package frc.robot.constants;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -6,7 +6,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.util.Units;
 
-public final class Constants {
+public final class ApolloConstants {
   public static class Robot {
     public static final double k_width = 30; // Inches
     public static final double k_length = 30; // Inches

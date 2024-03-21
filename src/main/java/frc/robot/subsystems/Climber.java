@@ -11,8 +11,8 @@ import com.revrobotics.SparkPIDController;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Preferences;
-import frc.robot.Constants;
 import frc.robot.Helpers;
+import frc.robot.constants.ApolloConstants;
 
 public class Climber extends Subsystem {
   private static Climber m_climber;
@@ -39,39 +39,39 @@ public class Climber extends Subsystem {
 
     m_periodicIO = new PeriodicIO();
 
-    m_leftMotor = new CANSparkMax(Constants.Climber.k_leftMotorID, MotorType.kBrushless);
+    m_leftMotor = new CANSparkMax(ApolloConstants.Climber.k_leftMotorID, MotorType.kBrushless);
     m_leftMotor.restoreFactoryDefaults();
     // m_leftMotor.setSmartCurrentLimit(40);
     m_leftMotor.setIdleMode(IdleMode.kBrake);
 
-    m_rightMotor = new CANSparkMax(Constants.Climber.k_rightMotorID, MotorType.kBrushless);
+    m_rightMotor = new CANSparkMax(ApolloConstants.Climber.k_rightMotorID, MotorType.kBrushless);
     m_rightMotor.restoreFactoryDefaults();
     // m_rightMotor.setSmartCurrentLimit(40);
     m_rightMotor.setIdleMode(IdleMode.kBrake);
 
     m_leftPID = m_leftMotor.getPIDController();
-    m_leftPID.setP(Constants.Climber.k_P);
-    m_leftPID.setI(Constants.Climber.k_I);
-    m_leftPID.setD(Constants.Climber.k_D);
+    m_leftPID.setP(ApolloConstants.Climber.k_P);
+    m_leftPID.setI(ApolloConstants.Climber.k_I);
+    m_leftPID.setD(ApolloConstants.Climber.k_D);
     m_leftPID.setOutputRange(
-        Constants.Climber.k_minOutput,
-        Constants.Climber.k_maxOutput);
+        ApolloConstants.Climber.k_minOutput,
+        ApolloConstants.Climber.k_maxOutput);
 
     m_rightPID = m_rightMotor.getPIDController();
-    m_rightPID.setP(Constants.Climber.k_P);
-    m_rightPID.setI(Constants.Climber.k_I);
-    m_rightPID.setD(Constants.Climber.k_D);
+    m_rightPID.setP(ApolloConstants.Climber.k_P);
+    m_rightPID.setI(ApolloConstants.Climber.k_I);
+    m_rightPID.setD(ApolloConstants.Climber.k_D);
     m_rightPID.setOutputRange(
-        Constants.Climber.k_minOutput,
-        Constants.Climber.k_maxOutput);
+        ApolloConstants.Climber.k_minOutput,
+        ApolloConstants.Climber.k_maxOutput);
 
     m_leftEncoder = m_leftMotor.getEncoder();
-    m_leftEncoder.setPositionConversionFactor(Constants.Climber.k_gearRatio);
-    m_leftEncoder.setVelocityConversionFactor(Constants.Climber.k_gearRatio);
+    m_leftEncoder.setPositionConversionFactor(ApolloConstants.Climber.k_gearRatio);
+    m_leftEncoder.setVelocityConversionFactor(ApolloConstants.Climber.k_gearRatio);
 
     m_rightEncoder = m_rightMotor.getEncoder();
-    m_rightEncoder.setPositionConversionFactor(Constants.Climber.k_gearRatio);
-    m_rightEncoder.setVelocityConversionFactor(Constants.Climber.k_gearRatio);
+    m_rightEncoder.setPositionConversionFactor(ApolloConstants.Climber.k_gearRatio);
+    m_rightEncoder.setVelocityConversionFactor(ApolloConstants.Climber.k_gearRatio);
 
     m_leftMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
     m_rightMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
@@ -128,23 +128,23 @@ public class Climber extends Subsystem {
   }
 
   public void raise() {
-    m_periodicIO.climber_left_speed = Constants.Climber.k_raiseSpeed;
-    m_periodicIO.climber_right_speed = Constants.Climber.k_raiseSpeed;
+    m_periodicIO.climber_left_speed = ApolloConstants.Climber.k_raiseSpeed;
+    m_periodicIO.climber_right_speed = ApolloConstants.Climber.k_raiseSpeed;
   }
 
   public void lower() {
-    m_periodicIO.climber_left_speed = Constants.Climber.k_lowerSpeed;
-    m_periodicIO.climber_right_speed = Constants.Climber.k_lowerSpeed;
+    m_periodicIO.climber_left_speed = ApolloConstants.Climber.k_lowerSpeed;
+    m_periodicIO.climber_right_speed = ApolloConstants.Climber.k_lowerSpeed;
   }
 
   public void tiltLeft() {
-    m_periodicIO.climber_left_speed = Constants.Climber.k_lowerSpeed;
+    m_periodicIO.climber_left_speed = ApolloConstants.Climber.k_lowerSpeed;
     m_periodicIO.climber_right_speed = 0.0;
   }
 
   public void tiltRight() {
     m_periodicIO.climber_left_speed = 0.0;
-    m_periodicIO.climber_right_speed = Constants.Climber.k_lowerSpeed;
+    m_periodicIO.climber_right_speed = ApolloConstants.Climber.k_lowerSpeed;
   }
 
   public void stopClimber() {

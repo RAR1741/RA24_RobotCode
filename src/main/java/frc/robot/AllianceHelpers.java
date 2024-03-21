@@ -5,7 +5,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import frc.robot.Constants.Field;
+import frc.robot.constants.ApolloConstants.Field;
 
 public class AllianceHelpers {
   public static Pose3d getAllianceSpeakerPose3d() {

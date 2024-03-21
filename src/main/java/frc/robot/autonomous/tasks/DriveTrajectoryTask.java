@@ -18,10 +18,10 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
-import frc.robot.Constants.Auto;
-import frc.robot.Constants.AutoAim.Rotation;
-import frc.robot.Constants.AutoAim.Translation;
-import frc.robot.Constants.Robot;
+import frc.robot.constants.ApolloConstants.Auto;
+import frc.robot.constants.ApolloConstants.AutoAim.Rotation;
+import frc.robot.constants.ApolloConstants.AutoAim.Translation;
+import frc.robot.constants.ApolloConstants.Robot;
 import frc.robot.subsystems.drivetrain.RARHolonomicDriveController;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 

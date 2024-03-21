@@ -9,8 +9,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
-import frc.robot.Constants;
 import frc.robot.Helpers;
+import frc.robot.constants.ApolloConstants;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 
 public class AutoTargetTask extends Task {
@@ -94,8 +94,9 @@ public class AutoTargetTask extends Task {
 
     Logger.recordOutput("Auto/AutoTarget/rotationError", rotationError);
 
-    return ((rotationError < Constants.AutoAim.k_autoAimAngleTolerance) &&
-        (Math.abs(m_swerve.getChassisSpeeds().omegaRadiansPerSecond) < Constants.AutoAim.k_autoAimOmegaRPSThreshold))
+    return ((rotationError < ApolloConstants.AutoAim.k_autoAimAngleTolerance) &&
+        (Math.abs(
+            m_swerve.getChassisSpeeds().omegaRadiansPerSecond) < ApolloConstants.AutoAim.k_autoAimOmegaRPSThreshold))
         || !RobotBase.isReal();
   }
 
