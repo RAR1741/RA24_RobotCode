@@ -1,7 +1,6 @@
 package frc.robot.subsystems;
 
 import org.littletonrobotics.junction.AutoLogOutput;
-import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkFlex;
@@ -11,6 +10,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -38,12 +38,12 @@ public class Shooter extends Subsystem {
 
   private SparkPIDController m_topShooterMotorPID;
   private SparkPIDController m_bottomShooterMotorPID;
-  private SparkPIDController m_pivotMotorPID;
-
+  private PIDController m_pivotMotorPID;
   private SlewRateLimiter m_speedLimiter = new SlewRateLimiter(4000);
 
   private PeriodicIO m_periodicIO;
   private boolean m_hasSetPivotRelEncoder = false;
+  private boolean m_hasResetPivotRelEncoder = false;
 
   private int m_cycles = 0;
   private final double k_highVelocity = 500.0;
@@ -66,8 +66,12 @@ public class Shooter extends Subsystem {
     m_pivotMotor = new CANSparkFlex(Constants.Shooter.k_pivotMotorId, MotorType.kBrushless);
     m_pivotMotor.restoreFactoryDefaults();
     m_pivotMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
-    m_pivotMotor.setSmartCurrentLimit(60);
-    m_pivotMotor.setInverted(true);
+    m_pivotMotor.setSmartCurrentLimit(40);
+    m_pivotMotor.setInverted(false);
+    // m_pivotMotor.setSoftLimit(SoftLimitDirection.kReverse,
+    // (float) targetAngleToRelRotations(Constants.Shooter.k_maxAngle));
+    // m_pivotMotor.setSoftLimit(SoftLimitDirection.kForward,
+    // (float) targetAngleToRelRotations(Constants.Shooter.k_minAngle));
 
     m_topMotorEncoder = m_topShooterMotor.getEncoder();
     m_bottomMotorEncoder = m_bottomShooterMotor.getEncoder();
@@ -86,11 +90,10 @@ public class Shooter extends Subsystem {
     m_bottomShooterMotorPID.setFF(Constants.Shooter.k_shooterMotorFF);
     m_bottomShooterMotorPID.setOutputRange(Constants.Shooter.k_shooterMinOutput, Constants.Shooter.k_shooterMaxOutput);
 
-    m_pivotMotorPID = m_pivotMotor.getPIDController();
-    m_pivotMotorPID.setP(Constants.Shooter.k_pivotMotorP);
-    m_pivotMotorPID.setI(Constants.Shooter.k_pivotMotorI);
-    m_pivotMotorPID.setD(Constants.Shooter.k_pivotMotorD);
-    m_pivotMotorPID.setIZone(Constants.Shooter.k_pivotMotorIZone);
+    m_pivotMotorPID = new PIDController(
+        Constants.Shooter.k_pivotMotorP,
+        Constants.Shooter.k_pivotMotorI,
+        Constants.Shooter.k_pivotMotorD);
 
     m_periodicIO = new PeriodicIO();
 
@@ -114,13 +117,25 @@ public class Shooter extends Subsystem {
       setPivotAbsOffset();
     }
 
-    m_cycles++;
+    // m_cycles++;
+
+    // Clamp the pivot angle to the min and max
+    m_periodicIO.pivot_angle = MathUtil.clamp(
+        m_periodicIO.pivot_angle,
+        Constants.Shooter.k_minAngle,
+        Constants.Shooter.k_maxAngle);
+
+    // Clamp the pivot + offset to the min and max
+    double targetPivot = MathUtil.clamp(
+        m_periodicIO.pivot_angle + m_periodicIO.manualPivotOffset,
+        Constants.Shooter.k_minAngle,
+        Constants.Shooter.k_maxAngle);
+
+    m_periodicIO.pivot_voltage = m_pivotMotorPID.calculate(getPivotAngle(), targetPivot);
 
     if (!m_bottomShooterMotor.getInverted()) {
       m_bottomShooterMotor.setInverted(true);
     }
-
-    Logger.recordOutput("Shooter/PivotTargetAngle", m_periodicIO.pivot_angle);
   }
 
   @Override
@@ -130,32 +145,32 @@ public class Shooter extends Subsystem {
 
   @Override
   public void writePeriodicOutputs() {
-    m_periodicIO.pivot_angle = MathUtil.clamp(
-        m_periodicIO.pivot_angle,
-        Constants.Shooter.k_minAngle,
-        Constants.Shooter.k_maxAngle);
-
     if (!(Preferences.getString("Test Mode", "NONE").contains("SHOOTER_") && DriverStation.isTest())) {
       // TeleOp mode
       double limited_speed = m_speedLimiter.calculate(m_periodicIO.shooter_rpm);
       m_topShooterMotorPID.setReference(limited_speed, ControlType.kVelocity);
       m_bottomShooterMotorPID.setReference(limited_speed, ControlType.kVelocity);
 
-      double targetPivot = MathUtil.clamp(
-          m_periodicIO.pivot_angle + m_periodicIO.manualPivotOffset,
-          Constants.Shooter.k_minAngle,
-          Constants.Shooter.k_maxAngle);
-
-      double pivotRelRotations = targetAngleToRelRotations(targetPivot);
-
-      if (exceedingVelocity()) {
-        m_cycles = 0;
-      } else if (m_cycles == 10) {
-        m_cycles = 0;
-        setPivotAbsOffset();
+      if (m_pivotAbsEncoder.isConnected()) {
+        m_pivotMotor.setVoltage(m_periodicIO.pivot_voltage);
+      } else {
+        m_pivotMotor.set(0.0);
       }
 
-      m_pivotMotorPID.setReference(pivotRelRotations, ControlType.kPosition);
+      // double targetPivot = MathUtil.clamp(
+      // m_periodicIO.pivot_angle + m_periodicIO.manualPivotOffset,
+      // Constants.Shooter.k_minAngle,
+      // Constants.Shooter.k_maxAngle);
+
+      // double pivotRelRotations = targetAngleToRelRotations(targetPivot);
+
+      // if (exceedingVelocity()) {
+      // m_cycles = 0;
+      // } else if (m_cycles == 10) {
+      // m_cycles = 0;
+      // setPivotAbsOffset();
+      // }
+
     } else {
       // Test mode
       if (Preferences.getString("Test Mode", "NONE").equals("SHOOTER_PIVOT")) {
@@ -187,6 +202,7 @@ public class Shooter extends Subsystem {
 
     m_pivotRelEncoder.setPosition(offset);
     m_hasSetPivotRelEncoder = true;
+    // m_hasResetPivotRelEncoder = !m_hasResetPivotRelEncoder;
   }
 
   public double targetAngleToRelRotations(double angle) {
@@ -313,6 +329,7 @@ public class Shooter extends Subsystem {
     double pivot_angle = 60.0;
 
     double pivot_speed = 0.0;
+    double pivot_voltage = 0.0;
     double shoot_speed = 0.0;
 
     double manualPivotOffset = Constants.Shooter.k_initalPivotOffset;
@@ -392,6 +409,16 @@ public class Shooter extends Subsystem {
   }
 
   @AutoLogOutput
+  private double getTargetPivotVoltage() {
+    return m_periodicIO.pivot_voltage;
+  }
+
+  @AutoLogOutput
+  private double getPivotTargetAngle() {
+    return m_periodicIO.pivot_angle + m_periodicIO.manualPivotOffset;
+  }
+
+  @AutoLogOutput
   private double getPivotSpeed() {
     return m_periodicIO.pivot_speed;
   }
@@ -425,4 +452,10 @@ public class Shooter extends Subsystem {
   private boolean exceedingVelocity() {
     return Math.abs(getPivotMotorVelocity()) > k_highVelocity;
   }
+
+  @AutoLogOutput
+  private boolean hasResetPivotRelEncoder() {
+    return m_hasResetPivotRelEncoder;
+  }
+
 }
