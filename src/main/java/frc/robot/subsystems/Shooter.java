@@ -66,7 +66,7 @@ public class Shooter extends Subsystem {
     m_pivotMotor = new CANSparkFlex(ApolloConstants.Shooter.k_pivotMotorId, MotorType.kBrushless);
     m_pivotMotor.restoreFactoryDefaults();
     m_pivotMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
-    m_pivotMotor.setSmartCurrentLimit(40);
+    m_pivotMotor.setSmartCurrentLimit(60);
     m_pivotMotor.setInverted(false);
     // m_pivotMotor.setSoftLimit(SoftLimitDirection.kReverse,
     // (float) targetAngleToRelRotations(Constants.Shooter.k_maxAngle));

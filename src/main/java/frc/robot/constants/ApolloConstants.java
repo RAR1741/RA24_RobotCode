@@ -101,10 +101,10 @@ public final class ApolloConstants {
     // Drivetrain (turn) constants
     public class Turn {
       // Drivetrain turning offset constants
-      public static final double k_FLOffset = 0.467;
-      public static final double k_FROffset = 0.750;
-      public static final double k_BROffset = 0.136;
-      public static final double k_BLOffset = 0.556;
+      public static final double k_FLOffset = 0.470;
+      public static final double k_FROffset = 0.753;
+      public static final double k_BROffset = 0.133;
+      public static final double k_BLOffset = 0.549;
 
       public static final int k_FLAbsId = 0;
       public static final int k_FRAbsId = 1;
@@ -281,7 +281,7 @@ public final class ApolloConstants {
     public static final double k_distanceFromCenter = 4.0008;
 
     // Offset, -90, since that's where we want to start
-    public static final double k_absPivotOffset = 208.587 - 90;
+    public static final double k_absPivotOffset = 149.254 - 90;
 
     public static final double k_initalPivotOffset = -1.75;
 
