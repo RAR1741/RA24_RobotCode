@@ -76,7 +76,7 @@ public final class ApolloConstants {
     public static final double k_slowScaler = 0.2; // % reduction in speed
 
     public static final double k_wheelRadiusIn = 2.0; // inches
-    public static final double k_driveGearRatio = (50.0 / 14.0) * (16.0 / 28.0) * (45.0 / 15.0);
+    public static final double k_driveGearRatio = (50.0 / 14.0) * (17.0 / 27.0) * (45.0 / 15.0);
     public static final double k_turnGearRatio = 7.0 / 150.0;
 
     // Drivetrain drive motor constants
@@ -101,10 +101,10 @@ public final class ApolloConstants {
     // Drivetrain (turn) constants
     public class Turn {
       // Drivetrain turning offset constants
-      public static final double k_FLOffset = 0.159;
-      public static final double k_FROffset = 0.163;
-      public static final double k_BROffset = 0.832;
-      public static final double k_BLOffset = 0.157;
+      public static final double k_FLOffset = 0.467;
+      public static final double k_FROffset = 0.750;
+      public static final double k_BROffset = 0.136;
+      public static final double k_BLOffset = 0.556;
 
       public static final int k_FLAbsId = 0;
       public static final int k_FRAbsId = 1;
