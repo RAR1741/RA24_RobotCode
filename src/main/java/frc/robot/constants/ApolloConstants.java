@@ -194,12 +194,11 @@ public final class ApolloConstants {
 
     public static final int k_pivotEncoderId = 4;
 
-    public static final double k_stowPivotAngle = 263.0;
-    public static final double k_groundPivotAngle = 41.0;
-    public static final double k_sourcePivotAngle = 180.0;
-    // public static final double k_sourcePivotAngle = k_stowPivotAngle;
-    public static final double k_ejectPivotAngle = 110.0;
-    public static final double k_ampPivotAngle = 100.0;
+    public static final double k_stowPivotAngle = 320.6;
+    public static final double k_groundPivotAngle = 99.5;
+    public static final double k_sourcePivotAngle = 240.0;
+    public static final double k_ejectPivotAngle = 170.0;
+    public static final double k_ampPivotAngle = 160.0;
 
     public static final double k_intakeSpeed = 0.4;
     public static final double k_ejectSpeed = -0.525;
@@ -227,7 +226,7 @@ public final class ApolloConstants {
     public static final double k_distanceFromCenter = 12.5;
     public static final int k_sensorThreshold = 1000; // 1,000 is "in", 2000 is max
 
-    public static final double k_pivotOffset = 74.5;
+    public static final double k_pivotOffset = 127.5;
 
     public static double k_maxVelocity = 690.0;
     public static double k_maxAcceleration = 1380.0;
@@ -274,7 +273,7 @@ public final class ApolloConstants {
 
     public static final double k_pivotHeight = 4.0;
 
-    public static final double k_minAngle = 20.0;
+    public static final double k_minAngle = 25.0;
     public static final double k_maxAngle = 65.0;
     public static final double k_startingAngle = 0.0;
 
@@ -283,7 +282,7 @@ public final class ApolloConstants {
     // Offset, -90, since that's where we want to start
     public static final double k_absPivotOffset = 149.254 - 90;
 
-    public static final double k_initalPivotOffset = -1.75;
+    public static final double k_initalPivotOffset = 0.0;
 
     static double threadsPerInch = 8.0;
     static double helices = 1.0;

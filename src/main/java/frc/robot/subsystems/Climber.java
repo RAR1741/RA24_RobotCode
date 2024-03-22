@@ -41,12 +41,12 @@ public class Climber extends Subsystem {
 
     m_leftMotor = new CANSparkMax(ApolloConstants.Climber.k_leftMotorID, MotorType.kBrushless);
     m_leftMotor.restoreFactoryDefaults();
-    // m_leftMotor.setSmartCurrentLimit(40);
+    m_leftMotor.setSmartCurrentLimit(40);
     m_leftMotor.setIdleMode(IdleMode.kBrake);
 
     m_rightMotor = new CANSparkMax(ApolloConstants.Climber.k_rightMotorID, MotorType.kBrushless);
     m_rightMotor.restoreFactoryDefaults();
-    // m_rightMotor.setSmartCurrentLimit(40);
+    m_rightMotor.setSmartCurrentLimit(40);
     m_rightMotor.setIdleMode(IdleMode.kBrake);
 
     m_leftPID = m_leftMotor.getPIDController();
