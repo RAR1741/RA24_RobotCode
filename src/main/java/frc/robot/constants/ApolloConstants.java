@@ -54,6 +54,11 @@ public final class ApolloConstants {
       public static final double k_I = 0.0;
       public static final double k_D = 0.02;
     }
+
+    public static final VisionConstants teleopVisionConstants = new VisionConstants(1, 4.0, 32.0);
+    public static final VisionConstants defaultAutoVisionConstants = new VisionConstants(1, 4.0, 32.0);
+    public static final VisionConstants fourNoteVisionConstants = new VisionConstants(1, 4.0, 32.0);
+    public static final VisionConstants threeNoteVisionConstants = new VisionConstants(1, 10.0, 16.0);
   }
 
   public class SwerveDrive {
@@ -134,13 +139,13 @@ public final class ApolloConstants {
 
   public class AutoAim {
     public class Translation {
-      public static final double k_P = 3.0;
+      public static final double k_P = 7.0;
       public static final double k_I = 0.0;
       public static final double k_D = 0.0;
     }
 
     public class Rotation {
-      public static final double k_P = 3.0;
+      public static final double k_P = 5.0;
       public static final double k_I = 0.0;
       public static final double k_D = 0.0;
     }

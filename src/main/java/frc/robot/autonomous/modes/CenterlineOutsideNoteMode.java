@@ -5,12 +5,18 @@ import frc.robot.autonomous.tasks.AutoTargetTask;
 import frc.robot.autonomous.tasks.IntakeTask;
 import frc.robot.autonomous.tasks.ParallelTask;
 import frc.robot.autonomous.tasks.ShooterTask;
+import frc.robot.constants.ApolloConstants;
+import frc.robot.constants.VisionConstants;
 import frc.robot.subsystems.Intake.IntakePivotTarget;
 import frc.robot.subsystems.Intake.IntakeState;
 import frc.robot.subsystems.Shooter.ShooterPivotTarget;
 import frc.robot.subsystems.Shooter.ShooterSpeedTarget;
 
 public class CenterlineOutsideNoteMode extends AutoModeBase {
+  public VisionConstants getVisionTargetConstants() {
+    return ApolloConstants.Vision.threeNoteVisionConstants;
+  }
+
   public void queueTasks() {
     // Note 1 (preload)
     queueTask(new ParallelTask(
@@ -21,14 +27,16 @@ public class CenterlineOutsideNoteMode extends AutoModeBase {
     queueShoot();
 
     // Note 2 (Center 4)
-    queueDriveAndIntake("CenterFieldMiddle, Center 4");
-    queueDrive("Center 4, Shoot Stage Right");
+    queueDriveQuickAndIntake("CenterFieldMiddle, Center 4, And Back");
+    // queueDriveQuickAndIntake("CenterFieldMiddle, Center 4");
+    // queueDrive("Center 4, Shoot Stage Right");
     queueAutoTarget();
     queueShoot();
 
     // Note 3 (Center 5)
-    queueDriveAndIntake("Shoot Stage Right, Center 5");
-    queueDrive("Center 5, Shoot Stage Right");
+    queueDriveQuickAndIntake("Shoot Stage Right, Center 5, And Back");
+    // queueDriveQuickAndIntake("Shoot Stage Right, Center 5");
+    // queueDrive("Center 5, Shoot Stage Right");
     queueAutoTarget();
     queueShoot();
 

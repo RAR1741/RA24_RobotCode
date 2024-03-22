@@ -163,6 +163,8 @@ public class Robot extends LoggedRobot {
     m_swerve.m_limelightLeft.setLightEnabled(false);
     m_swerve.m_limelightRight.setLightEnabled(false);
     m_swerve.m_limelightShooter.setLightEnabled(false);
+
+    m_swerve.m_visionConstants = ApolloConstants.Vision.teleopVisionConstants;
   }
 
   @Override

@@ -13,16 +13,20 @@ import frc.robot.autonomous.tasks.ShooterTask;
 import frc.robot.autonomous.tasks.Task;
 import frc.robot.autonomous.tasks.WaitTask;
 import frc.robot.constants.ApolloConstants;
+import frc.robot.constants.VisionConstants;
 import frc.robot.subsystems.Intake.IntakePivotTarget;
 import frc.robot.subsystems.Intake.IntakeState;
 import frc.robot.subsystems.Shooter.ShooterPivotTarget;
 import frc.robot.subsystems.Shooter.ShooterSpeedTarget;
+import frc.robot.subsystems.drivetrain.SwerveDrive;
 
 public abstract class AutoModeBase {
   private ArrayList<Task> m_tasks;
+  private SwerveDrive m_swerve = SwerveDrive.getInstance();
 
   public AutoModeBase() {
     m_tasks = new ArrayList<>();
+    m_swerve.m_visionConstants = getVisionTargetConstants();
   }
 
   public Task getNextTask() {
@@ -32,6 +36,10 @@ public abstract class AutoModeBase {
     } catch (IndexOutOfBoundsException ex) {
       return null;
     }
+  }
+
+  public VisionConstants getVisionTargetConstants() {
+    return ApolloConstants.Vision.defaultAutoVisionConstants;
   }
 
   public void queueTask(Task task) {
@@ -50,6 +58,12 @@ public abstract class AutoModeBase {
         new SequentialTask(
             new WaitTask(ApolloConstants.Auto.Timing.k_intakeDeployTime),
             new DriveTrajectoryTask(path))));
+  }
+
+  public void queueDriveQuickAndIntake(String path) {
+    queueTask(new ParallelTask(
+        new IntakeTask(IntakePivotTarget.GROUND, IntakeState.INTAKE),
+        new DriveTrajectoryTask(path)));
   }
 
   public void queueDrive(String path) {

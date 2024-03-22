@@ -32,6 +32,7 @@ import frc.robot.AprilTagLocations;
 import frc.robot.LimelightHelpers.PoseEstimate;
 import frc.robot.constants.ApolloConstants;
 import frc.robot.constants.ApolloConstants.Field;
+import frc.robot.constants.VisionConstants;
 import frc.robot.subsystems.Limelight;
 
 public class SwerveDrive extends SwerveSysId {
@@ -104,6 +105,8 @@ public class SwerveDrive extends SwerveSysId {
   enum VisionInstance {
     SHOOTER, LEFT, RIGHT;
   }
+
+  public VisionConstants m_visionConstants = ApolloConstants.Vision.defaultAutoVisionConstants;
 
   private boolean m_hasSetPose = false;
 
@@ -459,9 +462,9 @@ public class SwerveDrive extends SwerveSysId {
       2.0
   }; // shooter, left, right
   private boolean useVisionRotation = true;
-  private int minTagCount = 1;
-  private double maxAvgDistance = 4.0;
-  private double autoStdDevScale = 32.0;
+  // private int minTagCount = m_visionConstants.minTagCount; // 1;
+  // private double maxAvgDistance = m_visionConstants.maxAvgDistance; // 10.0;
+  // private double autoStdDevScale = m_visionConstants.autoStdDevScale; // 16.0;
 
   public void updateVisionPoseWithStdDev(PoseEstimate poseEstimate, VisionInstance instanceIndex) {
     // Add observation to list
@@ -469,7 +472,7 @@ public class SwerveDrive extends SwerveSysId {
     // double avgArea = poseEstimate.avgTagArea;
     // double autoTranslationMax = 2.0;
 
-    if (poseEstimate.tagCount < minTagCount) {
+    if (poseEstimate.tagCount < m_visionConstants.minTagCount) {
       return;
     }
 
@@ -477,7 +480,7 @@ public class SwerveDrive extends SwerveSysId {
       return;
     }
 
-    if (avgDistance >= maxAvgDistance) {
+    if (avgDistance >= m_visionConstants.maxAvgDistance) {
       return;
     }
 
@@ -500,14 +503,14 @@ public class SwerveDrive extends SwerveSysId {
         * Math.pow(avgDistance, 2.0)
         / poseEstimate.tagCount
         * stdDevFactors[instanceIndex.ordinal()]
-        * (DriverStation.isAutonomous() ? autoStdDevScale : 1.0);
+        * (DriverStation.isAutonomous() ? m_visionConstants.autoStdDevScale : 1.0);
 
     double thetaStdDev = useVisionRotation
         ? thetaStdDevCoefficient
             * Math.pow(avgDistance, 2.0)
             / poseEstimate.tagCount
             * stdDevFactors[instanceIndex.ordinal()]
-            * (DriverStation.isAutonomous() ? autoStdDevScale : 1.0)
+            * (DriverStation.isAutonomous() ? m_visionConstants.autoStdDevScale : 1.0)
         : Double.POSITIVE_INFINITY;
 
     m_poseEstimator.addVisionMeasurement(
