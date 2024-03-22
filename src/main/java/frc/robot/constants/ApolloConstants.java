@@ -1,4 +1,4 @@
-package frc.robot;
+package frc.robot.constants;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -6,7 +6,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.util.Units;
 
-public final class Constants {
+public final class ApolloConstants {
   public static class Robot {
     public static final double k_width = 30; // Inches
     public static final double k_length = 30; // Inches
@@ -54,6 +54,11 @@ public final class Constants {
       public static final double k_I = 0.0;
       public static final double k_D = 0.02;
     }
+
+    public static final VisionConstants teleopVisionConstants = new VisionConstants(1, 4.0, 32.0);
+    public static final VisionConstants defaultAutoVisionConstants = new VisionConstants(1, 4.0, 32.0);
+    public static final VisionConstants fourNoteVisionConstants = new VisionConstants(1, 4.0, 32.0);
+    public static final VisionConstants threeNoteVisionConstants = new VisionConstants(1, 10.0, 16.0);
   }
 
   public class SwerveDrive {
@@ -76,7 +81,7 @@ public final class Constants {
     public static final double k_slowScaler = 0.2; // % reduction in speed
 
     public static final double k_wheelRadiusIn = 2.0; // inches
-    public static final double k_driveGearRatio = (50.0 / 14.0) * (16.0 / 28.0) * (45.0 / 15.0);
+    public static final double k_driveGearRatio = (50.0 / 14.0) * (17.0 / 27.0) * (45.0 / 15.0);
     public static final double k_turnGearRatio = 7.0 / 150.0;
 
     // Drivetrain drive motor constants
@@ -101,10 +106,10 @@ public final class Constants {
     // Drivetrain (turn) constants
     public class Turn {
       // Drivetrain turning offset constants
-      public static final double k_FLOffset = 0.159;
-      public static final double k_FROffset = 0.163;
-      public static final double k_BROffset = 0.832;
-      public static final double k_BLOffset = 0.157;
+      public static final double k_FLOffset = 0.470;
+      public static final double k_FROffset = 0.753;
+      public static final double k_BROffset = 0.133;
+      public static final double k_BLOffset = 0.549;
 
       public static final int k_FLAbsId = 0;
       public static final int k_FRAbsId = 1;
@@ -134,13 +139,13 @@ public final class Constants {
 
   public class AutoAim {
     public class Translation {
-      public static final double k_P = 3.0;
+      public static final double k_P = 7.0;
       public static final double k_I = 0.0;
       public static final double k_D = 0.0;
     }
 
     public class Rotation {
-      public static final double k_P = 3.0;
+      public static final double k_P = 5.0;
       public static final double k_I = 0.0;
       public static final double k_D = 0.0;
     }
@@ -194,12 +199,11 @@ public final class Constants {
 
     public static final int k_pivotEncoderId = 4;
 
-    public static final double k_stowPivotAngle = 263.0;
-    public static final double k_groundPivotAngle = 41.0;
-    public static final double k_sourcePivotAngle = 180.0;
-    // public static final double k_sourcePivotAngle = k_stowPivotAngle;
-    public static final double k_ejectPivotAngle = 110.0;
-    public static final double k_ampPivotAngle = 100.0;
+    public static final double k_stowPivotAngle = 320.6;
+    public static final double k_groundPivotAngle = 99.5;
+    public static final double k_sourcePivotAngle = 240.0;
+    public static final double k_ejectPivotAngle = 170.0;
+    public static final double k_ampPivotAngle = 160.0;
 
     public static final double k_intakeSpeed = 0.4;
     public static final double k_ejectSpeed = -0.525;
@@ -227,7 +231,7 @@ public final class Constants {
     public static final double k_distanceFromCenter = 12.5;
     public static final int k_sensorThreshold = 1000; // 1,000 is "in", 2000 is max
 
-    public static final double k_pivotOffset = 74.5;
+    public static final double k_pivotOffset = 127.5;
 
     public static double k_maxVelocity = 690.0;
     public static double k_maxAcceleration = 1380.0;
@@ -274,16 +278,16 @@ public final class Constants {
 
     public static final double k_pivotHeight = 4.0;
 
-    public static final double k_minAngle = 20.0;
+    public static final double k_minAngle = 25.0;
     public static final double k_maxAngle = 65.0;
     public static final double k_startingAngle = 0.0;
 
     public static final double k_distanceFromCenter = 4.0008;
 
     // Offset, -90, since that's where we want to start
-    public static final double k_absPivotOffset = 208.587 - 90;
+    public static final double k_absPivotOffset = 149.254 - 90;
 
-    public static final double k_initalPivotOffset = -1.75;
+    public static final double k_initalPivotOffset = 0.0;
 
     static double threadsPerInch = 8.0;
     static double helices = 1.0;

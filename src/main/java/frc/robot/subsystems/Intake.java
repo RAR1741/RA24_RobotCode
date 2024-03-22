@@ -14,8 +14,8 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.I2C;
-import frc.robot.Constants;
 import frc.robot.Helpers;
+import frc.robot.constants.ApolloConstants;
 import frc.robot.simulation.IntakeSim;
 import frc.robot.simulation.SimMaster;
 
@@ -26,7 +26,7 @@ public class Intake extends Subsystem {
   private CANSparkMax m_pivotMotor;
   private CANSparkMax m_intakeMotor;
 
-  private final DutyCycleEncoder m_pivotAbsEncoder = new DutyCycleEncoder(Constants.Intake.k_pivotEncoderId);
+  private final DutyCycleEncoder m_pivotAbsEncoder = new DutyCycleEncoder(ApolloConstants.Intake.k_pivotEncoderId);
 
   private final ProfiledPIDController m_pivotMotorPID;
   private final ArmFeedforward m_pivotFeedForward;
@@ -40,6 +40,11 @@ public class Intake extends Subsystem {
   private final DigitalInput m_noteTOF1 = new DigitalInput(6);
   // private final DigitalInput m_noteTOF2 = new DigitalInput(7);
 
+  private final double m_intakeAutoDetectCurrent = 40; // Amps
+  private final int m_cycleThreshold = 10;
+  private double minCurrent = 999.0;
+  private int m_cycles = 0;
+
   private ColorSensorV3 m_colorSensor;
 
   private Intake() {
@@ -48,33 +53,33 @@ public class Intake extends Subsystem {
     m_sim = SimMaster.getInstance().getIntakeSim();
 
     // Pivot motor setup
-    m_pivotMotor = new CANSparkMax(Constants.Intake.k_pivotMotorId, MotorType.kBrushless);
+    m_pivotMotor = new CANSparkMax(ApolloConstants.Intake.k_pivotMotorId, MotorType.kBrushless);
     m_pivotMotor.restoreFactoryDefaults();
     m_pivotMotor.setIdleMode(CANSparkMax.IdleMode.kCoast);
     m_pivotMotor.setSmartCurrentLimit(20);
     m_pivotMotor.setInverted(true);
 
     // Intake motor setup
-    m_intakeMotor = new CANSparkMax(Constants.Intake.k_intakeMotorId, MotorType.kBrushless);
+    m_intakeMotor = new CANSparkMax(ApolloConstants.Intake.k_intakeMotorId, MotorType.kBrushless);
     m_intakeMotor.restoreFactoryDefaults();
     m_intakeMotor.setIdleMode(CANSparkMax.IdleMode.kCoast);
     m_intakeMotor.setInverted(true);
 
     // Pivot PID
     m_pivotMotorPID = new ProfiledPIDController(
-        Constants.Intake.k_pivotMotorP,
-        Constants.Intake.k_pivotMotorI,
-        Constants.Intake.k_pivotMotorD,
+        ApolloConstants.Intake.k_pivotMotorP,
+        ApolloConstants.Intake.k_pivotMotorI,
+        ApolloConstants.Intake.k_pivotMotorD,
         new TrapezoidProfile.Constraints(
-            Constants.Intake.k_maxVelocity,
-            Constants.Intake.k_maxAcceleration));
+            ApolloConstants.Intake.k_maxVelocity,
+            ApolloConstants.Intake.k_maxAcceleration));
 
     // Pivot Feedforward
     m_pivotFeedForward = new ArmFeedforward(
-        Constants.Intake.k_pivotMotorKS,
-        Constants.Intake.k_pivotMotorKG,
-        Constants.Intake.k_pivotMotorKV,
-        Constants.Intake.k_pivotMotorKA);
+        ApolloConstants.Intake.k_pivotMotorKS,
+        ApolloConstants.Intake.k_pivotMotorKG,
+        ApolloConstants.Intake.k_pivotMotorKV,
+        ApolloConstants.Intake.k_pivotMotorKA);
 
     m_periodicIO = new PeriodicIO();
 
@@ -107,6 +112,18 @@ public class Intake extends Subsystem {
 
       m_periodicIO.intake_speed = getSpeedFromState(m_periodicIO.intake_state);
       putString("IntakeState", m_periodicIO.intake_state.toString());
+    }
+
+    double currentCurrent = getIntakeCurrent();
+    if (currentCurrent < minCurrent) {
+      minCurrent = currentCurrent;
+    }
+
+    // FRANKENCODE
+    m_cycles++;
+    if (m_cycles % m_cycleThreshold == 0) {
+      m_cycles = 0;
+      minCurrent = 999.0;
     }
 
     m_sim.updateAngle(getPivotAngle());
@@ -191,6 +208,7 @@ public class Intake extends Subsystem {
   }
 
   private boolean m_override = false;
+
   public void overrideAutoFlip(boolean override) {
     m_override = override;
   }
@@ -216,7 +234,7 @@ public class Intake extends Subsystem {
 
   @AutoLogOutput
   public double getPivotReferenceToHorizontal() {
-    return getPivotAngle() - Constants.Intake.k_pivotOffset;
+    return getPivotAngle() - ApolloConstants.Intake.k_pivotOffset;
   }
 
   @AutoLogOutput
@@ -280,17 +298,17 @@ public class Intake extends Subsystem {
   private double getAngleFromTarget(IntakePivotTarget target) {
     switch (target) {
       case GROUND:
-        return Constants.Intake.k_groundPivotAngle;
+        return ApolloConstants.Intake.k_groundPivotAngle;
       case PIVOT:
-        return Constants.Intake.k_sourcePivotAngle;
+        return ApolloConstants.Intake.k_sourcePivotAngle;
       case EJECT:
-        return Constants.Intake.k_ejectPivotAngle;
+        return ApolloConstants.Intake.k_ejectPivotAngle;
       case AMP:
-        return Constants.Intake.k_ampPivotAngle;
+        return ApolloConstants.Intake.k_ampPivotAngle;
       case STOW:
-        return Constants.Intake.k_stowPivotAngle;
+        return ApolloConstants.Intake.k_stowPivotAngle;
       default:
-        return Constants.Intake.k_stowPivotAngle;
+        return ApolloConstants.Intake.k_stowPivotAngle;
     }
   }
 
@@ -298,11 +316,11 @@ public class Intake extends Subsystem {
   private double getSpeedFromState(IntakeState state) {
     switch (state) {
       case INTAKE:
-        return Constants.Intake.k_intakeSpeed;
+        return ApolloConstants.Intake.k_intakeSpeed;
       case EJECT:
-        return Constants.Intake.k_ejectSpeed;
+        return ApolloConstants.Intake.k_ejectSpeed;
       case FEED_SHOOTER:
-        return Constants.Intake.k_feedShooterSpeed;
+        return ApolloConstants.Intake.k_feedShooterSpeed;
       default:
         return 0.0;
     }
@@ -310,20 +328,23 @@ public class Intake extends Subsystem {
 
   @AutoLogOutput
   public boolean isHoldingNote() {
-    return getColorSensor() || getTOFOne();
+    boolean hasHeldHighCurrent = ((minCurrent > m_intakeAutoDetectCurrent) && (m_cycles % m_cycleThreshold == 0)
+        && (minCurrent < 120));
+    return getColorSensor() || getTOFOne() || hasHeldHighCurrent;
   }
 
   @AutoLogOutput
   public boolean getColorSensor() {
     if (isColorSensorConnected()) {
-      return m_colorSensor.getProximity() >= Constants.Intake.k_sensorThreshold;
+      return m_colorSensor.getProximity() >= ApolloConstants.Intake.k_sensorThreshold;
     }
     return false;
   }
 
   @AutoLogOutput
   public boolean getTOFOne() {
-    return !m_noteTOF1.get();
+    // return !m_noteTOF1.get();
+    return false; // TODO: FIX PLEASE THANKS PLEASE GOD I HOPE 🙏🙏🙏🙏
   }
 
   @AutoLogOutput

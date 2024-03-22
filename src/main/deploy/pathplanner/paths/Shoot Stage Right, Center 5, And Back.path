@@ -21,17 +21,38 @@
       },
       "prevControl": {
         "x": 6.835708120490317,
-        "y": 0.8729503570118257
+        "y": 0.8729503570118251
+      },
+      "nextControl": {
+        "x": 9.484132611783743,
+        "y": 0.7670086266098468
+      },
+      "isLocked": false,
+      "linkedName": "CenterNote5"
+    },
+    {
+      "anchor": {
+        "x": 2.398091703590815,
+        "y": 3.3542078241563895
+      },
+      "prevControl": {
+        "x": 4.1022451998607705,
+        "y": 0.7546566759800187
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "CenterNote5"
+      "linkedName": "ShootStageRight"
     }
   ],
   "rotationTargets": [
     {
       "waypointRelativePos": 0.5,
       "rotationDegrees": -2.5165120288437173,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 1.0,
+      "rotationDegrees": 0,
       "rotateFast": false
     }
   ],
@@ -45,7 +66,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.25622109289190814,
+    "rotation": -44.81934679666611,
     "rotateFast": false
   },
   "reversed": false,

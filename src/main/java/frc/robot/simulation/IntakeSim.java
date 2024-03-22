@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
-import frc.robot.Constants;
+import frc.robot.constants.ApolloConstants;
 
 public class IntakeSim {
   private static IntakeSim m_intakeSim = null;
@@ -24,18 +24,18 @@ public class IntakeSim {
   private final SingleJointedArmSim m_joint = new SingleJointedArmSim(
       k_pivotMotor,
       k_pivotGearRatio,
-      SingleJointedArmSim.estimateMOI(Units.inchesToMeters(Constants.Intake.k_length),
-          Constants.Intake.k_mass),
-      Constants.Intake.k_length,
-      Constants.Intake.k_minAngle,
-      Constants.Intake.k_maxAngle,
+      SingleJointedArmSim.estimateMOI(Units.inchesToMeters(ApolloConstants.Intake.k_length),
+          ApolloConstants.Intake.k_mass),
+      ApolloConstants.Intake.k_length,
+      ApolloConstants.Intake.k_minAngle,
+      ApolloConstants.Intake.k_maxAngle,
       true,
-      Constants.Intake.k_startingAngle);
+      ApolloConstants.Intake.k_startingAngle);
 
   private Mechanism2d m_mech2d = null;
 
   private final Translation2d m_origin = new Translation2d(
-      (Constants.Simulation.k_width / 2) - Constants.Intake.k_distanceFromCenter, 0);
+      (ApolloConstants.Simulation.k_width / 2) - ApolloConstants.Intake.k_distanceFromCenter, 0);
 
   private MechanismRoot2d m_intakeBase = null;
 
@@ -52,18 +52,18 @@ public class IntakeSim {
 
   private IntakeSim(Mechanism2d mech2d) {
     m_mech2d = mech2d;
-    m_intakeBase = m_mech2d.getRoot("IntakePivot", m_origin.getX(), Constants.Robot.k_bumperStart);
+    m_intakeBase = m_mech2d.getRoot("IntakePivot", m_origin.getX(), ApolloConstants.Robot.k_bumperStart);
     m_intakePivot = m_intakeBase.append(
         new MechanismLigament2d(
             "IntakePivot",
-            Constants.Intake.k_pivotHeight,
+            ApolloConstants.Intake.k_pivotHeight,
             90,
             4,
             new Color8Bit(Color.kRed)));
     m_intake = m_intakePivot.append(
         new MechanismLigament2d(
             "Intake",
-            Constants.Intake.k_length,
+            ApolloConstants.Intake.k_length,
             k_simOffset,
             4,
             new Color8Bit(Color.kBlue)));

@@ -1,0 +1,100 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.4,
+        "y": 3.553
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 5.244978786253869,
+        "y": 0.23854704653853834
+      },
+      "isLocked": false,
+      "linkedName": "Centerline"
+    },
+    {
+      "anchor": {
+        "x": 8.209031246766196,
+        "y": 2.9172575706262527
+      },
+      "prevControl": {
+        "x": 6.294597667899039,
+        "y": 0.9916597286898273
+      },
+      "nextControl": {
+        "x": 8.379797188707501,
+        "y": 3.0890193558917387
+      },
+      "isLocked": false,
+      "linkedName": "Note4"
+    },
+    {
+      "anchor": {
+        "x": 5.793868592366814,
+        "y": 1.5262972840760498
+      },
+      "prevControl": {
+        "x": 6.917398069739304,
+        "y": 1.4524054852811557
+      },
+      "nextControl": {
+        "x": 5.080543443494294,
+        "y": 1.573210942718182
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.398091703590815,
+        "y": 3.3542078241563895
+      },
+      "prevControl": {
+        "x": 3.7676736140509317,
+        "y": 1.7801061157677878
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "ShootStageRight"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.1,
+      "rotationDegrees": 0,
+      "rotateFast": true
+    },
+    {
+      "waypointRelativePos": 1.0499999999999998,
+      "rotationDegrees": 32.366221476652434,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 2.35,
+      "rotationDegrees": 0,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 2.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -43.07857359486902,
+    "rotateFast": true
+  },
+  "reversed": false,
+  "folder": null,
+  "previewStartingState": {
+    "rotation": -54.0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}
