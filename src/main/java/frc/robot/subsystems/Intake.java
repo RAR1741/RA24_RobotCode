@@ -40,6 +40,11 @@ public class Intake extends Subsystem {
   private final DigitalInput m_noteTOF1 = new DigitalInput(6);
   // private final DigitalInput m_noteTOF2 = new DigitalInput(7);
 
+  private final double m_intakeAutoDetectCurrent = 40; // Amps
+  private final int m_cycleThreshold = 10;
+  private double minCurrent = 999.0;
+  private int m_cycles = 0;
+
   private ColorSensorV3 m_colorSensor;
 
   private Intake() {
@@ -107,6 +112,18 @@ public class Intake extends Subsystem {
 
       m_periodicIO.intake_speed = getSpeedFromState(m_periodicIO.intake_state);
       putString("IntakeState", m_periodicIO.intake_state.toString());
+    }
+
+    double currentCurrent = getIntakeCurrent();
+    if (currentCurrent < minCurrent) {
+      minCurrent = currentCurrent;
+    }
+
+    // FRANKENCODE
+    m_cycles++;
+    if (m_cycles % m_cycleThreshold == 0) {
+      m_cycles = 0;
+      minCurrent = 999.0;
     }
 
     m_sim.updateAngle(getPivotAngle());
@@ -311,7 +328,9 @@ public class Intake extends Subsystem {
 
   @AutoLogOutput
   public boolean isHoldingNote() {
-    return getColorSensor() || getTOFOne();
+    boolean hasHeldHighCurrent = ((minCurrent > m_intakeAutoDetectCurrent) && (m_cycles % m_cycleThreshold == 0)
+        && (minCurrent < 120));
+    return getColorSensor() || getTOFOne() || hasHeldHighCurrent;
   }
 
   @AutoLogOutput
@@ -324,7 +343,8 @@ public class Intake extends Subsystem {
 
   @AutoLogOutput
   public boolean getTOFOne() {
-    return !m_noteTOF1.get();
+    // return !m_noteTOF1.get();
+    return false; // TODO: FIX PLEASE THANKS PLEASE GOD I HOPE 🙏🙏🙏🙏
   }
 
   @AutoLogOutput
