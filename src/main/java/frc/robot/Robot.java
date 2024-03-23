@@ -14,7 +14,9 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.autonomous.AutoChooser;
@@ -33,6 +35,7 @@ import frc.robot.subsystems.Shooter.ShooterPivotTarget;
 import frc.robot.subsystems.Shooter.ShooterSpeedTarget;
 import frc.robot.subsystems.Subsystem;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
+import frc.robot.subsystems.leds.LEDs;
 
 public class Robot extends LoggedRobot {
   private final DriverController m_driverController = new DriverController(0, true, true);
@@ -52,6 +55,7 @@ public class Robot extends LoggedRobot {
   private final Intake m_intake = Intake.getInstance();
   private final Shooter m_shooter = Shooter.getInstance();
   private final Climber m_climber = Climber.getInstance();
+  private final LEDs m_leds = LEDs.getInstance();
 
   // Auto tasks
   private Task m_currentTask;
@@ -61,8 +65,9 @@ public class Robot extends LoggedRobot {
   AutoChooser m_autoChooser = new AutoChooser();
 
   // Misc vars
-  private boolean m_lockHeading = true;
+  private final boolean k_lockHeading = true;
   private boolean m_intaking = false;
+  public final static boolean k_ledsEnabled = false;
 
   private final Field m_field = Field.getInstance();
 
@@ -89,6 +94,9 @@ public class Robot extends LoggedRobot {
     m_allSubsystems.add(m_intake);
     m_allSubsystems.add(m_shooter);
     m_allSubsystems.add(m_climber);
+    if (k_ledsEnabled) {
+      m_allSubsystems.add(m_leds);
+    }
   }
 
   @Override
@@ -111,6 +119,14 @@ public class Robot extends LoggedRobot {
   public void autonomousInit() {
     // m_swerve.resetGyro();
     m_swerve.setBrakeMode(false);
+
+    if (k_ledsEnabled) {
+      if (DriverStation.getAlliance().get() == Alliance.Blue) {
+        m_leds.setAllColor(Color.kBlue);
+      } else {
+        m_leds.setAllColor(Color.kRed);
+      }
+    }
 
     m_swerve.m_limelightLeft.setLightEnabled(true);
     m_swerve.m_limelightRight.setLightEnabled(true);
@@ -165,6 +181,10 @@ public class Robot extends LoggedRobot {
     m_swerve.m_limelightShooter.setLightEnabled(false);
 
     m_swerve.m_visionConstants = ApolloConstants.Vision.teleopVisionConstants;
+
+    if (k_ledsEnabled) {
+      m_leds.breathe();
+    }
   }
 
   @Override
@@ -189,7 +209,7 @@ public class Robot extends LoggedRobot {
     boolean wantsAmpAutoAim = m_driverController.getWantsAmpPivot();
     boolean wantsPassAutoAim = m_driverController.getWantsShooterPass();
 
-    if (m_lockHeading) {
+    if (k_lockHeading) {
       m_swerve.driveLockedHeading(
           xSpeed, ySpeed, rot, true,
           wantsSpeakerAutoAim, false, wantsPassAutoAim);
@@ -300,6 +320,14 @@ public class Robot extends LoggedRobot {
     } else {
       m_climber.stopClimber();
     }
+
+    if (k_ledsEnabled) {
+      if (m_intake.isHoldingNote()) {
+        m_leds.setAllColor(Color.kGreen);
+      } else {
+        m_leds.breathe();
+      }
+    }
   }
 
   @Override
@@ -313,6 +341,10 @@ public class Robot extends LoggedRobot {
     m_swerve.m_limelightLeft.setLightEnabled(false);
     m_swerve.m_limelightRight.setLightEnabled(false);
     m_swerve.m_limelightShooter.setLightEnabled(false);
+
+    if (k_ledsEnabled) {
+      m_leds.rainbowBreatheSlow();
+    }
   }
 
   @Override
@@ -326,6 +358,9 @@ public class Robot extends LoggedRobot {
   @Override
   public void testInit() {
     CommandScheduler.getInstance().cancelAll();
+    if (k_ledsEnabled) {
+      m_leds.rainbowChase();
+    }
   }
 
   @Override

@@ -348,4 +348,19 @@ public final class ApolloConstants {
       public static final int k_blueCenterSpeaker = 7;
     }
   }
+
+  public static class LEDs {
+    public static final int k_PWMId = 0;
+    public static final int k_totalLength = Drive.k_length + Shooter.k_length;
+
+    public static class Drive {
+      public static final int k_start = 0;
+      public static final int k_length = 150;
+    }
+
+    public static class Shooter {
+      public static final int k_start = Drive.k_start + Drive.k_length;
+      public static final int k_length = 150;
+    }
+  }
 }
