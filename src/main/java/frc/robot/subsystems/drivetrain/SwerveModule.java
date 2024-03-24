@@ -40,6 +40,8 @@ public class SwerveModule {
     boolean shouldChangeState = false;
   }
 
+  private boolean m_moduleDisabled = false;
+
   public SwerveModule(int driveMotorChannel, int turningMotorChannel, int turningAbsoluteID, double turningOffset,
       String moduleName) {
     m_turningOffset = turningOffset;
@@ -130,8 +132,14 @@ public class SwerveModule {
   }
 
   public void resetTurnConfig() {
-    m_turningRelEncoder.setPosition(
-        Helpers.modRadians(Units.rotationsToRadians(m_turningAbsEncoder.getAbsolutePosition() - m_turningOffset)));
+    if (getAsbEncoderIsConnected()) {
+      m_turningRelEncoder.setPosition(
+          Helpers.modRadians(Units.rotationsToRadians(m_turningAbsEncoder.getAbsolutePosition() - m_turningOffset)));
+      m_moduleDisabled = false;
+    } else {
+      m_moduleDisabled = true;
+    }
+
   }
 
   public void setDesiredState(SwerveModuleState desiredState) {
@@ -170,11 +178,19 @@ public class SwerveModule {
 
   public void periodic() {
     if (m_periodicIO.shouldChangeState) {
-      double feedforward = m_drivingFeedForward.calculate(getDriveTargetVelocity());
+      if (!m_moduleDisabled) {
+        double feedforward = m_drivingFeedForward.calculate(getDriveTargetVelocity());
 
-      m_drivePIDController.setReference(getDriveTargetVelocity(), ControlType.kVelocity, 0,
-          feedforward);
-      m_turningPIDController.setReference(getTurnTargetAngleRadians(), ControlType.kPosition);
+        m_drivePIDController.setReference(getDriveTargetVelocity(), ControlType.kVelocity, 0, feedforward);
+        m_turningPIDController.setReference(getTurnTargetAngleRadians(), ControlType.kPosition);
+      } else {
+        m_driveMotor.setIdleMode(IdleMode.kCoast);
+        m_turnMotor.setIdleMode(IdleMode.kCoast);
+
+        m_drivePIDController.setReference(0, ControlType.kVoltage);
+        m_turningPIDController.setReference(0, ControlType.kVoltage);
+      }
+
       m_periodicIO.shouldChangeState = false;
     }
   }
