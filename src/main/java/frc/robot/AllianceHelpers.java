@@ -27,7 +27,10 @@ public class AllianceHelpers {
   }
 
   public static Rotation2d getAllianceAmpRotation() {
-    return new Rotation2d(Math.PI / 2);
+    if (!DriverStation.getAlliance().isPresent() || DriverStation.getAlliance().get() == Alliance.Blue) {
+      return new Rotation2d(Math.PI / 2);
+    }
+    return new Rotation2d(-Math.PI / 2);
   }
 
   public static Rotation2d allianceForwardRotation() {

@@ -253,10 +253,19 @@ public final class ApolloConstants {
     public static final int k_topMotorId = 16;
     public static final int k_bottomMotorId = 17;
 
-    public static final double k_shooterMotorP = 0.0004300;
-    public static final double k_shooterMotorI = 0.00000008;
-    public static final double k_shooterMotorD = 0.0001000;
-    public static final double k_shooterMotorFF = 0.00010;
+    public class AmpPID {
+      public static final double k_shooterMotorP = 0.0004300;
+      public static final double k_shooterMotorI = 0.00000008;
+      public static final double k_shooterMotorD = 0.0001000;
+      public static final double k_shooterMotorFF = 0.00010;
+    }
+
+    public class ShootPID {
+      public static final double k_shooterMotorP = 0.0009300;
+      public static final double k_shooterMotorI = 0.00000008;
+      public static final double k_shooterMotorD = 0.0001000;
+      public static final double k_shooterMotorFF = 0.00010;
+    }
 
     public static final double k_shooterMinOutput = 0.0;
     public static final double k_shooterMaxOutput = 1.0;

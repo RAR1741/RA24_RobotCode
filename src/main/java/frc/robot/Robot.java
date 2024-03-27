@@ -259,6 +259,9 @@ public class Robot extends LoggedRobot {
     if (wantsAmpAutoAim) {
       m_shooter.setAngle(ShooterPivotTarget.AMP);
       m_shooter.setSpeed(ShooterSpeedTarget.AMP);
+      m_shooter.setAmpinPIDConstants();
+    } else {
+      m_shooter.setShootingPIDConstants();
     }
 
     if (m_driverController.getWantsStopIntake()) {
