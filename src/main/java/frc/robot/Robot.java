@@ -212,7 +212,7 @@ public class Robot extends LoggedRobot {
     if (k_lockHeading) {
       m_swerve.driveLockedHeading(
           xSpeed, ySpeed, rot, true,
-          wantsSpeakerAutoAim, false, wantsPassAutoAim);
+          wantsSpeakerAutoAim, wantsAmpAutoAim, wantsPassAutoAim);
     } else {
       m_swerve.drive(xSpeed, ySpeed, rot, true);
     }
@@ -236,6 +236,9 @@ public class Robot extends LoggedRobot {
     if (m_driverController.getWantsIntakePivotToggle()) {
       wantsAmpAutoAim = false;
       if (m_intake.getPivotTarget() == IntakePivotTarget.STOW) {
+        if(m_shooter.getPivotAngle() > 60.0) {
+          m_shooter.setAngle(60.0);
+        }
         m_intake.setPivotTarget(IntakePivotTarget.GROUND);
         m_intake.setIntakeState(IntakeState.INTAKE);
         m_intaking = true;
@@ -248,9 +251,14 @@ public class Robot extends LoggedRobot {
 
     m_intake.overrideAutoFlip(m_driverController.getWantsIntakeAutoFlipOverride());
 
-    if (wantsAmpAutoAim) {
+    if (m_driverController.getWantsEject()) {
       m_shooter.setAngle(ShooterPivotTarget.MIN);
-      m_intake.setPivotTarget(IntakePivotTarget.AMP);
+      m_intake.setPivotTarget(IntakePivotTarget.EJECT);
+    }
+
+    if (wantsAmpAutoAim) {
+      m_shooter.setAngle(ShooterPivotTarget.AMP);
+      m_shooter.setSpeed(ShooterSpeedTarget.AMP);
     }
 
     if (m_driverController.getWantsStopIntake()) {
@@ -263,9 +271,10 @@ public class Robot extends LoggedRobot {
       m_intaking = true;
     } else if (m_driverController.getWantsEject() || m_operatorController.getWantsEject()) {
       m_intake.setIntakeState(IntakeState.EJECT);
-      if (m_intake.isAtPivotTarget() && m_intake.getPivotTarget() == IntakePivotTarget.AMP) {
-        System.out.println("It's ampin' time"); // -andy
-      }
+      m_intaking = false;
+    } else if (m_driverController.getWantsAmp()) {
+      System.out.println("It's ampin' time!"); // -andy
+      m_intake.setIntakeState(IntakeState.FEED_SHOOTER);
       m_intaking = false;
     } else if (m_operatorController.getWantsShoot() &&
         m_intake.isAtPivotTarget() &&

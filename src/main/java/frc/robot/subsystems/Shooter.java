@@ -250,6 +250,9 @@ public class Shooter extends Subsystem {
       case QUARTER:
         m_periodicIO.shooter_rpm = ApolloConstants.Shooter.k_maxRPM / 4;
         break;
+      case AMP:
+        m_periodicIO.shooter_rpm = ApolloConstants.Shooter.k_ampSpeed;
+        break;
       case OFF:
         stopShooter();
         break;
@@ -342,7 +345,8 @@ public class Shooter extends Subsystem {
     MAX,
     HALF,
     QUARTER,
-    OFF
+    OFF, 
+    AMP
   }
 
   public enum ShooterPivotTarget {

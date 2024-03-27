@@ -219,7 +219,6 @@ public class Intake extends Subsystem {
     // close to it's target
     // Stop the intake and go to the SOURCE position
     if (m_periodicIO.pivot_target == IntakePivotTarget.GROUND && isHoldingNote() && isAtPivotTarget() && !m_override) {
-
       setPivotTarget(IntakePivotTarget.STOW);
       setIntakeState(IntakeState.NONE);
       // m_leds.setColor(Color.kGreen);
