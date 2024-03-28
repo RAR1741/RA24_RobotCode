@@ -45,7 +45,7 @@ public class Shooter extends Subsystem {
   private boolean m_hasSetPivotRelEncoder = false;
   private boolean m_hasResetPivotRelEncoder = false;
 
-  private int m_cycles = 0;
+  // private int m_cycles = 0;
   private final double k_highVelocity = 500.0;
 
   private Shooter() {
@@ -77,18 +77,43 @@ public class Shooter extends Subsystem {
     m_bottomMotorEncoder = m_bottomShooterMotor.getEncoder();
 
     m_topShooterMotorPID = m_topShooterMotor.getPIDController();
-    m_topShooterMotorPID.setP(ApolloConstants.Shooter.k_shooterMotorP);
-    m_topShooterMotorPID.setI(ApolloConstants.Shooter.k_shooterMotorI);
-    m_topShooterMotorPID.setD(ApolloConstants.Shooter.k_shooterMotorD);
-    m_topShooterMotorPID.setFF(ApolloConstants.Shooter.k_shooterMotorFF);
+    // Shooting
+    m_topShooterMotorPID.setP(ApolloConstants.Shooter.ShootPID.k_shooterMotorP, 0);
+    m_topShooterMotorPID.setI(ApolloConstants.Shooter.ShootPID.k_shooterMotorI, 0);
+    m_topShooterMotorPID.setD(ApolloConstants.Shooter.ShootPID.k_shooterMotorD, 0);
+    m_topShooterMotorPID.setFF(ApolloConstants.Shooter.ShootPID.k_shooterMotorFF, 0);
+    // Amping
+    m_topShooterMotorPID.setP(ApolloConstants.Shooter.AmpPID.k_shooterMotorP, 1);
+    m_topShooterMotorPID.setI(ApolloConstants.Shooter.AmpPID.k_shooterMotorI, 1);
+    m_topShooterMotorPID.setD(ApolloConstants.Shooter.AmpPID.k_shooterMotorD, 1);
+    m_topShooterMotorPID.setFF(ApolloConstants.Shooter.AmpPID.k_shooterMotorFF, 1);
+
+    // Trapping
+    m_topShooterMotorPID.setP(ApolloConstants.Shooter.TrapPID.k_shooterMotorP, 2);
+    m_topShooterMotorPID.setI(ApolloConstants.Shooter.TrapPID.k_shooterMotorI, 2);
+    m_topShooterMotorPID.setD(ApolloConstants.Shooter.TrapPID.k_shooterMotorD, 2);
+    m_topShooterMotorPID.setFF(ApolloConstants.Shooter.TrapPID.k_shooterMotorFF, 2);
     m_topShooterMotorPID.setOutputRange(ApolloConstants.Shooter.k_shooterMinOutput,
         ApolloConstants.Shooter.k_shooterMaxOutput);
 
     m_bottomShooterMotorPID = m_bottomShooterMotor.getPIDController();
-    m_bottomShooterMotorPID.setP(ApolloConstants.Shooter.k_shooterMotorP);
-    m_bottomShooterMotorPID.setI(ApolloConstants.Shooter.k_shooterMotorI);
-    m_bottomShooterMotorPID.setD(ApolloConstants.Shooter.k_shooterMotorD);
-    m_bottomShooterMotorPID.setFF(ApolloConstants.Shooter.k_shooterMotorFF);
+    // Shooting
+    m_bottomShooterMotorPID.setP(ApolloConstants.Shooter.ShootPID.k_shooterMotorP, 0);
+    m_bottomShooterMotorPID.setI(ApolloConstants.Shooter.ShootPID.k_shooterMotorI, 0);
+    m_bottomShooterMotorPID.setD(ApolloConstants.Shooter.ShootPID.k_shooterMotorD, 0);
+    m_bottomShooterMotorPID.setFF(ApolloConstants.Shooter.ShootPID.k_shooterMotorFF, 0);
+
+    // Amping
+    m_bottomShooterMotorPID.setP(ApolloConstants.Shooter.AmpPID.k_shooterMotorP, 1);
+    m_bottomShooterMotorPID.setI(ApolloConstants.Shooter.AmpPID.k_shooterMotorI, 1);
+    m_bottomShooterMotorPID.setD(ApolloConstants.Shooter.AmpPID.k_shooterMotorD, 1);
+    m_bottomShooterMotorPID.setFF(ApolloConstants.Shooter.AmpPID.k_shooterMotorFF, 1);
+
+    // Trapping
+    m_bottomShooterMotorPID.setP(ApolloConstants.Shooter.TrapPID.k_shooterMotorP, 2);
+    m_bottomShooterMotorPID.setI(ApolloConstants.Shooter.TrapPID.k_shooterMotorI, 2);
+    m_bottomShooterMotorPID.setD(ApolloConstants.Shooter.TrapPID.k_shooterMotorD, 2);
+    m_bottomShooterMotorPID.setFF(ApolloConstants.Shooter.TrapPID.k_shooterMotorFF, 2);
     m_bottomShooterMotorPID.setOutputRange(ApolloConstants.Shooter.k_shooterMinOutput,
         ApolloConstants.Shooter.k_shooterMaxOutput);
 
@@ -150,8 +175,9 @@ public class Shooter extends Subsystem {
     if (!(Preferences.getString("Test Mode", "NONE").contains("SHOOTER_") && DriverStation.isTest())) {
       // TeleOp mode
       double limited_speed = m_speedLimiter.calculate(m_periodicIO.shooter_rpm);
-      m_topShooterMotorPID.setReference(limited_speed, ControlType.kVelocity);
-      m_bottomShooterMotorPID.setReference(limited_speed, ControlType.kVelocity);
+
+      m_topShooterMotorPID.setReference(limited_speed, ControlType.kVelocity, m_periodicIO.PID_slot);
+      m_bottomShooterMotorPID.setReference(limited_speed, ControlType.kVelocity, m_periodicIO.PID_slot);
 
       if (m_pivotAbsEncoder.isConnected()) {
         m_pivotMotor.setVoltage(m_periodicIO.pivot_voltage);
@@ -229,6 +255,7 @@ public class Shooter extends Subsystem {
 
   public void setAngle(ShooterPivotTarget target) {
     m_periodicIO.pivot_angle = getAngleFromTarget(target);
+    m_periodicIO.pivot_target = target;
   }
 
   public void pivotAbsAngleToRel(double angle) {
@@ -237,9 +264,11 @@ public class Shooter extends Subsystem {
 
   public void setSpeed(double rpm) {
     m_periodicIO.shooter_rpm = rpm;
+    m_periodicIO.PID_slot = ShooterPIDSlot.SHOOT.ordinal();
   }
 
   public void setSpeed(ShooterSpeedTarget target) {
+    m_periodicIO.PID_slot = 0;
     switch (target) {
       case MAX:
         m_periodicIO.shooter_rpm = ApolloConstants.Shooter.k_maxRPM;
@@ -249,6 +278,14 @@ public class Shooter extends Subsystem {
         break;
       case QUARTER:
         m_periodicIO.shooter_rpm = ApolloConstants.Shooter.k_maxRPM / 4;
+        break;
+      case AMP:
+        m_periodicIO.shooter_rpm = ApolloConstants.Shooter.k_ampSpeed;
+        m_periodicIO.PID_slot = ShooterPIDSlot.AMP.ordinal();
+        break;
+      case TRAP:
+        m_periodicIO.shooter_rpm = ApolloConstants.Shooter.k_trapSpeed;
+        m_periodicIO.PID_slot = ShooterPIDSlot.TRAP.ordinal();
         break;
       case OFF:
         stopShooter();
@@ -317,6 +354,8 @@ public class Shooter extends Subsystem {
         return ApolloConstants.Shooter.k_minAngle;
       case AMP:
         return ApolloConstants.Shooter.k_ampPivotAngle;
+      case TRAP:
+        return ApolloConstants.Shooter.k_trapPivotAngle;
       case PODIUM:
         return ApolloConstants.Shooter.k_podiumPivotAngle;
       case SUBWOOFER:
@@ -335,23 +374,33 @@ public class Shooter extends Subsystem {
     double pivot_voltage = 0.0;
     double shoot_speed = 0.0;
 
+    ShooterPivotTarget pivot_target; // i dont want to say i told you so, but i told you so
     double manualPivotOffset = ApolloConstants.Shooter.k_initalPivotOffset;
+
+    int PID_slot = 0;
   }
 
   public enum ShooterSpeedTarget {
     MAX,
     HALF,
     QUARTER,
-    OFF
+    OFF,
+    AMP,
+    TRAP
   }
 
   public enum ShooterPivotTarget {
     MAX,
     MIN,
     AMP,
+    TRAP,
     SUBWOOFER,
     PODIUM,
     NONE
+  }
+
+  private enum ShooterPIDSlot {
+    SHOOT, AMP, TRAP
   }
 
   // Logged
@@ -419,7 +468,7 @@ public class Shooter extends Subsystem {
   }
 
   @AutoLogOutput
-  private double getPivotTargetAngle() {
+  public double getPivotTargetAngle() {
     return m_periodicIO.pivot_angle + m_periodicIO.manualPivotOffset;
   }
 
