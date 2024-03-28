@@ -10,11 +10,11 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -236,15 +236,18 @@ public class Robot extends LoggedRobot {
     if (m_driverController.getWantsIntakePivotToggle()) {
       wantsAmpAutoAim = false;
       if (m_intake.getPivotTarget() == IntakePivotTarget.STOW) {
-        if(m_shooter.getPivotAngle() > 60.0) {
+        if (m_shooter.getPivotTargetAngle() > 60.0) {
           m_shooter.setAngle(60.0);
         }
+
         m_intake.setPivotTarget(IntakePivotTarget.GROUND);
         m_intake.setIntakeState(IntakeState.INTAKE);
+
         m_intaking = true;
       } else {
         m_intake.setPivotTarget(IntakePivotTarget.STOW);
         m_intake.setIntakeState(IntakeState.NONE);
+
         m_intaking = false;
       }
     }
@@ -259,9 +262,11 @@ public class Robot extends LoggedRobot {
     if (wantsAmpAutoAim) {
       m_shooter.setAngle(ShooterPivotTarget.AMP);
       m_shooter.setSpeed(ShooterSpeedTarget.AMP);
-      m_shooter.setAmpinPIDConstants();
-    } else {
-      m_shooter.setShootingPIDConstants();
+    }
+
+    if (m_driverController.getWantsTrap()) {
+      m_shooter.setAngle(ShooterPivotTarget.TRAP);
+      m_shooter.setSpeed(ShooterSpeedTarget.TRAP);
     }
 
     if (m_driverController.getWantsStopIntake()) {

@@ -246,6 +246,7 @@ public final class ApolloConstants {
     public static final double k_maxRPM = 6000.0; // but that's just a theory
     public static final double k_passRPM = 4000.0;
     public static final double k_ampSpeed = 800.0;
+    public static final double k_trapSpeed = 6000.0;
 
     public static final int k_shooterSpeedTolerance = 100; // 1,000 is "in", 2000 is max
 
@@ -267,6 +268,13 @@ public final class ApolloConstants {
       public static final double k_shooterMotorFF = 0.00010;
     }
 
+    public class TrapPID {
+      public static final double k_shooterMotorP = 0.0009300;
+      public static final double k_shooterMotorI = 0.00000008;
+      public static final double k_shooterMotorD = 0.0001000;
+      public static final double k_shooterMotorFF = 0.00010;
+    }
+
     public static final double k_shooterMinOutput = 0.0;
     public static final double k_shooterMaxOutput = 1.0;
 
@@ -282,6 +290,7 @@ public final class ApolloConstants {
     public static final double k_subwooferPivotAngle = 62.0;
     public static final double k_podiumPivotAngle = 46.0;
     public static final double k_passPivotAngle = 50.0;
+    public static final double k_trapPivotAngle = 45.0;
 
     public static final double k_length = 11.94335; // in inches
     public static final double k_mass = 5.44311; // in kg
