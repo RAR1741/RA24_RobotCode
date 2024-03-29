@@ -10,6 +10,7 @@ import com.pathplanner.lib.path.PathPlannerTrajectory.State;
 import com.pathplanner.lib.util.PIDConstants;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
@@ -22,6 +23,8 @@ import frc.robot.constants.ApolloConstants.Auto;
 import frc.robot.constants.ApolloConstants.AutoAim.Rotation;
 import frc.robot.constants.ApolloConstants.AutoAim.Translation;
 import frc.robot.constants.ApolloConstants.Robot;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.drivetrain.RARHolonomicDriveController;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 
@@ -96,6 +99,8 @@ public class DriveTrajectoryTask extends Task {
       State goal = m_autoTrajectory.sample(m_runningTimer.get());
       Pose2d pose = m_swerve.getPose();
 
+      goal.targetHolonomicRotation = getRotationProvider(goal.targetHolonomicRotation.getDegrees());
+
       ChassisSpeeds chassisSpeeds = k_driveController.calculateRobotRelativeSpeeds(pose, goal);
 
       Logger.recordOutput("Auto/DriveTrajectory/TargetPose", goal.getTargetHolonomicPose());
@@ -120,6 +125,15 @@ public class DriveTrajectoryTask extends Task {
       m_isFinished |= m_runningTimer.get() >= m_autoTrajectory.getTotalTimeSeconds();
     } else {
       m_isFinished = true;
+    }
+  }
+
+  private Rotation2d getRotationProvider(double targetRotation) {
+    boolean isReadyToAutoTarget = Intake.getInstance().isAtStow() && Shooter.getInstance().isShooterReady();
+    if (isReadyToAutoTarget) {
+      return SwerveDrive.getInstance().getRotationTarget();
+    } else {
+      return new Rotation2d(Math.toRadians(targetRotation));
     }
   }
 

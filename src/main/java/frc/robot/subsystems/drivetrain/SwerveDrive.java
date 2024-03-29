@@ -6,7 +6,6 @@ import org.littletonrobotics.junction.Logger;
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkBase.IdleMode;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.controller.PIDController;
@@ -31,7 +30,6 @@ import frc.robot.AllianceHelpers;
 import frc.robot.AprilTagLocations;
 import frc.robot.LimelightHelpers.PoseEstimate;
 import frc.robot.constants.ApolloConstants;
-import frc.robot.constants.ApolloConstants.Field;
 import frc.robot.constants.VisionConstants;
 import frc.robot.subsystems.Limelight;
 
@@ -39,7 +37,7 @@ public class SwerveDrive extends SwerveSysId {
   private static SwerveDrive m_swerve = null;
 
   private Rotation2d m_rotationTarget;
-  private Pose2d m_accelerometerPose;
+  // private Pose2d m_accelerometerPose;
 
   private static final SwerveModule[] m_modules = {
       new SwerveModule(ApolloConstants.SwerveDrive.Drive.k_FLMotorId, ApolloConstants.SwerveDrive.Turn.k_FLMotorId,
@@ -116,7 +114,7 @@ public class SwerveDrive extends SwerveSysId {
     k_rotController.enableContinuousInput(-Math.PI, Math.PI);
 
     resetRotationTarget();
-    m_accelerometerPose = new Pose2d();
+    // m_accelerometerPose = new Pose2d();
 
     resetTurnOffsets();
     reset();
@@ -350,7 +348,7 @@ public class SwerveDrive extends SwerveSysId {
     m_gyro.reset();
     m_rotationTarget = new Rotation2d(0.0); // jitter go brr
     setAllianceGyroAngleAdjustment();
-    resetAccelerometerPose();
+    // resetAccelerometerPose();
   }
 
   // set rotation target
@@ -358,9 +356,10 @@ public class SwerveDrive extends SwerveSysId {
     m_rotationTarget = m_gyro.getRotation2d();
   }
 
-  public void resetAccelerometerPose() {
-    m_accelerometerPose = new Pose2d(getPose().getX(), getPose().getY(), new Rotation2d(0.0));
-  }
+  // public void resetAccelerometerPose() {
+  // m_accelerometerPose = new Pose2d(getPose().getX(), getPose().getY(), new
+  // Rotation2d(0.0));
+  // }
 
   // double accelX = getAccelerometerVelocityX() *
   // Math.sin(m_gyro.getRotation2d().getRadians()) / Math.pow(50.0,2.0);
@@ -519,10 +518,11 @@ public class SwerveDrive extends SwerveSysId {
         createVisionMeasurementStdDevs(xyStdDev, xyStdDev, thetaStdDev));
   }
 
-  private Pose2d clampPose(Pose2d pose) {
-    return new Pose2d(MathUtil.clamp(pose.getX(), 0, Field.k_width), MathUtil.clamp(pose.getY(), 0, Field.k_length),
-        getPose().getRotation());
-  }
+  // private Pose2d clampPose(Pose2d pose) {
+  // return new Pose2d(MathUtil.clamp(pose.getX(), 0, Field.k_width),
+  // MathUtil.clamp(pose.getY(), 0, Field.k_length),
+  // getPose().getRotation());
+  // }
 
   // Logged
   @AutoLogOutput

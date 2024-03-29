@@ -154,7 +154,7 @@ public class Shooter extends Subsystem {
 
     // Clamp the pivot + offset to the min and max
     double targetPivot = MathUtil.clamp(
-        m_periodicIO.pivot_angle + m_periodicIO.manualPivotOffset,
+        m_periodicIO.pivot_angle + m_periodicIO.manual_pivot_offset,
         ApolloConstants.Shooter.k_minAngle,
         ApolloConstants.Shooter.k_maxAngle);
 
@@ -246,7 +246,8 @@ public class Shooter extends Subsystem {
   }
 
   public void changePivotByAngle(double alpha) {
-    m_periodicIO.manualPivotOffset += alpha;
+    m_periodicIO.manual_pivot_offset += alpha;
+    updatePreviousShooterAngle();
   }
 
   public void setAngle(double angle) {
@@ -256,6 +257,15 @@ public class Shooter extends Subsystem {
   public void setAngle(ShooterPivotTarget target) {
     m_periodicIO.pivot_angle = getAngleFromTarget(target);
     m_periodicIO.pivot_target = target;
+    updatePreviousShooterAngle();
+  }
+
+  public void updatePreviousShooterAngle() {
+    m_periodicIO.previous_shooter_angle = m_shooter.getPivotTargetAngle();
+  }
+
+  public double getPreviousShooterAngle() {
+    return m_periodicIO.previous_shooter_angle;
   }
 
   public void pivotAbsAngleToRel(double angle) {
@@ -347,10 +357,10 @@ public class Shooter extends Subsystem {
   public double getAngleFromTarget(ShooterPivotTarget target) {
     switch (target) {
       case MAX:
-        m_periodicIO.manualPivotOffset = ApolloConstants.Shooter.k_initalPivotOffset; // :(
+        m_periodicIO.manual_pivot_offset = ApolloConstants.Shooter.k_initialPivotOffset; // :(
         return ApolloConstants.Shooter.k_maxAngle;
       case MIN:
-        m_periodicIO.manualPivotOffset = ApolloConstants.Shooter.k_initalPivotOffset;
+        m_periodicIO.manual_pivot_offset = ApolloConstants.Shooter.k_initialPivotOffset;
         return ApolloConstants.Shooter.k_minAngle;
       case AMP:
         return ApolloConstants.Shooter.k_ampPivotAngle;
@@ -369,13 +379,14 @@ public class Shooter extends Subsystem {
     double shooter_rpm = 0.0;
 
     double pivot_angle = 60.0;
+    double previous_shooter_angle = 60.0;
 
     double pivot_speed = 0.0;
     double pivot_voltage = 0.0;
     double shoot_speed = 0.0;
 
     ShooterPivotTarget pivot_target; // i dont want to say i told you so, but i told you so
-    double manualPivotOffset = ApolloConstants.Shooter.k_initalPivotOffset;
+    double manual_pivot_offset = ApolloConstants.Shooter.k_initialPivotOffset;
 
     int PID_slot = 0;
   }
@@ -469,7 +480,7 @@ public class Shooter extends Subsystem {
 
   @AutoLogOutput
   public double getPivotTargetAngle() {
-    return m_periodicIO.pivot_angle + m_periodicIO.manualPivotOffset;
+    return m_periodicIO.pivot_angle + m_periodicIO.manual_pivot_offset;
   }
 
   @AutoLogOutput
@@ -494,7 +505,7 @@ public class Shooter extends Subsystem {
 
   @AutoLogOutput
   public double getManualPivotOffset() {
-    return m_periodicIO.manualPivotOffset;
+    return m_periodicIO.manual_pivot_offset;
   }
 
   @AutoLogOutput
@@ -505,6 +516,14 @@ public class Shooter extends Subsystem {
   @AutoLogOutput
   private boolean exceedingVelocity() {
     return Math.abs(getPivotMotorVelocity()) > k_highVelocity;
+  }
+
+  @AutoLogOutput
+  public boolean isShooterReady() {
+    if(isAtSpeed() && isAtTarget()) {
+      return true;
+    }
+    return false;
   }
 
   @AutoLogOutput

@@ -144,7 +144,7 @@ public class SwerveModule {
 
   public void setDesiredState(SwerveModuleState desiredState) {
     // Optimize the reference state to avoid spinning further than 90 degrees
-    desiredState = SwerveModuleState.optimize(desiredState, Rotation2d.fromRadians(getTurnPosition()));
+    // desiredState = SwerveModuleState.optimize(desiredState, Rotation2d.fromRadians(getTurnPosition()));
     desiredState.angle = new Rotation2d(Helpers.modRadians(desiredState.angle.getRadians()));
     m_periodicIO.shouldChangeState = !desiredState.equals(m_periodicIO.desiredState);
     m_periodicIO.desiredState = desiredState;

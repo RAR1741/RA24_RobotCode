@@ -65,7 +65,7 @@ public class Robot extends LoggedRobot {
   AutoChooser m_autoChooser = new AutoChooser();
 
   // Misc vars
-  private final boolean k_lockHeading = true;
+  private final boolean k_lockHeading = false;
   private boolean m_intaking = false;
   public final static boolean k_ledsEnabled = false;
 
@@ -174,7 +174,7 @@ public class Robot extends LoggedRobot {
     m_swerve.setBrakeMode(false);
     m_swerve.drive(0, 0, 0, false);
     m_swerve.resetRotationTarget();
-    m_swerve.resetAccelerometerPose();
+    // m_swerve.resetAccelerometerPose();
 
     m_swerve.m_limelightLeft.setLightEnabled(false);
     m_swerve.m_limelightRight.setLightEnabled(false);
@@ -184,6 +184,14 @@ public class Robot extends LoggedRobot {
 
     if (k_ledsEnabled) {
       m_leds.breathe();
+    }
+  }
+
+  private void shooterCorrection() {
+    if (m_shooter.getPreviousShooterAngle() > 60.0) {
+      if (m_intake.getPivotTarget() == IntakePivotTarget.STOW && m_intake.isAtPivotTarget()) {
+        m_shooter.setAngle(m_shooter.getPreviousShooterAngle());
+      }
     }
   }
 
@@ -214,7 +222,7 @@ public class Robot extends LoggedRobot {
           xSpeed, ySpeed, rot, true,
           wantsSpeakerAutoAim, wantsAmpAutoAim, wantsPassAutoAim);
     } else {
-      m_swerve.drive(xSpeed, ySpeed, rot, true);
+      m_swerve.drive(xSpeed, ySpeed, rot, false);
     }
 
     if (wantsSpeakerAutoAim) {
@@ -235,8 +243,9 @@ public class Robot extends LoggedRobot {
 
     if (m_driverController.getWantsIntakePivotToggle()) {
       wantsAmpAutoAim = false;
+      m_shooter.updatePreviousShooterAngle();
       if (m_intake.getPivotTarget() == IntakePivotTarget.STOW) {
-        if (m_shooter.getPivotTargetAngle() > 60.0) {
+        if (m_shooter.getPreviousShooterAngle() > 60.0) {
           m_shooter.setAngle(60.0);
         }
 
@@ -253,6 +262,8 @@ public class Robot extends LoggedRobot {
     }
 
     m_intake.overrideAutoFlip(m_driverController.getWantsIntakeAutoFlipOverride());
+
+    shooterCorrection();
 
     if (m_driverController.getWantsEject()) {
       m_shooter.setAngle(ShooterPivotTarget.MIN);
@@ -284,19 +295,12 @@ public class Robot extends LoggedRobot {
       System.out.println("It's ampin' time!"); // -andy
       m_intake.setIntakeState(IntakeState.FEED_SHOOTER);
       m_intaking = false;
-    } else if (m_operatorController.getWantsShoot() &&
-        m_intake.isAtPivotTarget() &&
-        m_intake.getPivotTarget() == IntakePivotTarget.STOW) {
+    } else if (m_operatorController.getWantsShoot() && m_intake.isAtStow()) {
       m_intake.setIntakeState(IntakeState.FEED_SHOOTER);
       m_intaking = false;
     } else if (!m_intaking) {
       m_intake.setIntakeState(IntakeState.NONE);
     }
-
-    // if (m_driverController.getWantsEjectPivot()) {
-    // m_intake.setPivotTarget(IntakePivotTarget.EJECT);
-    // m_intaking = false;
-    // }
 
     m_shooter.changePivotByAngle(m_operatorController.getWantsManualShooterPivot(0.1));
 

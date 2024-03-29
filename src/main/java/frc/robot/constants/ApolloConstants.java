@@ -306,7 +306,7 @@ public final class ApolloConstants {
     // Offset, -90, since that's where we want to start
     public static final double k_absPivotOffset = 149.254 - 90;
 
-    public static final double k_initalPivotOffset = 0.0;
+    public static final double k_initialPivotOffset = 0.0;
 
     static double threadsPerInch = 8.0;
     static double helices = 1.0;

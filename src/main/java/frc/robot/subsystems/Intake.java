@@ -10,7 +10,6 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.I2C;
@@ -37,7 +36,7 @@ public class Intake extends Subsystem {
   private PeriodicIO m_periodicIO;
 
   private final I2C.Port k_colorSensorPort = I2C.Port.kMXP;
-  private final DigitalInput m_noteTOF1 = new DigitalInput(6);
+  // private final DigitalInput m_noteTOF1 = new DigitalInput(6);
   // private final DigitalInput m_noteTOF2 = new DigitalInput(7);
 
   private final double m_intakeAutoDetectCurrent = 40; // Amps
@@ -213,12 +212,20 @@ public class Intake extends Subsystem {
     m_override = override;
   }
 
+  public boolean isAtStow() {
+    return getPivotTarget() == IntakePivotTarget.STOW && isAtPivotTarget();
+  }
+
+  public boolean isAtGround() {
+    return m_periodicIO.pivot_target == IntakePivotTarget.GROUND && isAtPivotTarget();
+  }
+
   /*---------------------------------- Custom Private Functions ---------------------------------*/
   private void checkAutoTasks() {
     // If the intake is set to GROUND, and the intake has a note, and the pivot is
     // close to it's target
     // Stop the intake and go to the SOURCE position
-    if (m_periodicIO.pivot_target == IntakePivotTarget.GROUND && isHoldingNote() && isAtPivotTarget() && !m_override) {
+    if (isAtGround() && isHoldingNote() && !m_override) {
       setPivotTarget(IntakePivotTarget.STOW);
       setIntakeState(IntakeState.NONE);
       // m_leds.setColor(Color.kGreen);
