@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -66,7 +65,7 @@ public class Robot extends LoggedRobot {
   AutoChooser m_autoChooser = new AutoChooser();
 
   // Misc vars
-  private final boolean k_lockHeading = false;
+  private final boolean k_lockHeading = true;
   private boolean m_intaking = false;
   public final static boolean k_ledsEnabled = false;
 
@@ -223,12 +222,13 @@ public class Robot extends LoggedRobot {
           xSpeed, ySpeed, rot, true,
           wantsSpeakerAutoAim, wantsAmpAutoAim, wantsPassAutoAim);
     } else {
-      double timeOffset = (Timer.getFPGATimestamp() % 10.0) / 10.0 * (2 * Math.PI);
-      double x = Math.cos(timeOffset);
-      double y = Math.sin(timeOffset);
-      m_swerve.drive(x, y, rot, false);
+      // Automatically drive in a circle, to test swerve module things
+      // double timeOffset = (Timer.getFPGATimestamp() % 10.0) / 10.0 * (2 * Math.PI);
+      // double x = Math.cos(timeOffset);
+      // double y = Math.sin(timeOffset);
+      // m_swerve.drive(x, y, rot, false);
 
-      // m_swerve.drive(xSpeed, ySpeed, rot, false);
+      m_swerve.drive(xSpeed, ySpeed, rot, true);
     }
 
     if (wantsSpeakerAutoAim) {

@@ -297,12 +297,14 @@ public class Shooter extends Subsystem {
     // Use the distance between the robot and the speaker to calculate the angle to
     // aim the shooter at
     Pose2d[] aimingPoses = {
-        new Pose2d(1.485, 60.0, new Rotation2d()), // Speaker (1.36)
-        new Pose2d(1.686, 56.0, new Rotation2d()), // Speaker Corner (1.47)
-        new Pose2d(2.860, 39.5, new Rotation2d()), // Podium (2.74)
-        new Pose2d(3.702, 34.1, new Rotation2d()), // Stage Left Close ()
-        new Pose2d(3.972, 31.7, new Rotation2d()), // Stage Left ()
-        new Pose2d(5.123, 29.5, new Rotation2d()), // Wing shot Close (5.59)
+        new Pose2d(1.485, 58.0, new Rotation2d()), // Speaker
+        new Pose2d(1.550, 56.0, new Rotation2d()), // Speaker Corner
+        new Pose2d(2.300, 43.2, new Rotation2d()), // Auto center
+        new Pose2d(2.640, 38.0, new Rotation2d()), // Auto podium
+        new Pose2d(3.060, 35.2, new Rotation2d()), // Podium
+        new Pose2d(4.230, 27.5, new Rotation2d()), // Stage Close Mid
+        new Pose2d(4.750, 26.0, new Rotation2d()), // Stage Far Mid
+        new Pose2d(5.840, 24.6, new Rotation2d()), // Wing shot Close
     };
 
     // Find the upper and lower bounds of the aimingPoses array using the

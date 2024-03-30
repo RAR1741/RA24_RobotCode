@@ -10,13 +10,13 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.I2C;
 import frc.robot.Helpers;
 import frc.robot.constants.ApolloConstants;
 import frc.robot.simulation.IntakeSim;
 import frc.robot.simulation.SimMaster;
 import frc.robot.wrappers.RARSparkMax;
+import frc.robot.wrappers.REVThroughBoreEncoder;
 
 public class Intake extends Subsystem {
   private static Intake m_intake;
@@ -25,7 +25,8 @@ public class Intake extends Subsystem {
   private RARSparkMax m_pivotMotor;
   private RARSparkMax m_intakeMotor;
 
-  private final DutyCycleEncoder m_pivotAbsEncoder = new DutyCycleEncoder(ApolloConstants.Intake.k_pivotEncoderId);
+  private final REVThroughBoreEncoder m_pivotAbsEncoder = new REVThroughBoreEncoder(
+      ApolloConstants.Intake.k_pivotEncoderId);
 
   private final ProfiledPIDController m_pivotMotorPID;
   private final ArmFeedforward m_pivotFeedForward;

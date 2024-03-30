@@ -13,17 +13,17 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import frc.robot.Helpers;
 import frc.robot.constants.ApolloConstants;
 import frc.robot.wrappers.RARSparkMax;
+import frc.robot.wrappers.TalonSRXMagEncoder;
 
 public class SwerveModule {
   private final RARSparkMax m_driveMotor;
   private final RARSparkMax m_turnMotor;
   private final RelativeEncoder m_driveEncoder;
   private final RelativeEncoder m_turningRelEncoder;
-  private final DutyCycleEncoder m_turningAbsEncoder;
+  private final TalonSRXMagEncoder m_turningAbsEncoder;
   private final SimpleMotorFeedforward m_drivingFeedForward;
   private final SparkPIDController m_turningPIDController;
   private final SparkPIDController m_drivePIDController;
@@ -69,7 +69,7 @@ public class SwerveModule {
     m_turnMotor.setInverted(true);
     m_turnMotor.setSmartCurrentLimit(ApolloConstants.SwerveDrive.Turn.k_currentLimit);
 
-    m_turningAbsEncoder = new DutyCycleEncoder(turningAbsoluteID);
+    m_turningAbsEncoder = new TalonSRXMagEncoder(turningAbsoluteID);
 
     m_turningRelEncoder = m_turnMotor.getEncoder();
     m_turningRelEncoder.setPositionConversionFactor(ApolloConstants.SwerveDrive.k_turnGearRatio * 2.0 * Math.PI);

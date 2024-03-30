@@ -55,7 +55,7 @@ public final class ApolloConstants {
       public static final double k_D = 0.02;
     }
 
-    public static final VisionConstants teleopVisionConstants = new VisionConstants(1, 4.0, 32.0);
+    public static final VisionConstants teleopVisionConstants = new VisionConstants(1, 6.0, 32.0);
     public static final VisionConstants defaultAutoVisionConstants = new VisionConstants(1, 4.0, 32.0);
     public static final VisionConstants fourNoteVisionConstants = new VisionConstants(1, 4.0, 32.0);
     public static final VisionConstants threeNoteVisionConstants = new VisionConstants(1, 10.0, 16.0);
@@ -244,7 +244,7 @@ public final class ApolloConstants {
   }
 
   public class Shooter {
-    public static final double k_maxRPM = 6000.0; // but that's just a theory
+    public static final double k_maxRPM = 5000.0; // but that's just a theory
     public static final double k_passRPM = 4000.0;
     public static final double k_ampSpeed = 800.0;
     public static final double k_trapSpeed = 6000.0;
@@ -263,10 +263,15 @@ public final class ApolloConstants {
     }
 
     public class ShootPID {
-      public static final double k_shooterMotorP = 0.0009300;
+      public static final double k_shooterMotorP = 0.0007000;
       public static final double k_shooterMotorI = 0.00000008;
-      public static final double k_shooterMotorD = 0.0001000;
-      public static final double k_shooterMotorFF = 0.00010;
+      public static final double k_shooterMotorD = 0.0000500;
+      public static final double k_shooterMotorFF = 0.000150;
+
+      // public static final double k_shooterMotorP = 0.0009300;
+      // public static final double k_shooterMotorI = 0.00000008;
+      // public static final double k_shooterMotorD = 0.0001000;
+      // public static final double k_shooterMotorFF = 0.00005;
     }
 
     public class TrapPID {
@@ -298,7 +303,7 @@ public final class ApolloConstants {
 
     public static final double k_pivotHeight = 4.0;
 
-    public static final double k_minAngle = 25.0;
+    public static final double k_minAngle = 21.0;
     public static final double k_maxAngle = 65.0;
     public static final double k_startingAngle = 0.0;
 

@@ -11,7 +11,6 @@
           "expanded": [
             "/DriverStation/Joystick0/AxisValues",
             "/RealOutputs/SwerveDrive/Module",
-            "/RealOutputs",
             "",
             "/SystemStats/CANBus",
             "/RealOutputs/SwerveDrive/LL1CurrentPose",
@@ -30,21 +29,20 @@
             "/RealOutputs/SwerveDrive/CurrentStates/1",
             "/RealOutputs/SwerveDrive/CurrentStates/1/angle",
             "/RealOutputs/SwerveDrive/DesiredStates/1/angle",
-            "/RealOutputs/SwerveDrive/Modules",
             "/RealOutputs/SwerveDrive",
             "/RealOutputs/SwerveDrive/Modules/BR",
             "/RealOutputs/SwerveDrive/Modules/FL",
             "/RealOutputs/SwerveDrive/Modules/FR",
-            "/RealOutputs/SwerveModule",
             "/RealOutputs/SwerveDrive/Modules/BL",
             "/RealOutputs/SwerveDrive/Modules/BL/Turn",
             "/RealOutputs/SwerveDrive/Modules/BR/Turn",
             "/RealOutputs/SwerveDrive/Modules/FL/Turn",
-            "/RealOutputs/SwerveDrive/Modules/FR/Turn"
+            "/RealOutputs/SwerveDrive/Modules/FR/Turn",
+            "/RealOutputs"
           ]
         },
         "tabs": {
-          "selected": 6,
+          "selected": 13,
           "tabs": [
             {
               "type": 0,
@@ -247,14 +245,14 @@
                 "cameraIndex": -1,
                 "orbitFov": 90,
                 "cameraPosition": [
-                  -5.401600988004854,
-                  6.639267214927812,
-                  6.5299336177560745
+                  -7.774927120231206,
+                  5.524276683320859,
+                  1.346516290365005
                 ],
                 "cameraTarget": [
-                  -2.248095612212164,
-                  -4.305459252516523,
-                  -0.14227489199942794
+                  -2.3030283644215204,
+                  -4.381807514793297,
+                  1.2139198822857502
                 ]
               },
               "title": "3D Field"
@@ -362,22 +360,22 @@
                     {
                       "key": "/RealOutputs/SwerveDrive/Modules/BL/Turn/error",
                       "color": "#2b66a2",
-                      "show": true
+                      "show": false
                     },
                     {
                       "key": "/RealOutputs/SwerveDrive/Modules/BR/Turn/error",
                       "color": "#e5b31b",
-                      "show": true
+                      "show": false
                     },
                     {
                       "key": "/RealOutputs/SwerveDrive/Modules/FL/Turn/error",
                       "color": "#af2437",
-                      "show": true
+                      "show": false
                     },
                     {
                       "key": "/RealOutputs/SwerveDrive/Modules/FR/Turn/error",
                       "color": "#80588e",
-                      "show": true
+                      "show": false
                     }
                   ]
                 },
@@ -394,27 +392,75 @@
                     {
                       "key": "/RealOutputs/SwerveDrive/Modules/BL/Turn/errorRelToAbs",
                       "color": "#e48b32",
-                      "show": false
+                      "show": true
                     },
                     {
                       "key": "/RealOutputs/SwerveDrive/Modules/BR/Turn/errorRelToAbs",
                       "color": "#aacaee",
-                      "show": false
+                      "show": true
                     },
                     {
                       "key": "/RealOutputs/SwerveDrive/Modules/FL/Turn/errorRelToAbs",
                       "color": "#c0b487",
-                      "show": false
+                      "show": true
                     },
                     {
                       "key": "/RealOutputs/SwerveDrive/Modules/FR/Turn/errorRelToAbs",
                       "color": "#858584",
-                      "show": false
+                      "show": true
                     }
                   ]
                 }
               },
               "title": "Turn Offset"
+            },
+            {
+              "type": 1,
+              "legendHeight": 0.3,
+              "legends": {
+                "left": {
+                  "lockedRange": null,
+                  "unitConversion": {
+                    "type": null,
+                    "factor": 1
+                  },
+                  "fields": [
+                    {
+                      "key": "/SystemStats/CANBus/Utilization",
+                      "color": "#e5b31b",
+                      "show": true
+                    }
+                  ]
+                },
+                "discrete": {
+                  "fields": []
+                },
+                "right": {
+                  "lockedRange": null,
+                  "unitConversion": {
+                    "type": null,
+                    "factor": 1
+                  },
+                  "fields": [
+                    {
+                      "key": "/RealOutputs/LoggedRobot/FullCycleMS",
+                      "color": "#2b66a2",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/LoggedRobot/LogPeriodicMS",
+                      "color": "#af2437",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/LoggedRobot/UserCodeMS",
+                      "color": "#80588e",
+                      "show": true
+                    }
+                  ]
+                }
+              },
+              "title": "OP"
             },
             {
               "type": 9,
@@ -722,6 +768,44 @@
                 }
               },
               "title": "ShooterSpeed"
+            },
+            {
+              "type": 1,
+              "legendHeight": 0.3,
+              "legends": {
+                "left": {
+                  "lockedRange": null,
+                  "unitConversion": {
+                    "type": null,
+                    "factor": 1
+                  },
+                  "fields": [
+                    {
+                      "key": "/RealOutputs/Shooter/PivotAngle",
+                      "color": "#e5b31b",
+                      "show": true
+                    }
+                  ]
+                },
+                "discrete": {
+                  "fields": []
+                },
+                "right": {
+                  "lockedRange": null,
+                  "unitConversion": {
+                    "type": null,
+                    "factor": 1
+                  },
+                  "fields": [
+                    {
+                      "key": "/RealOutputs/SwerveDrive/DistanceFromSpeaker",
+                      "color": "#2b66a2",
+                      "show": true
+                    }
+                  ]
+                }
+              },
+              "title": "ShooterCalibration"
             },
             {
               "type": 1,
