@@ -13,7 +13,6 @@
             "/RealOutputs/SwerveDrive/Module",
             "/RealOutputs",
             "",
-            "/RealOutputs/SwerveDrive/Modules/BL/Abs",
             "/SystemStats/CANBus",
             "/RealOutputs/SwerveDrive/LL1CurrentPose",
             "/RealOutputs/SwerveDrive/LL1CurrentPose/translation",
@@ -26,15 +25,26 @@
             "/RealOutputs/SwerveDrive/Pose/translation",
             "/RealOutputs/SwerveDrive/HeadingLock",
             "/RealOutputs/SwerveDrive/HeadingLock/Target",
-            "/RealOutputs/SwerveDrive/CurrentStates/0",
             "/RealOutputs/SwerveDrive/CurrentStates/0/angle",
-            "/RealOutputs/SwerveDrive/Modules/BL",
+            "/RealOutputs/SwerveDrive/DesiredStates/1",
+            "/RealOutputs/SwerveDrive/CurrentStates/1",
+            "/RealOutputs/SwerveDrive/CurrentStates/1/angle",
+            "/RealOutputs/SwerveDrive/DesiredStates/1/angle",
+            "/RealOutputs/SwerveDrive/Modules",
             "/RealOutputs/SwerveDrive",
-            "/RealOutputs/SwerveDrive/Modules"
+            "/RealOutputs/SwerveDrive/Modules/BR",
+            "/RealOutputs/SwerveDrive/Modules/FL",
+            "/RealOutputs/SwerveDrive/Modules/FR",
+            "/RealOutputs/SwerveModule",
+            "/RealOutputs/SwerveDrive/Modules/BL",
+            "/RealOutputs/SwerveDrive/Modules/BL/Turn",
+            "/RealOutputs/SwerveDrive/Modules/BR/Turn",
+            "/RealOutputs/SwerveDrive/Modules/FL/Turn",
+            "/RealOutputs/SwerveDrive/Modules/FR/Turn"
           ]
         },
         "tabs": {
-          "selected": 5,
+          "selected": 6,
           "tabs": [
             {
               "type": 0,
@@ -237,14 +247,14 @@
                 "cameraIndex": -1,
                 "orbitFov": 90,
                 "cameraPosition": [
-                  -6.6757060852967385,
-                  4.125264434777415,
-                  4.143692821498533
+                  -5.401600988004854,
+                  6.639267214927812,
+                  6.5299336177560745
                 ],
                 "cameraTarget": [
-                  -4.23558373920458,
-                  -4.343556271882732,
-                  -1.0191349343755687
+                  -2.248095612212164,
+                  -4.305459252516523,
+                  -0.14227489199942794
                 ]
               },
               "title": "3D Field"
@@ -339,6 +349,74 @@
               "title": "DriveEncoders"
             },
             {
+              "type": 1,
+              "legendHeight": 0.3,
+              "legends": {
+                "left": {
+                  "lockedRange": null,
+                  "unitConversion": {
+                    "type": null,
+                    "factor": 1
+                  },
+                  "fields": [
+                    {
+                      "key": "/RealOutputs/SwerveDrive/Modules/BL/Turn/error",
+                      "color": "#2b66a2",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/SwerveDrive/Modules/BR/Turn/error",
+                      "color": "#e5b31b",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/SwerveDrive/Modules/FL/Turn/error",
+                      "color": "#af2437",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/SwerveDrive/Modules/FR/Turn/error",
+                      "color": "#80588e",
+                      "show": true
+                    }
+                  ]
+                },
+                "discrete": {
+                  "fields": []
+                },
+                "right": {
+                  "lockedRange": null,
+                  "unitConversion": {
+                    "type": null,
+                    "factor": 1
+                  },
+                  "fields": [
+                    {
+                      "key": "/RealOutputs/SwerveDrive/Modules/BL/Turn/errorRelToAbs",
+                      "color": "#e48b32",
+                      "show": false
+                    },
+                    {
+                      "key": "/RealOutputs/SwerveDrive/Modules/BR/Turn/errorRelToAbs",
+                      "color": "#aacaee",
+                      "show": false
+                    },
+                    {
+                      "key": "/RealOutputs/SwerveDrive/Modules/FL/Turn/errorRelToAbs",
+                      "color": "#c0b487",
+                      "show": false
+                    },
+                    {
+                      "key": "/RealOutputs/SwerveDrive/Modules/FR/Turn/errorRelToAbs",
+                      "color": "#858584",
+                      "show": false
+                    }
+                  ]
+                }
+              },
+              "title": "Turn Offset"
+            },
+            {
               "type": 9,
               "uuid": "ekyksagig6fls8piz7ucc019946gelt5",
               "fields": [
@@ -367,7 +445,7 @@
                 "sizeFrontBack": 0.76,
                 "forwardDirection": "up"
               },
-              "configHidden": true,
+              "configHidden": false,
               "visualizer": null,
               "title": "Swerve"
             },

@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -222,7 +223,12 @@ public class Robot extends LoggedRobot {
           xSpeed, ySpeed, rot, true,
           wantsSpeakerAutoAim, wantsAmpAutoAim, wantsPassAutoAim);
     } else {
-      m_swerve.drive(xSpeed, ySpeed, rot, false);
+      double timeOffset = (Timer.getFPGATimestamp() % 10.0) / 10.0 * (2 * Math.PI);
+      double x = Math.cos(timeOffset);
+      double y = Math.sin(timeOffset);
+      m_swerve.drive(x, y, rot, false);
+
+      // m_swerve.drive(xSpeed, ySpeed, rot, false);
     }
 
     if (wantsSpeakerAutoAim) {

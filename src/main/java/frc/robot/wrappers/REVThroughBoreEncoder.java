@@ -1,4 +1,4 @@
-package frc.robot;
+package frc.robot.wrappers;
 
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 
@@ -7,8 +7,8 @@ public class REVThroughBoreEncoder extends DutyCycleEncoder {
     super(channel);
 
     // Based on logging:
-    // - Initializing: 764 +- 5
-    // - Ready: 973 +- 5
+    // - Initializing: 764 ± 5
+    // - Ready: 973 ± 5
     setConnectedFrequencyThreshold(900);
   }
 }

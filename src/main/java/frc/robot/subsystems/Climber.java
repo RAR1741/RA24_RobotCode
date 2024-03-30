@@ -5,7 +5,6 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
-import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 
@@ -13,6 +12,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Preferences;
 import frc.robot.Helpers;
 import frc.robot.constants.ApolloConstants;
+import frc.robot.wrappers.RARSparkMax;
 
 public class Climber extends Subsystem {
   private static Climber m_climber;
@@ -25,8 +25,8 @@ public class Climber extends Subsystem {
     return m_climber;
   }
 
-  private CANSparkMax m_leftMotor;
-  private CANSparkMax m_rightMotor;
+  private RARSparkMax m_leftMotor;
+  private RARSparkMax m_rightMotor;
 
   private SparkPIDController m_leftPID;
   private SparkPIDController m_rightPID;
@@ -39,12 +39,12 @@ public class Climber extends Subsystem {
 
     m_periodicIO = new PeriodicIO();
 
-    m_leftMotor = new CANSparkMax(ApolloConstants.Climber.k_leftMotorID, MotorType.kBrushless);
+    m_leftMotor = new RARSparkMax(ApolloConstants.Climber.k_leftMotorID, MotorType.kBrushless);
     m_leftMotor.restoreFactoryDefaults();
     m_leftMotor.setSmartCurrentLimit(40);
     m_leftMotor.setIdleMode(IdleMode.kBrake);
 
-    m_rightMotor = new CANSparkMax(ApolloConstants.Climber.k_rightMotorID, MotorType.kBrushless);
+    m_rightMotor = new RARSparkMax(ApolloConstants.Climber.k_rightMotorID, MotorType.kBrushless);
     m_rightMotor.restoreFactoryDefaults();
     m_rightMotor.setSmartCurrentLimit(40);
     m_rightMotor.setIdleMode(IdleMode.kBrake);
@@ -73,8 +73,8 @@ public class Climber extends Subsystem {
     m_rightEncoder.setPositionConversionFactor(ApolloConstants.Climber.k_gearRatio);
     m_rightEncoder.setVelocityConversionFactor(ApolloConstants.Climber.k_gearRatio);
 
-    m_leftMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
-    m_rightMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
+    m_leftMotor.setIdleMode(RARSparkMax.IdleMode.kBrake);
+    m_rightMotor.setIdleMode(RARSparkMax.IdleMode.kBrake);
 
     m_leftMotor.setInverted(true);
     m_rightMotor.setInverted(false);

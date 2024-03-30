@@ -3,7 +3,6 @@ package frc.robot.subsystems;
 import org.littletonrobotics.junction.AutoLogOutput;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
-import com.revrobotics.CANSparkMax;
 import com.revrobotics.ColorSensorV3;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
@@ -17,13 +16,14 @@ import frc.robot.Helpers;
 import frc.robot.constants.ApolloConstants;
 import frc.robot.simulation.IntakeSim;
 import frc.robot.simulation.SimMaster;
+import frc.robot.wrappers.RARSparkMax;
 
 public class Intake extends Subsystem {
   private static Intake m_intake;
   private static IntakeSim m_sim;
 
-  private CANSparkMax m_pivotMotor;
-  private CANSparkMax m_intakeMotor;
+  private RARSparkMax m_pivotMotor;
+  private RARSparkMax m_intakeMotor;
 
   private final DutyCycleEncoder m_pivotAbsEncoder = new DutyCycleEncoder(ApolloConstants.Intake.k_pivotEncoderId);
 
@@ -52,16 +52,16 @@ public class Intake extends Subsystem {
     m_sim = SimMaster.getInstance().getIntakeSim();
 
     // Pivot motor setup
-    m_pivotMotor = new CANSparkMax(ApolloConstants.Intake.k_pivotMotorId, MotorType.kBrushless);
+    m_pivotMotor = new RARSparkMax(ApolloConstants.Intake.k_pivotMotorId, MotorType.kBrushless);
     m_pivotMotor.restoreFactoryDefaults();
-    m_pivotMotor.setIdleMode(CANSparkMax.IdleMode.kCoast);
+    m_pivotMotor.setIdleMode(RARSparkMax.IdleMode.kCoast);
     m_pivotMotor.setSmartCurrentLimit(20);
     m_pivotMotor.setInverted(true);
 
     // Intake motor setup
-    m_intakeMotor = new CANSparkMax(ApolloConstants.Intake.k_intakeMotorId, MotorType.kBrushless);
+    m_intakeMotor = new RARSparkMax(ApolloConstants.Intake.k_intakeMotorId, MotorType.kBrushless);
     m_intakeMotor.restoreFactoryDefaults();
-    m_intakeMotor.setIdleMode(CANSparkMax.IdleMode.kCoast);
+    m_intakeMotor.setIdleMode(RARSparkMax.IdleMode.kCoast);
     m_intakeMotor.setInverted(true);
 
     // Pivot PID

@@ -3,9 +3,7 @@ package frc.robot.subsystems;
 import org.littletonrobotics.junction.AutoLogOutput;
 
 import com.revrobotics.CANSparkBase.ControlType;
-import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkLowLevel.MotorType;
-import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 
@@ -19,18 +17,20 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Preferences;
 import frc.robot.AllianceHelpers;
 import frc.robot.Helpers;
-import frc.robot.REVThroughBoreEncoder;
 import frc.robot.constants.ApolloConstants;
 import frc.robot.simulation.ShooterSim;
 import frc.robot.simulation.SimMaster;
+import frc.robot.wrappers.RARSparkFlex;
+import frc.robot.wrappers.RARSparkMax;
+import frc.robot.wrappers.REVThroughBoreEncoder;
 
 public class Shooter extends Subsystem {
   private static Shooter m_shooter;
   private static ShooterSim m_sim;
 
-  private CANSparkFlex m_topShooterMotor;
-  private CANSparkFlex m_bottomShooterMotor;
-  private CANSparkFlex m_pivotMotor;
+  private RARSparkFlex m_topShooterMotor;
+  private RARSparkFlex m_bottomShooterMotor;
+  private RARSparkFlex m_pivotMotor;
 
   private RelativeEncoder m_topMotorEncoder;
   private RelativeEncoder m_bottomMotorEncoder;
@@ -45,7 +45,6 @@ public class Shooter extends Subsystem {
   private boolean m_hasSetPivotRelEncoder = false;
   private boolean m_hasResetPivotRelEncoder = false;
 
-  // private int m_cycles = 0;
   private final double k_highVelocity = 500.0;
 
   private Shooter() {
@@ -53,19 +52,19 @@ public class Shooter extends Subsystem {
 
     m_sim = SimMaster.getInstance().getShooterSim();
 
-    m_topShooterMotor = new CANSparkFlex(ApolloConstants.Shooter.k_topMotorId, MotorType.kBrushless);
+    m_topShooterMotor = new RARSparkFlex(ApolloConstants.Shooter.k_topMotorId, MotorType.kBrushless);
     m_topShooterMotor.restoreFactoryDefaults();
-    m_topShooterMotor.setIdleMode(CANSparkFlex.IdleMode.kCoast);
+    m_topShooterMotor.setIdleMode(RARSparkFlex.IdleMode.kCoast);
     m_topShooterMotor.setInverted(false);
 
-    m_bottomShooterMotor = new CANSparkFlex(ApolloConstants.Shooter.k_bottomMotorId, MotorType.kBrushless);
+    m_bottomShooterMotor = new RARSparkFlex(ApolloConstants.Shooter.k_bottomMotorId, MotorType.kBrushless);
     m_bottomShooterMotor.restoreFactoryDefaults();
-    m_bottomShooterMotor.setIdleMode(CANSparkFlex.IdleMode.kCoast);
+    m_bottomShooterMotor.setIdleMode(RARSparkFlex.IdleMode.kCoast);
     m_bottomShooterMotor.setInverted(true);
 
-    m_pivotMotor = new CANSparkFlex(ApolloConstants.Shooter.k_pivotMotorId, MotorType.kBrushless);
+    m_pivotMotor = new RARSparkFlex(ApolloConstants.Shooter.k_pivotMotorId, MotorType.kBrushless);
     m_pivotMotor.restoreFactoryDefaults();
-    m_pivotMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
+    m_pivotMotor.setIdleMode(RARSparkMax.IdleMode.kBrake);
     m_pivotMotor.setSmartCurrentLimit(50);
     m_pivotMotor.setInverted(false);
     // m_pivotMotor.setSoftLimit(SoftLimitDirection.kReverse,
@@ -82,6 +81,7 @@ public class Shooter extends Subsystem {
     m_topShooterMotorPID.setI(ApolloConstants.Shooter.ShootPID.k_shooterMotorI, 0);
     m_topShooterMotorPID.setD(ApolloConstants.Shooter.ShootPID.k_shooterMotorD, 0);
     m_topShooterMotorPID.setFF(ApolloConstants.Shooter.ShootPID.k_shooterMotorFF, 0);
+
     // Amping
     m_topShooterMotorPID.setP(ApolloConstants.Shooter.AmpPID.k_shooterMotorP, 1);
     m_topShooterMotorPID.setI(ApolloConstants.Shooter.AmpPID.k_shooterMotorI, 1);
@@ -144,8 +144,6 @@ public class Shooter extends Subsystem {
       setPivotAbsOffset();
     }
 
-    // m_cycles++;
-
     // Clamp the pivot angle to the min and max
     m_periodicIO.pivot_angle = MathUtil.clamp(
         m_periodicIO.pivot_angle,
@@ -160,9 +158,10 @@ public class Shooter extends Subsystem {
 
     m_periodicIO.pivot_voltage = m_pivotMotorPID.calculate(getPivotAngle(), targetPivot);
 
-    if (!m_bottomShooterMotor.getInverted()) {
-      m_bottomShooterMotor.setInverted(true);
-    }
+    // TODO: add this back (or improve it)
+    // if (!m_bottomShooterMotor.getInverted()) {
+    // m_bottomShooterMotor.setInverted(true);
+    // }
   }
 
   @Override
@@ -184,21 +183,6 @@ public class Shooter extends Subsystem {
       } else {
         m_pivotMotor.set(0.0);
       }
-
-      // double targetPivot = MathUtil.clamp(
-      // m_periodicIO.pivot_angle + m_periodicIO.manualPivotOffset,
-      // Constants.Shooter.k_minAngle,
-      // Constants.Shooter.k_maxAngle);
-
-      // double pivotRelRotations = targetAngleToRelRotations(targetPivot);
-
-      // if (exceedingVelocity()) {
-      // m_cycles = 0;
-      // } else if (m_cycles == 10) {
-      // m_cycles = 0;
-      // setPivotAbsOffset();
-      // }
-
     } else {
       // Test mode
       if (Preferences.getString("Test Mode", "NONE").equals("SHOOTER_PIVOT")) {
@@ -520,7 +504,7 @@ public class Shooter extends Subsystem {
 
   @AutoLogOutput
   public boolean isShooterReady() {
-    if(isAtSpeed() && isAtTarget()) {
+    if (isAtSpeed() && isAtTarget()) {
       return true;
     }
     return false;

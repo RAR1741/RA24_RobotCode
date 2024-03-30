@@ -5,7 +5,6 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
-import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 
@@ -17,10 +16,11 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import frc.robot.Helpers;
 import frc.robot.constants.ApolloConstants;
+import frc.robot.wrappers.RARSparkMax;
 
 public class SwerveModule {
-  private final CANSparkMax m_driveMotor;
-  private final CANSparkMax m_turnMotor;
+  private final RARSparkMax m_driveMotor;
+  private final RARSparkMax m_turnMotor;
   private final RelativeEncoder m_driveEncoder;
   private final RelativeEncoder m_turningRelEncoder;
   private final DutyCycleEncoder m_turningAbsEncoder;
@@ -51,7 +51,7 @@ public class SwerveModule {
         ApolloConstants.SwerveDrive.Drive.k_FFV,
         ApolloConstants.SwerveDrive.Drive.k_FFA);
 
-    m_driveMotor = new CANSparkMax(driveMotorChannel, MotorType.kBrushless);
+    m_driveMotor = new RARSparkMax(driveMotorChannel, MotorType.kBrushless);
     m_driveMotor.restoreFactoryDefaults();
     m_driveMotor.setIdleMode(IdleMode.kCoast);
     m_driveEncoder = m_driveMotor.getEncoder();
@@ -63,11 +63,10 @@ public class SwerveModule {
         / 60.0);
     m_driveMotor.setSmartCurrentLimit(ApolloConstants.SwerveDrive.Drive.k_currentLimit);
 
-    m_turnMotor = new CANSparkMax(turningMotorChannel, MotorType.kBrushless);
+    m_turnMotor = new RARSparkMax(turningMotorChannel, MotorType.kBrushless);
     m_turnMotor.restoreFactoryDefaults();
     m_turnMotor.setIdleMode(IdleMode.kCoast);
     m_turnMotor.setInverted(true);
-    // m_turnMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 20);
     m_turnMotor.setSmartCurrentLimit(ApolloConstants.SwerveDrive.Turn.k_currentLimit);
 
     m_turningAbsEncoder = new DutyCycleEncoder(turningAbsoluteID);
@@ -114,11 +113,11 @@ public class SwerveModule {
         drivePosition, Rotation2d.fromRadians(getTurnPosition()));
   }
 
-  public CANSparkMax getDriveMotor() {
+  public RARSparkMax getDriveMotor() {
     return m_driveMotor;
   }
 
-  public CANSparkMax getTurnMotor() {
+  public RARSparkMax getTurnMotor() {
     return m_turnMotor;
   }
 
