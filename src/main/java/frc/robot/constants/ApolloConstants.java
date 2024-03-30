@@ -93,14 +93,14 @@ public final class ApolloConstants {
 
       public static final int k_currentLimit = 40;
 
-      public static final double k_P = 0.00079049;
+      public static final double k_P = 0.000221;
       public static final double k_I = 0.0;
       public static final double k_D = 0.0;
       public static final double k_IZone = 0.0;
 
-      public static final double k_FFS = 0.21465;
-      public static final double k_FFV = 2.3914;
-      public static final double k_FFA = 0.36664;
+      public static final double k_FFS = 0.255;
+      public static final double k_FFV = 2.675;
+      public static final double k_FFA = 0.525;
     }
 
     // Drivetrain (turn) constants

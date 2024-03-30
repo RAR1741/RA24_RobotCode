@@ -90,7 +90,7 @@ public class Robot extends LoggedRobot {
 
     Preferences.initString("Test Mode", "NONE");
 
-    m_allSubsystems.add(m_swerve);
+    // m_allSubsystems.add(m_swerve);
     m_allSubsystems.add(m_intake);
     m_allSubsystems.add(m_shooter);
     m_allSubsystems.add(m_climber);
@@ -388,6 +388,9 @@ public class Robot extends LoggedRobot {
     if (k_ledsEnabled) {
       m_leds.rainbowChase();
     }
+    // m_swerve.m_limelightLeft.setLightEnabled(false);
+    // m_swerve.m_limelightRight.setLightEnabled(false);
+    // m_swerve.m_limelightShooter.setLightEnabled(false);
   }
 
   @Override
@@ -456,9 +459,6 @@ public class Robot extends LoggedRobot {
   private void updateSim() {
     // Update the odometry in the sim.
     m_field.setRobotPose(m_swerve.getPose());
-  }
-
-  public void setLEDs() {
   }
 
   @SuppressWarnings("resource")

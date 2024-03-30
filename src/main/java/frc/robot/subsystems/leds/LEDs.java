@@ -42,10 +42,12 @@ public class LEDs extends Subsystem {
 
   @Override
   public void periodic() {
-    setShooterColorMode();
-    setDriveColorMode();
+    if (Robot.k_ledsEnabled) {
+        setShooterColorMode();
+        setDriveColorMode();
 
-    m_led.setData(m_buffer);
+        m_led.setData(m_buffer);
+    }
   }
 
   public void setAllColorMode(
