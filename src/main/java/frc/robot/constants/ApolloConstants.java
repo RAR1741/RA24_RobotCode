@@ -8,11 +8,11 @@ import edu.wpi.first.math.util.Units;
 
 public final class ApolloConstants {
   public static class Robot {
-    public static final double k_width = 30; // Inches
-    public static final double k_length = 30; // Inches
+    public static final double k_width = 30.0; // Inches
+    public static final double k_length = 30.0; // Inches
 
-    public static final double k_bumperStart = 1; // Inches
-    public static final double k_bumperHeight = 5; // Inches
+    public static final double k_bumperStart = 1.0; // Inches
+    public static final double k_bumperHeight = 5.0; // Inches
   }
 
   public static class Auto {
@@ -127,6 +127,7 @@ public final class ApolloConstants {
       public static final double k_I = 0.0;
       public static final double k_D = 0.1976;
       public static final double k_IZone = 0.0;
+      public static final double k_FF = 0.0;
 
       public static final double k_FFS = 0.29745;
       public static final double k_FFV = 0.43892; // Not used
@@ -150,8 +151,8 @@ public final class ApolloConstants {
       public static final double k_D = 0.0;
     }
 
-    public static final double k_autoAimDistanceThreshold = 1; // in meters
-    public static final double k_autoAimOmegaRPSThreshold = Math.PI / 8; // in radians
+    public static final double k_autoAimDistanceThreshold = 1.0; // in meters
+    public static final double k_autoAimOmegaRPSThreshold = Math.PI / 8.0; // in radians
     public static final double k_autoAimAngleTolerance = Units.degreesToRadians(3.0);
 
     // Max speed
@@ -159,9 +160,9 @@ public final class ApolloConstants {
     public static final double k_maxLinearAcceleration = 1.5; // Meters per second squared
 
     // Max rotation
-    public static final double k_maxAngularSpeed = Math.PI * 2 * 1.5; // Radians per second (540 degrees per second)
-    public static final double k_maxAngularAcceleration = Math.PI * 2 * 2; // Radians per second squared (720 degrees
-                                                                           // per second squared)
+    public static final double k_maxAngularSpeed = Math.PI * 2.0 * 1.5; // Radians per second (540 degrees per second)
+    public static final double k_maxAngularAcceleration = Math.PI * 2.0 * 2.0; // Radians per second squared (720
+                                                                               // degrees per second squared)
 
     // Use these values as overrides in DriveTrajectoryTask
     // These are the current PathPlanner values

@@ -5,7 +5,6 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
-import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
@@ -68,7 +67,7 @@ public class SwerveModule {
     m_turnMotor.restoreFactoryDefaults();
     m_turnMotor.setIdleMode(IdleMode.kCoast);
     m_turnMotor.setInverted(true);
-    m_turnMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 20);
+    // m_turnMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 20);
     m_turnMotor.setSmartCurrentLimit(ApolloConstants.SwerveDrive.Turn.k_currentLimit);
 
     m_turningAbsEncoder = new DutyCycleEncoder(turningAbsoluteID);
@@ -83,7 +82,7 @@ public class SwerveModule {
     m_turningPIDController.setI(ApolloConstants.SwerveDrive.Turn.k_I);
     m_turningPIDController.setD(ApolloConstants.SwerveDrive.Turn.k_D);
     m_turningPIDController.setIZone(ApolloConstants.SwerveDrive.Turn.k_IZone);
-    m_turningPIDController.setFF(ApolloConstants.SwerveDrive.Turn.k_FFS);
+    m_turningPIDController.setFF(ApolloConstants.SwerveDrive.Turn.k_FF);
 
     m_turningPIDController.setPositionPIDWrappingEnabled(true);
     m_turningPIDController.setPositionPIDWrappingMinInput(0.0);
@@ -139,12 +138,11 @@ public class SwerveModule {
     } else {
       m_moduleDisabled = true;
     }
-
   }
 
   public void setDesiredState(SwerveModuleState desiredState) {
     // Optimize the reference state to avoid spinning further than 90 degrees
-    // desiredState = SwerveModuleState.optimize(desiredState, Rotation2d.fromRadians(getTurnPosition()));
+    desiredState = SwerveModuleState.optimize(desiredState, Rotation2d.fromRadians(getTurnPosition()));
     desiredState.angle = new Rotation2d(Helpers.modRadians(desiredState.angle.getRadians()));
     m_periodicIO.shouldChangeState = !desiredState.equals(m_periodicIO.desiredState);
     m_periodicIO.desiredState = desiredState;
@@ -274,5 +272,15 @@ public class SwerveModule {
   @AutoLogOutput(key = "SwerveDrive/Modules/{m_moduleName}/Turn/Velocity")
   public double getTurnVelocity() {
     return m_turningRelEncoder.getVelocity();
+  }
+
+  @AutoLogOutput(key = "SwerveDrive/Modules/{m_moduleName}/Turn/error")
+  public double getTurnError() {
+    return getState().angle.minus(m_periodicIO.desiredState.angle).getDegrees();
+  }
+
+  @AutoLogOutput(key = "SwerveDrive/Modules/{m_moduleName}/Turn/errorRelToAbs")
+  public double getTurnErrorRelToAbs() {
+    return getState().angle.minus(Rotation2d.fromRotations(getTurnAbsPosition())).getDegrees();
   }
 }
