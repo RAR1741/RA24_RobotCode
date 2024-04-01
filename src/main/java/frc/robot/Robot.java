@@ -90,7 +90,7 @@ public class Robot extends LoggedRobot {
 
     Preferences.initString("Test Mode", "NONE");
 
-    // m_allSubsystems.add(m_swerve);
+    m_allSubsystems.add(m_swerve);
     m_allSubsystems.add(m_intake);
     m_allSubsystems.add(m_shooter);
     m_allSubsystems.add(m_climber);
@@ -119,6 +119,7 @@ public class Robot extends LoggedRobot {
   public void autonomousInit() {
     // m_swerve.resetGyro();
     m_swerve.setBrakeMode(false);
+    m_swerve.resetTurnOffsets();
 
     if (k_ledsEnabled) {
       if (DriverStation.getAlliance().get() == Alliance.Blue) {
@@ -175,6 +176,7 @@ public class Robot extends LoggedRobot {
     m_swerve.drive(0, 0, 0, false);
     m_swerve.resetRotationTarget();
     // m_swerve.resetAccelerometerPose();
+    m_swerve.resetTurnOffsets();
 
     m_swerve.m_limelightLeft.setLightEnabled(false);
     m_swerve.m_limelightRight.setLightEnabled(false);

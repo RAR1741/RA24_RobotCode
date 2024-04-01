@@ -346,10 +346,10 @@ public class SwerveDrive extends SwerveSysId {
 
   public void resetGyro() {
     m_gyro.reset();
-    if(DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue) {
-      m_rotationTarget = new Rotation2d(0.0); // jitter go brr
+    if(DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {
+      m_rotationTarget = new Rotation2d(Math.PI); // jitter go brr
     } else {
-      m_rotationTarget = new Rotation2d(Math.PI);
+      m_rotationTarget = new Rotation2d(0);
     }
     setAllianceGyroAngleAdjustment();
     // resetAccelerometerPose();
