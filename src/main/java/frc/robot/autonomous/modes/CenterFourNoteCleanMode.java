@@ -3,7 +3,7 @@ package frc.robot.autonomous.modes;
 import frc.robot.constants.ApolloConstants;
 import frc.robot.constants.VisionConstants;
 
-public class CenterFourNote extends AutoModeBase {
+public class CenterFourNoteCleanMode extends AutoModeBase {
   public VisionConstants getVisionTargetConstants() {
     return ApolloConstants.Vision.fourNoteVisionConstants;
   }

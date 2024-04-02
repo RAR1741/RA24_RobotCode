@@ -28,15 +28,11 @@ public class CenterlineOutsideNoteMode extends AutoModeBase {
 
     // Note 2 (Center 4)
     queueDriveQuickAndIntake("CenterFieldMiddle, Center 4, And Back");
-    // queueDriveQuickAndIntake("CenterFieldMiddle, Center 4");
-    // queueDrive("Center 4, Shoot Stage Right");
     queueAutoTarget();
     queueShoot();
 
     // Note 3 (Center 5)
     queueDriveQuickAndIntake("Shoot Stage Right, Center 5, And Back");
-    // queueDriveQuickAndIntake("Shoot Stage Right, Center 5");
-    // queueDrive("Center 5, Shoot Stage Right");
     queueAutoTarget();
     queueShoot();
 
