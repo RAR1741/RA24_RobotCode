@@ -4,8 +4,11 @@
   "holonomicMode": true,
   "pathFolders": [
     "Auto5Paths",
-    "Blue",
-    "Red"
+    "Center 4.5",
+    "Center 4.5 Clean",
+    "Centerline Outside",
+    "Testing",
+    "Unused"
   ],
   "autoFolders": [],
   "defaultMaxVel": 3.0,
