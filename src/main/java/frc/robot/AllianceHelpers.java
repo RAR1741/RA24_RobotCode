@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import frc.robot.constants.ApolloConstants;
 import frc.robot.constants.ApolloConstants.Field;
 
 public class AllianceHelpers {
@@ -41,7 +42,7 @@ public class AllianceHelpers {
   }
 
   public static Rotation2d getAlliancePassRotation() {
-    double passAngle = 22.5;
+    double passAngle = ApolloConstants.Field.k_passAngle;
 
     if (!DriverStation.getAlliance().isPresent() || DriverStation.getAlliance().get() == Alliance.Blue) {
       return Rotation2d.fromDegrees(-passAngle);
