@@ -41,6 +41,11 @@ public class AllianceHelpers {
   }
 
   public static Rotation2d getAlliancePassRotation() {
-    return new Rotation2d(Math.toRadians(12.0));
+    double passAngle = 22.5;
+
+    if (!DriverStation.getAlliance().isPresent() || DriverStation.getAlliance().get() == Alliance.Blue) {
+      return Rotation2d.fromDegrees(-passAngle);
+    }
+    return Rotation2d.fromDegrees(180.0 + passAngle);
   }
 }

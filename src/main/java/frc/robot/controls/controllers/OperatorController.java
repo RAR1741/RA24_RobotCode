@@ -21,7 +21,7 @@ public class OperatorController extends FilteredController {
     return (this.getFilteredAxis(Axis.RIGHT_TRIGGER) - this.getFilteredAxis(Axis.LEFT_TRIGGER)) * limit;
   }
 
-  public boolean getWantsPodiumAngle() {
+  public boolean getWantsAmpPivot() {
     return this.getRawButtonPressed(Button.X);
   }
 

@@ -517,4 +517,9 @@ public class Shooter extends Subsystem {
     return m_hasResetPivotRelEncoder;
   }
 
+  @AutoLogOutput
+  public ShooterPivotTarget getPivotTarget() {
+    return m_periodicIO.pivot_target;
+  }
+
 }

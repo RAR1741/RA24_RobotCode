@@ -29,7 +29,6 @@
             "/RealOutputs/SwerveDrive/CurrentStates/1",
             "/RealOutputs/SwerveDrive/CurrentStates/1/angle",
             "/RealOutputs/SwerveDrive/DesiredStates/1/angle",
-            "/RealOutputs/SwerveDrive",
             "/RealOutputs/SwerveDrive/Modules/BR",
             "/RealOutputs/SwerveDrive/Modules/FL",
             "/RealOutputs/SwerveDrive/Modules/FR",
@@ -42,7 +41,7 @@
           ]
         },
         "tabs": {
-          "selected": 13,
+          "selected": 7,
           "tabs": [
             {
               "type": 0,
@@ -245,9 +244,9 @@
                 "cameraIndex": -1,
                 "orbitFov": 90,
                 "cameraPosition": [
-                  -7.774927120231206,
-                  5.524276683320859,
-                  1.346516290365005
+                  -5.3276319939323695,
+                  5.004512136487182,
+                  -4.339325855994666
                 ],
                 "cameraTarget": [
                   -2.3030283644215204,
@@ -491,7 +490,7 @@
                 "sizeFrontBack": 0.76,
                 "forwardDirection": "up"
               },
-              "configHidden": false,
+              "configHidden": true,
               "visualizer": null,
               "title": "Swerve"
             },

@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -111,6 +112,13 @@ public class Robot extends LoggedRobot {
     m_swerve.setAllianceGyroAngleAdjustment();
     m_driverController.setAllianceMultiplier();
     m_operatorController.setAllianceMultiplier();
+
+    SmartDashboardController.logEncoderConnections();
+
+    Logger.recordOutput("Robot Controller/CPU/Temperature", RobotController.getCPUTemp());
+
+
+
 
     // CommandScheduler.getInstance().run(); // used by sysid
   }
@@ -216,7 +224,7 @@ public class Robot extends LoggedRobot {
     rot *= slowScaler;
 
     boolean wantsSpeakerAutoAim = m_driverController.getWantsAutoAim();
-    boolean wantsAmpAutoAim = m_driverController.getWantsAmpPivot();
+    boolean wantsAmpAutoAim = m_operatorController.getWantsAmpPivot();
     boolean wantsPassAutoAim = m_driverController.getWantsShooterPass();
 
     if (k_lockHeading) {
@@ -299,11 +307,10 @@ public class Robot extends LoggedRobot {
     } else if (m_driverController.getWantsEject() || m_operatorController.getWantsEject()) {
       m_intake.setIntakeState(IntakeState.EJECT);
       m_intaking = false;
-    } else if (m_driverController.getWantsAmp()) {
-      System.out.println("It's ampin' time!"); // -andy
-      m_intake.setIntakeState(IntakeState.FEED_SHOOTER);
-      m_intaking = false;
     } else if (m_operatorController.getWantsShoot() && m_intake.isAtStow()) {
+      if (m_shooter.isAtTarget() && m_shooter.getPivotTarget() == ShooterPivotTarget.AMP) {
+        System.out.println("It's ampin' time!");
+      }
       m_intake.setIntakeState(IntakeState.FEED_SHOOTER);
       m_intaking = false;
     } else if (!m_intaking) {
@@ -311,10 +318,6 @@ public class Robot extends LoggedRobot {
     }
 
     m_shooter.changePivotByAngle(m_operatorController.getWantsManualShooterPivot(0.1));
-
-    if (m_operatorController.getWantsPodiumAngle()) {
-      m_shooter.setAngle(ShooterPivotTarget.PODIUM);
-    }
 
     if (m_operatorController.getWantsSubwooferAngle()) {
       m_shooter.setAngle(ShooterPivotTarget.SUBWOOFER);

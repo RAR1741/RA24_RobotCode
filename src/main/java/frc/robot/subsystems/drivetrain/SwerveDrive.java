@@ -346,7 +346,7 @@ public class SwerveDrive extends SwerveSysId {
 
   public void resetGyro() {
     m_gyro.reset();
-    if(DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {
+    if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {
       m_rotationTarget = new Rotation2d(Math.PI); // jitter go brr
     } else {
       m_rotationTarget = new Rotation2d(0);
@@ -369,6 +369,10 @@ public class SwerveDrive extends SwerveSysId {
   // Math.sin(m_gyro.getRotation2d().getRadians()) / Math.pow(50.0,2.0);
   // double accelY = getAccelerometerVelocityY() *
   // Math.cos(m_gyro.getRotation2d().getRadians()) / Math.pow(50.0,2.0);
+
+  public SwerveModule[] getModules() {
+    return m_modules;
+  }
 
   @Override
   public void periodic() {
@@ -476,10 +480,6 @@ public class SwerveDrive extends SwerveSysId {
     // double autoTranslationMax = 2.0;
 
     if (poseEstimate.tagCount < m_visionConstants.minTagCount) {
-      return;
-    }
-
-    if (DriverStation.isAutonomous() && poseEstimate.tagCount < 2) {
       return;
     }
 

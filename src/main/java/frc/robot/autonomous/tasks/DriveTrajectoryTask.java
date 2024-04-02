@@ -1,7 +1,5 @@
 package frc.robot.autonomous.tasks;
 
-import java.util.ArrayList;
-
 import org.littletonrobotics.junction.Logger;
 
 import com.pathplanner.lib.path.PathPlannerPath;
@@ -29,6 +27,8 @@ import frc.robot.subsystems.drivetrain.RARHolonomicDriveController;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 
 public class DriveTrajectoryTask extends Task {
+  private final boolean k_debugPath = false;
+
   private SwerveDrive m_swerve = SwerveDrive.getInstance();
   private PathPlannerTrajectory m_autoTrajectory;
   private PathPlannerPath m_autoPath = null;
@@ -68,18 +68,15 @@ public class DriveTrajectoryTask extends Task {
         new ChassisSpeeds(),
         m_swerve.getGyro().getRotation2d());
 
-    ArrayList<Pose2d> newStates = new ArrayList<>();
-    for (State state : m_autoTrajectory.getStates()) {
-      newStates.add(state.getTargetHolonomicPose());
+    if (k_debugPath) {
+      Trajectory adjustedTrajectory = TrajectoryGenerator.generateTrajectory(
+          m_autoPath.getPathPoses(),
+          new TrajectoryConfig(
+              m_autoPath.getGlobalConstraints().getMaxVelocityMps(),
+              m_autoPath.getGlobalConstraints().getMaxAccelerationMpsSq()));
+
+      Logger.recordOutput("Auto/DriveTrajectory/TargetTrajectory", adjustedTrajectory);
     }
-
-    Trajectory adjustedTrajectory = TrajectoryGenerator.generateTrajectory(
-        newStates,
-        new TrajectoryConfig(
-            m_autoPath.getGlobalConstraints().getMaxVelocityMps(),
-            m_autoPath.getGlobalConstraints().getMaxAccelerationMpsSq()));
-
-    Logger.recordOutput("Auto/DriveTrajectory/TargetTrajectory", adjustedTrajectory);
     Logger.recordOutput("Auto/DriveTrajectory/StartingTargetPose", getStartingPose());
 
     // TODO: we probably want to do this all the time?

@@ -18,7 +18,7 @@ public final class ApolloConstants {
   public static class Auto {
     // Meters per second2
     // Needs to be more than the max robot speed, to allow for turning
-    public static final double k_maxModuleSpeed = 5.0;
+    public static final double k_maxModuleSpeed = 4.6;
     public static final double k_maxAcceleration = 1.0; // NOT USED
 
     public class Timing {
@@ -56,8 +56,8 @@ public final class ApolloConstants {
     }
 
     public static final VisionConstants teleopVisionConstants = new VisionConstants(1, 6.0, 32.0);
-    public static final VisionConstants defaultAutoVisionConstants = new VisionConstants(1, 4.0, 32.0);
-    public static final VisionConstants fourNoteVisionConstants = new VisionConstants(1, 4.0, 32.0);
+    public static final VisionConstants defaultAutoVisionConstants = new VisionConstants(2, 4.0, 32.0);
+    public static final VisionConstants fourNoteVisionConstants = new VisionConstants(2, 4.0, 32.0);
     public static final VisionConstants threeNoteVisionConstants = new VisionConstants(1, 10.0, 16.0);
   }
 
@@ -71,7 +71,7 @@ public final class ApolloConstants {
 
     // Max speeds
     public static final double k_maxSpeed = 2.5; // Meters per second
-    public static final double k_maxBoostSpeed = 5.0; // Meters per second
+    public static final double k_maxBoostSpeed = 4.5; // Meters per second
     public static final double k_maxAngularSpeed = Math.PI * 2.0; // Radians per second
 
     // Max acceleration
@@ -140,13 +140,13 @@ public final class ApolloConstants {
 
   public class AutoAim {
     public class Translation {
-      public static final double k_P = 7.0;
+      public static final double k_P = 3.0;
       public static final double k_I = 0.0;
       public static final double k_D = 0.0;
     }
 
     public class Rotation {
-      public static final double k_P = 5.0;
+      public static final double k_P = 3.0;
       public static final double k_I = 0.0;
       public static final double k_D = 0.0;
     }
@@ -245,7 +245,7 @@ public final class ApolloConstants {
 
   public class Shooter {
     public static final double k_maxRPM = 5000.0; // but that's just a theory
-    public static final double k_passRPM = 4000.0;
+    public static final double k_passRPM = 3500.0;
     public static final double k_ampSpeed = 800.0;
     public static final double k_trapSpeed = 6000.0;
 
