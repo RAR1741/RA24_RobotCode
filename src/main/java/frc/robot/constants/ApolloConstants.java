@@ -80,7 +80,7 @@ public final class ApolloConstants {
 
     public static final double k_slowScaler = 0.2; // % reduction in speed
 
-    public static final double k_wheelRadiusIn = 2.0; // inches
+    public static final double k_wheelRadiusIn = 3.815 / 2.0; // Updated for Vex Pro Wheels
     public static final double k_driveGearRatio = (50.0 / 14.0) * (17.0 / 27.0) * (45.0 / 15.0);
     public static final double k_turnGearRatio = 7.0 / 150.0;
 
@@ -123,15 +123,15 @@ public final class ApolloConstants {
       public static final int k_BRMotorId = 9;
       public static final int k_BLMotorId = 11;
 
-      public static final double k_P = 5.6906;
+      public static final double k_P = 0.6906;
       public static final double k_I = 0.0;
-      public static final double k_D = 0.1976;
+      public static final double k_D = 0.0; // 0.1976
       public static final double k_IZone = 0.0;
       public static final double k_FF = 0.0;
 
-      public static final double k_FFS = 0.29745;
-      public static final double k_FFV = 0.43892; // Not used
-      public static final double k_FFA = 0.048573; // Not used
+      // public static final double k_FFS = 0.29745;
+      // public static final double k_FFV = 0.43892; // Not used
+      // public static final double k_FFA = 0.048573; // Not used
 
       public static final double k_TurningMinOutput = -1.0;
       public static final double k_TurningMaxOutput = 1.0;
