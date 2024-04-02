@@ -193,12 +193,12 @@ public class SwerveModule {
   }
 
   // Logged
-  @AutoLogOutput
+  @AutoLogOutput(key = "SwerveDrive/Modules/{m_moduleName}/Turn/targetAngle")
   private double getTurnTargetAngleRadians() {
     return m_periodicIO.desiredState.angle.getRadians();
   }
 
-  @AutoLogOutput
+  @AutoLogOutput(key = "SwerveDrive/Modules/{m_moduleName}/Drive/speedMPS")
   private double getDriveTargetVelocity() {
     return m_periodicIO.desiredState.speedMetersPerSecond;
   }
