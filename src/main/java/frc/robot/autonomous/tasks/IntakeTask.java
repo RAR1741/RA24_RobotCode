@@ -11,10 +11,18 @@ public class IntakeTask extends Task {
 
   private IntakePivotTarget m_pivotTarget;
   private IntakeState m_intakeState;
+  private boolean m_waitForNote;
 
   public IntakeTask(IntakePivotTarget target, IntakeState state) {
     m_pivotTarget = target;
     m_intakeState = state;
+    m_waitForNote = false;
+  }
+
+  public IntakeTask(IntakePivotTarget target, IntakeState state, boolean waitForNote) {
+    m_pivotTarget = target;
+    m_intakeState = state;
+    m_waitForNote = waitForNote;
   }
 
   @Override
@@ -40,6 +48,7 @@ public class IntakeTask extends Task {
 
   @Override
   public boolean isFinished() {
-    return m_intake.isAtPivotTarget() || !RobotBase.isReal();
+    boolean waitForNoteDone = !m_waitForNote || m_intake.isHoldingNote();
+    return (m_intake.isAtPivotTarget() && waitForNoteDone) || !RobotBase.isReal();
   }
 }

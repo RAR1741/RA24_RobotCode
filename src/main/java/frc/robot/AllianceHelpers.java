@@ -7,8 +7,11 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.constants.ApolloConstants;
 import frc.robot.constants.ApolloConstants.Field;
+import frc.robot.subsystems.drivetrain.SwerveDrive;
 
 public class AllianceHelpers {
+  private static SwerveDrive m_swerve = SwerveDrive.getInstance();
+
   public static Pose3d getAllianceSpeakerPose3d() {
     if (!DriverStation.getAlliance().isPresent() || DriverStation.getAlliance().get() == Alliance.Blue) {
       return Field.k_blueSpeakerPose;
@@ -18,6 +21,14 @@ public class AllianceHelpers {
 
   public static Pose2d getAllianceSpeakerPose2d() {
     return getAllianceSpeakerPose3d().toPose2d();
+  }
+
+  public static Rotation2d getAllianceSpeakerRotationTarget() {
+    return new Rotation2d(
+        m_swerve.getPose().getTranslation().getX()
+            - getAllianceSpeakerPose2d().getTranslation().getX(),
+        m_swerve.getPose().getTranslation().getY()
+            - getAllianceSpeakerPose2d().getTranslation().getY());
   }
 
   public static Pose2d getAlliancePassPose2d() {

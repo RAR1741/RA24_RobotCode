@@ -17,6 +17,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
+import frc.robot.AllianceHelpers;
 import frc.robot.constants.ApolloConstants.Auto;
 import frc.robot.constants.ApolloConstants.AutoAim.Rotation;
 import frc.robot.constants.ApolloConstants.AutoAim.Translation;
@@ -127,8 +128,9 @@ public class DriveTrajectoryTask extends Task {
 
   private Rotation2d getRotationProvider(double targetRotation) {
     boolean isReadyToAutoTarget = Intake.getInstance().isAtStow() && Shooter.getInstance().isShooterReady();
+
     if (isReadyToAutoTarget) {
-      return SwerveDrive.getInstance().getRotationTarget();
+      return AllianceHelpers.getAllianceSpeakerRotationTarget();
     } else {
       return new Rotation2d(Math.toRadians(targetRotation));
     }

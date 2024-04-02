@@ -153,7 +153,7 @@ public final class ApolloConstants {
 
     public static final double k_autoAimDistanceThreshold = 1.0; // in meters
     public static final double k_autoAimOmegaRPSThreshold = Math.PI / 8.0; // in radians
-    public static final double k_autoAimAngleTolerance = Units.degreesToRadians(3.0);
+    public static final double k_autoAimAngleTolerance = 3.0; // Degrees
 
     // Max speed
     public static final double k_maxSpeed = 3.0; // Meters per second

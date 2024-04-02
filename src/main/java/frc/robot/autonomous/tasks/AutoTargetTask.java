@@ -10,7 +10,6 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.Helpers;
-import frc.robot.constants.ApolloConstants;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 
 public class AutoTargetTask extends Task {
@@ -71,11 +70,6 @@ public class AutoTargetTask extends Task {
   @Override
   public void update() {
     log(true);
-
-    // Rotation2d diff = m_targetRotation.minus(m_swerve.getRotation2d());
-
-    // m_swerve.drive(0, 0, diff.getRadians() * 5.0, true);
-
     m_swerve.driveLockedHeading(0, 0, 0, true, true, false, false);
   }
 
@@ -88,16 +82,7 @@ public class AutoTargetTask extends Task {
 
   @Override
   public boolean isFinished() {
-    double rotationError = Math.abs(
-        Helpers.modRadians(m_swerve.getPose().getRotation().getRadians())
-            - Helpers.modRadians(m_swerve.getRotationTarget().getRadians()));
-
-    Logger.recordOutput("Auto/AutoTarget/rotationError", rotationError);
-
-    return ((rotationError < ApolloConstants.AutoAim.k_autoAimAngleTolerance) &&
-        (Math.abs(
-            m_swerve.getChassisSpeeds().omegaRadiansPerSecond) < ApolloConstants.AutoAim.k_autoAimOmegaRPSThreshold))
-        || !RobotBase.isReal();
+    return m_swerve.isAimedAtTarget() || !RobotBase.isReal();
   }
 
   @Override

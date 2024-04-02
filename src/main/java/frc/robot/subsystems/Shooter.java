@@ -236,6 +236,8 @@ public class Shooter extends Subsystem {
 
   public void setAngle(double angle) {
     m_periodicIO.pivot_angle = angle;
+    m_periodicIO.pivot_target = ShooterPivotTarget.NONE;
+    m_periodicIO.previous_shooter_angle = angle;
   }
 
   public void setAngle(ShooterPivotTarget target) {
@@ -301,6 +303,7 @@ public class Shooter extends Subsystem {
         new Pose2d(1.550, 56.0, new Rotation2d()), // Speaker Corner
         new Pose2d(2.300, 43.2, new Rotation2d()), // Auto center
         new Pose2d(2.640, 38.0, new Rotation2d()), // Auto podium
+        new Pose2d(2.850, 38.0, new Rotation2d()), // Auto Bot Ring
         new Pose2d(3.060, 35.2, new Rotation2d()), // Podium
         new Pose2d(4.230, 27.5, new Rotation2d()), // Stage Close Mid
         new Pose2d(4.750, 26.0, new Rotation2d()), // Stage Far Mid

@@ -117,9 +117,6 @@ public class Robot extends LoggedRobot {
 
     Logger.recordOutput("Robot Controller/CPU/Temperature", RobotController.getCPUTemp());
 
-
-
-
     // CommandScheduler.getInstance().run(); // used by sysid
   }
 

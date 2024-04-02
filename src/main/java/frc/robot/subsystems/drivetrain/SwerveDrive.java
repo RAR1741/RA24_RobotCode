@@ -265,9 +265,7 @@ public class SwerveDrive extends SwerveSysId {
     Rotation2d currentRotation;
 
     if (speakerAim) {
-      m_rotationTarget = new Rotation2d(
-          getPose().getTranslation().getX() - AllianceHelpers.getAllianceSpeakerPose2d().getTranslation().getX(),
-          getPose().getTranslation().getY() - AllianceHelpers.getAllianceSpeakerPose2d().getTranslation().getY());
+      m_rotationTarget = AllianceHelpers.getAllianceSpeakerRotationTarget();
       currentRotation = getPose().getRotation();
     } else if (ampAim) {
       m_rotationTarget = AllianceHelpers.getAllianceAmpRotation();
@@ -527,6 +525,20 @@ public class SwerveDrive extends SwerveSysId {
   }
 
   @AutoLogOutput
+  public boolean isAimedAtTarget() {
+    double rotationError = Math.abs(m_rotationTarget.minus(getRotation2d()).getDegrees());
+    Logger.recordOutput("Auto/AutoTarget/rotationError", rotationError);
+
+    boolean isAtAimedAtTarget = rotationError < ApolloConstants.AutoAim.k_autoAimAngleTolerance;
+    boolean isAtOmega = Math.abs(
+        getChassisSpeeds().omegaRadiansPerSecond) < ApolloConstants.AutoAim.k_autoAimOmegaRPSThreshold;
+
+    // DriverStation.reportWarning(isAtAimedAtTarget + "|" + isAtOmega, false);
+
+    return isAtAimedAtTarget && isAtOmega;
+  }
+
+  @AutoLogOutput
   public boolean hasSetPose() {
     return m_hasSetPose;
   }
@@ -544,6 +556,10 @@ public class SwerveDrive extends SwerveSysId {
   @AutoLogOutput
   public Pose2d getPose() {
     return m_poseEstimator.getEstimatedPosition();
+  }
+
+  public void setRotationTarget(Rotation2d target) {
+    m_rotationTarget = target;
   }
 
   @AutoLogOutput
