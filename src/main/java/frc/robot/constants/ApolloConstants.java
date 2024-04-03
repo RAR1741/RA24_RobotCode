@@ -50,7 +50,7 @@ public final class ApolloConstants {
     public static final double k_visionStdDevTheta = 0.0;
 
     public class Rotation {
-      public static final double k_P = 7.0;
+      public static final double k_P = 4.0;
       public static final double k_I = 0.0;
       public static final double k_D = 0.02;
     }
@@ -281,7 +281,7 @@ public final class ApolloConstants {
       public static final double k_shooterMotorFF = 0.00010;
     }
 
-    public static final double k_shooterMinOutput = 0.0;
+    public static final double k_shooterMinOutput = -1.0;
     public static final double k_shooterMaxOutput = 1.0;
 
     public static final int k_pivotEncoderId = 5;

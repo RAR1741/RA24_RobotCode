@@ -60,4 +60,8 @@ public class OperatorController extends FilteredController {
   public boolean getWantsClimberTiltLeft() {
     return this.getHat(Direction.LEFT);
   }
+
+  public boolean getWantsShooterBackwards() {
+    return this.getRawButtonPressed(Button.LEFT_JOYSTICK);
+  }
 }

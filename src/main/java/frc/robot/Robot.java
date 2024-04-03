@@ -301,7 +301,8 @@ public class Robot extends LoggedRobot {
     if (m_driverController.getWantsIntake() && !m_intake.isHoldingNote()) {
       m_intake.setIntakeState(IntakeState.INTAKE);
       m_intaking = true;
-    } else if (m_driverController.getWantsEject() || m_operatorController.getWantsEject()) {
+    } else if ((m_driverController.getWantsEject() || m_operatorController.getWantsEject()) &&
+        (m_intake.getPivotAngle() < (ApolloConstants.Intake.k_stowPivotAngle - ApolloConstants.Intake.k_ejectPivotAngle))) {
       m_intake.setIntakeState(IntakeState.EJECT);
       m_intaking = false;
     } else if (m_operatorController.getWantsShoot() && m_intake.isAtStow()) {
@@ -332,6 +333,8 @@ public class Robot extends LoggedRobot {
       m_shooter.setSpeed(ShooterSpeedTarget.MAX);
     } else if (m_operatorController.getWantsNoSpeed()) {
       m_shooter.setSpeed(ShooterSpeedTarget.OFF);
+    } else if (m_operatorController.getWantsShooterBackwards()) {
+      m_shooter.setSpeed(-1000.0); // we should never need this
     }
 
     if (m_operatorController.getWantsClimberRaise()) {

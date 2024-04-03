@@ -302,7 +302,7 @@ public class Intake extends Subsystem {
   }
 
   @AutoLogOutput
-  private double getAngleFromTarget(IntakePivotTarget target) {
+  public double getAngleFromTarget(IntakePivotTarget target) {
     switch (target) {
       case GROUND:
         return ApolloConstants.Intake.k_groundPivotAngle;
@@ -319,8 +319,7 @@ public class Intake extends Subsystem {
     }
   }
 
-  @AutoLogOutput
-  private double getSpeedFromState(IntakeState state) {
+  public double getSpeedFromState(IntakeState state) {
     switch (state) {
       case INTAKE:
         return ApolloConstants.Intake.k_intakeSpeed;
