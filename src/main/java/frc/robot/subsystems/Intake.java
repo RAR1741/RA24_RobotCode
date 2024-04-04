@@ -11,16 +11,19 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.Helpers;
 import frc.robot.constants.RobotConstants;
 import frc.robot.simulation.IntakeSim;
 import frc.robot.simulation.SimMaster;
+import frc.robot.subsystems.leds.LEDs;
 import frc.robot.wrappers.RARSparkMax;
 import frc.robot.wrappers.REVThroughBoreEncoder;
 
 public class Intake extends Subsystem {
   private static Intake m_intake;
   private static IntakeSim m_sim;
+  private static LEDs m_leds = LEDs.getInstance();
 
   private RARSparkMax m_pivotMotor;
   private RARSparkMax m_intakeMotor;
@@ -40,8 +43,8 @@ public class Intake extends Subsystem {
   // private final DigitalInput m_noteTOF1 = new DigitalInput(6);
   // private final DigitalInput m_noteTOF2 = new DigitalInput(7);
 
-  private final double m_intakeAutoDetectCurrent = 40; // Amps
-  private final int m_cycleThreshold = 10;
+  private final double m_intakeAutoDetectCurrent = 30; // Amps
+  private final int m_cycleThreshold = 15;
   private double minCurrent = 999.0;
   private int m_cycles = 0;
 
@@ -229,7 +232,7 @@ public class Intake extends Subsystem {
     if (isAtGround() && isHoldingNote() && !m_override) {
       setPivotTarget(IntakePivotTarget.STOW);
       setIntakeState(IntakeState.NONE);
-      // m_leds.setColor(Color.kGreen);
+      m_leds.setAllColor(Color.kGreen);
     }
   }
 
@@ -334,9 +337,26 @@ public class Intake extends Subsystem {
 
   @AutoLogOutput
   public boolean isHoldingNote() {
-    boolean hasHeldHighCurrent = ((minCurrent > m_intakeAutoDetectCurrent) && (m_cycles % m_cycleThreshold == 0)
-        && (minCurrent < 120));
+    boolean hasHeldHighCurrent = ((minCurrent > m_intakeAutoDetectCurrent)
+        && (m_cycles % m_cycleThreshold == (m_cycleThreshold - 1))
+        && (minCurrent < 120.0));
     return getColorSensor() || getTOFOne() || hasHeldHighCurrent;
+  }
+
+  @AutoLogOutput
+  public double getMinCurrent() {
+    return minCurrent;
+  }
+
+  @AutoLogOutput
+  public double getMCycles() {
+    return m_cycles;
+  }
+
+  @AutoLogOutput
+  public boolean getShouldAutoIntake() {
+    return ((minCurrent > m_intakeAutoDetectCurrent) && (m_cycles % m_cycleThreshold == (m_cycleThreshold - 1))
+        && (minCurrent < 120.0));
   }
 
   @AutoLogOutput

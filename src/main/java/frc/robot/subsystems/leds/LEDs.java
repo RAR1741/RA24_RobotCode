@@ -33,20 +33,20 @@ public class LEDs extends Subsystem {
     super("LEDs");
 
     if (Robot.k_ledsEnabled) {
-        m_led = new AddressableLED(ApolloConstants.LEDs.k_PWMId);
-        m_led.setLength(m_ledTotalLength);
-        m_buffer = new AddressableLEDBuffer(m_ledTotalLength);
-        m_led.start();
+      m_led = new AddressableLED(ApolloConstants.LEDs.k_PWMId);
+      m_led.setLength(m_ledTotalLength);
+      m_buffer = new AddressableLEDBuffer(m_ledTotalLength);
+      m_led.start();
     }
   }
 
   @Override
   public void periodic() {
     if (Robot.k_ledsEnabled) {
-        setShooterColorMode();
-        setDriveColorMode();
+      setShooterColorMode();
+      setDriveColorMode();
 
-        m_led.setData(m_buffer);
+      m_led.setData(m_buffer);
     }
   }
 

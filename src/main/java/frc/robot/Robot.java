@@ -65,7 +65,7 @@ public class Robot extends LoggedRobot {
   // Misc vars
   private final boolean k_lockHeading = true;
   private boolean m_intaking = false;
-  public final static boolean k_ledsEnabled = false;
+  public final static boolean k_ledsEnabled = true;
 
   private final Field m_field = Field.getInstance();
 
@@ -255,6 +255,7 @@ public class Robot extends LoggedRobot {
     if (m_driverController.getWantsIntakePivotToggle()) {
       wantsAmpAutoAim = false;
       m_shooter.updatePreviousShooterAngle();
+
       if (m_intake.getPivotTarget() == IntakePivotTarget.STOW) {
         if (m_shooter.getPreviousShooterAngle() > 60.0) {
           m_shooter.setAngle(60.0);
@@ -264,6 +265,7 @@ public class Robot extends LoggedRobot {
         m_intake.setIntakeState(IntakeState.INTAKE);
 
         m_intaking = true;
+        m_leds.setAllColor(Color.kYellow);
       } else {
         m_intake.setPivotTarget(IntakePivotTarget.STOW);
         m_intake.setIntakeState(IntakeState.NONE);
@@ -282,6 +284,7 @@ public class Robot extends LoggedRobot {
     }
 
     if (wantsAmpAutoAim) {
+      m_leds.redTwinkleFast();
       m_shooter.setAngle(ShooterPivotTarget.AMP);
       m_shooter.setSpeed(ShooterSpeedTarget.AMP);
     }
@@ -353,13 +356,13 @@ public class Robot extends LoggedRobot {
       m_climber.stopClimber();
     }
 
-    if (k_ledsEnabled) {
-      if (m_intake.isHoldingNote()) {
-        m_leds.setAllColor(Color.kGreen);
-      } else {
-        m_leds.breathe();
-      }
-    }
+    // if (k_ledsEnabled) {
+    // if (m_intake.isHoldingNote()) {
+    // m_leds.setAllColor(Color.kGreen);
+    // } else {
+    // m_leds.breathe();
+    // }
+    // }
   }
 
   @Override

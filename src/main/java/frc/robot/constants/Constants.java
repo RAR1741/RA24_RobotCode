@@ -32,11 +32,11 @@ public class Constants {
 
     public int k_pivotEncoderId = 4;
 
-    public double k_stowPivotAngle = 320.6;
-    public double k_groundPivotAngle = 99.5;
-    public double k_sourcePivotAngle = 240.0;
-    public double k_ejectPivotAngle = 160.0;
-    public double k_ampPivotAngle = 160.0;
+    public double k_stowPivotAngle = 256.5;
+    public double k_groundPivotAngle = 40.4;
+    public double k_sourcePivotAngle = 180.0;
+    public double k_ejectPivotAngle = 100.0;
+    public double k_ampPivotAngle = 100.0;
 
     public double k_intakeSpeed = 0.4;
     public double k_ejectSpeed = -0.525;

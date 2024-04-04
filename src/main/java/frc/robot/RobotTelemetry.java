@@ -30,7 +30,8 @@ public class RobotTelemetry {
         break;
     }
 
-    // Logger.recordMetadata("RobotType", Robot.config.getRobotType().name());
+    // TODO: this
+    // Logger.recordMetadata("RobotType", RobotConstants.getRobotType().name());
     // Logger.recordMetadata("ProjectName", "Apollo, Eater of Batteries");
 
     Logger.addDataReceiver(new WPILOGWriter()); // Log to a USB stick ("/U/logs")
