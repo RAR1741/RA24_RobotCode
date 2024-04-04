@@ -12,7 +12,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.I2C;
 import frc.robot.Helpers;
-import frc.robot.constants.ApolloConstants;
+import frc.robot.constants.RobotConstants;
 import frc.robot.simulation.IntakeSim;
 import frc.robot.simulation.SimMaster;
 import frc.robot.wrappers.RARSparkMax;
@@ -26,7 +26,7 @@ public class Intake extends Subsystem {
   private RARSparkMax m_intakeMotor;
 
   private final REVThroughBoreEncoder m_pivotAbsEncoder = new REVThroughBoreEncoder(
-      ApolloConstants.Intake.k_pivotEncoderId);
+      RobotConstants.config.intake().k_pivotEncoderId);
 
   private final ProfiledPIDController m_pivotMotorPID;
   private final ArmFeedforward m_pivotFeedForward;
@@ -53,33 +53,33 @@ public class Intake extends Subsystem {
     m_sim = SimMaster.getInstance().getIntakeSim();
 
     // Pivot motor setup
-    m_pivotMotor = new RARSparkMax(ApolloConstants.Intake.k_pivotMotorId, MotorType.kBrushless);
+    m_pivotMotor = new RARSparkMax(RobotConstants.config.intake().k_pivotMotorId, MotorType.kBrushless);
     m_pivotMotor.restoreFactoryDefaults();
     m_pivotMotor.setIdleMode(RARSparkMax.IdleMode.kCoast);
     m_pivotMotor.setSmartCurrentLimit(20);
     m_pivotMotor.setInverted(true);
 
     // Intake motor setup
-    m_intakeMotor = new RARSparkMax(ApolloConstants.Intake.k_intakeMotorId, MotorType.kBrushless);
+    m_intakeMotor = new RARSparkMax(RobotConstants.config.intake().k_intakeMotorId, MotorType.kBrushless);
     m_intakeMotor.restoreFactoryDefaults();
     m_intakeMotor.setIdleMode(RARSparkMax.IdleMode.kCoast);
     m_intakeMotor.setInverted(true);
 
     // Pivot PID
     m_pivotMotorPID = new ProfiledPIDController(
-        ApolloConstants.Intake.k_pivotMotorP,
-        ApolloConstants.Intake.k_pivotMotorI,
-        ApolloConstants.Intake.k_pivotMotorD,
+        RobotConstants.config.intake().k_pivotMotorP,
+        RobotConstants.config.intake().k_pivotMotorI,
+        RobotConstants.config.intake().k_pivotMotorD,
         new TrapezoidProfile.Constraints(
-            ApolloConstants.Intake.k_maxVelocity,
-            ApolloConstants.Intake.k_maxAcceleration));
+            RobotConstants.config.intake().k_maxVelocity,
+            RobotConstants.config.intake().k_maxAcceleration));
 
     // Pivot Feedforward
     m_pivotFeedForward = new ArmFeedforward(
-        ApolloConstants.Intake.k_pivotMotorKS,
-        ApolloConstants.Intake.k_pivotMotorKG,
-        ApolloConstants.Intake.k_pivotMotorKV,
-        ApolloConstants.Intake.k_pivotMotorKA);
+        RobotConstants.config.intake().k_pivotMotorKS,
+        RobotConstants.config.intake().k_pivotMotorKG,
+        RobotConstants.config.intake().k_pivotMotorKV,
+        RobotConstants.config.intake().k_pivotMotorKA);
 
     m_periodicIO = new PeriodicIO();
 
@@ -241,7 +241,7 @@ public class Intake extends Subsystem {
 
   @AutoLogOutput
   public double getPivotReferenceToHorizontal() {
-    return getPivotAngle() - ApolloConstants.Intake.k_pivotOffset;
+    return getPivotAngle() - RobotConstants.config.intake().k_pivotOffset;
   }
 
   @AutoLogOutput
@@ -305,28 +305,28 @@ public class Intake extends Subsystem {
   public double getAngleFromTarget(IntakePivotTarget target) {
     switch (target) {
       case GROUND:
-        return ApolloConstants.Intake.k_groundPivotAngle;
+        return RobotConstants.config.intake().k_groundPivotAngle;
       case PIVOT:
-        return ApolloConstants.Intake.k_sourcePivotAngle;
+        return RobotConstants.config.intake().k_sourcePivotAngle;
       case EJECT:
-        return ApolloConstants.Intake.k_ejectPivotAngle;
+        return RobotConstants.config.intake().k_ejectPivotAngle;
       case AMP:
-        return ApolloConstants.Intake.k_ampPivotAngle;
+        return RobotConstants.config.intake().k_ampPivotAngle;
       case STOW:
-        return ApolloConstants.Intake.k_stowPivotAngle;
+        return RobotConstants.config.intake().k_stowPivotAngle;
       default:
-        return ApolloConstants.Intake.k_stowPivotAngle;
+        return RobotConstants.config.intake().k_stowPivotAngle;
     }
   }
 
   public double getSpeedFromState(IntakeState state) {
     switch (state) {
       case INTAKE:
-        return ApolloConstants.Intake.k_intakeSpeed;
+        return RobotConstants.config.intake().k_intakeSpeed;
       case EJECT:
-        return ApolloConstants.Intake.k_ejectSpeed;
+        return RobotConstants.config.intake().k_ejectSpeed;
       case FEED_SHOOTER:
-        return ApolloConstants.Intake.k_feedShooterSpeed;
+        return RobotConstants.config.intake().k_feedShooterSpeed;
       default:
         return 0.0;
     }
@@ -342,7 +342,7 @@ public class Intake extends Subsystem {
   @AutoLogOutput
   public boolean getColorSensor() {
     if (isColorSensorConnected()) {
-      return m_colorSensor.getProximity() >= ApolloConstants.Intake.k_sensorThreshold;
+      return m_colorSensor.getProximity() >= RobotConstants.config.intake().k_sensorThreshold;
     }
     return false;
   }

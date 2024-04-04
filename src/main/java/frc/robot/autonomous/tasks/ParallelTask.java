@@ -1,6 +1,6 @@
 package frc.robot.autonomous.tasks;
 
-import edu.wpi.first.wpilibj.DriverStation;
+import frc.robot.RobotTelemetry;
 
 public class ParallelTask extends Task {
   private Task[] m_tasks;
@@ -57,7 +57,7 @@ public class ParallelTask extends Task {
     for (Task task : m_tasks) {
       task.done();
     }
-    DriverStation.reportWarning("Parallel task done", false);
+    RobotTelemetry.print("Parallel task done");
   }
 
   public Task[] getTasks() {

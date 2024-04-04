@@ -5,14 +5,10 @@ import java.util.List;
 
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.networktables.NT4Publisher;
-import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
@@ -24,6 +20,7 @@ import frc.robot.autonomous.AutoChooser;
 import frc.robot.autonomous.AutoRunner;
 import frc.robot.autonomous.tasks.Task;
 import frc.robot.constants.ApolloConstants;
+import frc.robot.constants.RobotConstants;
 import frc.robot.controls.controllers.DriverController;
 import frc.robot.controls.controllers.OperatorController;
 import frc.robot.simulation.Field;
@@ -75,7 +72,7 @@ public class Robot extends LoggedRobot {
   @Override
   public void robotInit() {
     // Initialize on-board logging
-    setupLogging();
+    new RobotTelemetry();
 
     // Set up the Field2d object for simulation
     SmartDashboard.putData("Field", m_field);
@@ -95,6 +92,7 @@ public class Robot extends LoggedRobot {
     m_allSubsystems.add(m_intake);
     m_allSubsystems.add(m_shooter);
     m_allSubsystems.add(m_climber);
+
     if (k_ledsEnabled) {
       m_allSubsystems.add(m_leds);
     }
@@ -302,12 +300,14 @@ public class Robot extends LoggedRobot {
       m_intake.setIntakeState(IntakeState.INTAKE);
       m_intaking = true;
     } else if ((m_driverController.getWantsEject() || m_operatorController.getWantsEject()) &&
-        (m_intake.getPivotAngle() < (ApolloConstants.Intake.k_stowPivotAngle - ApolloConstants.Intake.k_ejectPivotAngle))) {
+        (m_intake
+            .getPivotAngle() < (RobotConstants.config.intake().k_stowPivotAngle
+                - RobotConstants.config.intake().k_ejectPivotAngle))) {
       m_intake.setIntakeState(IntakeState.EJECT);
       m_intaking = false;
     } else if (m_operatorController.getWantsShoot() && m_intake.isAtStow()) {
       if (m_shooter.isAtTarget() && m_shooter.getPivotTarget() == ShooterPivotTarget.AMP) {
-        System.out.println("It's ampin' time!");
+        RobotTelemetry.print("It's ampin' time!");
       }
       m_intake.setIntakeState(IntakeState.FEED_SHOOTER);
       m_intaking = false;
@@ -456,7 +456,7 @@ public class Robot extends LoggedRobot {
         m_swerve.drive(xSpeed, ySpeed, rot, false);
         break;
       default:
-        // System.out.println("you lost the game"); jacob why
+        RobotTelemetry.print("you lost the game");
         break;
     }
   }
@@ -464,32 +464,5 @@ public class Robot extends LoggedRobot {
   private void updateSim() {
     // Update the odometry in the sim.
     m_field.setRobotPose(m_swerve.getPose());
-  }
-
-  @SuppressWarnings("resource")
-  private void setupLogging() {
-    Logger.recordMetadata("ProjectName", "Apollo, Eater of Batteries");
-    Logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
-
-    // if (isReal()) {
-    Logger.addDataReceiver(new WPILOGWriter()); // Log to a USB stick ("/U/logs")
-    Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
-
-    new PowerDistribution(1, ModuleType.kRev); // Enables power distribution logging
-    // }
-
-    // TODO: figure out log replaying, as this is super powerful
-    // else {
-    // setUseTiming(false); // Run as fast as possible
-    // String logPath = LogFileUtil.findReplayLog(); // Pull the replay log from
-    // AdvantageScope (or prompt the user)
-    // Logger.setReplaySource(new WPILOGReader(logPath)); // Read replay log
-    // Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath,
-    // "_sim"))); // Save outputs to a new log
-    // }
-
-    Logger.start();
-
-    System.out.println("Logging initialized. Fard.");
   }
 }

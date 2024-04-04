@@ -1,9 +1,9 @@
 package frc.robot.autonomous.tasks;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
+import frc.robot.RobotTelemetry;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 
 public class DriveTask extends Task {
@@ -70,7 +70,7 @@ public class DriveTask extends Task {
   public void done() {
     log(false);
 
-    DriverStation.reportWarning("Auto driving done", false);
+    RobotTelemetry.print("Auto driving done");
     m_swerve.drive(0, 0, 0, true);
     m_swerve.pointModules(1, 0, 0, true);
   }

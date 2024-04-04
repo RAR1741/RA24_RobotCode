@@ -1,7 +1,7 @@
 package frc.robot.autonomous.tasks;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import frc.robot.RobotTelemetry;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 
 public class WaitTask extends Task {
@@ -35,6 +35,6 @@ public class WaitTask extends Task {
   public void done() {
     log(false);
 
-    DriverStation.reportWarning("Auto wait done", false);
+    RobotTelemetry.print("Auto wait done");
   }
 }

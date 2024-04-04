@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.AllianceHelpers;
+import frc.robot.RobotTelemetry;
 import frc.robot.constants.ApolloConstants.Auto;
 import frc.robot.constants.ApolloConstants.AutoAim.Rotation;
 import frc.robot.constants.ApolloConstants.AutoAim.Translation;
@@ -47,7 +48,7 @@ public class DriveTrajectoryTask extends Task {
       m_autoPath = PathPlannerPath.fromPathFile(pathName);
 
       if (DriverStation.getAlliance().get() == Alliance.Red) {
-        DriverStation.reportWarning("Translating path for Red Alliance!", false);
+        RobotTelemetry.print("Translating path for Red Alliance!");
         m_autoPath = m_autoPath.flipPath();
       }
 
@@ -58,7 +59,7 @@ public class DriveTrajectoryTask extends Task {
 
   @Override
   public void start() {
-    DriverStation.reportWarning("Auto trajectory start", false);
+    RobotTelemetry.print("Auto trajectory start");
     m_runningTimer.reset();
     m_runningTimer.start();
 
@@ -86,7 +87,7 @@ public class DriveTrajectoryTask extends Task {
     }
 
     m_swerve.clearTurnPIDAccumulation();
-    DriverStation.reportWarning("Running path for " + DriverStation.getAlliance().get().toString(), false);
+    RobotTelemetry.print("Running path for " + DriverStation.getAlliance().get().toString());
   }
 
   @Override
@@ -162,7 +163,7 @@ public class DriveTrajectoryTask extends Task {
   public void done() {
     log(false);
 
-    DriverStation.reportWarning("Auto trajectory done", false);
+    RobotTelemetry.print("Auto trajectory done");
     m_swerve.drive(0, 0, 0, true);
     // m_swerve.setRotationTarget(m_swerve.getPose().getRotation());
   }

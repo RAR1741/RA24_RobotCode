@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import frc.robot.constants.ApolloConstants;
+import frc.robot.constants.RobotConstants;
 
 public class ShooterSim {
   private static ShooterSim m_sim = null;
@@ -35,7 +36,7 @@ public class ShooterSim {
   private Mechanism2d m_mech2d = null;
 
   private final Translation2d m_origin = new Translation2d(
-      (ApolloConstants.Simulation.k_width / 2) + ApolloConstants.Shooter.k_distanceFromCenter, 0);
+      (RobotConstants.config.simulation().k_width / 2) + ApolloConstants.Shooter.k_distanceFromCenter, 0);
 
   private MechanismRoot2d m_shooterBase = null;
 

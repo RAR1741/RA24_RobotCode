@@ -1,5 +1,6 @@
 package frc.robot.autonomous;
 
+import frc.robot.RobotTelemetry;
 import frc.robot.autonomous.modes.AutoModeBase;
 import frc.robot.autonomous.modes.CenterFourNoteCleanMode;
 import frc.robot.autonomous.modes.CenterFourNoteMode;
@@ -68,7 +69,7 @@ public class AutoRunner {
       // m_autoMode = new TestMode2();
       // break;
       default:
-        System.out.println("Invalid auto mode selected. Defaulting to do nothing.");
+        RobotTelemetry.print("Invalid auto mode selected. Defaulting to do nothing.");
         m_autoMode = new DoNothingMode();
         break;
     }

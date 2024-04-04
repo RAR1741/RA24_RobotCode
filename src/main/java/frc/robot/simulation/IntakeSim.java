@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import frc.robot.constants.ApolloConstants;
+import frc.robot.constants.RobotConstants;
 
 public class IntakeSim {
   private static IntakeSim m_intakeSim = null;
@@ -24,18 +25,18 @@ public class IntakeSim {
   private final SingleJointedArmSim m_joint = new SingleJointedArmSim(
       k_pivotMotor,
       k_pivotGearRatio,
-      SingleJointedArmSim.estimateMOI(Units.inchesToMeters(ApolloConstants.Intake.k_length),
-          ApolloConstants.Intake.k_mass),
-      ApolloConstants.Intake.k_length,
-      ApolloConstants.Intake.k_minAngle,
-      ApolloConstants.Intake.k_maxAngle,
+      SingleJointedArmSim.estimateMOI(Units.inchesToMeters(RobotConstants.config.intake().k_length),
+          RobotConstants.config.intake().k_mass),
+      RobotConstants.config.intake().k_length,
+      RobotConstants.config.intake().k_minAngle,
+      RobotConstants.config.intake().k_maxAngle,
       true,
-      ApolloConstants.Intake.k_startingAngle);
+      RobotConstants.config.intake().k_startingAngle);
 
   private Mechanism2d m_mech2d = null;
 
   private final Translation2d m_origin = new Translation2d(
-      (ApolloConstants.Simulation.k_width / 2) - ApolloConstants.Intake.k_distanceFromCenter, 0);
+      (RobotConstants.config.simulation().k_width / 2) - RobotConstants.config.intake().k_distanceFromCenter, 0);
 
   private MechanismRoot2d m_intakeBase = null;
 
@@ -56,14 +57,14 @@ public class IntakeSim {
     m_intakePivot = m_intakeBase.append(
         new MechanismLigament2d(
             "IntakePivot",
-            ApolloConstants.Intake.k_pivotHeight,
+            RobotConstants.config.intake().k_pivotHeight,
             90,
             4,
             new Color8Bit(Color.kRed)));
     m_intake = m_intakePivot.append(
         new MechanismLigament2d(
             "Intake",
-            ApolloConstants.Intake.k_length,
+            RobotConstants.config.intake().k_length,
             k_simOffset,
             4,
             new Color8Bit(Color.kBlue)));

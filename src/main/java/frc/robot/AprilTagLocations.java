@@ -4,7 +4,6 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DriverStation;
 
 public class AprilTagLocations {
   private static final Transform3d[] aprilTagPositions = {
@@ -36,7 +35,7 @@ public class AprilTagLocations {
       }
     }
 
-    DriverStation.reportError("AprilTag [" + id + "] is not valid", true);
+    RobotTelemetry.print("AprilTag [" + id + "] is not valid");
     return null;
   }
 

@@ -30,6 +30,7 @@ import frc.robot.AllianceHelpers;
 import frc.robot.AprilTagLocations;
 import frc.robot.LimelightHelpers.PoseEstimate;
 import frc.robot.constants.ApolloConstants;
+import frc.robot.constants.RobotConstants;
 import frc.robot.constants.VisionConstants;
 import frc.robot.subsystems.Limelight;
 
@@ -453,11 +454,11 @@ public class SwerveDrive extends SwerveSysId {
       return;
     }
 
-    if (poseEstimate.pose.getX() < 0 || poseEstimate.pose.getX() > ApolloConstants.Field.k_width) {
+    if (poseEstimate.pose.getX() < 0 || poseEstimate.pose.getX() > RobotConstants.config.field().k_width) {
       return;
     }
 
-    if (poseEstimate.pose.getY() < 0 || poseEstimate.pose.getY() > ApolloConstants.Field.k_length) {
+    if (poseEstimate.pose.getY() < 0 || poseEstimate.pose.getY() > RobotConstants.config.field().k_length) {
       return;
     }
 
@@ -533,7 +534,7 @@ public class SwerveDrive extends SwerveSysId {
     boolean isAtOmega = Math.abs(
         getChassisSpeeds().omegaRadiansPerSecond) < ApolloConstants.AutoAim.k_autoAimOmegaRPSThreshold;
 
-    // DriverStation.reportWarning(isAtAimedAtTarget + "|" + isAtOmega, false);
+    // RobotTelemetry.print(isAtAimedAtTarget + "|" + isAtOmega);
 
     return isAtAimedAtTarget && isAtOmega;
   }

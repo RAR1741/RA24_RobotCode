@@ -1,7 +1,7 @@
 package frc.robot.autonomous.tasks;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.AllianceHelpers;
+import frc.robot.RobotTelemetry;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 
 public class WaitForTargetTask extends Task {
@@ -30,6 +30,6 @@ public class WaitForTargetTask extends Task {
   public void done() {
     log(false);
 
-    DriverStation.reportWarning("Wait for target done", false);
+    RobotTelemetry.print("Wait for target done");
   }
 }

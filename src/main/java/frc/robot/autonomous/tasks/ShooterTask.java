@@ -1,7 +1,7 @@
 package frc.robot.autonomous.tasks;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
+import frc.robot.RobotTelemetry;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Shooter.ShooterPivotTarget;
 import frc.robot.subsystems.Shooter.ShooterSpeedTarget;
@@ -26,7 +26,7 @@ public class ShooterTask extends Task {
 
   @Override
   public void start() {
-    DriverStation.reportWarning("Auto shooter start", false);
+    RobotTelemetry.print("Auto shooter start");
 
     m_shooter.setAngle(m_pivotTarget);
     if (Double.isNaN(m_speed)) {
@@ -64,6 +64,6 @@ public class ShooterTask extends Task {
   public void done() {
     log(false);
 
-    DriverStation.reportWarning("Auto shooter done", false);
+    RobotTelemetry.print("Auto shooter done");
   }
 }

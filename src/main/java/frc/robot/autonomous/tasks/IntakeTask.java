@@ -1,7 +1,7 @@
 package frc.robot.autonomous.tasks;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
+import frc.robot.RobotTelemetry;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Intake.IntakePivotTarget;
 import frc.robot.subsystems.Intake.IntakeState;
@@ -27,7 +27,7 @@ public class IntakeTask extends Task {
 
   @Override
   public void start() {
-    DriverStation.reportWarning("Auto Intake start", false);
+    RobotTelemetry.print("Auto Intake start");
     m_intake.setPivotTarget(m_pivotTarget);
     m_intake.setIntakeState(m_intakeState);
   }
@@ -43,7 +43,7 @@ public class IntakeTask extends Task {
   public void done() {
     log(false);
 
-    DriverStation.reportWarning("Auto Intake done", false);
+    RobotTelemetry.print("Auto Intake done");
   }
 
   @Override

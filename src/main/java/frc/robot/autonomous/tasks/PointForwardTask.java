@@ -1,6 +1,6 @@
 package frc.robot.autonomous.tasks;
 
-import edu.wpi.first.wpilibj.DriverStation;
+import frc.robot.RobotTelemetry;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 
 public class PointForwardTask extends Task {
@@ -29,6 +29,6 @@ public class PointForwardTask extends Task {
   public void done() {
     log(false);
 
-    DriverStation.reportWarning("Auto point forward done", false);
+    RobotTelemetry.print("Auto point forward done");
   }
 }

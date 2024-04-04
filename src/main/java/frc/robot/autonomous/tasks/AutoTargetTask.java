@@ -7,9 +7,9 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.Helpers;
+import frc.robot.RobotTelemetry;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 
 public class AutoTargetTask extends Task {
@@ -52,18 +52,16 @@ public class AutoTargetTask extends Task {
 
   @Override
   public void start() {
-    DriverStation.reportWarning("Auto target start", false);
+    RobotTelemetry.print("Auto target start");
 
     Pose2d currentPose = m_swerve.getPose();
-    System.out.println("Starting degrees: " + Helpers.modDegrees(currentPose.getRotation().getDegrees()));
+    RobotTelemetry.print("Starting degrees: " + Helpers.modDegrees(currentPose.getRotation().getDegrees()));
 
     // Get the target rotation between the current pose and the target pose
     m_targetRotation = new Rotation2d(
         currentPose.getTranslation().getX() - m_targetPose.getTranslation().getX(),
         currentPose.getTranslation().getY() - m_targetPose.getTranslation().getY());
 
-    // System.out.println("Target degrees: " +
-    // Helpers.modDegrees(m_targetRotation.getDegrees()));
     m_targetRobotPose = new Pose2d(currentPose.getTranslation(), m_targetRotation);
   }
 
@@ -89,7 +87,7 @@ public class AutoTargetTask extends Task {
   public void done() {
     log(false);
 
-    DriverStation.reportWarning("Auto target done", false);
+    RobotTelemetry.print("Auto target done");
     m_swerve.drive(0, 0, 0, true);
   }
 }

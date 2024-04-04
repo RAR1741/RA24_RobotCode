@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Preferences;
 import frc.robot.AllianceHelpers;
 import frc.robot.Helpers;
+import frc.robot.RobotTelemetry;
 import frc.robot.constants.ApolloConstants;
 import frc.robot.simulation.ShooterSim;
 import frc.robot.simulation.SimMaster;
@@ -34,7 +35,8 @@ public class Shooter extends Subsystem {
 
   private RelativeEncoder m_topMotorEncoder;
   private RelativeEncoder m_bottomMotorEncoder;
-  private REVThroughBoreEncoder m_pivotAbsEncoder = new REVThroughBoreEncoder(ApolloConstants.Shooter.k_pivotEncoderId);
+  private REVThroughBoreEncoder m_pivotAbsEncoder = new REVThroughBoreEncoder(
+      ApolloConstants.Shooter.k_pivotEncoderId);
 
   private SparkPIDController m_topShooterMotorPID;
   private SparkPIDController m_bottomShooterMotorPID;
@@ -196,7 +198,7 @@ public class Shooter extends Subsystem {
 
     // If the pivot absolute encoder isn't connected
     if (!m_pivotAbsEncoder.isConnected()) {
-      DriverStation.reportWarning("THE SHOOTER PIVOT IS BROKEN", false);
+      RobotTelemetry.print("THE SHOOTER PIVOT IS BROKEN");
     }
 
     m_sim.updateAngle(getPivotAngle());
@@ -419,7 +421,8 @@ public class Shooter extends Subsystem {
   @AutoLogOutput
   public double getPivotAngle() {
     return Units.rotationsToDegrees(Helpers.modRotations(
-        m_pivotAbsEncoder.getAbsolutePosition() - Units.degreesToRotations(ApolloConstants.Shooter.k_absPivotOffset)));
+        m_pivotAbsEncoder.getAbsolutePosition()
+            - Units.degreesToRotations(ApolloConstants.Shooter.k_absPivotOffset)));
   }
 
   @AutoLogOutput

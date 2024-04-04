@@ -1,6 +1,6 @@
 package frc.robot.autonomous.tasks;
 
-import edu.wpi.first.wpilibj.DriverStation;
+import frc.robot.RobotTelemetry;
 
 /**
  * This task is for running tasks sequentially inside
@@ -31,7 +31,7 @@ public class SequentialTask extends Task {
 
       if (++m_index >= m_tasks.length) {
         m_isFinished = true;
-        System.out.println("Sequential task finished!");
+        RobotTelemetry.print("Sequential task finished!");
         return;
       }
 
@@ -51,7 +51,7 @@ public class SequentialTask extends Task {
 
   @Override
   public void done() {
-    DriverStation.reportWarning("Sequential task done", false);
+    RobotTelemetry.print("Sequential task done");
   }
 
   public Task[] getTasks() {
