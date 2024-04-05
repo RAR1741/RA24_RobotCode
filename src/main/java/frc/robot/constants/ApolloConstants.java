@@ -48,7 +48,7 @@ public class ApolloConstants {
       public static final double k_shootFeedTime = 0.2; // seconds
       public static final double k_shootRevTime = 0.75; // seconds
       public static final double k_intakeDeployTime = 0.1; // seconds
-      public static final double k_intakeBounceTime = 0.2; // seconds
+      public static final double k_intakeBounceTime = 0.3; // seconds
     }
 
     // TODO: Add left and right subwoofer starting poses
@@ -78,10 +78,11 @@ public class ApolloConstants {
       public static final double k_D = 0.02;
     }
 
-    public static final VisionConstants teleopVisionConstants = new VisionConstants(1, 6.0, 32.0);
-    public static final VisionConstants defaultAutoVisionConstants = new VisionConstants(2, 4.0, 32.0);
-    public static final VisionConstants fourNoteVisionConstants = new VisionConstants(2, 4.0, 32.0);
-    public static final VisionConstants threeNoteVisionConstants = new VisionConstants(1, 10.0, 16.0);
+    public static final VisionConstants teleopVisionConstants = new VisionConstants(1, 6.0, 32.0, 10.0);
+    public static final VisionConstants defaultAutoVisionConstants = new VisionConstants(2, 4.0, 32.0, 10.0);
+    public static final VisionConstants fourNoteVisionConstants = new VisionConstants(2, 4.0, 32.0, 10.0);
+    public static final VisionConstants threeNoteVisionConstants = new VisionConstants(2, 6.0, 16.0, 0.25);
+    public static final VisionConstants funnyNoteVisionConstants = new VisionConstants(1, 10.0, 100.0, 0.25);
   }
 
   public class SwerveDrive {
@@ -101,7 +102,7 @@ public class ApolloConstants {
     public static final double k_maxLinearAcceleration = 12.0; // Meters per second squared
     public static final double k_maxAngularAcceleration = Math.PI * 8.0; // Radians per second squared
 
-    public static final double k_slowScaler = 0.2; // % reduction in speed
+    public static final double k_slowScaler = 0.3; // % reduction in speed
 
     public static final double k_wheelRadiusIn = 3.815 / 2.0; // Updated for Vex Pro Wheels
     public static final double k_driveGearRatio = (50.0 / 14.0) * (17.0 / 27.0) * (45.0 / 15.0);
@@ -310,7 +311,7 @@ public class ApolloConstants {
   }
 
   public static class LEDs {
-    public static final int k_PWMId = 0;
+    public static final int k_PWMId = 1;
     public static final int k_totalLength = Drive.k_length + Shooter.k_length;
 
     public static class Drive {

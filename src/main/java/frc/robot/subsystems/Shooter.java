@@ -303,11 +303,13 @@ public class Shooter extends Subsystem {
     Pose2d[] aimingPoses = {
         new Pose2d(1.485, 58.0, new Rotation2d()), // Speaker
         new Pose2d(1.550, 56.0, new Rotation2d()), // Speaker Corner
-        new Pose2d(2.300, 43.2, new Rotation2d()), // Auto center
-        new Pose2d(2.640, 38.0, new Rotation2d()), // Auto podium
-        new Pose2d(2.850, 38.0, new Rotation2d()), // Auto Bot Ring
-        new Pose2d(3.060, 35.2, new Rotation2d()), // Podium
-        new Pose2d(4.230, 27.5, new Rotation2d()), // Stage Close Mid
+        new Pose2d(2.300, 43.6, new Rotation2d()), // Auto center
+        new Pose2d(2.560, 41.5, new Rotation2d()), // Auto podium
+        new Pose2d(2.630, 40.4, new Rotation2d()), // Auto Bot Ring
+        new Pose2d(2.725, 39.0, new Rotation2d()), // Close Amp (MAYBE TAKE THIS ONE OUT)
+        new Pose2d(2.940, 36.6, new Rotation2d()), // Podium
+        new Pose2d(3.650, 33.1, new Rotation2d()), // Far Amp
+        new Pose2d(4.017, 31.0, new Rotation2d()), // Stage Close Mid
         new Pose2d(4.750, 26.0, new Rotation2d()), // Stage Far Mid
         new Pose2d(5.840, 24.6, new Rotation2d()), // Wing shot Close
     };

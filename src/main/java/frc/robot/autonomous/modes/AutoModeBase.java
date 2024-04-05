@@ -79,6 +79,15 @@ public abstract class AutoModeBase {
     queueTask(new DriveForwardTask(0, 0));
   }
 
+  public void queueAutoTarget(double extraTime) {
+    queueTask(new ParallelTask(
+        new IntakeTask(IntakePivotTarget.STOW, IntakeState.NONE),
+        new AutoTargetTask(AllianceHelpers.getAllianceSpeakerPose3d()),
+        new WaitTask(extraTime)));
+
+    queueTask(new DriveForwardTask(0, 0));
+  }
+
   public void queueShooterSpinUp() {
     queueTask(new ParallelTask(
         new ShooterTask(ShooterPivotTarget.SUBWOOFER, ShooterSpeedTarget.MAX),

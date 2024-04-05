@@ -8,40 +8,40 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.855028034130142,
-        "y": 1.1179109163773886
+        "x": 4.294888122183652,
+        "y": 1.8134207518415049
       },
       "isLocked": false,
       "linkedName": "ShootStageRight"
     },
     {
       "anchor": {
-        "x": 8.052197104394208,
-        "y": 0.7456302505197606
+        "x": 8.07428809302063,
+        "y": 0.8657054628924079
       },
       "prevControl": {
-        "x": 6.7279848587474955,
-        "y": 0.7986011157207495
+        "x": 6.7500758473739175,
+        "y": 0.9186763280933968
       },
       "nextControl": {
-        "x": 9.376409350040921,
-        "y": 0.6926593853187712
+        "x": 9.398500338667343,
+        "y": 0.8127345976914185
       },
       "isLocked": false,
       "linkedName": "CenterNote5"
     },
     {
       "anchor": {
-        "x": 2.398091703590815,
-        "y": 3.3542078241563895
+        "x": 1.8299613589967922,
+        "y": 4.152215096096859
       },
       "prevControl": {
-        "x": 4.1022451998607705,
-        "y": 0.7546566759800187
+        "x": 3.4715237208252194,
+        "y": 1.4484443644813214
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "ShootStageRight"
+      "linkedName": null
     }
   ],
   "rotationTargets": [
@@ -59,8 +59,8 @@
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 2.0,
+    "maxVelocity": 4.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
@@ -75,5 +75,5 @@
     "rotation": -42.9502116021266,
     "velocity": 0.0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

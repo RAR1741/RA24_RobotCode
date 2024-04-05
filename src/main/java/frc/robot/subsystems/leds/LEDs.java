@@ -52,13 +52,17 @@ public class LEDs extends Subsystem {
 
   public void setAllColorMode(
       Function<Integer, Function<Integer, Function<AddressableLEDBuffer, AddressableLEDBuffer>>> mode) {
-    m_shooterColor = mode;
-    m_driveColor = mode;
+    if (Robot.k_ledsEnabled) {
+      m_shooterColor = mode;
+      m_driveColor = mode;
+    }
   }
 
   public void setAllColor(Color color) {
-    setShooterColor(color);
-    setDriveColor(color);
+    if (Robot.k_ledsEnabled) {
+      setShooterColor(color);
+      setDriveColor(color);
+    }
   }
 
   public void setShooterColor(Color color) {
@@ -79,15 +83,21 @@ public class LEDs extends Subsystem {
   }
 
   public void breathe() {
-    setAllColorMode(LEDModes.redBreathe);
+    if (Robot.k_ledsEnabled) {
+      setAllColorMode(LEDModes.redBreathe);
+    }
   }
 
   public void rainbowChase() {
-    setAllColorMode(LEDModes.rainbowChase);
+    if (Robot.k_ledsEnabled) {
+      setAllColorMode(LEDModes.rainbowChase);
+    }
   }
 
   public void rainbowBreatheSlow() {
-    setAllColorMode(LEDModes.rainbowBreatheSlow);
+    if (Robot.k_ledsEnabled) {
+      setAllColorMode(LEDModes.rainbowBreatheSlow);
+    }
   }
 
   public void rainbowBreatheFast() {

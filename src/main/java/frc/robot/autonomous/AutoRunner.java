@@ -6,6 +6,7 @@ import frc.robot.autonomous.modes.CenterFourNoteCleanMode;
 import frc.robot.autonomous.modes.CenterFourNoteMode;
 import frc.robot.autonomous.modes.CenterlineOutsideNoteMode;
 import frc.robot.autonomous.modes.DoNothingMode;
+import frc.robot.autonomous.modes.FunnyNoteMode;
 import frc.robot.autonomous.tasks.Task;
 
 public class AutoRunner {
@@ -29,7 +30,8 @@ public class AutoRunner {
     CENTER_FOUR_NOTE_CLEAN,
     // BOTRING_TWO_NOTE,
     // PODIUM_TWO_NOTE,
-    CENTERLINE_OUTSIDE_NOTE
+    CENTERLINE_OUTSIDE_NOTE,
+    FUNNY_NOTE
   }
 
   public Task getNextTask() {
@@ -61,6 +63,9 @@ public class AutoRunner {
       // break;
       case CENTERLINE_OUTSIDE_NOTE:
         m_autoMode = new CenterlineOutsideNoteMode();
+        break;
+      case FUNNY_NOTE:
+        m_autoMode = new FunnyNoteMode();
         break;
       // case TEST:
       // m_autoMode = new TestMode();

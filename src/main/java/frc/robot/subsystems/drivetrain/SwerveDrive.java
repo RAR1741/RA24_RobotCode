@@ -444,7 +444,6 @@ public class SwerveDrive extends SwerveSysId {
     // Add observation to list
     double avgDistance = poseEstimate.avgTagDist;
     // double avgArea = poseEstimate.avgTagArea;
-    // double autoTranslationMax = 2.0;
 
     if (poseEstimate.tagCount < m_visionConstants.minTagCount) {
       return;
@@ -462,12 +461,10 @@ public class SwerveDrive extends SwerveSysId {
       return;
     }
 
-    // if (DriverStation.isAutonomous()) {
-    // if (getChassisSpeeds().vxMetersPerSecond > autoTranslationMax
-    // || getChassisSpeeds().vyMetersPerSecond > autoTranslationMax) {
-    // return;
-    // }
-    // }
+    if (getChassisSpeeds().vxMetersPerSecond > m_visionConstants.autoTranslationMax
+        || getChassisSpeeds().vyMetersPerSecond > m_visionConstants.autoTranslationMax) {
+      return;
+    }
 
     double xyStdDev = xyStdDevCoefficient
         * Math.pow(avgDistance, 2.0)

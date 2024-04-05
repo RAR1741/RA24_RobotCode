@@ -49,6 +49,6 @@ public class IntakeTask extends Task {
   @Override
   public boolean isFinished() {
     boolean waitForNoteDone = !m_waitForNote || m_intake.isHoldingNote();
-    return (m_intake.isAtPivotTarget() && waitForNoteDone) || !RobotBase.isReal();
+    return ((m_intake.isAtPivotTarget() && waitForNoteDone) || !RobotBase.isReal()) || (m_intake.isAtStow());
   }
 }

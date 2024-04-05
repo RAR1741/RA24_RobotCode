@@ -88,8 +88,8 @@ public class Constants {
 
     // TODO: Maybe get these from AprilTags?
     private double speakerHeight = 2.032; // Meters
-    public Pose3d k_redSpeakerPose = new Pose3d(16.579342, 5.547868, speakerHeight, new Rotation3d());
-    public Pose3d k_blueSpeakerPose = new Pose3d(-0.0381, 5.547868, speakerHeight, new Rotation3d());
+    public Pose3d k_redSpeakerPose = new Pose3d(16.426942, 5.547868, speakerHeight, new Rotation3d());
+    public Pose3d k_blueSpeakerPose = new Pose3d(0.1524, 5.547868, speakerHeight, new Rotation3d());
 
     public Pose2d k_redPassPose = new Pose2d(14.71, 6.0, new Rotation2d());
     public Pose2d k_bluePassPose = new Pose2d(1.75, 6.0, new Rotation2d());

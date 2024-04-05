@@ -124,12 +124,10 @@ public class Robot extends LoggedRobot {
     m_swerve.setBrakeMode(false);
     m_swerve.resetTurnOffsets();
 
-    if (k_ledsEnabled) {
-      if (DriverStation.getAlliance().get() == Alliance.Blue) {
-        m_leds.setAllColor(Color.kBlue);
-      } else {
-        m_leds.setAllColor(Color.kRed);
-      }
+    if (DriverStation.getAlliance().get() == Alliance.Blue) {
+      m_leds.setAllColor(Color.kBlue);
+    } else {
+      m_leds.setAllColor(Color.kRed);
     }
 
     m_swerve.m_limelightLeft.setLightEnabled(true);
@@ -187,9 +185,7 @@ public class Robot extends LoggedRobot {
 
     m_swerve.m_visionConstants = ApolloConstants.Vision.teleopVisionConstants;
 
-    if (k_ledsEnabled) {
-      m_leds.breathe();
-    }
+    m_leds.breathe();
   }
 
   private void shooterCorrection() {
@@ -239,9 +235,11 @@ public class Robot extends LoggedRobot {
     if (wantsSpeakerAutoAim) {
       m_shooter.setAngle(m_shooter.getSpeakerAutoAimAngle(m_swerve.getPose()));
       m_shooter.setSpeed(ShooterSpeedTarget.MAX);
+      m_leds.setAllColor(Color.kBlue);
     } else if (wantsPassAutoAim) {
       m_shooter.setAngle(ApolloConstants.Shooter.k_passPivotAngle);
       m_shooter.setSpeed(ApolloConstants.Shooter.k_passRPM);
+      m_leds.setAllColor(Color.kPurple);
     }
 
     if (m_driverController.getWantsResetGyro()) {
@@ -355,14 +353,6 @@ public class Robot extends LoggedRobot {
     } else {
       m_climber.stopClimber();
     }
-
-    // if (k_ledsEnabled) {
-    // if (m_intake.isHoldingNote()) {
-    // m_leds.setAllColor(Color.kGreen);
-    // } else {
-    // m_leds.breathe();
-    // }
-    // }
   }
 
   @Override
@@ -377,9 +367,7 @@ public class Robot extends LoggedRobot {
     m_swerve.m_limelightRight.setLightEnabled(false);
     m_swerve.m_limelightShooter.setLightEnabled(false);
 
-    if (k_ledsEnabled) {
-      m_leds.rainbowBreatheSlow();
-    }
+    m_leds.rainbowBreatheSlow();
   }
 
   @Override
@@ -388,14 +376,13 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void disabledPeriodic() {
+    m_leds.rainbowBreatheSlow();
   }
 
   @Override
   public void testInit() {
     CommandScheduler.getInstance().cancelAll();
-    if (k_ledsEnabled) {
-      m_leds.rainbowChase();
-    }
+    m_leds.rainbowChase();
     // m_swerve.m_limelightLeft.setLightEnabled(false);
     // m_swerve.m_limelightRight.setLightEnabled(false);
     // m_swerve.m_limelightShooter.setLightEnabled(false);
