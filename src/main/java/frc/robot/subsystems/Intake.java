@@ -332,7 +332,7 @@ public class Intake extends Subsystem {
 
   @AutoLogOutput
   public boolean isHoldingNote() {
-    return getBumperSwitches() || isHoldingNoteViaCurrent();
+    return isHoldingNoteViaSwitches() || isHoldingNoteViaCurrent();
   }
 
   @AutoLogOutput
@@ -351,7 +351,7 @@ public class Intake extends Subsystem {
   }
 
   @AutoLogOutput
-  public boolean getBumperSwitches() {
+  public boolean isHoldingNoteViaSwitches() {
     return getMiddleBumperSwitch() || getLeftBumperSwitch() || getRightBumperSwitch();
   }
 
