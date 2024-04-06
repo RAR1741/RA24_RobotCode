@@ -11,8 +11,8 @@ public class Constants {
     public int k_leftMotorID = 19;
     public int k_rightMotorID = 18;
 
-    public double k_raiseSpeed = 600.0; // RPM
-    public double k_lowerSpeed = -600.0; // RPM
+    public double k_raiseSpeed = 1200.0; // RPM
+    public double k_lowerSpeed = -1200.0; // RPM
 
     public double k_gearRatio = 1.0 / 16.0;
 
