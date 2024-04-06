@@ -7,6 +7,7 @@ import frc.robot.autonomous.modes.CenterFourNoteMode;
 import frc.robot.autonomous.modes.CenterlineOutsideNoteMode;
 import frc.robot.autonomous.modes.DoNothingMode;
 import frc.robot.autonomous.modes.FunnyNoteMode;
+import frc.robot.autonomous.modes.ShootNoDriveMode;
 import frc.robot.autonomous.tasks.Task;
 
 public class AutoRunner {
@@ -31,7 +32,8 @@ public class AutoRunner {
     // BOTRING_TWO_NOTE,
     // PODIUM_TWO_NOTE,
     CENTERLINE_OUTSIDE_NOTE,
-    FUNNY_NOTE
+    FUNNY_NOTE,
+    SHOOT_NO_DRIVE
   }
 
   public Task getNextTask() {
@@ -73,6 +75,9 @@ public class AutoRunner {
       // case TEST2:
       // m_autoMode = new TestMode2();
       // break;
+      case SHOOT_NO_DRIVE:
+        m_autoMode = new ShootNoDriveMode();
+        break;
       default:
         RobotTelemetry.print("Invalid auto mode selected. Defaulting to do nothing.");
         m_autoMode = new DoNothingMode();

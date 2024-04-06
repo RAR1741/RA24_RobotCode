@@ -7,19 +7,23 @@ import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.util.Color;
 
 public final class LEDModes {
+  private static final double k_scale = 0.5;
+
   public static Function<Integer, Function<Integer, Function<AddressableLEDBuffer, AddressableLEDBuffer>>> setColor(
       Color color) {
     return (
         start) -> {
       return (length) -> {
         return (buffer) -> {
+          Color newColor = color;
+
+          if (color == Color.kYellow) {
+            // Custom yellow
+            newColor = new Color(255, (int) (255 * 0.50), 0);
+          }
+          
           for (int i = start; i < (start + length); i++) {
-            if (color == Color.kYellow) {
-              // Custom yellow
-              buffer.setRGB(i, 255, (int) (255 * 0.50), 0);
-            } else {
-              buffer.setLED(i, color);
-            }
+            buffer.setLED(i, scaleColor(newColor));
           }
           return buffer;
         };
@@ -36,7 +40,7 @@ public final class LEDModes {
         int firstPixelHue = (int) ((System.currentTimeMillis() / 1000.0 * rainbowChaseSpeed) % 180);
         for (int i = start; i < (start + length); i++) {
           final int hue = (firstPixelHue + (i * 180 / length)) % 180;
-          buffer.setHSV(i, hue, 255, 128);
+          buffer.setHSV(i, hue, 255, (int) (128*k_scale));
         }
         return buffer;
       };
@@ -51,7 +55,7 @@ public final class LEDModes {
 
         int firstPixelHue = (int) ((System.currentTimeMillis() / 1000.0 * rainbowBreathSpeedSlow) % 180);
         for (int i = start; i < (start + length); i++) {
-          buffer.setHSV(i, firstPixelHue, 255, 128);
+          buffer.setHSV(i, firstPixelHue, 255, (int) (128*k_scale));
         }
         return buffer;
       };
@@ -66,7 +70,7 @@ public final class LEDModes {
 
         int firstPixelHue = (int) ((System.currentTimeMillis() / 1000.0 * rainbowBreathSpeedFast) % 180);
         for (int i = start; i < (start + length); i++) {
-          buffer.setHSV(i, firstPixelHue, 255, 128);
+          buffer.setHSV(i, firstPixelHue, 255, (int) (128*k_scale));
         }
         return buffer;
       };
@@ -81,7 +85,7 @@ public final class LEDModes {
 
         int firstPixelHue = (int) ((System.currentTimeMillis() / 1000.0 * chaseSpeed) % 180);
         for (int i = start; i < (start + length); i++) {
-          final int hue = MathUtil.clamp((firstPixelHue + (i * 180 / length)) % 180, 10, 255);
+          final int hue = MathUtil.clamp((firstPixelHue + (i * 180 / length)) % 180, 10, (int) (255*k_scale));
           buffer.setRGB(i, hue, 0, 0);
         }
         return buffer;
@@ -125,7 +129,7 @@ public final class LEDModes {
               r = 255;
             }
           }
-          r = MathUtil.clamp(r, 0, 255);
+          r = MathUtil.clamp(r, 0, (int) (255*k_scale));
           buffer.setRGB(i, r, 0, 0);
         }
         return buffer;
@@ -154,7 +158,7 @@ public final class LEDModes {
               r = 255;
             }
           }
-          r = MathUtil.clamp(r, 0, 255);
+          r = MathUtil.clamp(r, 0, (int) (255*k_scale));
           buffer.setRGB(i, r, 0, 0);
         }
         return buffer;
@@ -162,5 +166,14 @@ public final class LEDModes {
     };
   };
 
-  // TODO: Add mode that takes in a color and sets all the leds to that color
+  public static Color scaleColor(Color oldColor){
+    Color newColor = oldColor;
+    
+    if (oldColor == Color.kYellow) {
+      // Custom yellow
+      newColor = new Color(255, (int) (255 * 0.50), 0);
+    }
+
+    return new Color(newColor.red*k_scale, newColor.green*k_scale, newColor.blue*k_scale);
+  }
 }

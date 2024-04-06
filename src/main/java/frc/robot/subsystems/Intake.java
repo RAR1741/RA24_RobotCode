@@ -3,14 +3,13 @@ package frc.robot.subsystems;
 import org.littletonrobotics.junction.AutoLogOutput;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
-import com.revrobotics.ColorSensorV3;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.Helpers;
 import frc.robot.constants.RobotConstants;
@@ -39,16 +38,14 @@ public class Intake extends Subsystem {
 
   private PeriodicIO m_periodicIO;
 
-  private final I2C.Port k_colorSensorPort = I2C.Port.kMXP;
-  // private final DigitalInput m_noteTOF1 = new DigitalInput(6);
-  // private final DigitalInput m_noteTOF2 = new DigitalInput(7);
+  private final DigitalInput m_bumperSwitchLeft = new DigitalInput(6);
+  private final DigitalInput m_bumperSwitchMiddle = new DigitalInput(7);
+  private final DigitalInput m_bumperSwitchRight = new DigitalInput(8);
 
-  private final double m_intakeAutoDetectCurrent = 30; // Amps
-  private final int m_cycleThreshold = 15;
+  private final double k_intakeAutoDetectCurrent = 30; // Amps
+  private final int k_cycleThreshold = 30;
   private double minCurrent = 999.0;
   private int m_cycles = 0;
-
-  private ColorSensorV3 m_colorSensor;
 
   private Intake() {
     super("Intake");
@@ -86,8 +83,6 @@ public class Intake extends Subsystem {
 
     m_periodicIO = new PeriodicIO();
 
-    m_colorSensor = new ColorSensorV3(k_colorSensorPort);
-
     m_intakeMotor.burnFlash();
     m_pivotMotor.burnFlash();
   }
@@ -124,7 +119,7 @@ public class Intake extends Subsystem {
 
     // FRANKENCODE
     m_cycles++;
-    if (m_cycles % m_cycleThreshold == 0) {
+    if (m_cycles % k_cycleThreshold == 0) {
       m_cycles = 0;
       minCurrent = 999.0;
     }
@@ -337,10 +332,7 @@ public class Intake extends Subsystem {
 
   @AutoLogOutput
   public boolean isHoldingNote() {
-    boolean hasHeldHighCurrent = ((minCurrent > m_intakeAutoDetectCurrent)
-        && (m_cycles % m_cycleThreshold == (m_cycleThreshold - 1))
-        && (minCurrent < 120.0));
-    return getColorSensor() || getTOFOne() || hasHeldHighCurrent;
+    return getBumperSwitches() || isHoldingNoteViaCurrent();
   }
 
   @AutoLogOutput
@@ -349,37 +341,32 @@ public class Intake extends Subsystem {
   }
 
   @AutoLogOutput
-  public double getMCycles() {
+  public double getCycles() {
     return m_cycles;
   }
 
   @AutoLogOutput
-  public boolean getShouldAutoIntake() {
-    return ((minCurrent > m_intakeAutoDetectCurrent) && (m_cycles % m_cycleThreshold == (m_cycleThreshold - 1))
-        && (minCurrent < 120.0));
+  public boolean isHoldingNoteViaCurrent() {
+    return ((minCurrent > k_intakeAutoDetectCurrent) && (m_cycles % k_cycleThreshold == (k_cycleThreshold - 1)) && (minCurrent < 120.0));
   }
 
   @AutoLogOutput
-  public boolean getColorSensor() {
-    if (isColorSensorConnected()) {
-      return m_colorSensor.getProximity() >= RobotConstants.config.intake().k_sensorThreshold;
-    }
-    return false;
+  public boolean getBumperSwitches() {
+    return getMiddleBumperSwitch() || getLeftBumperSwitch() || getRightBumperSwitch();
   }
 
   @AutoLogOutput
-  public boolean getTOFOne() {
-    // return !m_noteTOF1.get();
-    return false; // TODO: FIX PLEASE THANKS PLEASE GOD I HOPE 🙏🙏🙏🙏
+  public boolean getLeftBumperSwitch() {
+    return !m_bumperSwitchLeft.get();
   }
 
   @AutoLogOutput
-  public boolean isColorSensorConnected() {
-    return m_colorSensor.isConnected();
+  public boolean getMiddleBumperSwitch() {
+    return !m_bumperSwitchMiddle.get();
   }
 
   @AutoLogOutput
-  public int getIntakeProximity() {
-    return m_colorSensor.getProximity();
+  public boolean getRightBumperSwitch() {
+    return !m_bumperSwitchRight.get();
   }
 }
