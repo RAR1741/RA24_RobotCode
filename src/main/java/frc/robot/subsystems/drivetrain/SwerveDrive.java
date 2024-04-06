@@ -178,20 +178,22 @@ public class SwerveDrive extends SwerveSysId {
 
   public void resetPose() {
     resetGyro();
-    resetOdometry(new Pose2d(0, 0, new Rotation2d(0)), false);
+    resetOdometry(new Pose2d(0, 0, new Rotation2d(0)), false, true);
   }
 
   public void resetOdometry(Pose2d pose) {
-    resetOdometry(pose, true);
+    resetOdometry(pose, true, false);
   }
 
-  public void resetOdometry(Pose2d pose, boolean shouldSetFlag) {
+  public void resetOdometry(Pose2d pose, boolean shouldSetFlag, boolean shouldResetEncoders) {
     m_hasSetPose |= shouldSetFlag;
 
     // setAllianceGyroAngleAdjustment();
 
-    for (SwerveModule module : m_modules) {
-      module.resetDriveEncoder();
+    if (shouldResetEncoders) {
+      for (SwerveModule module : m_modules) {
+        module.resetDriveEncoder();
+      }
     }
 
     m_poseEstimator.resetPosition(
