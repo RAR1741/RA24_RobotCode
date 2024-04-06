@@ -1,6 +1,5 @@
 package frc.robot.autonomous.modes;
 
-import frc.robot.autonomous.tasks.WaitTask;
 import frc.robot.constants.ApolloConstants;
 import frc.robot.constants.VisionConstants;
 
@@ -10,8 +9,6 @@ public class CenterFourNoteMode extends AutoModeBase {
   }
 
   public void queueTasks() {
-    queueTask(new WaitTask(1));
-
     // Note 1 (preload)
     queueShooterSpinUp();
     queueShoot();
