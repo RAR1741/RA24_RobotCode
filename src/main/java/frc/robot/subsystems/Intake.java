@@ -325,6 +325,11 @@ public class Intake extends Subsystem {
         return RobotConstants.config.intake().k_ejectSpeed;
       case FEED_SHOOTER:
         return RobotConstants.config.intake().k_feedShooterSpeed;
+      case PULSE:
+        if (Timer.getFPGATimestamp() % 1.0 < (1.0 / 45.0)) {
+          return RobotConstants.config.intake().k_intakeSpeed;
+        }
+        return 0.0;
       default:
         return 0.0;
     }

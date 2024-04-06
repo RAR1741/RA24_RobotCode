@@ -300,6 +300,9 @@ public class Robot extends LoggedRobot {
     if (m_driverController.getWantsIntake() && !m_intake.isHoldingNote()) {
       m_intake.setIntakeState(IntakeState.INTAKE);
       m_intaking = true;
+    } else if(m_driverController.getWantsIntake() && m_intake.isHoldingNote()) {
+      m_intake.setIntakeState(IntakeState.PULSE);
+      m_intaking = false;
     } else if ((m_driverController.getWantsEject() || m_operatorController.getWantsEject()) &&
         (m_intake
             .getPivotAngle() < (RobotConstants.config.intake().k_stowPivotAngle
