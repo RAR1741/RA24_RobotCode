@@ -289,6 +289,10 @@ public class SwerveDrive extends SwerveSysId {
     Logger.recordOutput("SwerveDrive/HeadingLock/RotFeedforward", rotationFF);
     Logger.recordOutput("SwerveDrive/HeadingLock/Target", m_rotationTarget);
 
+    Logger.recordOutput("SwerveDrive/HeadingLock/AimingToSpeaker", speakerAim);
+    Logger.recordOutput("SwerveDrive/HeadingLock/AimingToAmp", ampAim);
+    Logger.recordOutput("SwerveDrive/HeadingLock/AimingToPass", passAim);
+
     drive(xSpeed, ySpeed, rotationFeedback + rotationFF, fieldRelative);
   }
 
