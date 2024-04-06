@@ -43,7 +43,7 @@ public class Intake extends Subsystem {
   private final DigitalInput m_bumperSwitchRight = new DigitalInput(8);
 
   private final double k_intakeAutoDetectCurrent = 30; // Amps
-  private final int k_cycleThreshold = 30;
+  private final int k_cycleThreshold = 30; // >7500 is disabled
   private double minCurrent = 999.0;
   private int m_cycles = 0;
 
@@ -118,11 +118,11 @@ public class Intake extends Subsystem {
     }
 
     // FRANKENCODE
-    m_cycles++;
-    if (m_cycles % k_cycleThreshold == 0) {
-      m_cycles = 0;
-      minCurrent = 999.0;
-    }
+    // m_cycles++;
+    // if (m_cycles % k_cycleThreshold == 0) {
+    //   m_cycles = 0;
+    //   minCurrent = 999.0;
+    // }
 
     m_sim.updateAngle(getPivotAngle());
   }
@@ -332,7 +332,7 @@ public class Intake extends Subsystem {
 
   @AutoLogOutput
   public boolean isHoldingNote() {
-    return isHoldingNoteViaSwitches() || isHoldingNoteViaCurrent();
+    return isHoldingNoteViaSwitches() ; // || isHoldingNoteViaCurrent();
   }
 
   @AutoLogOutput
