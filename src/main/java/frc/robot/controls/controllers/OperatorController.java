@@ -17,6 +17,10 @@ public class OperatorController extends FilteredController {
     return this.getRawButton(Button.B);
   }
 
+  public boolean getWantsEjectFinished() {
+    return this.getRawButtonReleased(Button.B);
+  }
+
   public double getWantsManualShooterPivot(double limit) {
     return (this.getFilteredAxis(Axis.RIGHT_TRIGGER) - this.getFilteredAxis(Axis.LEFT_TRIGGER)) * limit;
   }

@@ -281,6 +281,12 @@ public class Robot extends LoggedRobot {
       m_intake.setPivotTarget(IntakePivotTarget.EJECT);
     }
 
+    boolean getWantsEjectFinished = m_driverController.getWantsEjectFinished() || m_operatorController.getWantsEjectFinished();
+
+    if (getWantsEjectFinished) {
+      m_intake.setPivotTarget(IntakePivotTarget.GROUND);
+    }
+
     if (wantsAmpAutoAim) {
       m_leds.redTwinkleFast();
       m_shooter.setAngle(ShooterPivotTarget.AMP);
@@ -309,7 +315,12 @@ public class Robot extends LoggedRobot {
                 - RobotConstants.config.intake().k_ejectPivotAngle))) {
       m_intake.setIntakeState(IntakeState.EJECT);
       m_intaking = false;
-    } else if (m_operatorController.getWantsShoot() && m_intake.isAtStow()) {
+    } else if (getWantsEjectFinished) {
+      m_intake.setIntakeState(IntakeState.INTAKE);
+      m_intaking = true;
+    }
+    
+    else if (m_operatorController.getWantsShoot() && m_intake.isAtStow()) {
       if (m_shooter.isAtTarget() && m_shooter.getPivotTarget() == ShooterPivotTarget.AMP) {
         RobotTelemetry.print("It's ampin' time!");
       }
