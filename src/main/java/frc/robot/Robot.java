@@ -122,7 +122,7 @@ public class Robot extends LoggedRobot {
   public void autonomousInit() {
     // m_swerve.resetGyro();
     m_swerve.setBrakeMode(false);
-    m_swerve.resetTurnOffsets();
+    // m_swerve.resetTurnOffsets();
 
     if (DriverStation.getAlliance().get() == Alliance.Blue) {
       m_leds.setAllColor(Color.kBlue);
@@ -177,7 +177,7 @@ public class Robot extends LoggedRobot {
     m_swerve.drive(0, 0, 0, false);
     m_swerve.resetRotationTarget();
     // m_swerve.resetAccelerometerPose();
-    m_swerve.resetTurnOffsets();
+    // m_swerve.resetTurnOffsets();
 
     m_swerve.m_limelightLeft.setLightEnabled(false);
     m_swerve.m_limelightRight.setLightEnabled(false);
@@ -379,7 +379,13 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void disabledPeriodic() {
-    m_leds.rainbowBreatheSlow();
+    
+    if (m_driverController.getWantsResetModules()) {
+      m_leds.setAllColor(Color.kPurple);
+      m_swerve.resetTurnOffsets();
+      m_swerve.resetOdometry(m_swerve.getPose(), false, true);
+      // m_leds.rainbowBreatheSlow();
+    }
   }
 
   @Override

@@ -35,11 +35,11 @@ public class DriverController extends FilteredController {
   }
 
   public boolean getWantsResetGyro() {
-    return this.getRawButton(Button.START);
+    return this.getRawButtonPressed(Button.START);
   }
 
   public boolean getWantsResetModules() {
-    return this.getRawButton(Button.BACK);
+    return this.getRawButtonPressed(Button.BACK);
   }
 
   // SysId test mode //
