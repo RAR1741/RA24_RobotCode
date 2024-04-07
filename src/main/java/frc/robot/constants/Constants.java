@@ -93,6 +93,6 @@ public class Constants {
 
     public Pose2d k_redPassPose = new Pose2d(14.71, 6.0, new Rotation2d());
     public Pose2d k_bluePassPose = new Pose2d(1.75, 6.0, new Rotation2d());
-    public double k_passAngle = 22.5;
+    public double k_passAngle = 23.5;
   }
 }
