@@ -1,6 +1,6 @@
 package frc.robot.autonomous.tasks;
 
-import edu.wpi.first.wpilibj.DriverStation;
+import frc.robot.RobotTelemetry;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 
 public class GyroTask extends Task {
@@ -36,7 +36,7 @@ public class GyroTask extends Task {
   public void done() {
     log(false);
 
-    DriverStation.reportWarning("Gyro task finished", false);
+    RobotTelemetry.print("Gyro task finished");
   }
 
   @Override

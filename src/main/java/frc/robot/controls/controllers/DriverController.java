@@ -106,7 +106,11 @@ public class DriverController extends FilteredController {
     return this.getRawButton(Button.X);
   }
 
-  public boolean getWantsAmpPivot() {
+  public boolean getWantsEjectPivot() {
     return this.getRawButtonPressed(Button.Y);
+  }
+
+  public boolean getWantsTrap() {
+    return this.getHat(Direction.DOWN);
   }
 }

@@ -28,5 +28,13 @@
   "java.test.defaultConfig": "WPIlibUnitTests",
   "wpilib.selectDefaultSimulateExtension": true,
   "wpilib.stopSimulationOnEntry": false,
-  "cSpell.words": ["Devs", "MIDRING", "REHOME", "Setpoints", "SUBWOOFER"]
+  "cSpell.words": [
+    "amping",
+    "Devs",
+    "MIDRING",
+    "REHOME",
+    "Setpoints",
+    "SUBWOOFER",
+    "Uncomitted"
+  ]
 }

@@ -1,0 +1,100 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.4,
+        "y": 3.553
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.496385784438235,
+        "y": 0.4690178176652651
+      },
+      "isLocked": false,
+      "linkedName": "Centerline"
+    },
+    {
+      "anchor": {
+        "x": 8.164908653891382,
+        "y": 2.347167541557306
+      },
+      "prevControl": {
+        "x": 6.125767881165392,
+        "y": 1.8431723252335395
+      },
+      "nextControl": {
+        "x": 8.400037978752579,
+        "y": 2.405282241892124
+      },
+      "isLocked": false,
+      "linkedName": "Note4"
+    },
+    {
+      "anchor": {
+        "x": 5.8272426128185595,
+        "y": 1.6823000451556467
+      },
+      "prevControl": {
+        "x": 6.950772090191049,
+        "y": 1.6084082463607525
+      },
+      "nextControl": {
+        "x": 5.11391746394604,
+        "y": 1.7292137037977788
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.398091703590815,
+        "y": 3.3542078241563895
+      },
+      "prevControl": {
+        "x": 2.8306475131468782,
+        "y": 2.5893964195335806
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "ShootStageRight"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.1,
+      "rotationDegrees": 0,
+      "rotateFast": true
+    },
+    {
+      "waypointRelativePos": 1.0499999999999998,
+      "rotationDegrees": 32.366221476652434,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 2.35,
+      "rotationDegrees": 0,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -43.07857359486902,
+    "rotateFast": true
+  },
+  "reversed": false,
+  "folder": "Centerline Outside",
+  "previewStartingState": {
+    "rotation": -54.0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": false
+}

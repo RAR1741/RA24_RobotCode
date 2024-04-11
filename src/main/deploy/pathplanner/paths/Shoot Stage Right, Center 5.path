@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.4148974825727434,
-        "y": 3.378614803525904
+        "x": 2.398091703590815,
+        "y": 3.3542078241563895
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.8718338131120706,
-        "y": 1.142317895746903
+        "x": 3.855028034130142,
+        "y": 1.1179109163773886
       },
       "isLocked": false,
       "linkedName": "ShootStageRight"
     },
     {
       "anchor": {
-        "x": 8.176542585379789,
-        "y": 0.9418022235477892
+        "x": 8.07428809302063,
+        "y": 0.8657054628924079
       },
       "prevControl": {
-        "x": 6.852330339733076,
-        "y": 0.9947730887487786
+        "x": 6.7500758473739175,
+        "y": 0.9186763280933974
       },
       "nextControl": null,
       "isLocked": false,
@@ -38,7 +38,7 @@
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.0,
+    "maxVelocity": 3.0,
     "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
@@ -49,7 +49,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Unused",
   "previewStartingState": {
     "rotation": -42.9502116021266,
     "velocity": 0.0

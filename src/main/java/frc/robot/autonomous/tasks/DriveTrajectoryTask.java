@@ -1,7 +1,5 @@
 package frc.robot.autonomous.tasks;
 
-import java.util.ArrayList;
-
 import org.littletonrobotics.junction.Logger;
 
 import com.pathplanner.lib.path.PathPlannerPath;
@@ -10,6 +8,7 @@ import com.pathplanner.lib.path.PathPlannerTrajectory.State;
 import com.pathplanner.lib.util.PIDConstants;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
@@ -18,14 +17,20 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
-import frc.robot.Constants.Auto;
-import frc.robot.Constants.AutoAim.Rotation;
-import frc.robot.Constants.AutoAim.Translation;
-import frc.robot.Constants.Robot;
+import frc.robot.AllianceHelpers;
+import frc.robot.RobotTelemetry;
+import frc.robot.constants.ApolloConstants.Auto;
+import frc.robot.constants.ApolloConstants.AutoAim.Rotation;
+import frc.robot.constants.ApolloConstants.AutoAim.Translation;
+import frc.robot.constants.ApolloConstants.Robot;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.drivetrain.RARHolonomicDriveController;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 
 public class DriveTrajectoryTask extends Task {
+  private final boolean k_debugPath = false;
+
   private SwerveDrive m_swerve = SwerveDrive.getInstance();
   private PathPlannerTrajectory m_autoTrajectory;
   private PathPlannerPath m_autoPath = null;
@@ -43,7 +48,7 @@ public class DriveTrajectoryTask extends Task {
       m_autoPath = PathPlannerPath.fromPathFile(pathName);
 
       if (DriverStation.getAlliance().get() == Alliance.Red) {
-        DriverStation.reportWarning("Translating path for Red Alliance!", false);
+        RobotTelemetry.print("Translating path for Red Alliance!");
         m_autoPath = m_autoPath.flipPath();
       }
 
@@ -54,7 +59,7 @@ public class DriveTrajectoryTask extends Task {
 
   @Override
   public void start() {
-    DriverStation.reportWarning("Auto trajectory start", false);
+    RobotTelemetry.print("Auto trajectory start");
     m_runningTimer.reset();
     m_runningTimer.start();
 
@@ -65,18 +70,15 @@ public class DriveTrajectoryTask extends Task {
         new ChassisSpeeds(),
         m_swerve.getGyro().getRotation2d());
 
-    ArrayList<Pose2d> newStates = new ArrayList<>();
-    for (State state : m_autoTrajectory.getStates()) {
-      newStates.add(state.getTargetHolonomicPose());
+    if (k_debugPath) {
+      Trajectory adjustedTrajectory = TrajectoryGenerator.generateTrajectory(
+          m_autoPath.getPathPoses(),
+          new TrajectoryConfig(
+              m_autoPath.getGlobalConstraints().getMaxVelocityMps(),
+              m_autoPath.getGlobalConstraints().getMaxAccelerationMpsSq()));
+
+      Logger.recordOutput("Auto/DriveTrajectory/TargetTrajectory", adjustedTrajectory);
     }
-
-    Trajectory adjustedTrajectory = TrajectoryGenerator.generateTrajectory(
-        newStates,
-        new TrajectoryConfig(
-            m_autoPath.getGlobalConstraints().getMaxVelocityMps(),
-            m_autoPath.getGlobalConstraints().getMaxAccelerationMpsSq()));
-
-    Logger.recordOutput("Auto/DriveTrajectory/TargetTrajectory", adjustedTrajectory);
     Logger.recordOutput("Auto/DriveTrajectory/StartingTargetPose", getStartingPose());
 
     // TODO: we probably want to do this all the time?
@@ -85,7 +87,7 @@ public class DriveTrajectoryTask extends Task {
     }
 
     m_swerve.clearTurnPIDAccumulation();
-    DriverStation.reportWarning("Running path for " + DriverStation.getAlliance().get().toString(), false);
+    RobotTelemetry.print("Running path for " + DriverStation.getAlliance().get().toString());
   }
 
   @Override
@@ -95,6 +97,8 @@ public class DriveTrajectoryTask extends Task {
     if (m_autoTrajectory != null) {
       State goal = m_autoTrajectory.sample(m_runningTimer.get());
       Pose2d pose = m_swerve.getPose();
+
+      goal.targetHolonomicRotation = getRotationProvider(goal.targetHolonomicRotation.getDegrees());
 
       ChassisSpeeds chassisSpeeds = k_driveController.calculateRobotRelativeSpeeds(pose, goal);
 
@@ -120,6 +124,16 @@ public class DriveTrajectoryTask extends Task {
       m_isFinished |= m_runningTimer.get() >= m_autoTrajectory.getTotalTimeSeconds();
     } else {
       m_isFinished = true;
+    }
+  }
+
+  private Rotation2d getRotationProvider(double targetRotation) {
+    boolean isReadyToAutoTarget = Intake.getInstance().isAtStow() && Shooter.getInstance().isShooterReady();
+
+    if (isReadyToAutoTarget) {
+      return AllianceHelpers.getAllianceSpeakerRotationTarget();
+    } else {
+      return new Rotation2d(Math.toRadians(targetRotation));
     }
   }
 
@@ -149,7 +163,7 @@ public class DriveTrajectoryTask extends Task {
   public void done() {
     log(false);
 
-    DriverStation.reportWarning("Auto trajectory done", false);
+    RobotTelemetry.print("Auto trajectory done");
     m_swerve.drive(0, 0, 0, true);
     // m_swerve.setRotationTarget(m_swerve.getPose().getRotation());
   }

@@ -3,8 +3,6 @@ package frc.robot.subsystems;
 import org.littletonrobotics.junction.AutoLogOutput;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.ColorSensorV3;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -12,21 +10,25 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.wpilibj.I2C;
-import frc.robot.Constants;
+import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.Helpers;
+import frc.robot.constants.RobotConstants;
 import frc.robot.simulation.IntakeSim;
 import frc.robot.simulation.SimMaster;
+import frc.robot.subsystems.leds.LEDs;
+import frc.robot.wrappers.RARSparkMax;
+import frc.robot.wrappers.REVThroughBoreEncoder;
 
 public class Intake extends Subsystem {
   private static Intake m_intake;
   private static IntakeSim m_sim;
+  private static LEDs m_leds = LEDs.getInstance();
 
-  private CANSparkMax m_pivotMotor;
-  private CANSparkMax m_intakeMotor;
+  private RARSparkMax m_pivotMotor;
+  private RARSparkMax m_intakeMotor;
 
-  private final DutyCycleEncoder m_pivotAbsEncoder = new DutyCycleEncoder(Constants.Intake.k_pivotEncoderId);
+  private final REVThroughBoreEncoder m_pivotAbsEncoder = new REVThroughBoreEncoder(
+      RobotConstants.config.intake().k_pivotEncoderId);
 
   private final ProfiledPIDController m_pivotMotorPID;
   private final ArmFeedforward m_pivotFeedForward;
@@ -36,11 +38,14 @@ public class Intake extends Subsystem {
 
   private PeriodicIO m_periodicIO;
 
-  private final I2C.Port k_colorSensorPort = I2C.Port.kMXP;
-  private final DigitalInput m_noteTOF1 = new DigitalInput(6);
-  // private final DigitalInput m_noteTOF2 = new DigitalInput(7);
+  private final DigitalInput m_bumperSwitchLeft = new DigitalInput(6);
+  private final DigitalInput m_bumperSwitchMiddle = new DigitalInput(7);
+  private final DigitalInput m_bumperSwitchRight = new DigitalInput(8);
 
-  private ColorSensorV3 m_colorSensor;
+  private final double k_intakeAutoDetectCurrent = 30; // Amps
+  private final int k_cycleThreshold = 30; // >7500 is disabled
+  private double minCurrent = 999.0;
+  private int m_cycles = 0;
 
   private Intake() {
     super("Intake");
@@ -48,37 +53,35 @@ public class Intake extends Subsystem {
     m_sim = SimMaster.getInstance().getIntakeSim();
 
     // Pivot motor setup
-    m_pivotMotor = new CANSparkMax(Constants.Intake.k_pivotMotorId, MotorType.kBrushless);
+    m_pivotMotor = new RARSparkMax(RobotConstants.config.intake().k_pivotMotorId, MotorType.kBrushless);
     m_pivotMotor.restoreFactoryDefaults();
-    m_pivotMotor.setIdleMode(CANSparkMax.IdleMode.kCoast);
+    m_pivotMotor.setIdleMode(RARSparkMax.IdleMode.kCoast);
     m_pivotMotor.setSmartCurrentLimit(20);
     m_pivotMotor.setInverted(true);
 
     // Intake motor setup
-    m_intakeMotor = new CANSparkMax(Constants.Intake.k_intakeMotorId, MotorType.kBrushless);
+    m_intakeMotor = new RARSparkMax(RobotConstants.config.intake().k_intakeMotorId, MotorType.kBrushless);
     m_intakeMotor.restoreFactoryDefaults();
-    m_intakeMotor.setIdleMode(CANSparkMax.IdleMode.kCoast);
+    m_intakeMotor.setIdleMode(RARSparkMax.IdleMode.kCoast);
     m_intakeMotor.setInverted(true);
 
     // Pivot PID
     m_pivotMotorPID = new ProfiledPIDController(
-        Constants.Intake.k_pivotMotorP,
-        Constants.Intake.k_pivotMotorI,
-        Constants.Intake.k_pivotMotorD,
+        RobotConstants.config.intake().k_pivotMotorP,
+        RobotConstants.config.intake().k_pivotMotorI,
+        RobotConstants.config.intake().k_pivotMotorD,
         new TrapezoidProfile.Constraints(
-            Constants.Intake.k_maxVelocity,
-            Constants.Intake.k_maxAcceleration));
+            RobotConstants.config.intake().k_maxVelocity,
+            RobotConstants.config.intake().k_maxAcceleration));
 
     // Pivot Feedforward
     m_pivotFeedForward = new ArmFeedforward(
-        Constants.Intake.k_pivotMotorKS,
-        Constants.Intake.k_pivotMotorKG,
-        Constants.Intake.k_pivotMotorKV,
-        Constants.Intake.k_pivotMotorKA);
+        RobotConstants.config.intake().k_pivotMotorKS,
+        RobotConstants.config.intake().k_pivotMotorKG,
+        RobotConstants.config.intake().k_pivotMotorKV,
+        RobotConstants.config.intake().k_pivotMotorKA);
 
     m_periodicIO = new PeriodicIO();
-
-    m_colorSensor = new ColorSensorV3(k_colorSensorPort);
 
     m_intakeMotor.burnFlash();
     m_pivotMotor.burnFlash();
@@ -108,6 +111,18 @@ public class Intake extends Subsystem {
       m_periodicIO.intake_speed = getSpeedFromState(m_periodicIO.intake_state);
       putString("IntakeState", m_periodicIO.intake_state.toString());
     }
+
+    double currentCurrent = getIntakeCurrent();
+    if (currentCurrent < minCurrent) {
+      minCurrent = currentCurrent;
+    }
+
+    // FRANKENCODE
+    // m_cycles++;
+    // if (m_cycles % k_cycleThreshold == 0) {
+    //   m_cycles = 0;
+    //   minCurrent = 999.0;
+    // }
 
     m_sim.updateAngle(getPivotAngle());
   }
@@ -191,8 +206,17 @@ public class Intake extends Subsystem {
   }
 
   private boolean m_override = false;
+
   public void overrideAutoFlip(boolean override) {
     m_override = override;
+  }
+
+  public boolean isAtStow() {
+    return getPivotTarget() == IntakePivotTarget.STOW && isAtPivotTarget();
+  }
+
+  public boolean isAtGround() {
+    return m_periodicIO.pivot_target == IntakePivotTarget.GROUND && isAtPivotTarget();
   }
 
   /*---------------------------------- Custom Private Functions ---------------------------------*/
@@ -200,11 +224,10 @@ public class Intake extends Subsystem {
     // If the intake is set to GROUND, and the intake has a note, and the pivot is
     // close to it's target
     // Stop the intake and go to the SOURCE position
-    if (m_periodicIO.pivot_target == IntakePivotTarget.GROUND && isHoldingNote() && isAtPivotTarget() && !m_override) {
-
+    if (isAtGround() && isHoldingNote() && !m_override) {
       setPivotTarget(IntakePivotTarget.STOW);
       setIntakeState(IntakeState.NONE);
-      // m_leds.setColor(Color.kGreen);
+      m_leds.setAllColor(Color.kGreen);
     }
   }
 
@@ -216,7 +239,7 @@ public class Intake extends Subsystem {
 
   @AutoLogOutput
   public double getPivotReferenceToHorizontal() {
-    return getPivotAngle() - Constants.Intake.k_pivotOffset;
+    return getPivotAngle() - RobotConstants.config.intake().k_pivotOffset;
   }
 
   @AutoLogOutput
@@ -277,32 +300,36 @@ public class Intake extends Subsystem {
   }
 
   @AutoLogOutput
-  private double getAngleFromTarget(IntakePivotTarget target) {
+  public double getAngleFromTarget(IntakePivotTarget target) {
     switch (target) {
       case GROUND:
-        return Constants.Intake.k_groundPivotAngle;
+        return RobotConstants.config.intake().k_groundPivotAngle;
       case PIVOT:
-        return Constants.Intake.k_sourcePivotAngle;
+        return RobotConstants.config.intake().k_sourcePivotAngle;
       case EJECT:
-        return Constants.Intake.k_ejectPivotAngle;
+        return RobotConstants.config.intake().k_ejectPivotAngle;
       case AMP:
-        return Constants.Intake.k_ampPivotAngle;
+        return RobotConstants.config.intake().k_ampPivotAngle;
       case STOW:
-        return Constants.Intake.k_stowPivotAngle;
+        return RobotConstants.config.intake().k_stowPivotAngle;
       default:
-        return Constants.Intake.k_stowPivotAngle;
+        return RobotConstants.config.intake().k_stowPivotAngle;
     }
   }
 
-  @AutoLogOutput
-  private double getSpeedFromState(IntakeState state) {
+  public double getSpeedFromState(IntakeState state) {
     switch (state) {
       case INTAKE:
-        return Constants.Intake.k_intakeSpeed;
+        return RobotConstants.config.intake().k_intakeSpeed;
       case EJECT:
-        return Constants.Intake.k_ejectSpeed;
+        return RobotConstants.config.intake().k_ejectSpeed;
       case FEED_SHOOTER:
-        return Constants.Intake.k_feedShooterSpeed;
+        return RobotConstants.config.intake().k_feedShooterSpeed;
+      case PULSE:
+        if (Timer.getFPGATimestamp() % 1.0 < (1.0 / 45.0)) {
+          return RobotConstants.config.intake().k_intakeSpeed;
+        }
+        return 0.0;
       default:
         return 0.0;
     }
@@ -310,29 +337,41 @@ public class Intake extends Subsystem {
 
   @AutoLogOutput
   public boolean isHoldingNote() {
-    return getColorSensor() || getTOFOne();
+    return isHoldingNoteViaSwitches() ; // || isHoldingNoteViaCurrent();
   }
 
   @AutoLogOutput
-  public boolean getColorSensor() {
-    if (isColorSensorConnected()) {
-      return m_colorSensor.getProximity() >= Constants.Intake.k_sensorThreshold;
-    }
-    return false;
+  public double getMinCurrent() {
+    return minCurrent;
   }
 
   @AutoLogOutput
-  public boolean getTOFOne() {
-    return !m_noteTOF1.get();
+  public double getCycles() {
+    return m_cycles;
   }
 
   @AutoLogOutput
-  public boolean isColorSensorConnected() {
-    return m_colorSensor.isConnected();
+  public boolean isHoldingNoteViaCurrent() {
+    return ((minCurrent > k_intakeAutoDetectCurrent) && (m_cycles % k_cycleThreshold == (k_cycleThreshold - 1)) && (minCurrent < 120.0));
   }
 
   @AutoLogOutput
-  public int getIntakeProximity() {
-    return m_colorSensor.getProximity();
+  public boolean isHoldingNoteViaSwitches() {
+    return getMiddleBumperSwitch() || getLeftBumperSwitch() || getRightBumperSwitch();
+  }
+
+  @AutoLogOutput
+  public boolean getLeftBumperSwitch() {
+    return !m_bumperSwitchLeft.get();
+  }
+
+  @AutoLogOutput
+  public boolean getMiddleBumperSwitch() {
+    return !m_bumperSwitchMiddle.get();
+  }
+
+  @AutoLogOutput
+  public boolean getRightBumperSwitch() {
+    return !m_bumperSwitchRight.get();
   }
 }

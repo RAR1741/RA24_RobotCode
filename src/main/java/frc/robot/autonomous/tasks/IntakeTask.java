@@ -1,7 +1,7 @@
 package frc.robot.autonomous.tasks;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
+import frc.robot.RobotTelemetry;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Intake.IntakePivotTarget;
 import frc.robot.subsystems.Intake.IntakeState;
@@ -11,15 +11,23 @@ public class IntakeTask extends Task {
 
   private IntakePivotTarget m_pivotTarget;
   private IntakeState m_intakeState;
+  private boolean m_waitForNote;
 
   public IntakeTask(IntakePivotTarget target, IntakeState state) {
     m_pivotTarget = target;
     m_intakeState = state;
+    m_waitForNote = false;
+  }
+
+  public IntakeTask(IntakePivotTarget target, IntakeState state, boolean waitForNote) {
+    m_pivotTarget = target;
+    m_intakeState = state;
+    m_waitForNote = waitForNote;
   }
 
   @Override
   public void start() {
-    DriverStation.reportWarning("Auto Intake start", false);
+    RobotTelemetry.print("Auto Intake start");
     m_intake.setPivotTarget(m_pivotTarget);
     m_intake.setIntakeState(m_intakeState);
   }
@@ -35,11 +43,12 @@ public class IntakeTask extends Task {
   public void done() {
     log(false);
 
-    DriverStation.reportWarning("Auto Intake done", false);
+    RobotTelemetry.print("Auto Intake done");
   }
 
   @Override
   public boolean isFinished() {
-    return m_intake.isAtPivotTarget() || !RobotBase.isReal();
+    boolean waitForNoteDone = !m_waitForNote || m_intake.isHoldingNote();
+    return ((m_intake.isAtPivotTarget() && waitForNoteDone) || !RobotBase.isReal()) || (m_intake.isAtStow());
   }
 }

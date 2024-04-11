@@ -6,7 +6,6 @@ import org.littletonrobotics.junction.Logger;
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkBase.IdleMode;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.controller.PIDController;
@@ -14,9 +13,7 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -27,46 +24,45 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.AllianceHelpers;
 import frc.robot.AprilTagLocations;
-import frc.robot.Constants;
-import frc.robot.Constants.Field;
 import frc.robot.LimelightHelpers.PoseEstimate;
+import frc.robot.constants.ApolloConstants;
+import frc.robot.constants.RobotConstants;
+import frc.robot.constants.VisionConstants;
 import frc.robot.subsystems.Limelight;
 
 public class SwerveDrive extends SwerveSysId {
   private static SwerveDrive m_swerve = null;
 
   private Rotation2d m_rotationTarget;
-  private Pose2d m_accelerometerPose;
+  // private Pose2d m_accelerometerPose;
 
   private static final SwerveModule[] m_modules = {
-      new SwerveModule(Constants.SwerveDrive.Drive.k_FLMotorId, Constants.SwerveDrive.Turn.k_FLMotorId,
-          Constants.SwerveDrive.Turn.k_FLAbsId,
-          Constants.SwerveDrive.Turn.k_FLOffset, "FL"), // 0
-      new SwerveModule(Constants.SwerveDrive.Drive.k_FRMotorId, Constants.SwerveDrive.Turn.k_FRMotorId,
-          Constants.SwerveDrive.Turn.k_FRAbsId,
-          Constants.SwerveDrive.Turn.k_FROffset, "FR"), // 1
-      new SwerveModule(Constants.SwerveDrive.Drive.k_BRMotorId, Constants.SwerveDrive.Turn.k_BRMotorId,
-          Constants.SwerveDrive.Turn.k_BRAbsId,
-          Constants.SwerveDrive.Turn.k_BROffset, "BR"), // 2
-      new SwerveModule(Constants.SwerveDrive.Drive.k_BLMotorId, Constants.SwerveDrive.Turn.k_BLMotorId,
-          Constants.SwerveDrive.Turn.k_BLAbsId,
-          Constants.SwerveDrive.Turn.k_BLOffset, "BL") // 3
+      new SwerveModule(ApolloConstants.SwerveDrive.Drive.k_FLMotorId, ApolloConstants.SwerveDrive.Turn.k_FLMotorId,
+          ApolloConstants.SwerveDrive.Turn.k_FLAbsId,
+          ApolloConstants.SwerveDrive.Turn.k_FLOffset, "FL"), // 0
+      new SwerveModule(ApolloConstants.SwerveDrive.Drive.k_FRMotorId, ApolloConstants.SwerveDrive.Turn.k_FRMotorId,
+          ApolloConstants.SwerveDrive.Turn.k_FRAbsId,
+          ApolloConstants.SwerveDrive.Turn.k_FROffset, "FR"), // 1
+      new SwerveModule(ApolloConstants.SwerveDrive.Drive.k_BRMotorId, ApolloConstants.SwerveDrive.Turn.k_BRMotorId,
+          ApolloConstants.SwerveDrive.Turn.k_BRAbsId,
+          ApolloConstants.SwerveDrive.Turn.k_BROffset, "BR"), // 2
+      new SwerveModule(ApolloConstants.SwerveDrive.Drive.k_BLMotorId, ApolloConstants.SwerveDrive.Turn.k_BLMotorId,
+          ApolloConstants.SwerveDrive.Turn.k_BLAbsId,
+          ApolloConstants.SwerveDrive.Turn.k_BLOffset, "BL") // 3
   };
 
   // Robot "forward" is +x
   // Robot "left" is +y
   // Robot "clockwise" is -z
   private final Translation2d[] m_moduleLocations = {
-      new Translation2d(Constants.SwerveDrive.k_xCenterDistance, Constants.SwerveDrive.k_yCenterDistance),
-      new Translation2d(Constants.SwerveDrive.k_xCenterDistance, -Constants.SwerveDrive.k_yCenterDistance),
-      new Translation2d(-Constants.SwerveDrive.k_xCenterDistance, -Constants.SwerveDrive.k_yCenterDistance),
-      new Translation2d(-Constants.SwerveDrive.k_xCenterDistance, Constants.SwerveDrive.k_yCenterDistance)
+      new Translation2d(ApolloConstants.SwerveDrive.k_xCenterDistance, ApolloConstants.SwerveDrive.k_yCenterDistance),
+      new Translation2d(ApolloConstants.SwerveDrive.k_xCenterDistance, -ApolloConstants.SwerveDrive.k_yCenterDistance),
+      new Translation2d(-ApolloConstants.SwerveDrive.k_xCenterDistance, -ApolloConstants.SwerveDrive.k_yCenterDistance),
+      new Translation2d(-ApolloConstants.SwerveDrive.k_xCenterDistance, ApolloConstants.SwerveDrive.k_yCenterDistance)
   };
 
   private final AHRS m_gyro = new AHRS(SPI.Port.kMXP);
@@ -92,22 +88,24 @@ public class SwerveDrive extends SwerveSysId {
       },
       new Pose2d(0, 0, Rotation2d.fromDegrees(0)),
       createStateStdDevs(
-          Constants.Vision.k_positionStdDevX,
-          Constants.Vision.k_positionStdDevY,
-          Constants.Vision.k_positionStdDevTheta),
+          ApolloConstants.Vision.k_positionStdDevX,
+          ApolloConstants.Vision.k_positionStdDevY,
+          ApolloConstants.Vision.k_positionStdDevTheta),
       createVisionMeasurementStdDevs(
-          Constants.Vision.k_visionStdDevX,
-          Constants.Vision.k_visionStdDevY,
-          Constants.Vision.k_visionStdDevTheta));
+          ApolloConstants.Vision.k_visionStdDevX,
+          ApolloConstants.Vision.k_visionStdDevY,
+          ApolloConstants.Vision.k_visionStdDevTheta));
 
   private final PIDController k_rotController = new PIDController(
-      Constants.Vision.Rotation.k_P,
-      Constants.Vision.Rotation.k_I,
-      Constants.Vision.Rotation.k_D);
+      ApolloConstants.Vision.Rotation.k_P,
+      ApolloConstants.Vision.Rotation.k_I,
+      ApolloConstants.Vision.Rotation.k_D);
 
   enum VisionInstance {
     SHOOTER, LEFT, RIGHT;
   }
+
+  public VisionConstants m_visionConstants = ApolloConstants.Vision.defaultAutoVisionConstants;
 
   private boolean m_hasSetPose = false;
 
@@ -117,7 +115,7 @@ public class SwerveDrive extends SwerveSysId {
     k_rotController.enableContinuousInput(-Math.PI, Math.PI);
 
     resetRotationTarget();
-    m_accelerometerPose = new Pose2d();
+    // m_accelerometerPose = new Pose2d();
 
     resetTurnOffsets();
     reset();
@@ -149,8 +147,8 @@ public class SwerveDrive extends SwerveSysId {
   public double calculateSpeakerAutoAimAngle(boolean degreeMode) {
     double botX = m_poseEstimator.getEstimatedPosition().getX();
     double botY = m_poseEstimator.getEstimatedPosition().getY();
-    double targetX = Constants.Auto.k_blueCenterPose2d.getX(); // TODO: Work on red
-    double targetY = Constants.Auto.k_blueCenterPose2d.getY();
+    double targetX = ApolloConstants.Auto.k_blueCenterPose2d.getX(); // TODO: Work on red
+    double targetY = ApolloConstants.Auto.k_blueCenterPose2d.getY();
 
     double x = targetX - botX;
     double distance = Math.sqrt(Math.pow(x, 2) + Math.pow(targetY - botY, 2));
@@ -180,20 +178,22 @@ public class SwerveDrive extends SwerveSysId {
 
   public void resetPose() {
     resetGyro();
-    resetOdometry(new Pose2d(0, 0, new Rotation2d(0)), false);
+    resetOdometry(new Pose2d(0, 0, new Rotation2d(0)), false, true);
   }
 
   public void resetOdometry(Pose2d pose) {
-    resetOdometry(pose, true);
+    resetOdometry(pose, true, false);
   }
 
-  public void resetOdometry(Pose2d pose, boolean shouldSetFlag) {
+  public void resetOdometry(Pose2d pose, boolean shouldSetFlag, boolean shouldResetEncoders) {
     m_hasSetPose |= shouldSetFlag;
 
     // setAllianceGyroAngleAdjustment();
 
-    for (SwerveModule module : m_modules) {
-      module.resetDriveEncoder();
+    if (shouldResetEncoders) {
+      for (SwerveModule module : m_modules) {
+        module.resetDriveEncoder();
+      }
     }
 
     m_poseEstimator.resetPosition(
@@ -246,7 +246,7 @@ public class SwerveDrive extends SwerveSysId {
   public void drive(ChassisSpeeds speeds) {
     SwerveModuleState[] swerveModuleStates = m_kinematics.toSwerveModuleStates(speeds);
 
-    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.SwerveDrive.k_maxBoostSpeed);
+    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, ApolloConstants.SwerveDrive.k_maxBoostSpeed);
 
     for (int i = 0; i < m_modules.length; i++) {
       m_modules[i].setDesiredState(swerveModuleStates[i]);
@@ -268,9 +268,7 @@ public class SwerveDrive extends SwerveSysId {
     Rotation2d currentRotation;
 
     if (speakerAim) {
-      m_rotationTarget = new Rotation2d(
-          getPose().getTranslation().getX() - AllianceHelpers.getAllianceSpeakerPose2d().getTranslation().getX(),
-          getPose().getTranslation().getY() - AllianceHelpers.getAllianceSpeakerPose2d().getTranslation().getY());
+      m_rotationTarget = AllianceHelpers.getAllianceSpeakerRotationTarget();
       currentRotation = getPose().getRotation();
     } else if (ampAim) {
       m_rotationTarget = AllianceHelpers.getAllianceAmpRotation();
@@ -282,16 +280,20 @@ public class SwerveDrive extends SwerveSysId {
       currentRotation = m_gyro.getRotation2d();
     }
 
-    if (Math.abs(rot) > 0.03 * Constants.SwerveDrive.k_maxAngularSpeed) {
+    if (Math.abs(rot) > 0.03 * ApolloConstants.SwerveDrive.k_maxAngularSpeed) {
       m_rotationTarget = currentRotation.plus(new Rotation2d(rot * (1.0 / 50.0)));
     } else {
       rotationFeedback = k_rotController.calculate(
           currentRotation.getRadians(),
           m_rotationTarget.getRadians());
-    } 
+    }
     Logger.recordOutput("SwerveDrive/HeadingLock/RotFeedback", rotationFeedback);
     Logger.recordOutput("SwerveDrive/HeadingLock/RotFeedforward", rotationFF);
     Logger.recordOutput("SwerveDrive/HeadingLock/Target", m_rotationTarget);
+
+    Logger.recordOutput("SwerveDrive/HeadingLock/AimingToSpeaker", speakerAim);
+    Logger.recordOutput("SwerveDrive/HeadingLock/AimingToAmp", ampAim);
+    Logger.recordOutput("SwerveDrive/HeadingLock/AimingToPass", passAim);
 
     drive(xSpeed, ySpeed, rotationFeedback + rotationFF, fieldRelative);
   }
@@ -302,7 +304,7 @@ public class SwerveDrive extends SwerveSysId {
             ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, m_gyro.getRotation2d())
             : new ChassisSpeeds(xSpeed, ySpeed, rot));
 
-    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.SwerveDrive.k_maxBoostSpeed);
+    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, ApolloConstants.SwerveDrive.k_maxBoostSpeed);
 
     for (int i = 0; i < m_modules.length; i++) {
       m_modules[i].setDesiredState(swerveModuleStates[i]);
@@ -349,9 +351,13 @@ public class SwerveDrive extends SwerveSysId {
 
   public void resetGyro() {
     m_gyro.reset();
-    m_rotationTarget = new Rotation2d(0.0); // jitter go brr
+    if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {
+      m_rotationTarget = new Rotation2d(Math.PI); // jitter go brr
+    } else {
+      m_rotationTarget = new Rotation2d(0);
+    }
     setAllianceGyroAngleAdjustment();
-    resetAccelerometerPose();
+    // resetAccelerometerPose();
   }
 
   // set rotation target
@@ -359,12 +365,9 @@ public class SwerveDrive extends SwerveSysId {
     m_rotationTarget = m_gyro.getRotation2d();
   }
 
-  public void resetAccelerometerPose() {
-    m_accelerometerPose = new Pose2d(getPose().getX(), getPose().getY(), new Rotation2d(0.0));
+  public SwerveModule[] getModules() {
+    return m_modules;
   }
-
-  // double accelX = getAccelerometerVelocityX() * Math.sin(m_gyro.getRotation2d().getRadians()) / Math.pow(50.0,2.0);
-  // double accelY = getAccelerometerVelocityY() * Math.cos(m_gyro.getRotation2d().getRadians()) / Math.pow(50.0,2.0);
 
   @Override
   public void periodic() {
@@ -377,22 +380,6 @@ public class SwerveDrive extends SwerveSysId {
     updateVisionPoseWithStdDev(m_limelightShooter.getPoseEstimation(), VisionInstance.SHOOTER);
 
     // clampPose(getPose());
-
-    // Pose2d accelerometerPose = new Pose2d(
-    //     getPose().getX() + ((getAccelerometerVelocityX() * Math.sin(m_gyro.getRotation2d().getRadians())) / Math.pow(50.0,2.0)), 
-    //     getPose().getY() + ((getAccelerometerVelocityY() * Math.cos(m_gyro.getRotation2d().getRadians())) / Math.pow(50.0,2.0)), 
-    //   m_gyro.getRotation2d());
-
-    // accelX = getAccelerometerVelocityX() * Math.sin(m_gyro.getRotation2d().getRadians()) / Math.pow(50.0,2.0);
-    // accelY = getAccelerometerVelocityY() * Math.cos(m_gyro.getRotation2d().getRadians()) / Math.pow(50.0,2.0);
-    // m_accelerometerPose = m_accelerometerPose.plus(new Transform2d(accelX, accelY,new Rotation2d(0.0)));
-
-    // Logger.recordOutput("Accelerometer/Pose", m_accelerometerPose);
-
-    // if(m_gyro.isMoving() && (Math.abs(getAccelerometerVelocityX()) > 0.5 || Math.abs(getAccelerometerVelocityY()) > 0.5)) {
-      // m_poseEstimator.addVisionMeasurement(m_accelerometerPose, getNavXTimestamp(),
-        // createVisionMeasurementStdDevs(100, 100, 999999999));
-    // }
 
     if (RobotBase.isReal()) {
       m_poseEstimator.updateWithTime(
@@ -455,55 +442,48 @@ public class SwerveDrive extends SwerveSysId {
       2.0
   }; // shooter, left, right
   private boolean useVisionRotation = true;
-  private int minTagCount = 1;
-  private double maxAvgDistance = 4.0;
-  private double autoStdDevScale = 32.0;
+  // private int minTagCount = m_visionConstants.minTagCount; // 1;
+  // private double maxAvgDistance = m_visionConstants.maxAvgDistance; // 10.0;
+  // private double autoStdDevScale = m_visionConstants.autoStdDevScale; // 16.0;
 
   public void updateVisionPoseWithStdDev(PoseEstimate poseEstimate, VisionInstance instanceIndex) {
     // Add observation to list
     double avgDistance = poseEstimate.avgTagDist;
     // double avgArea = poseEstimate.avgTagArea;
-    // double autoTranslationMax = 2.0;
 
-    if (poseEstimate.tagCount < minTagCount) {
+    if (poseEstimate.tagCount < m_visionConstants.minTagCount) {
       return;
     }
 
-    if (DriverStation.isAutonomous() && poseEstimate.tagCount < 2) {
+    if (avgDistance >= m_visionConstants.maxAvgDistance) {
       return;
     }
 
-    if (avgDistance >= maxAvgDistance) {
+    if (poseEstimate.pose.getX() < 0 || poseEstimate.pose.getX() > RobotConstants.config.field().k_width) {
       return;
     }
 
-    if (poseEstimate.pose.getX() < 0 || poseEstimate.pose.getX() > Constants.Field.k_width) {
+    if (poseEstimate.pose.getY() < 0 || poseEstimate.pose.getY() > RobotConstants.config.field().k_length) {
       return;
     }
 
-    if (poseEstimate.pose.getY() < 0 || poseEstimate.pose.getY() > Constants.Field.k_length) {
+    if (getChassisSpeeds().vxMetersPerSecond > m_visionConstants.autoTranslationMax
+        || getChassisSpeeds().vyMetersPerSecond > m_visionConstants.autoTranslationMax) {
       return;
     }
-
-    // if (DriverStation.isAutonomous()) {
-    // if (getChassisSpeeds().vxMetersPerSecond > autoTranslationMax
-    // || getChassisSpeeds().vyMetersPerSecond > autoTranslationMax) {
-    // return;
-    // }
-    // }
 
     double xyStdDev = xyStdDevCoefficient
         * Math.pow(avgDistance, 2.0)
         / poseEstimate.tagCount
         * stdDevFactors[instanceIndex.ordinal()]
-        * (DriverStation.isAutonomous() ? autoStdDevScale : 1.0);
+        * (DriverStation.isAutonomous() ? m_visionConstants.autoStdDevScale : 1.0);
 
     double thetaStdDev = useVisionRotation
         ? thetaStdDevCoefficient
             * Math.pow(avgDistance, 2.0)
             / poseEstimate.tagCount
             * stdDevFactors[instanceIndex.ordinal()]
-            * (DriverStation.isAutonomous() ? autoStdDevScale : 1.0)
+            * (DriverStation.isAutonomous() ? m_visionConstants.autoStdDevScale : 1.0)
         : Double.POSITIVE_INFINITY;
 
     m_poseEstimator.addVisionMeasurement(
@@ -512,9 +492,11 @@ public class SwerveDrive extends SwerveSysId {
         createVisionMeasurementStdDevs(xyStdDev, xyStdDev, thetaStdDev));
   }
 
-  private Pose2d clampPose(Pose2d pose) {
-    return new Pose2d(MathUtil.clamp(pose.getX(), 0, Field.k_width), MathUtil.clamp(pose.getY(), 0, Field.k_length), getPose().getRotation());
-  }
+  // private Pose2d clampPose(Pose2d pose) {
+  // return new Pose2d(MathUtil.clamp(pose.getX(), 0, Field.k_width),
+  // MathUtil.clamp(pose.getY(), 0, Field.k_length),
+  // getPose().getRotation());
+  // }
 
   // Logged
   @AutoLogOutput
@@ -547,6 +529,20 @@ public class SwerveDrive extends SwerveSysId {
   }
 
   @AutoLogOutput
+  public boolean isAimedAtTarget() {
+    double rotationError = Math.abs(m_rotationTarget.minus(getRotation2d()).getDegrees());
+    Logger.recordOutput("Auto/AutoTarget/rotationError", rotationError);
+
+    boolean isAtAimedAtTarget = rotationError < ApolloConstants.AutoAim.k_autoAimAngleTolerance;
+    boolean isAtOmega = Math.abs(
+        getChassisSpeeds().omegaRadiansPerSecond) < ApolloConstants.AutoAim.k_autoAimOmegaRPSThreshold;
+
+    // RobotTelemetry.print(isAtAimedAtTarget + "|" + isAtOmega);
+
+    return isAtAimedAtTarget && isAtOmega;
+  }
+
+  @AutoLogOutput
   public boolean hasSetPose() {
     return m_hasSetPose;
   }
@@ -564,6 +560,10 @@ public class SwerveDrive extends SwerveSysId {
   @AutoLogOutput
   public Pose2d getPose() {
     return m_poseEstimator.getEstimatedPosition();
+  }
+
+  public void setRotationTarget(Rotation2d target) {
+    m_rotationTarget = target;
   }
 
   @AutoLogOutput

@@ -35,7 +35,7 @@ dilation_steps:0
 direction_filter:0
 dual_close_sort_origin:0
 erosion_steps:0
-exposure:766
+exposure:877
 fiducial_backend:umich
 fiducial_decoder_strictness:strict
 fiducial_denoise:0.000000
@@ -62,7 +62,7 @@ lcgain:10
 multigroup_max:7
 multigroup_min:1
 multigroup_rejector:0
-pipeline_led_enabled:0
+pipeline_led_enabled:1
 pipeline_led_power:100
 pipeline_res:2
 pipeline_type:4
@@ -71,11 +71,11 @@ red_balance:1200
 roi_x:0.000000
 roi_y:0.000000
 rsf:-0.346075
-rspitch:36
+rspitch:34
 rsroll:0
 rss:0.15875
 rsu:0.219075
-rsyaw:175
+rsyaw:180
 sat_max:255
 sat_min:70
 send_corners:0

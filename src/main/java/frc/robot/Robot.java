@@ -5,21 +5,22 @@ import java.util.List;
 
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.networktables.NT4Publisher;
-import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.autonomous.AutoChooser;
 import frc.robot.autonomous.AutoRunner;
 import frc.robot.autonomous.tasks.Task;
+import frc.robot.constants.ApolloConstants;
+import frc.robot.constants.RobotConstants;
 import frc.robot.controls.controllers.DriverController;
 import frc.robot.controls.controllers.OperatorController;
 import frc.robot.simulation.Field;
@@ -32,15 +33,19 @@ import frc.robot.subsystems.Shooter.ShooterPivotTarget;
 import frc.robot.subsystems.Shooter.ShooterSpeedTarget;
 import frc.robot.subsystems.Subsystem;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
+import frc.robot.subsystems.leds.LEDs;
 
 public class Robot extends LoggedRobot {
   private final DriverController m_driverController = new DriverController(0, true, true);
   private final OperatorController m_operatorController = new OperatorController(1, true, true);
 
   // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
-  private final SlewRateLimiter m_xRateLimiter = new SlewRateLimiter(Constants.SwerveDrive.k_maxLinearAcceleration);
-  private final SlewRateLimiter m_yRateLimiter = new SlewRateLimiter(Constants.SwerveDrive.k_maxLinearAcceleration);
-  private final SlewRateLimiter m_rotRateLimiter = new SlewRateLimiter(Constants.SwerveDrive.k_maxAngularAcceleration);
+  private final SlewRateLimiter m_xRateLimiter = new SlewRateLimiter(
+      ApolloConstants.SwerveDrive.k_maxLinearAcceleration);
+  private final SlewRateLimiter m_yRateLimiter = new SlewRateLimiter(
+      ApolloConstants.SwerveDrive.k_maxLinearAcceleration);
+  private final SlewRateLimiter m_rotRateLimiter = new SlewRateLimiter(
+      ApolloConstants.SwerveDrive.k_maxAngularAcceleration);
 
   // Robot subsystems
   private List<Subsystem> m_allSubsystems = new ArrayList<>();
@@ -48,6 +53,7 @@ public class Robot extends LoggedRobot {
   private final Intake m_intake = Intake.getInstance();
   private final Shooter m_shooter = Shooter.getInstance();
   private final Climber m_climber = Climber.getInstance();
+  private final LEDs m_leds = LEDs.getInstance();
 
   // Auto tasks
   private Task m_currentTask;
@@ -57,15 +63,16 @@ public class Robot extends LoggedRobot {
   AutoChooser m_autoChooser = new AutoChooser();
 
   // Misc vars
-  private boolean m_lockHeading = true;
+  private final boolean k_lockHeading = true;
   private boolean m_intaking = false;
+  public final static boolean k_ledsEnabled = true;
 
   private final Field m_field = Field.getInstance();
 
   @Override
   public void robotInit() {
     // Initialize on-board logging
-    setupLogging();
+    new RobotTelemetry();
 
     // Set up the Field2d object for simulation
     SmartDashboard.putData("Field", m_field);
@@ -83,8 +90,12 @@ public class Robot extends LoggedRobot {
 
     m_allSubsystems.add(m_swerve);
     m_allSubsystems.add(m_intake);
-    m_allSubsystems.add(m_shooter); 
+    m_allSubsystems.add(m_shooter);
     m_allSubsystems.add(m_climber);
+
+    if (k_ledsEnabled) {
+      m_allSubsystems.add(m_leds);
+    }
   }
 
   @Override
@@ -100,6 +111,10 @@ public class Robot extends LoggedRobot {
     m_driverController.setAllianceMultiplier();
     m_operatorController.setAllianceMultiplier();
 
+    SmartDashboardController.logEncoderConnections();
+
+    Logger.recordOutput("Robot Controller/CPU/Temperature", RobotController.getCPUTemp());
+
     // CommandScheduler.getInstance().run(); // used by sysid
   }
 
@@ -107,6 +122,13 @@ public class Robot extends LoggedRobot {
   public void autonomousInit() {
     // m_swerve.resetGyro();
     m_swerve.setBrakeMode(false);
+    m_swerve.resetTurnOffsets();
+
+    if (DriverStation.getAlliance().get() == Alliance.Blue) {
+      m_leds.setAllColor(Color.kBlue);
+    } else {
+      m_leds.setAllColor(Color.kRed);
+    }
 
     m_swerve.m_limelightLeft.setLightEnabled(true);
     m_swerve.m_limelightRight.setLightEnabled(true);
@@ -154,48 +176,70 @@ public class Robot extends LoggedRobot {
     m_swerve.setBrakeMode(false);
     m_swerve.drive(0, 0, 0, false);
     m_swerve.resetRotationTarget();
-    m_swerve.resetAccelerometerPose();
+    // m_swerve.resetAccelerometerPose();
+    m_swerve.resetTurnOffsets();
 
     m_swerve.m_limelightLeft.setLightEnabled(false);
     m_swerve.m_limelightRight.setLightEnabled(false);
     m_swerve.m_limelightShooter.setLightEnabled(false);
+
+    m_swerve.m_visionConstants = ApolloConstants.Vision.teleopVisionConstants;
+
+    m_leds.breathe();
+  }
+
+  private void shooterCorrection() {
+    if (m_shooter.getPreviousShooterAngle() > 60.0) {
+      if (m_intake.getPivotTarget() == IntakePivotTarget.STOW && m_intake.isAtPivotTarget()) {
+        m_shooter.setAngle(m_shooter.getPreviousShooterAngle());
+      }
+    }
   }
 
   @Override
   public void teleopPeriodic() {
-    double maxSpeed = Constants.SwerveDrive.k_maxSpeed + ((Constants.SwerveDrive.k_maxBoostSpeed -
-        Constants.SwerveDrive.k_maxSpeed) * m_driverController.getBoostScaler());
+    double maxSpeed = ApolloConstants.SwerveDrive.k_maxSpeed + ((ApolloConstants.SwerveDrive.k_maxBoostSpeed -
+        ApolloConstants.SwerveDrive.k_maxSpeed) * m_driverController.getBoostScaler());
 
     double xSpeed = m_xRateLimiter.calculate(m_driverController.getForwardAxis() * maxSpeed);
     double ySpeed = m_yRateLimiter.calculate(m_driverController.getStrafeAxis() * maxSpeed);
-    double rot = m_rotRateLimiter.calculate(m_driverController.getTurnAxis() * Constants.SwerveDrive.k_maxAngularSpeed);
+    double rot = m_rotRateLimiter
+        .calculate(m_driverController.getTurnAxis() * ApolloConstants.SwerveDrive.k_maxAngularSpeed);
 
     // slowScaler should scale between k_slowScaler and 1
-    double slowScaler = Constants.SwerveDrive.k_slowScaler
-        + ((1 - m_driverController.getSlowScaler()) * (1 - Constants.SwerveDrive.k_slowScaler));
+    double slowScaler = ApolloConstants.SwerveDrive.k_slowScaler
+        + ((1 - m_driverController.getSlowScaler()) * (1 - ApolloConstants.SwerveDrive.k_slowScaler));
 
     xSpeed *= slowScaler;
     ySpeed *= slowScaler;
     rot *= slowScaler;
 
     boolean wantsSpeakerAutoAim = m_driverController.getWantsAutoAim();
-    boolean wantsAmpAutoAim = m_driverController.getWantsAmpPivot();
+    boolean wantsAmpAutoAim = m_operatorController.getWantsAmpPivot();
     boolean wantsPassAutoAim = m_driverController.getWantsShooterPass();
 
-    if (m_lockHeading) {
+    if (k_lockHeading) {
       m_swerve.driveLockedHeading(
           xSpeed, ySpeed, rot, true,
-          wantsSpeakerAutoAim, false, wantsPassAutoAim);
+          wantsSpeakerAutoAim, wantsAmpAutoAim, wantsPassAutoAim);
     } else {
+      // Automatically drive in a circle, to test swerve module things
+      // double timeOffset = (Timer.getFPGATimestamp() % 10.0) / 10.0 * (2 * Math.PI);
+      // double x = Math.cos(timeOffset);
+      // double y = Math.sin(timeOffset);
+      // m_swerve.drive(x, y, rot, false);
+
       m_swerve.drive(xSpeed, ySpeed, rot, true);
     }
 
     if (wantsSpeakerAutoAim) {
       m_shooter.setAngle(m_shooter.getSpeakerAutoAimAngle(m_swerve.getPose()));
       m_shooter.setSpeed(ShooterSpeedTarget.MAX);
+      m_leds.setAllColor(Color.kBlue);
     } else if (wantsPassAutoAim) {
-      m_shooter.setAngle(Constants.Shooter.k_passPivotAngle);
-      m_shooter.setSpeed(Constants.Shooter.k_passRPM);
+      m_shooter.setAngle(ApolloConstants.Shooter.k_passPivotAngle);
+      m_shooter.setSpeed(ApolloConstants.Shooter.k_passRPM);
+      m_leds.setAllColor(Color.kPurple);
     }
 
     if (m_driverController.getWantsResetGyro()) {
@@ -208,22 +252,44 @@ public class Robot extends LoggedRobot {
 
     if (m_driverController.getWantsIntakePivotToggle()) {
       wantsAmpAutoAim = false;
+      m_shooter.updatePreviousShooterAngle();
+
       if (m_intake.getPivotTarget() == IntakePivotTarget.STOW) {
+        if (m_shooter.getPreviousShooterAngle() > 60.0) {
+          m_shooter.setAngle(60.0);
+        }
+
         m_intake.setPivotTarget(IntakePivotTarget.GROUND);
         m_intake.setIntakeState(IntakeState.INTAKE);
+
         m_intaking = true;
+        m_leds.setAllColor(Color.kYellow);
       } else {
         m_intake.setPivotTarget(IntakePivotTarget.STOW);
         m_intake.setIntakeState(IntakeState.NONE);
+
         m_intaking = false;
       }
     }
 
     m_intake.overrideAutoFlip(m_driverController.getWantsIntakeAutoFlipOverride());
 
-    if (wantsAmpAutoAim) {
+    shooterCorrection();
+
+    if (m_driverController.getWantsEject()) {
       m_shooter.setAngle(ShooterPivotTarget.MIN);
-      m_intake.setPivotTarget(IntakePivotTarget.AMP);
+      m_intake.setPivotTarget(IntakePivotTarget.EJECT);
+    }
+
+    if (wantsAmpAutoAim) {
+      m_leds.redTwinkleFast();
+      m_shooter.setAngle(ShooterPivotTarget.AMP);
+      m_shooter.setSpeed(ShooterSpeedTarget.AMP);
+    }
+
+    if (m_driverController.getWantsTrap()) {
+      m_shooter.setAngle(ShooterPivotTarget.TRAP);
+      m_shooter.setSpeed(ShooterSpeedTarget.TRAP);
     }
 
     if (m_driverController.getWantsStopIntake()) {
@@ -234,31 +300,26 @@ public class Robot extends LoggedRobot {
     if (m_driverController.getWantsIntake() && !m_intake.isHoldingNote()) {
       m_intake.setIntakeState(IntakeState.INTAKE);
       m_intaking = true;
-    } else if (m_driverController.getWantsEject() || m_operatorController.getWantsEject()) {
-      m_intake.setIntakeState(IntakeState.EJECT);
-      if (m_intake.isAtPivotTarget() && m_intake.getPivotTarget() == IntakePivotTarget.AMP) {
-        System.out.println("It's ampin' time"); // -andy
-      }
+    } else if(m_driverController.getWantsIntake() && m_intake.isHoldingNote()) {
+      m_intake.setIntakeState(IntakeState.PULSE);
       m_intaking = false;
-    } else if (m_operatorController.getWantsShoot() &&
-        m_intake.isAtPivotTarget() &&
-        m_intake.getPivotTarget() == IntakePivotTarget.STOW) {
+    } else if ((m_driverController.getWantsEject() || m_operatorController.getWantsEject()) &&
+        (m_intake
+            .getPivotAngle() < (RobotConstants.config.intake().k_stowPivotAngle
+                - RobotConstants.config.intake().k_ejectPivotAngle))) {
+      m_intake.setIntakeState(IntakeState.EJECT);
+      m_intaking = false;
+    } else if (m_operatorController.getWantsShoot() && m_intake.isAtStow()) {
+      if (m_shooter.isAtTarget() && m_shooter.getPivotTarget() == ShooterPivotTarget.AMP) {
+        RobotTelemetry.print("It's ampin' time!");
+      }
       m_intake.setIntakeState(IntakeState.FEED_SHOOTER);
       m_intaking = false;
     } else if (!m_intaking) {
       m_intake.setIntakeState(IntakeState.NONE);
     }
 
-    // if (m_driverController.getWantsEjectPivot()) {
-    // m_intake.setPivotTarget(IntakePivotTarget.EJECT);
-    // m_intaking = false;
-    // }
-
     m_shooter.changePivotByAngle(m_operatorController.getWantsManualShooterPivot(0.1));
-
-    if (m_operatorController.getWantsPodiumAngle()) {
-      m_shooter.setAngle(ShooterPivotTarget.PODIUM);
-    }
 
     if (m_operatorController.getWantsSubwooferAngle()) {
       m_shooter.setAngle(ShooterPivotTarget.SUBWOOFER);
@@ -276,6 +337,8 @@ public class Robot extends LoggedRobot {
       m_shooter.setSpeed(ShooterSpeedTarget.MAX);
     } else if (m_operatorController.getWantsNoSpeed()) {
       m_shooter.setSpeed(ShooterSpeedTarget.OFF);
+    } else if (m_operatorController.getWantsShooterBackwards()) {
+      m_shooter.setSpeed(-1000.0); // we should never need this
     }
 
     if (m_operatorController.getWantsClimberRaise()) {
@@ -306,6 +369,8 @@ public class Robot extends LoggedRobot {
     m_swerve.m_limelightLeft.setLightEnabled(false);
     m_swerve.m_limelightRight.setLightEnabled(false);
     m_swerve.m_limelightShooter.setLightEnabled(false);
+
+    m_leds.rainbowBreatheSlow();
   }
 
   @Override
@@ -314,11 +379,16 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void disabledPeriodic() {
+    m_leds.rainbowBreatheSlow();
   }
 
   @Override
   public void testInit() {
     CommandScheduler.getInstance().cancelAll();
+    m_leds.rainbowChase();
+    // m_swerve.m_limelightLeft.setLightEnabled(false);
+    // m_swerve.m_limelightRight.setLightEnabled(false);
+    // m_swerve.m_limelightShooter.setLightEnabled(false);
   }
 
   @Override
@@ -361,16 +431,16 @@ public class Robot extends LoggedRobot {
         break;
       case "NO_GYRO_DRIVE":
         double rot = m_rotRateLimiter
-            .calculate(m_driverController.getTurnAxis() * Constants.SwerveDrive.k_maxAngularSpeed);
-        double maxSpeed = Constants.SwerveDrive.k_maxSpeed + ((Constants.SwerveDrive.k_maxBoostSpeed -
-            Constants.SwerveDrive.k_maxSpeed) * m_driverController.getBoostScaler());
+            .calculate(m_driverController.getTurnAxis() * ApolloConstants.SwerveDrive.k_maxAngularSpeed);
+        double maxSpeed = ApolloConstants.SwerveDrive.k_maxSpeed + ((ApolloConstants.SwerveDrive.k_maxBoostSpeed -
+            ApolloConstants.SwerveDrive.k_maxSpeed) * m_driverController.getBoostScaler());
 
         double xSpeed = m_xRateLimiter.calculate(m_driverController.getForwardAxis() * maxSpeed);
         double ySpeed = m_yRateLimiter.calculate(m_driverController.getStrafeAxis() * maxSpeed);
 
         // slowScaler should scale between k_slowScaler and 1
-        double slowScaler = Constants.SwerveDrive.k_slowScaler
-            + ((1 - m_driverController.getSlowScaler()) * (1 - Constants.SwerveDrive.k_slowScaler));
+        double slowScaler = ApolloConstants.SwerveDrive.k_slowScaler
+            + ((1 - m_driverController.getSlowScaler()) * (1 - ApolloConstants.SwerveDrive.k_slowScaler));
 
         xSpeed *= slowScaler;
         ySpeed *= slowScaler;
@@ -379,7 +449,7 @@ public class Robot extends LoggedRobot {
         m_swerve.drive(xSpeed, ySpeed, rot, false);
         break;
       default:
-        // System.out.println("you lost the game"); jacob why
+        RobotTelemetry.print("you lost the game");
         break;
     }
   }
@@ -387,35 +457,5 @@ public class Robot extends LoggedRobot {
   private void updateSim() {
     // Update the odometry in the sim.
     m_field.setRobotPose(m_swerve.getPose());
-  }
-
-  public void setLEDs() {
-  }
-
-  @SuppressWarnings("resource")
-  private void setupLogging() {
-    Logger.recordMetadata("ProjectName", "Apollo, Eater of Batteries");
-    Logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
-
-    // if (isReal()) {
-    Logger.addDataReceiver(new WPILOGWriter()); // Log to a USB stick ("/U/logs")
-    Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
-
-    new PowerDistribution(1, ModuleType.kRev); // Enables power distribution logging
-    // }
-
-    // TODO: figure out log replaying, as this is super powerful
-    // else {
-    // setUseTiming(false); // Run as fast as possible
-    // String logPath = LogFileUtil.findReplayLog(); // Pull the replay log from
-    // AdvantageScope (or prompt the user)
-    // Logger.setReplaySource(new WPILOGReader(logPath)); // Read replay log
-    // Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath,
-    // "_sim"))); // Save outputs to a new log
-    // }
-
-    Logger.start();
-
-    System.out.println("Logging initialized. Fard.");
   }
 }
