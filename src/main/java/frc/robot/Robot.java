@@ -77,6 +77,13 @@ public class Robot extends LoggedRobot {
     // Set up the Field2d object for simulation
     SmartDashboard.putData("Field", m_field);
 
+    if (!Preferences.containsKey("Demo Mode")) {
+      Preferences.setBoolean("Demo Mode", false);
+    }
+    if (!Preferences.containsKey("Demo LED Mode")) {
+      Preferences.setInt("Demo LED Mode", 0);
+    }
+
     // Camera server
     // m_camera = CameraServer.startAutomaticCapture();
 
@@ -105,6 +112,15 @@ public class Robot extends LoggedRobot {
       m_allSubsystems.forEach(subsystem -> subsystem.writePeriodicOutputs());
     }
     m_allSubsystems.forEach(subsystem -> subsystem.writeToLog());
+
+    if (m_operatorController.getWantsDemoLEDCycle()){
+      int mode = Preferences.getInt("Demo LED Mode", 0);
+
+      mode += 1;
+      mode %= 8;
+
+      Preferences.setInt("Demo LED Mode", mode);
+    }
 
     updateSim();
     m_swerve.setAllianceGyroAngleAdjustment();
@@ -198,8 +214,16 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void teleopPeriodic() {
-    double maxSpeed = ApolloConstants.SwerveDrive.k_maxSpeed + ((ApolloConstants.SwerveDrive.k_maxBoostSpeed -
+    double maxSpeed = 0;
+    boolean demoMode = Preferences.getBoolean("Demo Mode", false);
+    
+    if (demoMode) {
+      maxSpeed = ApolloConstants.SwerveDrive.k_maxDemoSpeed + ((ApolloConstants.SwerveDrive.k_maxDemoBoostSpeed -
+        ApolloConstants.SwerveDrive.k_maxDemoSpeed) * m_driverController.getBoostScaler());
+    } else {
+      maxSpeed = ApolloConstants.SwerveDrive.k_maxSpeed + ((ApolloConstants.SwerveDrive.k_maxBoostSpeed -
         ApolloConstants.SwerveDrive.k_maxSpeed) * m_driverController.getBoostScaler());
+    }
 
     double xSpeed = m_xRateLimiter.calculate(m_driverController.getForwardAxis() * maxSpeed);
     double ySpeed = m_yRateLimiter.calculate(m_driverController.getStrafeAxis() * maxSpeed);
@@ -214,9 +238,20 @@ public class Robot extends LoggedRobot {
     ySpeed *= slowScaler;
     rot *= slowScaler;
 
-    boolean wantsSpeakerAutoAim = m_driverController.getWantsAutoAim();
+    boolean wantsSpeakerAutoAim = !demoMode && m_driverController.getWantsAutoAim();
     boolean wantsAmpAutoAim = m_operatorController.getWantsAmpPivot();
     boolean wantsPassAutoAim = m_driverController.getWantsShooterPass();
+
+    if(demoMode) {
+      // boostScaler = 1;
+      xSpeed *= ApolloConstants.SwerveDrive.k_maxDemoSpeed;
+      ySpeed *= ApolloConstants.SwerveDrive.k_maxDemoSpeed;
+      rot *= ApolloConstants.SwerveDrive.k_maxDemoAngularSpeed;
+    } else {
+      xSpeed *= ApolloConstants.SwerveDrive.k_maxSpeed;
+      ySpeed *= ApolloConstants.SwerveDrive.k_maxSpeed;
+      rot *= ApolloConstants.SwerveDrive.k_maxAngularSpeed;
+    }
 
     if (k_lockHeading) {
       m_swerve.driveLockedHeading(
@@ -345,11 +380,21 @@ public class Robot extends LoggedRobot {
     }
 
     if (m_operatorController.getWantsMaxSpeed()) {
-      m_shooter.setSpeed(ShooterSpeedTarget.MAX);
+      if (demoMode) {
+        m_shooter.setSpeed(ApolloConstants.Shooter.k_demoBigRPM);
+      } else {
+        m_shooter.setSpeed(ShooterSpeedTarget.MAX);
+      }
     } else if (m_operatorController.getWantsNoSpeed()) {
-      m_shooter.setSpeed(ShooterSpeedTarget.OFF);
-    } else if (m_operatorController.getWantsShooterBackwards()) {
-      m_shooter.setSpeed(-1000.0); // we should never need this
+      if (demoMode) {
+        m_shooter.setSpeed(ApolloConstants.Shooter.k_demoLittleRPM);
+      } else {
+        m_shooter.setSpeed(ShooterSpeedTarget.OFF);
+      }
+    } else if (m_operatorController.getWantsShooterOffDemo()) {
+      if (demoMode) {
+        m_shooter.setSpeed(ShooterSpeedTarget.OFF);
+      }
     }
 
     if (m_operatorController.getWantsClimberRaise()) {
@@ -366,6 +411,44 @@ public class Robot extends LoggedRobot {
       m_shooter.setAngle(ShooterPivotTarget.MIN);
     } else {
       m_climber.stopClimber();
+    }
+
+    if(demoMode) {
+      setDemoLEDs();
+    }
+  }
+
+  public void setDemoLEDs() {
+    if (Preferences.getBoolean("Demo Mode", false)) {
+      switch (Preferences.getInt("Demo LED Mode", 0)) {
+        case 0:
+          m_leds.breathe();
+          break;
+        case 1:
+          m_leds.chase();
+          break;
+        case 2:
+          m_leds.rainbowChase();
+          break;
+        case 3:
+          m_leds.rainbowBreatheSlow();
+          break;
+        case 4:
+          m_leds.rainbowBreatheFast();
+          break;
+        case 5:
+          m_leds.redTwinkleSlow();
+          break;
+        case 6:
+          m_leds.redTwinkleFast();
+          break;
+        case 7:
+          m_leds.off();
+          break;
+        default:
+          m_leds.breathe();
+          break;
+      }
     }
   }
 

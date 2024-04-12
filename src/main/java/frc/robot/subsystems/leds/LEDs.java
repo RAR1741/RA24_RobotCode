@@ -79,7 +79,9 @@ public class LEDs extends Subsystem {
   }
 
   public void chase() {
-    setAllColorMode(LEDModes.redChase);
+    if (Robot.k_ledsEnabled) {
+      setAllColorMode(LEDModes.redChase);
+    }
   }
 
   public void breathe() {
@@ -101,19 +103,27 @@ public class LEDs extends Subsystem {
   }
 
   public void rainbowBreatheFast() {
-    setAllColorMode(LEDModes.rainbowBreatheFast);
+    if (Robot.k_ledsEnabled) {
+      setAllColorMode(LEDModes.rainbowBreatheFast);
+    }
   }
 
   public void redTwinkleSlow() {
-    setAllColorMode(LEDModes.redTwinkleSlow);
+    if (Robot.k_ledsEnabled) {
+      setAllColorMode(LEDModes.redTwinkleSlow);
+    }
   }
 
   public void redTwinkleFast() {
-    setAllColorMode(LEDModes.redTwinkleFast);
+    if (Robot.k_ledsEnabled) {
+      setAllColorMode(LEDModes.redTwinkleFast);
+    }
   }
 
   public void off() {
-    setAllColorMode(LEDModes.setColor(Color.kBlack));
+    if (Robot.k_ledsEnabled) {
+      setAllColorMode(LEDModes.setColor(Color.kBlack));
+    }
   }
 
   public void setShooterColorMode() {

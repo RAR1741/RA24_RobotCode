@@ -98,6 +98,10 @@ public class ApolloConstants {
     public static final double k_maxBoostSpeed = 4.5; // Meters per second
     public static final double k_maxAngularSpeed = Math.PI * 2.0; // Radians per second
 
+    public static final double k_maxDemoSpeed = k_maxSpeed / 2.0;
+    public static final double k_maxDemoAngularSpeed = k_maxAngularSpeed / 2.0;
+    public static final double k_maxDemoBoostSpeed = 4.5;
+
     // Max acceleration
     public static final double k_maxLinearAcceleration = 12.0; // Meters per second squared
     public static final double k_maxAngularAcceleration = Math.PI * 8.0; // Radians per second squared
@@ -221,6 +225,9 @@ public class ApolloConstants {
     public static final double k_passRPM = 3500.0;
     public static final double k_ampSpeed = 800.0;
     public static final double k_trapSpeed = 6000.0;
+
+    public static final double k_demoBigRPM = 6000.0;
+    public static final double k_demoLittleRPM = 2000.0;
 
     public static final int k_shooterSpeedTolerance = 100; // 1,000 is "in", 2000 is max
 
