@@ -54,7 +54,7 @@ public class ShooterSim {
 
   private ShooterSim(Mechanism2d mech2d) {
     m_mech2d = mech2d;
-    m_shooterBase = m_mech2d.getRoot("ShooterPivot", m_origin.getX(), ApolloConstants.Robot.k_bumperStart);
+    m_shooterBase = m_mech2d.getRoot("ShooterPivot", m_origin.getX(), RobotConstants.config.robot().k_bumperStart);
     m_shooterPivot = m_shooterBase.append(
         new MechanismLigament2d(
             "ShooterPivot",

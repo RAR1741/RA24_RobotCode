@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
-import frc.robot.constants.ApolloConstants;
 import frc.robot.constants.RobotConstants;
 
 public class IntakeSim {
@@ -53,7 +52,7 @@ public class IntakeSim {
 
   private IntakeSim(Mechanism2d mech2d) {
     m_mech2d = mech2d;
-    m_intakeBase = m_mech2d.getRoot("IntakePivot", m_origin.getX(), ApolloConstants.Robot.k_bumperStart);
+    m_intakeBase = m_mech2d.getRoot("IntakePivot", m_origin.getX(), RobotConstants.config.robot().k_bumperStart);
     m_intakePivot = m_intakeBase.append(
         new MechanismLigament2d(
             "IntakePivot",

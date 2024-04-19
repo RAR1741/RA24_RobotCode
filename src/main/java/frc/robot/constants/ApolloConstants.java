@@ -3,16 +3,14 @@ package frc.robot.constants;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
-import frc.robot.constants.Constants.ClimberConstants;
-import frc.robot.constants.Constants.FieldConstants;
-import frc.robot.constants.Constants.IntakeConstants;
-import frc.robot.constants.Constants.SimulationConstants;
+import frc.robot.constants.Constants.*;
 
 public class ApolloConstants {
   private ClimberConstants m_climber = new ClimberConstants();
   private IntakeConstants m_intake = new IntakeConstants();
   private SimulationConstants m_sim = new SimulationConstants();
   private FieldConstants m_field = new FieldConstants();
+  private Constants.RobotConstants m_robot = new Constants.RobotConstants();
 
   public ClimberConstants climber() {
     return m_climber;
@@ -30,12 +28,8 @@ public class ApolloConstants {
     return m_field;
   }
 
-  public static class Robot {
-    public static final double k_width = 30.0; // Inches
-    public static final double k_length = 30.0; // Inches
-
-    public static final double k_bumperStart = 1.0; // Inches
-    public static final double k_bumperHeight = 5.0; // Inches
+  public Constants.RobotConstants robot() {
+    return m_robot;
   }
 
   public static class Auto {
@@ -308,13 +302,6 @@ public class ApolloConstants {
     // 45 deg, 20.878754
     // 60 deg, 12.488831
     // 90 deg, 0.0
-  }
-
-  public static class Limelight {
-    public static class AprilTags {
-      public static final int k_redCenterSpeaker = 4;
-      public static final int k_blueCenterSpeaker = 7;
-    }
   }
 
   public static class LEDs {

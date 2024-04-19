@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
-import frc.robot.constants.ApolloConstants;
 import frc.robot.constants.RobotConstants;
 
 public class SimMaster {
@@ -43,13 +42,13 @@ public class SimMaster {
 
   private void addAdditionalDrawings() {
     // Draw the robot's bumpers
-    double bumperPosition = RobotConstants.config.simulation().k_width / 2 - ApolloConstants.Robot.k_length / 2;
-    m_mech2d.getRoot("Robot", bumperPosition, ApolloConstants.Robot.k_bumperStart).append(
+    double bumperPosition = RobotConstants.config.simulation().k_width / 2 - RobotConstants.config.robot().k_length / 2;
+    m_mech2d.getRoot("Robot", bumperPosition, RobotConstants.config.robot().k_bumperStart).append(
         new MechanismLigament2d(
             "RobotBase",
-            ApolloConstants.Robot.k_length,
+            RobotConstants.config.robot().k_length,
             0,
-            ApolloConstants.Robot.k_bumperHeight,
+            RobotConstants.config.robot().k_bumperHeight,
             new Color8Bit(Color.kRed)));
 
     // Draw floor (because why not?)
@@ -62,7 +61,7 @@ public class SimMaster {
             new Color8Bit(Color.kWhite)));
 
     // Draw amp
-    double scoringPos = RobotConstants.config.simulation().k_width / 2 + ApolloConstants.Robot.k_length;
+    double scoringPos = RobotConstants.config.simulation().k_width / 2 + RobotConstants.config.robot().k_length;
     m_mech2d.getRoot("AmpBottom", scoringPos, RobotConstants.config.field().k_ampBottom).append(
         new MechanismLigament2d(
             "AmpBottom",

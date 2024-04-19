@@ -1,13 +1,33 @@
 package frc.robot.constants;
 
-public final class AmadeusConstants {
-  // public static class Robot {
-  // public static final double k_width = 30; // Inches
-  // public static final double k_length = 30; // Inches
+import frc.robot.constants.Constants.*;
 
-  // public static final double k_bumperStart = 1; // Inches
-  // public static final double k_bumperHeight = 5; // Inches
-  // }
+public final class AmadeusConstants {
+  private ClimberConstants m_climber = new ClimberConstants();
+  private IntakeConstants m_intake = new IntakeConstants();
+  private SimulationConstants m_sim = new SimulationConstants();
+  private FieldConstants m_field = new FieldConstants();
+  private Constants.RobotConstants m_robot = new Constants.RobotConstants();
+
+  public ClimberConstants climber() {
+    return m_climber;
+  }
+
+  public IntakeConstants intake() {
+    return m_intake;
+  }
+
+  public SimulationConstants simulation() {
+    return m_sim;
+  }
+
+  public FieldConstants field() {
+    return m_field;
+  }
+
+  public Constants.RobotConstants robot() {
+    return m_robot;
+  }
 
   // public static class Auto {
   // // Meters per second2
@@ -239,11 +259,6 @@ public final class AmadeusConstants {
   // public static double k_maxAcceleration = 1380.0;
   // }
 
-  // public static class Simulation {
-  // public static final double k_width = 150.0; // Inches
-  // public static final double k_height = 100.0; // Inches
-  // }
-
   // public class Shooter {
   // public static final double k_maxRPM = 6000.0; // but that's just a theory
   // public static final double k_passRPM = 4000.0;
@@ -325,36 +340,5 @@ public final class AmadeusConstants {
 
   // public static final double k_minOutput = -0.5;
   // public static final double k_maxOutput = 0.5;
-  // }
-
-  // public static class Field {
-  // public static final double k_width = Units.feetToMeters(54.0);
-  // public static final double k_length = Units.feetToMeters(27.0);
-
-  // public static final double k_ampBottom = 26;
-  // public static final double k_ampTop = 44;
-
-  // public static final double k_speakerBottom = 78;
-  // public static final double k_speakerTop = 82.875;
-  // public static final double k_speakerAngle = 14.0;
-
-  // // TODO: Maybe get these from AprilTags?
-  // private static final double speakerHeight = 2.032; // Meters
-  // public static final Pose3d k_redSpeakerPose = new Pose3d(16.579342, 5.547868,
-  // speakerHeight, new Rotation3d());
-  // public static final Pose3d k_blueSpeakerPose = new Pose3d(-0.0381, 5.547868,
-  // speakerHeight, new Rotation3d());
-
-  // public static final Pose2d k_redPassPose = new Pose2d(14.71, 6.0, new
-  // Rotation2d());
-  // public static final Pose2d k_bluePassPose = new Pose2d(1.75, 6.0, new
-  // Rotation2d());
-  // }
-
-  // public static class Limelight {
-  // public static class AprilTags {
-  // public static final int k_redCenterSpeaker = 4;
-  // public static final int k_blueCenterSpeaker = 7;
-  // }
   // }
 }

@@ -6,7 +6,15 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.util.Units;
 
-public class Constants {
+class Constants {
+  public static class RobotConstants {
+    public double k_width = 30.0; // Inches
+    public double k_length = 30.0; // Inches
+
+    public double k_bumperStart = 1.0; // Inches
+    public double k_bumperHeight = 5.0; // Inches
+  }
+
   public static class ClimberConstants {
     public int k_leftMotorID = 19;
     public int k_rightMotorID = 18;

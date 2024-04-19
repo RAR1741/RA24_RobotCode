@@ -22,7 +22,7 @@ import frc.robot.RobotTelemetry;
 import frc.robot.constants.ApolloConstants.Auto;
 import frc.robot.constants.ApolloConstants.AutoAim.Rotation;
 import frc.robot.constants.ApolloConstants.AutoAim.Translation;
-import frc.robot.constants.ApolloConstants.Robot;
+import frc.robot.constants.RobotConstants;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.drivetrain.RARHolonomicDriveController;
@@ -39,7 +39,7 @@ public class DriveTrajectoryTask extends Task {
       new PIDConstants(Translation.k_P, Translation.k_I, Translation.k_D),
       new PIDConstants(Rotation.k_P, Rotation.k_I, Rotation.k_D),
       Auto.k_maxModuleSpeed,
-      Units.inchesToMeters(Math.sqrt(2) * (Robot.k_width / 2)));
+      Units.inchesToMeters(Math.sqrt(2) * (RobotConstants.config.robot().k_width / 2)));
 
   private final Timer m_runningTimer = new Timer();
 
@@ -51,7 +51,6 @@ public class DriveTrajectoryTask extends Task {
         RobotTelemetry.print("Translating path for Red Alliance!");
         m_autoPath = m_autoPath.flipPath();
       }
-
     } catch (Exception ex) {
       DriverStation.reportError("Unable to load PathPlanner trajectory: " + pathName, ex.getStackTrace());
     }
