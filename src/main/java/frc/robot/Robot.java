@@ -416,7 +416,17 @@ public class Robot extends LoggedRobot {
     if(demoMode) {
       setDemoLEDs();
     }
-  }
+
+    if (m_driverController.getWantsLLOn()) {
+      m_swerve.m_limelightLeft.setLightEnabled(true);
+      m_swerve.m_limelightShooter.setLightEnabled(true);
+      m_swerve.m_limelightRight.setLightEnabled(true);
+    } else if (m_driverController.getWantsLLOff()) {
+      m_swerve.m_limelightLeft.setLightEnabled(false);
+      m_swerve.m_limelightShooter.setLightEnabled(false);
+      m_swerve.m_limelightRight.setLightEnabled(false);
+    }
+   }
 
   public void setDemoLEDs() {
     if (Preferences.getBoolean("Demo Mode", false)) {
@@ -475,7 +485,7 @@ public class Robot extends LoggedRobot {
   public void disabledPeriodic() {
     
     if (m_driverController.getWantsResetModules()) {
-      m_leds.setAllColor(Color.kPurple);
+      m_leds.breathe();
       m_swerve.resetTurnOffsets();
       m_swerve.resetOdometry(m_swerve.getPose(), false, true);
       // m_leds.rainbowBreatheSlow();

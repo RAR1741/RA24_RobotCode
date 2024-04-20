@@ -99,8 +99,8 @@ public class ApolloConstants {
     public static final double k_maxAngularSpeed = Math.PI * 2.0; // Radians per second
 
     public static final double k_maxDemoSpeed = k_maxSpeed / 2.0;
-    public static final double k_maxDemoAngularSpeed = k_maxAngularSpeed / 2.0;
-    public static final double k_maxDemoBoostSpeed = 4.5;
+    public static final double k_maxDemoAngularSpeed = k_maxAngularSpeed / 8.0;
+    public static final double k_maxDemoBoostSpeed = k_maxDemoSpeed;
 
     // Max acceleration
     public static final double k_maxLinearAcceleration = 12.0; // Meters per second squared
