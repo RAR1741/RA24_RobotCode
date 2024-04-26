@@ -12,8 +12,8 @@ public final class RobotConstants {
 
   public static Constants config;
 
-  public final String k_apolloSerial = "1234"; // TODO Get Apollo serial number
-  public final String k_amadeusSerial = "03266A0E"; // TODO Get Amadeus serial number
+  public final String k_apolloSerial = "032381EA";
+  public final String k_amadeusSerial = "03266A0E";
 
   private RobotType m_robotType = null;
   private boolean m_intakeAttached = true;
