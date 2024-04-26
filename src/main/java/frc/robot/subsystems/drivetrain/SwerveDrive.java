@@ -66,9 +66,9 @@ public class SwerveDrive extends SwerveSysId {
   };
 
   private final AHRS m_gyro = new AHRS(SPI.Port.kMXP);
-  public final Limelight m_limelightLeft = new Limelight("limelight-left");
-  public final Limelight m_limelightRight = new Limelight("limelight-right");
-  public final Limelight m_limelightShooter = new Limelight("limelight-shooter");
+  public final Limelight m_limelightLeft;
+  public final Limelight m_limelightRight;
+  public final Limelight m_limelightShooter;
 
   private SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
       m_moduleLocations[Module.FRONT_LEFT],
@@ -119,6 +119,10 @@ public class SwerveDrive extends SwerveSysId {
 
     resetTurnOffsets();
     reset();
+
+    m_limelightLeft = new Limelight("limelight-left");
+    m_limelightRight = new Limelight("limelight-right");
+    m_limelightShooter = new Limelight("limelight-shooter");
   }
 
   public static SwerveDrive getInstance() {
@@ -194,7 +198,7 @@ public class SwerveDrive extends SwerveSysId {
       for (SwerveModule module : m_modules) {
         module.resetDriveEncoder();
       }
-      
+
       m_poseEstimator.resetPosition(
           m_gyro.getRotation2d(),
           new SwerveModulePosition[] {
@@ -461,17 +465,21 @@ public class SwerveDrive extends SwerveSysId {
   // private double autoStdDevScale = m_visionConstants.autoStdDevScale; // 16.0;
 
   public void updateVisionPoseWithStdDev(PoseEstimate poseEstimate, VisionInstance instanceIndex) {
-    // Add observation to list
+    if (instanceIndex != VisionInstance.SHOOTER) {
+      return;
+    }
+
+    // // Add observation to list
     double avgDistance = poseEstimate.avgTagDist;
     // double avgArea = poseEstimate.avgTagArea;
 
-    if (poseEstimate.tagCount < m_visionConstants.minTagCount) {
-      return;
-    }
+    // if (poseEstimate.tagCount < m_visionConstants.minTagCount) {
+    // return;
+    // }
 
-    if (avgDistance >= m_visionConstants.maxAvgDistance) {
-      return;
-    }
+    // if (avgDistance >= m_visionConstants.maxAvgDistance) {
+    // return;
+    // }
 
     if (poseEstimate.pose.getX() < 0 || poseEstimate.pose.getX() > RobotConstants.config.field().k_width) {
       return;
@@ -481,29 +489,40 @@ public class SwerveDrive extends SwerveSysId {
       return;
     }
 
-    if (getChassisSpeeds().vxMetersPerSecond > m_visionConstants.autoTranslationMax
-        || getChassisSpeeds().vyMetersPerSecond > m_visionConstants.autoTranslationMax) {
+    if (poseEstimate.tagCount <= 0) {
       return;
     }
 
-    double xyStdDev = xyStdDevCoefficient
-        * Math.pow(avgDistance, 2.0)
-        / poseEstimate.tagCount
-        * stdDevFactors[instanceIndex.ordinal()]
-        * (DriverStation.isAutonomous() ? m_visionConstants.autoStdDevScale : 1.0);
+    if (Math.abs(m_gyro.getRate()) > 720.0) {
+      return;
+    }
 
-    double thetaStdDev = useVisionRotation
-        ? thetaStdDevCoefficient
-            * Math.pow(avgDistance, 2.0)
-            / poseEstimate.tagCount
-            * stdDevFactors[instanceIndex.ordinal()]
-            * (DriverStation.isAutonomous() ? m_visionConstants.autoStdDevScale : 1.0)
-        : Double.POSITIVE_INFINITY;
+    // if (getChassisSpeeds().vxMetersPerSecond >
+    // m_visionConstants.autoTranslationMax
+    // || getChassisSpeeds().vyMetersPerSecond >
+    // m_visionConstants.autoTranslationMax) {
+    // return;
+    // }
+
+    // double xyStdDev = xyStdDevCoefficient
+    // * Math.pow(avgDistance, 2.0)
+    // / poseEstimate.tagCount
+    // * stdDevFactors[instanceIndex.ordinal()]
+    // * (DriverStation.isAutonomous() ? m_visionConstants.autoStdDevScale : 1.0);
+
+    // double thetaStdDev = useVisionRotation
+    // ? thetaStdDevCoefficient
+    // * Math.pow(avgDistance, 2.0)
+    // / poseEstimate.tagCount
+    // * stdDevFactors[instanceIndex.ordinal()]
+    // * (DriverStation.isAutonomous() ? m_visionConstants.autoStdDevScale : 1.0)
+    // : Double.POSITIVE_INFINITY;
 
     m_poseEstimator.addVisionMeasurement(
         poseEstimate.pose,
         poseEstimate.timestampSeconds,
-        createVisionMeasurementStdDevs(xyStdDev, xyStdDev, thetaStdDev));
+        VecBuilder.fill(0.7, 0.7, 9999999));
+    // createVisionMeasurementStdDevs(xyStdDev, xyStdDev, thetaStdDev));
   }
 
   // private Pose2d clampPose(Pose2d pose) {

@@ -8,8 +8,10 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Helpers;
 import frc.robot.LimelightHelpers;
 import frc.robot.LimelightHelpers.PoseEstimate;
+import frc.robot.subsystems.drivetrain.SwerveDrive;
 
 public class Limelight {
   private NetworkTable m_limelightTable;
@@ -73,7 +75,12 @@ public class Limelight {
   }
 
   public PoseEstimate getPoseEstimation() {
-    return LimelightHelpers.getBotPoseEstimate_wpiBlue(m_name);
+    LimelightHelpers.SetRobotOrientation("limelight",
+        Helpers.modDegrees(SwerveDrive.getInstance().getGyro().getAngle()),
+        0,
+        // SwerveDrive.getInstance().getGyro().getRate(),
+        0, 0, 0, 0);
+    return LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(m_name);
   }
 
   public double getLatency() {

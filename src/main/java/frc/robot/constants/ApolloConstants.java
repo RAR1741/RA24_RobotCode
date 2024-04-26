@@ -79,9 +79,9 @@ public class ApolloConstants {
     }
 
     public static final VisionConstants teleopVisionConstants = new VisionConstants(1, 6.0, 32.0, 10.0);
-    public static final VisionConstants defaultAutoVisionConstants = new VisionConstants(2, 4.0, 32.0, 10.0);
-    public static final VisionConstants fourNoteVisionConstants = new VisionConstants(2, 4.0, 32.0, 10.0);
-    public static final VisionConstants threeNoteVisionConstants = new VisionConstants(2, 6.0, 16.0, 0.25);
+    public static final VisionConstants defaultAutoVisionConstants = new VisionConstants(1, 4.0, 32.0, 10.0);
+    public static final VisionConstants fourNoteVisionConstants = new VisionConstants(1, 4.0, 32.0, 10.0);
+    public static final VisionConstants threeNoteVisionConstants = new VisionConstants(1, 6.0, 16.0, 0.25);
     public static final VisionConstants funnyNoteVisionConstants = new VisionConstants(1, 10.0, 100.0, 0.25);
   }
 
