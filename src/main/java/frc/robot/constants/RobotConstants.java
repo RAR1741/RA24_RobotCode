@@ -1,7 +1,6 @@
 package frc.robot.constants;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Robot;
 import frc.robot.RobotTelemetry;
@@ -14,7 +13,7 @@ public final class RobotConstants {
   public static Constants config;
 
   public final String k_apolloSerial = "1234"; // TODO Get Apollo serial number
-  public final String k_amadeusSerial = "4321"; // TODO Get Amadeus serial number
+  public final String k_amadeusSerial = "03266A0E"; // TODO Get Amadeus serial number
 
   private RobotType m_robotType = null;
   private boolean m_intakeAttached = true;
@@ -27,8 +26,8 @@ public final class RobotConstants {
       Timer.delay(RobotConstants.k_robotInitDelay);
     }
 
-    if (RobotController.getSerialNumber() != null) {
-      m_rioSerial = RobotController.getSerialNumber();
+    if (System.getenv("serialnum") != null) {
+      m_rioSerial = System.getenv("serialnum");
       RobotTelemetry.print("RIO SERIAL: " + m_rioSerial);
     }
 
@@ -72,7 +71,7 @@ public final class RobotConstants {
     } else {
       m_robotType = RobotType.APOLLO;
       // config = new ApolloConstants();
-      RobotTelemetry.print(RobotController.getSerialNumber());
+      RobotTelemetry.print(System.getenv("serialnum"));
       DriverStation.reportError(
           "Could not match rio to robot config; defaulting to APOLLO robot config",
           false);
