@@ -5,7 +5,7 @@ import frc.robot.autonomous.tasks.DriveTrajectoryTask;
 import frc.robot.autonomous.tasks.IntakeTask;
 import frc.robot.autonomous.tasks.ShooterTask;
 import frc.robot.autonomous.tasks.WaitTask;
-import frc.robot.constants.ApolloConstants;
+import frc.robot.constants.RobotConstants;
 import frc.robot.subsystems.Intake.IntakePivotTarget;
 import frc.robot.subsystems.Intake.IntakeState;
 import frc.robot.subsystems.Shooter.ShooterPivotTarget;
@@ -16,9 +16,9 @@ public class CenterOneNoteMode extends AutoModeBase {
     queueTask(new ShooterTask(ShooterPivotTarget.SUBWOOFER,
         ShooterSpeedTarget.MAX));
     queueTask(new IntakeTask(IntakePivotTarget.STOW, IntakeState.NONE));
-    queueTask(new WaitTask(ApolloConstants.Auto.Timing.k_shootRevTime));
+    queueTask(new WaitTask(RobotConstants.config.Auto.Timing.k_shootRevTime));
     queueTask(new IntakeTask(IntakePivotTarget.STOW, IntakeState.FEED_SHOOTER));
-    queueTask(new WaitTask(ApolloConstants.Auto.Timing.k_shootFeedTime));
+    queueTask(new WaitTask(RobotConstants.config.Auto.Timing.k_shootFeedTime));
 
     queueTask(new DriveTrajectoryTask("Shoot, MidRing"));
 

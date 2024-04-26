@@ -1,11 +1,11 @@
 package frc.robot.autonomous.modes;
 
-import frc.robot.constants.ApolloConstants;
+import frc.robot.constants.RobotConstants;
 import frc.robot.constants.VisionConstants;
 
 public class CenterFourNoteMode extends AutoModeBase {
   public VisionConstants getVisionTargetConstants() {
-    return ApolloConstants.Vision.fourNoteVisionConstants;
+    return RobotConstants.config.Vision.fourNoteVisionConstants;
   }
 
   public void queueTasks() {

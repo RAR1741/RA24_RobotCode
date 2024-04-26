@@ -11,10 +11,10 @@ public final class RobotConstants {
   public static String m_rioSerial = "empty";
   private static final double k_robotInitDelay = 2.0; // Seconds to wait before starting robot code
 
-  public static ApolloConstants config = new ApolloConstants();
+  public static Constants config;
 
-  public final String k_apolloSerial = "1234";
-  public final String k_amadeusSerial = "4321";
+  public final String k_apolloSerial = "1234"; // TODO Get Apollo serial number
+  public final String k_amadeusSerial = "4321"; // TODO Get Amadeus serial number
 
   private RobotType m_robotType = null;
   private boolean m_intakeAttached = true;
@@ -37,10 +37,13 @@ public final class RobotConstants {
       case SIM:
         // Set (riiiiiiiiiiiiiiiight the constants) all the constants (designed)
         // specifically for the simulation
+        config = new ApolloConstants(); // TODO Do we want a SimConstants????
         break;
       case APOLLO:
+        config = new ApolloConstants();
         break;
       case AMADEUS:
+        config = new AmadeusConstants();
         m_intakeAttached = false;
         m_shooterAttached = false;
         m_climberAttached = false;

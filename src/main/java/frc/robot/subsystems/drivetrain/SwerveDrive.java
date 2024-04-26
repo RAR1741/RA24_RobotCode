@@ -29,9 +29,7 @@ import edu.wpi.first.wpilibj.Timer;
 import frc.robot.AllianceHelpers;
 import frc.robot.AprilTagLocations;
 import frc.robot.LimelightHelpers.PoseEstimate;
-import frc.robot.constants.ApolloConstants;
 import frc.robot.constants.RobotConstants;
-import frc.robot.constants.VisionConstants;
 import frc.robot.subsystems.Limelight;
 
 public class SwerveDrive extends SwerveSysId {
@@ -41,28 +39,28 @@ public class SwerveDrive extends SwerveSysId {
   // private Pose2d m_accelerometerPose;
 
   private static final SwerveModule[] m_modules = {
-      new SwerveModule(ApolloConstants.SwerveDrive.Drive.k_FLMotorId, ApolloConstants.SwerveDrive.Turn.k_FLMotorId,
-          ApolloConstants.SwerveDrive.Turn.k_FLAbsId,
-          ApolloConstants.SwerveDrive.Turn.k_FLOffset, "FL"), // 0
-      new SwerveModule(ApolloConstants.SwerveDrive.Drive.k_FRMotorId, ApolloConstants.SwerveDrive.Turn.k_FRMotorId,
-          ApolloConstants.SwerveDrive.Turn.k_FRAbsId,
-          ApolloConstants.SwerveDrive.Turn.k_FROffset, "FR"), // 1
-      new SwerveModule(ApolloConstants.SwerveDrive.Drive.k_BRMotorId, ApolloConstants.SwerveDrive.Turn.k_BRMotorId,
-          ApolloConstants.SwerveDrive.Turn.k_BRAbsId,
-          ApolloConstants.SwerveDrive.Turn.k_BROffset, "BR"), // 2
-      new SwerveModule(ApolloConstants.SwerveDrive.Drive.k_BLMotorId, ApolloConstants.SwerveDrive.Turn.k_BLMotorId,
-          ApolloConstants.SwerveDrive.Turn.k_BLAbsId,
-          ApolloConstants.SwerveDrive.Turn.k_BLOffset, "BL") // 3
+      new SwerveModule(RobotConstants.config.SwerveDrive.Drive.k_FLMotorId, RobotConstants.config.SwerveDrive.Turn.k_FLMotorId,
+          RobotConstants.config.SwerveDrive.Turn.k_FLAbsId,
+          RobotConstants.config.SwerveDrive.Turn.k_FLOffset, "FL"), // 0
+      new SwerveModule(RobotConstants.config.SwerveDrive.Drive.k_FRMotorId, RobotConstants.config.SwerveDrive.Turn.k_FRMotorId,
+          RobotConstants.config.SwerveDrive.Turn.k_FRAbsId,
+          RobotConstants.config.SwerveDrive.Turn.k_FROffset, "FR"), // 1
+      new SwerveModule(RobotConstants.config.SwerveDrive.Drive.k_BRMotorId, RobotConstants.config.SwerveDrive.Turn.k_BRMotorId,
+          RobotConstants.config.SwerveDrive.Turn.k_BRAbsId,
+          RobotConstants.config.SwerveDrive.Turn.k_BROffset, "BR"), // 2
+      new SwerveModule(RobotConstants.config.SwerveDrive.Drive.k_BLMotorId, RobotConstants.config.SwerveDrive.Turn.k_BLMotorId,
+          RobotConstants.config.SwerveDrive.Turn.k_BLAbsId,
+          RobotConstants.config.SwerveDrive.Turn.k_BLOffset, "BL") // 3
   };
 
   // Robot "forward" is +x
   // Robot "left" is +y
   // Robot "clockwise" is -z
   private final Translation2d[] m_moduleLocations = {
-      new Translation2d(ApolloConstants.SwerveDrive.k_xCenterDistance, ApolloConstants.SwerveDrive.k_yCenterDistance),
-      new Translation2d(ApolloConstants.SwerveDrive.k_xCenterDistance, -ApolloConstants.SwerveDrive.k_yCenterDistance),
-      new Translation2d(-ApolloConstants.SwerveDrive.k_xCenterDistance, -ApolloConstants.SwerveDrive.k_yCenterDistance),
-      new Translation2d(-ApolloConstants.SwerveDrive.k_xCenterDistance, ApolloConstants.SwerveDrive.k_yCenterDistance)
+      new Translation2d(RobotConstants.config.SwerveDrive.k_xCenterDistance, RobotConstants.config.SwerveDrive.k_yCenterDistance),
+      new Translation2d(RobotConstants.config.SwerveDrive.k_xCenterDistance, -RobotConstants.config.SwerveDrive.k_yCenterDistance),
+      new Translation2d(-RobotConstants.config.SwerveDrive.k_xCenterDistance, -RobotConstants.config.SwerveDrive.k_yCenterDistance),
+      new Translation2d(-RobotConstants.config.SwerveDrive.k_xCenterDistance, RobotConstants.config.SwerveDrive.k_yCenterDistance)
   };
 
   private final AHRS m_gyro = new AHRS(SPI.Port.kMXP);
@@ -88,24 +86,24 @@ public class SwerveDrive extends SwerveSysId {
       },
       new Pose2d(0, 0, Rotation2d.fromDegrees(0)),
       createStateStdDevs(
-          ApolloConstants.Vision.k_positionStdDevX,
-          ApolloConstants.Vision.k_positionStdDevY,
-          ApolloConstants.Vision.k_positionStdDevTheta),
+          RobotConstants.config.Vision.k_positionStdDevX,
+          RobotConstants.config.Vision.k_positionStdDevY,
+          RobotConstants.config.Vision.k_positionStdDevTheta),
       createVisionMeasurementStdDevs(
-          ApolloConstants.Vision.k_visionStdDevX,
-          ApolloConstants.Vision.k_visionStdDevY,
-          ApolloConstants.Vision.k_visionStdDevTheta));
+          RobotConstants.config.Vision.k_visionStdDevX,
+          RobotConstants.config.Vision.k_visionStdDevY,
+          RobotConstants.config.Vision.k_visionStdDevTheta));
 
   private final PIDController k_rotController = new PIDController(
-      ApolloConstants.Vision.Rotation.k_P,
-      ApolloConstants.Vision.Rotation.k_I,
-      ApolloConstants.Vision.Rotation.k_D);
+      RobotConstants.config.Vision.Rotation.k_P,
+      RobotConstants.config.Vision.Rotation.k_I,
+      RobotConstants.config.Vision.Rotation.k_D);
 
   enum VisionInstance {
     SHOOTER, LEFT, RIGHT;
   }
 
-  public VisionConstants m_visionConstants = ApolloConstants.Vision.defaultAutoVisionConstants;
+  public frc.robot.constants.VisionConstants m_visionConstants = RobotConstants.config.Vision.defaultAutoVisionConstants;
 
   private boolean m_hasSetPose = false;
 
@@ -147,8 +145,8 @@ public class SwerveDrive extends SwerveSysId {
   public double calculateSpeakerAutoAimAngle(boolean degreeMode) {
     double botX = m_poseEstimator.getEstimatedPosition().getX();
     double botY = m_poseEstimator.getEstimatedPosition().getY();
-    double targetX = ApolloConstants.Auto.k_blueCenterPose2d.getX(); // TODO: Work on red
-    double targetY = ApolloConstants.Auto.k_blueCenterPose2d.getY();
+    double targetX = RobotConstants.config.Auto.k_blueCenterPose2d.getX(); // TODO: Work on red
+    double targetY = RobotConstants.config.Auto.k_blueCenterPose2d.getY();
 
     double x = targetX - botX;
     double distance = Math.sqrt(Math.pow(x, 2) + Math.pow(targetY - botY, 2));
@@ -194,7 +192,7 @@ public class SwerveDrive extends SwerveSysId {
       for (SwerveModule module : m_modules) {
         module.resetDriveEncoder();
       }
-      
+
       m_poseEstimator.resetPosition(
           m_gyro.getRotation2d(),
           new SwerveModulePosition[] {
@@ -260,7 +258,7 @@ public class SwerveDrive extends SwerveSysId {
   public void drive(ChassisSpeeds speeds) {
     SwerveModuleState[] swerveModuleStates = m_kinematics.toSwerveModuleStates(speeds);
 
-    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, ApolloConstants.SwerveDrive.k_maxBoostSpeed);
+    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, RobotConstants.config.SwerveDrive.k_maxBoostSpeed);
 
     for (int i = 0; i < m_modules.length; i++) {
       m_modules[i].setDesiredState(swerveModuleStates[i]);
@@ -294,7 +292,7 @@ public class SwerveDrive extends SwerveSysId {
       currentRotation = m_gyro.getRotation2d();
     }
 
-    if (Math.abs(rot) > 0.03 * ApolloConstants.SwerveDrive.k_maxAngularSpeed) {
+    if (Math.abs(rot) > 0.03 * RobotConstants.config.SwerveDrive.k_maxAngularSpeed) {
       m_rotationTarget = currentRotation.plus(new Rotation2d(rot * (1.0 / 50.0)));
     } else {
       rotationFeedback = k_rotController.calculate(
@@ -318,7 +316,7 @@ public class SwerveDrive extends SwerveSysId {
             ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, m_gyro.getRotation2d())
             : new ChassisSpeeds(xSpeed, ySpeed, rot));
 
-    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, ApolloConstants.SwerveDrive.k_maxBoostSpeed);
+    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, RobotConstants.config.SwerveDrive.k_maxBoostSpeed);
 
     for (int i = 0; i < m_modules.length; i++) {
       m_modules[i].setDesiredState(swerveModuleStates[i]);
@@ -473,11 +471,11 @@ public class SwerveDrive extends SwerveSysId {
       return;
     }
 
-    if (poseEstimate.pose.getX() < 0 || poseEstimate.pose.getX() > RobotConstants.config.field().k_width) {
+    if (poseEstimate.pose.getX() < 0 || poseEstimate.pose.getX() > RobotConstants.config.Field.k_width) {
       return;
     }
 
-    if (poseEstimate.pose.getY() < 0 || poseEstimate.pose.getY() > RobotConstants.config.field().k_length) {
+    if (poseEstimate.pose.getY() < 0 || poseEstimate.pose.getY() > RobotConstants.config.Field.k_length) {
       return;
     }
 
@@ -547,9 +545,9 @@ public class SwerveDrive extends SwerveSysId {
     double rotationError = Math.abs(m_rotationTarget.minus(getRotation2d()).getDegrees());
     Logger.recordOutput("Auto/AutoTarget/rotationError", rotationError);
 
-    boolean isAtAimedAtTarget = rotationError < ApolloConstants.AutoAim.k_autoAimAngleTolerance;
+    boolean isAtAimedAtTarget = rotationError < RobotConstants.config.AutoAim.k_autoAimAngleTolerance;
     boolean isAtOmega = Math.abs(
-        getChassisSpeeds().omegaRadiansPerSecond) < ApolloConstants.AutoAim.k_autoAimOmegaRPSThreshold;
+        getChassisSpeeds().omegaRadiansPerSecond) < RobotConstants.config.AutoAim.k_autoAimOmegaRPSThreshold;
 
     // RobotTelemetry.print(isAtAimedAtTarget + "|" + isAtOmega);
 

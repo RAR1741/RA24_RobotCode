@@ -5,7 +5,7 @@ import frc.robot.autonomous.tasks.AutoTargetTask;
 import frc.robot.autonomous.tasks.IntakeTask;
 import frc.robot.autonomous.tasks.ParallelTask;
 import frc.robot.autonomous.tasks.ShooterTask;
-import frc.robot.constants.ApolloConstants;
+import frc.robot.constants.RobotConstants;
 import frc.robot.constants.VisionConstants;
 import frc.robot.subsystems.Intake.IntakePivotTarget;
 import frc.robot.subsystems.Intake.IntakeState;
@@ -14,7 +14,7 @@ import frc.robot.subsystems.Shooter.ShooterSpeedTarget;
 
 public class CenterlineOutsideNoteMode extends AutoModeBase {
   public VisionConstants getVisionTargetConstants() {
-    return ApolloConstants.Vision.threeNoteVisionConstants;
+    return RobotConstants.config.Vision.threeNoteVisionConstants;
   }
 
   public void queueTasks() {

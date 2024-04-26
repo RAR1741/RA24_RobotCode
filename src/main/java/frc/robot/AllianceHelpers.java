@@ -13,9 +13,9 @@ public class AllianceHelpers {
 
   public static Pose3d getAllianceSpeakerPose3d() {
     if (!DriverStation.getAlliance().isPresent() || DriverStation.getAlliance().get() == Alliance.Blue) {
-      return RobotConstants.config.field().k_blueSpeakerPose;
+      return RobotConstants.config.Field.k_blueSpeakerPose;
     }
-    return RobotConstants.config.field().k_redSpeakerPose;
+    return RobotConstants.config.Field.k_redSpeakerPose;
   }
 
   public static Pose2d getAllianceSpeakerPose2d() {
@@ -32,9 +32,9 @@ public class AllianceHelpers {
 
   public static Pose2d getAlliancePassPose2d() {
     if (!DriverStation.getAlliance().isPresent() || DriverStation.getAlliance().get() == Alliance.Blue) {
-      return RobotConstants.config.field().k_bluePassPose;
+      return RobotConstants.config.Field.k_bluePassPose;
     }
-    return RobotConstants.config.field().k_redPassPose;
+    return RobotConstants.config.Field.k_redPassPose;
   }
 
   public static Rotation2d getAllianceAmpRotation() {
@@ -49,7 +49,7 @@ public class AllianceHelpers {
   }
 
   public static Rotation2d getAlliancePassRotation() {
-    double passAngle = RobotConstants.config.field().k_passAngle;
+    double passAngle = RobotConstants.config.Field.k_passAngle;
 
     if (!DriverStation.getAlliance().isPresent() || DriverStation.getAlliance().get() == Alliance.Blue) {
       return Rotation2d.fromDegrees(-passAngle);
