@@ -1,7 +1,6 @@
 package frc.robot.constants;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Robot;
 import frc.robot.RobotTelemetry;
@@ -11,10 +10,10 @@ public final class RobotConstants {
   public static String m_rioSerial = "empty";
   private static final double k_robotInitDelay = 2.0; // Seconds to wait before starting robot code
 
-  public static ApolloConstants config = new ApolloConstants();
+  public static Constants config;
 
-  public final String k_apolloSerial = "1234";
-  public final String k_amadeusSerial = "4321";
+  public final String k_apolloSerial = "032381EA";
+  public final String k_amadeusSerial = "03266A0E";
 
   private RobotType m_robotType = null;
   private boolean m_intakeAttached = true;
@@ -27,8 +26,8 @@ public final class RobotConstants {
       Timer.delay(RobotConstants.k_robotInitDelay);
     }
 
-    if (RobotController.getSerialNumber() != null) {
-      m_rioSerial = RobotController.getSerialNumber();
+    if (System.getenv("serialnum") != null) {
+      m_rioSerial = System.getenv("serialnum");
       RobotTelemetry.print("RIO SERIAL: " + m_rioSerial);
     }
 
@@ -37,10 +36,13 @@ public final class RobotConstants {
       case SIM:
         // Set (riiiiiiiiiiiiiiiight the constants) all the constants (designed)
         // specifically for the simulation
+        config = new ApolloConstants(); // TODO Do we want a SimConstants????
         break;
       case APOLLO:
+        config = new ApolloConstants();
         break;
       case AMADEUS:
+        config = new AmadeusConstants();
         m_intakeAttached = false;
         m_shooterAttached = false;
         m_climberAttached = false;
@@ -69,7 +71,7 @@ public final class RobotConstants {
     } else {
       m_robotType = RobotType.APOLLO;
       // config = new ApolloConstants();
-      RobotTelemetry.print(RobotController.getSerialNumber());
+      RobotTelemetry.print(System.getenv("serialnum"));
       DriverStation.reportError(
           "Could not match rio to robot config; defaulting to APOLLO robot config",
           false);

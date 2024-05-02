@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
-import frc.robot.constants.ApolloConstants;
 import frc.robot.constants.RobotConstants;
 
 public class SimMaster {
@@ -14,8 +13,8 @@ public class SimMaster {
   private IntakeSim m_intake = null;
   private ShooterSim m_shooter = null;
 
-  private final Mechanism2d m_mech2d = new Mechanism2d(RobotConstants.config.simulation().k_width,
-      RobotConstants.config.simulation().k_height);
+  private final Mechanism2d m_mech2d = new Mechanism2d(RobotConstants.config.Simulation.k_width,
+      RobotConstants.config.Simulation.k_height);
 
   public static SimMaster getInstance() {
     if (m_master == null) {
@@ -43,27 +42,27 @@ public class SimMaster {
 
   private void addAdditionalDrawings() {
     // Draw the robot's bumpers
-    double bumperPosition = RobotConstants.config.simulation().k_width / 2 - ApolloConstants.Robot.k_length / 2;
-    m_mech2d.getRoot("Robot", bumperPosition, ApolloConstants.Robot.k_bumperStart).append(
+    double bumperPosition = RobotConstants.config.Simulation.k_width / 2 - RobotConstants.config.Robot.k_length / 2;
+    m_mech2d.getRoot("Robot", bumperPosition, RobotConstants.config.Robot.k_bumperStart).append(
         new MechanismLigament2d(
             "RobotBase",
-            ApolloConstants.Robot.k_length,
+            RobotConstants.config.Robot.k_length,
             0,
-            ApolloConstants.Robot.k_bumperHeight,
+            RobotConstants.config.Robot.k_bumperHeight,
             new Color8Bit(Color.kRed)));
 
     // Draw floor (because why not?)
     m_mech2d.getRoot("GroundPos", 0, 0).append(
         new MechanismLigament2d(
             "Floor",
-            RobotConstants.config.simulation().k_width,
+            RobotConstants.config.Simulation.k_width,
             0,
             5,
             new Color8Bit(Color.kWhite)));
 
     // Draw amp
-    double scoringPos = RobotConstants.config.simulation().k_width / 2 + ApolloConstants.Robot.k_length;
-    m_mech2d.getRoot("AmpBottom", scoringPos, RobotConstants.config.field().k_ampBottom).append(
+    double scoringPos = RobotConstants.config.Simulation.k_width / 2 + RobotConstants.config.Robot.k_length;
+    m_mech2d.getRoot("AmpBottom", scoringPos, RobotConstants.config.Field.k_ampBottom).append(
         new MechanismLigament2d(
             "AmpBottom",
             3.875,
@@ -71,7 +70,7 @@ public class SimMaster {
             5,
             new Color8Bit(Color.kWhite)));
 
-    m_mech2d.getRoot("AmpTop", scoringPos, RobotConstants.config.field().k_ampTop).append(
+    m_mech2d.getRoot("AmpTop", scoringPos, RobotConstants.config.Field.k_ampTop).append(
         new MechanismLigament2d(
             "AmpTop",
             3.875,
@@ -82,42 +81,42 @@ public class SimMaster {
     m_mech2d.getRoot("AmpFront", scoringPos, 0).append(
         new MechanismLigament2d(
             "AmpFrontWall",
-            RobotConstants.config.field().k_ampBottom,
+            RobotConstants.config.Field.k_ampBottom,
             90,
             5,
             new Color8Bit(Color.kWhite)));
 
-    m_mech2d.getRoot("AmpBack", scoringPos + 3.875, RobotConstants.config.field().k_ampBottom).append(
+    m_mech2d.getRoot("AmpBack", scoringPos + 3.875, RobotConstants.config.Field.k_ampBottom).append(
         new MechanismLigament2d(
             "AmpBackWall",
-            RobotConstants.config.field().k_ampTop - RobotConstants.config.field().k_ampBottom,
+            RobotConstants.config.Field.k_ampTop - RobotConstants.config.Field.k_ampBottom,
             90,
             5,
             new Color8Bit(Color.kWhite)));
 
     // Draw speaker
-    m_mech2d.getRoot("SpeakerBottom", scoringPos, RobotConstants.config.field().k_speakerBottom).append(
+    m_mech2d.getRoot("SpeakerBottom", scoringPos, RobotConstants.config.Field.k_speakerBottom).append(
         new MechanismLigament2d(
             "SpeakerBottom",
             28,
-            RobotConstants.config.field().k_speakerAngle,
+            RobotConstants.config.Field.k_speakerAngle,
             5,
             new Color8Bit(Color.kWhite)));
 
-    m_mech2d.getRoot("SpeakerTop", scoringPos, RobotConstants.config.field().k_speakerTop).append(
+    m_mech2d.getRoot("SpeakerTop", scoringPos, RobotConstants.config.Field.k_speakerTop).append(
         new MechanismLigament2d(
             "SpeakerTop",
             28,
-            RobotConstants.config.field().k_speakerAngle,
+            RobotConstants.config.Field.k_speakerAngle,
             5,
             new Color8Bit(Color.kWhite)));
 
-    double backX = 28.0 * Math.cos(Units.degreesToRadians(RobotConstants.config.field().k_speakerAngle));
-    double backY = 28.0 * Math.sin(Units.degreesToRadians(RobotConstants.config.field().k_speakerAngle));
+    double backX = 28.0 * Math.cos(Units.degreesToRadians(RobotConstants.config.Field.k_speakerAngle));
+    double backY = 28.0 * Math.sin(Units.degreesToRadians(RobotConstants.config.Field.k_speakerAngle));
     m_mech2d.getRoot("SpeakerBack", scoringPos + backX, 0).append(
         new MechanismLigament2d(
             "SpeakerBack",
-            RobotConstants.config.field().k_speakerTop + backY,
+            RobotConstants.config.Field.k_speakerTop + backY,
             90,
             5,
             new Color8Bit(Color.kWhite)));

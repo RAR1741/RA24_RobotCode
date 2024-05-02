@@ -19,10 +19,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.AllianceHelpers;
 import frc.robot.RobotTelemetry;
-import frc.robot.constants.ApolloConstants.Auto;
-import frc.robot.constants.ApolloConstants.AutoAim.Rotation;
-import frc.robot.constants.ApolloConstants.AutoAim.Translation;
-import frc.robot.constants.ApolloConstants.Robot;
+import frc.robot.constants.RobotConstants;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.drivetrain.RARHolonomicDriveController;
@@ -36,10 +33,15 @@ public class DriveTrajectoryTask extends Task {
   private PathPlannerPath m_autoPath = null;
 
   private RARHolonomicDriveController k_driveController = new RARHolonomicDriveController(
-      new PIDConstants(Translation.k_P, Translation.k_I, Translation.k_D),
-      new PIDConstants(Rotation.k_P, Rotation.k_I, Rotation.k_D),
-      Auto.k_maxModuleSpeed,
-      Units.inchesToMeters(Math.sqrt(2) * (Robot.k_width / 2)));
+      new PIDConstants(RobotConstants.config.AutoAim.Translation.k_P,
+          RobotConstants.config.AutoAim.Translation.k_I,
+          RobotConstants.config.AutoAim.Translation.k_D),
+      new PIDConstants(
+          RobotConstants.config.AutoAim.Rotation.k_P,
+          RobotConstants.config.AutoAim.Rotation.k_I,
+          RobotConstants.config.AutoAim.Rotation.k_D),
+      RobotConstants.config.Auto.k_maxModuleSpeed,
+      Units.inchesToMeters(Math.sqrt(2) * (RobotConstants.config.Robot.k_width / 2)));
 
   private final Timer m_runningTimer = new Timer();
 
@@ -51,7 +53,6 @@ public class DriveTrajectoryTask extends Task {
         RobotTelemetry.print("Translating path for Red Alliance!");
         m_autoPath = m_autoPath.flipPath();
       }
-
     } catch (Exception ex) {
       DriverStation.reportError("Unable to load PathPlanner trajectory: " + pathName, ex.getStackTrace());
     }

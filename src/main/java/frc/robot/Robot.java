@@ -19,7 +19,6 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.autonomous.AutoChooser;
 import frc.robot.autonomous.AutoRunner;
 import frc.robot.autonomous.tasks.Task;
-import frc.robot.constants.ApolloConstants;
 import frc.robot.constants.RobotConstants;
 import frc.robot.controls.controllers.DriverController;
 import frc.robot.controls.controllers.OperatorController;
@@ -36,16 +35,19 @@ import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.subsystems.leds.LEDs;
 
 public class Robot extends LoggedRobot {
+  @SuppressWarnings("unused")
+  private final RobotConstants constants = new RobotConstants();
+
   private final DriverController m_driverController = new DriverController(0, true, true);
   private final OperatorController m_operatorController = new OperatorController(1, true, true);
 
   // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
   private final SlewRateLimiter m_xRateLimiter = new SlewRateLimiter(
-      ApolloConstants.SwerveDrive.k_maxLinearAcceleration);
+      RobotConstants.config.SwerveDrive.k_maxLinearAcceleration);
   private final SlewRateLimiter m_yRateLimiter = new SlewRateLimiter(
-      ApolloConstants.SwerveDrive.k_maxLinearAcceleration);
+      RobotConstants.config.SwerveDrive.k_maxLinearAcceleration);
   private final SlewRateLimiter m_rotRateLimiter = new SlewRateLimiter(
-      ApolloConstants.SwerveDrive.k_maxAngularAcceleration);
+      RobotConstants.config.SwerveDrive.k_maxAngularAcceleration);
 
   // Robot subsystems
   private List<Subsystem> m_allSubsystems = new ArrayList<>();
@@ -199,7 +201,7 @@ public class Robot extends LoggedRobot {
     m_swerve.m_limelightRight.setLightEnabled(false);
     m_swerve.m_limelightShooter.setLightEnabled(false);
 
-    m_swerve.m_visionConstants = ApolloConstants.Vision.teleopVisionConstants;
+    m_swerve.m_visionConstants = RobotConstants.config.Vision.teleopVisionConstants;
 
     m_leds.breathe();
   }
@@ -216,23 +218,23 @@ public class Robot extends LoggedRobot {
   public void teleopPeriodic() {
     double maxSpeed = 0;
     boolean demoMode = Preferences.getBoolean("Demo Mode", false);
-    
+
     if (demoMode) {
-      maxSpeed = ApolloConstants.SwerveDrive.k_maxDemoSpeed + ((ApolloConstants.SwerveDrive.k_maxDemoBoostSpeed -
-        ApolloConstants.SwerveDrive.k_maxDemoSpeed) * m_driverController.getBoostScaler());
+      maxSpeed = RobotConstants.config.SwerveDrive.k_maxDemoSpeed + ((RobotConstants.config.SwerveDrive.k_maxDemoBoostSpeed -
+          RobotConstants.config.SwerveDrive.k_maxDemoSpeed) * m_driverController.getBoostScaler());
     } else {
-      maxSpeed = ApolloConstants.SwerveDrive.k_maxSpeed + ((ApolloConstants.SwerveDrive.k_maxBoostSpeed -
-        ApolloConstants.SwerveDrive.k_maxSpeed) * m_driverController.getBoostScaler());
+      maxSpeed = RobotConstants.config.SwerveDrive.k_maxSpeed + ((RobotConstants.config.SwerveDrive.k_maxBoostSpeed -
+          RobotConstants.config.SwerveDrive.k_maxSpeed) * m_driverController.getBoostScaler());
     }
 
     double xSpeed = m_xRateLimiter.calculate(m_driverController.getForwardAxis() * maxSpeed);
     double ySpeed = m_yRateLimiter.calculate(m_driverController.getStrafeAxis() * maxSpeed);
     double rot = m_rotRateLimiter
-        .calculate(m_driverController.getTurnAxis() * ApolloConstants.SwerveDrive.k_maxAngularSpeed);
+        .calculate(m_driverController.getTurnAxis() * RobotConstants.config.SwerveDrive.k_maxAngularSpeed);
 
     // slowScaler should scale between k_slowScaler and 1
-    double slowScaler = ApolloConstants.SwerveDrive.k_slowScaler
-        + ((1 - m_driverController.getSlowScaler()) * (1 - ApolloConstants.SwerveDrive.k_slowScaler));
+    double slowScaler = RobotConstants.config.SwerveDrive.k_slowScaler
+        + ((1 - m_driverController.getSlowScaler()) * (1 - RobotConstants.config.SwerveDrive.k_slowScaler));
 
     xSpeed *= slowScaler;
     ySpeed *= slowScaler;
@@ -244,13 +246,13 @@ public class Robot extends LoggedRobot {
 
     if(demoMode) {
       // boostScaler = 1;
-      xSpeed *= ApolloConstants.SwerveDrive.k_maxDemoSpeed;
-      ySpeed *= ApolloConstants.SwerveDrive.k_maxDemoSpeed;
-      rot *= ApolloConstants.SwerveDrive.k_maxDemoAngularSpeed;
+      xSpeed *= RobotConstants.config.SwerveDrive.k_maxDemoSpeed;
+      ySpeed *= RobotConstants.config.SwerveDrive.k_maxDemoSpeed;
+      rot *= RobotConstants.config.SwerveDrive.k_maxDemoAngularSpeed;
     } else {
-      xSpeed *= ApolloConstants.SwerveDrive.k_maxSpeed;
-      ySpeed *= ApolloConstants.SwerveDrive.k_maxSpeed;
-      rot *= ApolloConstants.SwerveDrive.k_maxAngularSpeed;
+      xSpeed *= RobotConstants.config.SwerveDrive.k_maxSpeed;
+      ySpeed *= RobotConstants.config.SwerveDrive.k_maxSpeed;
+      rot *= RobotConstants.config.SwerveDrive.k_maxAngularSpeed;
     }
 
     if (k_lockHeading) {
@@ -272,8 +274,8 @@ public class Robot extends LoggedRobot {
       m_shooter.setSpeed(ShooterSpeedTarget.MAX);
       m_leds.setAllColor(Color.kBlue);
     } else if (wantsPassAutoAim) {
-      m_shooter.setAngle(ApolloConstants.Shooter.k_passPivotAngle);
-      m_shooter.setSpeed(ApolloConstants.Shooter.k_passRPM);
+      m_shooter.setAngle(RobotConstants.config.Shooter.k_passPivotAngle);
+      m_shooter.setSpeed(RobotConstants.config.Shooter.k_passRPM);
       m_leds.setAllColor(Color.kPurple);
     }
 
@@ -346,8 +348,8 @@ public class Robot extends LoggedRobot {
       m_intaking = false;
     } else if ((m_driverController.getWantsEject() || m_operatorController.getWantsEject()) &&
         (m_intake
-            .getPivotAngle() < (RobotConstants.config.intake().k_stowPivotAngle
-                - RobotConstants.config.intake().k_ejectPivotAngle))) {
+            .getPivotAngle() < (RobotConstants.config.Intake.k_stowPivotAngle
+                - RobotConstants.config.Intake.k_ejectPivotAngle))) {
       m_intake.setIntakeState(IntakeState.EJECT);
       m_intaking = false;
     } else if (getWantsEjectFinished) {
@@ -379,13 +381,13 @@ public class Robot extends LoggedRobot {
 
     if (m_operatorController.getWantsMaxSpeed()) {
       if (demoMode) {
-        m_shooter.setSpeed(ApolloConstants.Shooter.k_demoBigRPM);
+        m_shooter.setSpeed(RobotConstants.config.Shooter.k_demoBigRPM);
       } else {
         m_shooter.setSpeed(ShooterSpeedTarget.MAX);
       }
     } else if (m_operatorController.getWantsNoSpeed()) {
       if (demoMode) {
-        m_shooter.setSpeed(ApolloConstants.Shooter.k_demoLittleRPM);
+        m_shooter.setSpeed(RobotConstants.config.Shooter.k_demoLittleRPM);
       } else {
         m_shooter.setSpeed(ShooterSpeedTarget.OFF);
       }
@@ -481,7 +483,7 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void disabledPeriodic() {
-    
+
     if (m_driverController.getWantsResetModules()) {
       m_leds.breathe();
       m_swerve.resetTurnOffsets();
@@ -539,16 +541,16 @@ public class Robot extends LoggedRobot {
         break;
       case "NO_GYRO_DRIVE":
         double rot = m_rotRateLimiter
-            .calculate(m_driverController.getTurnAxis() * ApolloConstants.SwerveDrive.k_maxAngularSpeed);
-        double maxSpeed = ApolloConstants.SwerveDrive.k_maxSpeed + ((ApolloConstants.SwerveDrive.k_maxBoostSpeed -
-            ApolloConstants.SwerveDrive.k_maxSpeed) * m_driverController.getBoostScaler());
+            .calculate(m_driverController.getTurnAxis() * RobotConstants.config.SwerveDrive.k_maxAngularSpeed);
+        double maxSpeed = RobotConstants.config.SwerveDrive.k_maxSpeed + ((RobotConstants.config.SwerveDrive.k_maxBoostSpeed -
+            RobotConstants.config.SwerveDrive.k_maxSpeed) * m_driverController.getBoostScaler());
 
         double xSpeed = m_xRateLimiter.calculate(m_driverController.getForwardAxis() * maxSpeed);
         double ySpeed = m_yRateLimiter.calculate(m_driverController.getStrafeAxis() * maxSpeed);
 
         // slowScaler should scale between k_slowScaler and 1
-        double slowScaler = ApolloConstants.SwerveDrive.k_slowScaler
-            + ((1 - m_driverController.getSlowScaler()) * (1 - ApolloConstants.SwerveDrive.k_slowScaler));
+        double slowScaler = RobotConstants.config.SwerveDrive.k_slowScaler
+            + ((1 - m_driverController.getSlowScaler()) * (1 - RobotConstants.config.SwerveDrive.k_slowScaler));
 
         xSpeed *= slowScaler;
         ySpeed *= slowScaler;

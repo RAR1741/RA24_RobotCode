@@ -39,39 +39,39 @@ public class Climber extends Subsystem {
 
     m_periodicIO = new PeriodicIO();
 
-    m_leftMotor = new RARSparkMax(RobotConstants.config.climber().k_leftMotorID, MotorType.kBrushless);
+    m_leftMotor = new RARSparkMax(RobotConstants.config.Climber.k_leftMotorID, MotorType.kBrushless);
     m_leftMotor.restoreFactoryDefaults();
     m_leftMotor.setSmartCurrentLimit(40);
     m_leftMotor.setIdleMode(IdleMode.kBrake);
 
-    m_rightMotor = new RARSparkMax(RobotConstants.config.climber().k_rightMotorID, MotorType.kBrushless);
+    m_rightMotor = new RARSparkMax(RobotConstants.config.Climber.k_rightMotorID, MotorType.kBrushless);
     m_rightMotor.restoreFactoryDefaults();
     m_rightMotor.setSmartCurrentLimit(40);
     m_rightMotor.setIdleMode(IdleMode.kBrake);
 
     m_leftPID = m_leftMotor.getPIDController();
-    m_leftPID.setP(RobotConstants.config.climber().k_P);
-    m_leftPID.setI(RobotConstants.config.climber().k_I);
-    m_leftPID.setD(RobotConstants.config.climber().k_D);
+    m_leftPID.setP(RobotConstants.config.Climber.k_P);
+    m_leftPID.setI(RobotConstants.config.Climber.k_I);
+    m_leftPID.setD(RobotConstants.config.Climber.k_D);
     m_leftPID.setOutputRange(
-        RobotConstants.config.climber().k_minOutput,
-        RobotConstants.config.climber().k_maxOutput);
+        RobotConstants.config.Climber.k_minOutput,
+        RobotConstants.config.Climber.k_maxOutput);
 
     m_rightPID = m_rightMotor.getPIDController();
-    m_rightPID.setP(RobotConstants.config.climber().k_P);
-    m_rightPID.setI(RobotConstants.config.climber().k_I);
-    m_rightPID.setD(RobotConstants.config.climber().k_D);
+    m_rightPID.setP(RobotConstants.config.Climber.k_P);
+    m_rightPID.setI(RobotConstants.config.Climber.k_I);
+    m_rightPID.setD(RobotConstants.config.Climber.k_D);
     m_rightPID.setOutputRange(
-        RobotConstants.config.climber().k_minOutput,
-        RobotConstants.config.climber().k_maxOutput);
+        RobotConstants.config.Climber.k_minOutput,
+        RobotConstants.config.Climber.k_maxOutput);
 
     m_leftEncoder = m_leftMotor.getEncoder();
-    m_leftEncoder.setPositionConversionFactor(RobotConstants.config.climber().k_gearRatio);
-    m_leftEncoder.setVelocityConversionFactor(RobotConstants.config.climber().k_gearRatio);
+    m_leftEncoder.setPositionConversionFactor(RobotConstants.config.Climber.k_gearRatio);
+    m_leftEncoder.setVelocityConversionFactor(RobotConstants.config.Climber.k_gearRatio);
 
     m_rightEncoder = m_rightMotor.getEncoder();
-    m_rightEncoder.setPositionConversionFactor(RobotConstants.config.climber().k_gearRatio);
-    m_rightEncoder.setVelocityConversionFactor(RobotConstants.config.climber().k_gearRatio);
+    m_rightEncoder.setPositionConversionFactor(RobotConstants.config.Climber.k_gearRatio);
+    m_rightEncoder.setVelocityConversionFactor(RobotConstants.config.Climber.k_gearRatio);
 
     m_leftMotor.setIdleMode(RARSparkMax.IdleMode.kBrake);
     m_rightMotor.setIdleMode(RARSparkMax.IdleMode.kBrake);
@@ -128,23 +128,23 @@ public class Climber extends Subsystem {
   }
 
   public void raise() {
-    m_periodicIO.climber_left_speed = RobotConstants.config.climber().k_raiseSpeed;
-    m_periodicIO.climber_right_speed = RobotConstants.config.climber().k_raiseSpeed;
+    m_periodicIO.climber_left_speed = RobotConstants.config.Climber.k_raiseSpeed;
+    m_periodicIO.climber_right_speed = RobotConstants.config.Climber.k_raiseSpeed;
   }
 
   public void lower() {
-    m_periodicIO.climber_left_speed = RobotConstants.config.climber().k_lowerSpeed;
-    m_periodicIO.climber_right_speed = RobotConstants.config.climber().k_lowerSpeed;
+    m_periodicIO.climber_left_speed = RobotConstants.config.Climber.k_lowerSpeed;
+    m_periodicIO.climber_right_speed = RobotConstants.config.Climber.k_lowerSpeed;
   }
 
   public void tiltLeft() {
-    m_periodicIO.climber_left_speed = RobotConstants.config.climber().k_lowerSpeed;
+    m_periodicIO.climber_left_speed = RobotConstants.config.Climber.k_lowerSpeed;
     m_periodicIO.climber_right_speed = 0.0;
   }
 
   public void tiltRight() {
     m_periodicIO.climber_left_speed = 0.0;
-    m_periodicIO.climber_right_speed = RobotConstants.config.climber().k_lowerSpeed;
+    m_periodicIO.climber_right_speed = RobotConstants.config.Climber.k_lowerSpeed;
   }
 
   public void stopClimber() {

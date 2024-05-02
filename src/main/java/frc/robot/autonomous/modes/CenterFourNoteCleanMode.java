@@ -6,14 +6,14 @@ import frc.robot.autonomous.tasks.ParallelTask;
 import frc.robot.autonomous.tasks.SequentialTask;
 import frc.robot.autonomous.tasks.WaitForTargetTask;
 import frc.robot.autonomous.tasks.WaitTask;
-import frc.robot.constants.ApolloConstants;
+import frc.robot.constants.RobotConstants;
 import frc.robot.constants.VisionConstants;
 import frc.robot.subsystems.Intake.IntakePivotTarget;
 import frc.robot.subsystems.Intake.IntakeState;
 
 public class CenterFourNoteCleanMode extends AutoModeBase {
   public VisionConstants getVisionTargetConstants() {
-    return ApolloConstants.Vision.fourNoteVisionConstants;
+    return RobotConstants.config.Vision.fourNoteVisionConstants;
   }
 
   public void queueTasks() {
@@ -30,21 +30,21 @@ public class CenterFourNoteCleanMode extends AutoModeBase {
             new WaitForTargetTask(),
             new ParallelTask(
                 new IntakeTask(IntakePivotTarget.STOW, IntakeState.FEED_SHOOTER),
-                new WaitTask(ApolloConstants.Auto.Timing.k_shootFeedTime)),
+                new WaitTask(RobotConstants.config.Auto.Timing.k_shootFeedTime)),
             // Note 3 (MidRing)
             new IntakeTask(IntakePivotTarget.GROUND, IntakeState.INTAKE, true),
             new IntakeTask(IntakePivotTarget.STOW, IntakeState.NONE),
             new WaitForTargetTask(),
             new ParallelTask(
                 new IntakeTask(IntakePivotTarget.STOW, IntakeState.FEED_SHOOTER),
-                new WaitTask(ApolloConstants.Auto.Timing.k_shootFeedTime)),
+                new WaitTask(RobotConstants.config.Auto.Timing.k_shootFeedTime)),
             // Note 4 (BotRing)
             new IntakeTask(IntakePivotTarget.GROUND, IntakeState.INTAKE, true),
             new IntakeTask(IntakePivotTarget.STOW, IntakeState.NONE),
             new WaitForTargetTask(),
             new ParallelTask(
                 new IntakeTask(IntakePivotTarget.STOW, IntakeState.FEED_SHOOTER),
-                new WaitTask(ApolloConstants.Auto.Timing.k_shootFeedTime)))));
+                new WaitTask(RobotConstants.config.Auto.Timing.k_shootFeedTime)))));
 
     // Done
     // queueDriveAndIntake("BotRing, Mid");

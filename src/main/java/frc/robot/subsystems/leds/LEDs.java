@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.Robot;
-import frc.robot.constants.ApolloConstants;
+import frc.robot.constants.RobotConstants;
 import frc.robot.subsystems.Subsystem;
 
 public class LEDs extends Subsystem {
@@ -15,7 +15,7 @@ public class LEDs extends Subsystem {
   private AddressableLED m_led;
   private AddressableLEDBuffer m_buffer;
 
-  private int m_ledTotalLength = ApolloConstants.LEDs.k_totalLength;
+  private int m_ledTotalLength = RobotConstants.config.LEDs.k_totalLength;
 
   // Main sections
   private Function<Integer, Function<Integer, Function<AddressableLEDBuffer, AddressableLEDBuffer>>> m_shooterColor = LEDModes
@@ -33,7 +33,7 @@ public class LEDs extends Subsystem {
     super("LEDs");
 
     if (Robot.k_ledsEnabled) {
-      m_led = new AddressableLED(ApolloConstants.LEDs.k_PWMId);
+      m_led = new AddressableLED(RobotConstants.config.LEDs.k_PWMId);
       m_led.setLength(m_ledTotalLength);
       m_buffer = new AddressableLEDBuffer(m_ledTotalLength);
       m_led.start();
@@ -127,12 +127,12 @@ public class LEDs extends Subsystem {
   }
 
   public void setShooterColorMode() {
-    m_buffer = m_shooterColor.apply(ApolloConstants.LEDs.Shooter.k_start).apply(ApolloConstants.LEDs.Shooter.k_length)
+    m_buffer = m_shooterColor.apply(RobotConstants.config.LEDs.Shooter.k_start).apply(RobotConstants.config.LEDs.Shooter.k_length)
         .apply(m_buffer);
   }
 
   public void setDriveColorMode() {
-    m_buffer = m_driveColor.apply(ApolloConstants.LEDs.Drive.k_start).apply(ApolloConstants.LEDs.Drive.k_length)
+    m_buffer = m_driveColor.apply(RobotConstants.config.LEDs.Drive.k_start).apply(RobotConstants.config.LEDs.Drive.k_length)
         .apply(m_buffer);
   }
 

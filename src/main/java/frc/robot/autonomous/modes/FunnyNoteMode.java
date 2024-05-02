@@ -3,7 +3,7 @@ package frc.robot.autonomous.modes;
 import frc.robot.autonomous.tasks.IntakeTask;
 import frc.robot.autonomous.tasks.ParallelTask;
 import frc.robot.autonomous.tasks.ShooterTask;
-import frc.robot.constants.ApolloConstants;
+import frc.robot.constants.RobotConstants;
 import frc.robot.constants.VisionConstants;
 import frc.robot.subsystems.Intake.IntakePivotTarget;
 import frc.robot.subsystems.Intake.IntakeState;
@@ -12,7 +12,7 @@ import frc.robot.subsystems.Shooter.ShooterSpeedTarget;
 
 public class FunnyNoteMode extends AutoModeBase {
   public VisionConstants getVisionTargetConstants() {
-    return ApolloConstants.Vision.funnyNoteVisionConstants;
+    return RobotConstants.config.Vision.funnyNoteVisionConstants;
   }
 
   public void queueTasks() {
