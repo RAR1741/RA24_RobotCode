@@ -29,7 +29,7 @@ public class Intake extends Subsystem {
   private RARSparkMax m_intakeMotor;
 
   private final REVThroughBoreEncoder m_pivotAbsEncoder = new REVThroughBoreEncoder(
-      RobotConstants.config.intake().k_pivotEncoderId);
+      RobotConstants.config.Intake.k_pivotEncoderId);
 
   private final ProfiledPIDController m_pivotMotorPID;
   private final ArmFeedforward m_pivotFeedForward;
@@ -54,33 +54,33 @@ public class Intake extends Subsystem {
     m_sim = SimMaster.getInstance().getIntakeSim();
 
     // Pivot motor setup
-    m_pivotMotor = new RARSparkMax(RobotConstants.config.intake().k_pivotMotorId, MotorType.kBrushless);
+    m_pivotMotor = new RARSparkMax(RobotConstants.config.Intake.k_pivotMotorId, MotorType.kBrushless);
     m_pivotMotor.restoreFactoryDefaults();
     m_pivotMotor.setIdleMode(RARSparkMax.IdleMode.kCoast);
     m_pivotMotor.setSmartCurrentLimit(20);
     m_pivotMotor.setInverted(true);
 
     // Intake motor setup
-    m_intakeMotor = new RARSparkMax(RobotConstants.config.intake().k_intakeMotorId, MotorType.kBrushless);
+    m_intakeMotor = new RARSparkMax(RobotConstants.config.Intake.k_intakeMotorId, MotorType.kBrushless);
     m_intakeMotor.restoreFactoryDefaults();
     m_intakeMotor.setIdleMode(RARSparkMax.IdleMode.kCoast);
     m_intakeMotor.setInverted(true);
 
     // Pivot PID
     m_pivotMotorPID = new ProfiledPIDController(
-        RobotConstants.config.intake().k_pivotMotorP,
-        RobotConstants.config.intake().k_pivotMotorI,
-        RobotConstants.config.intake().k_pivotMotorD,
+        RobotConstants.config.Intake.k_pivotMotorP,
+        RobotConstants.config.Intake.k_pivotMotorI,
+        RobotConstants.config.Intake.k_pivotMotorD,
         new TrapezoidProfile.Constraints(
-            RobotConstants.config.intake().k_maxVelocity,
-            RobotConstants.config.intake().k_maxAcceleration));
+            RobotConstants.config.Intake.k_maxVelocity,
+            RobotConstants.config.Intake.k_maxAcceleration));
 
     // Pivot Feedforward
     m_pivotFeedForward = new ArmFeedforward(
-        RobotConstants.config.intake().k_pivotMotorKS,
-        RobotConstants.config.intake().k_pivotMotorKG,
-        RobotConstants.config.intake().k_pivotMotorKV,
-        RobotConstants.config.intake().k_pivotMotorKA);
+        RobotConstants.config.Intake.k_pivotMotorKS,
+        RobotConstants.config.Intake.k_pivotMotorKG,
+        RobotConstants.config.Intake.k_pivotMotorKV,
+        RobotConstants.config.Intake.k_pivotMotorKA);
 
     m_periodicIO = new PeriodicIO();
 
@@ -240,7 +240,7 @@ public class Intake extends Subsystem {
 
   @AutoLogOutput
   public double getPivotReferenceToHorizontal() {
-    return getPivotAngle() - RobotConstants.config.intake().k_pivotOffset;
+    return getPivotAngle() - RobotConstants.config.Intake.k_pivotOffset;
   }
 
   @AutoLogOutput
@@ -304,31 +304,31 @@ public class Intake extends Subsystem {
   public double getAngleFromTarget(IntakePivotTarget target) {
     switch (target) {
       case GROUND:
-        return RobotConstants.config.intake().k_groundPivotAngle;
+        return RobotConstants.config.Intake.k_groundPivotAngle;
       case PIVOT:
-        return RobotConstants.config.intake().k_sourcePivotAngle;
+        return RobotConstants.config.Intake.k_sourcePivotAngle;
       case EJECT:
-        return RobotConstants.config.intake().k_ejectPivotAngle;
+        return RobotConstants.config.Intake.k_ejectPivotAngle;
       case AMP:
-        return RobotConstants.config.intake().k_ampPivotAngle;
+        return RobotConstants.config.Intake.k_ampPivotAngle;
       case STOW:
-        return RobotConstants.config.intake().k_stowPivotAngle;
+        return RobotConstants.config.Intake.k_stowPivotAngle;
       default:
-        return RobotConstants.config.intake().k_stowPivotAngle;
+        return RobotConstants.config.Intake.k_stowPivotAngle;
     }
   }
 
   public double getSpeedFromState(IntakeState state) {
     switch (state) {
       case INTAKE:
-        return RobotConstants.config.intake().k_intakeSpeed;
+        return RobotConstants.config.Intake.k_intakeSpeed;
       case EJECT:
-        return RobotConstants.config.intake().k_ejectSpeed;
+        return RobotConstants.config.Intake.k_ejectSpeed;
       case FEED_SHOOTER:
-        return RobotConstants.config.intake().k_feedShooterSpeed;
+        return RobotConstants.config.Intake.k_feedShooterSpeed;
       case PULSE:
         if (Timer.getFPGATimestamp() % 1.0 < (1.0 / 45.0)) {
-          return RobotConstants.config.intake().k_intakeSpeed;
+          return RobotConstants.config.Intake.k_intakeSpeed;
         }
         return 0.0;
       default:

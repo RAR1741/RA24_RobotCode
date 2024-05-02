@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
-import frc.robot.constants.ApolloConstants;
 import frc.robot.constants.RobotConstants;
 
 public class IntakeSim {
@@ -25,18 +24,18 @@ public class IntakeSim {
   private final SingleJointedArmSim m_joint = new SingleJointedArmSim(
       k_pivotMotor,
       k_pivotGearRatio,
-      SingleJointedArmSim.estimateMOI(Units.inchesToMeters(RobotConstants.config.intake().k_length),
-          RobotConstants.config.intake().k_mass),
-      RobotConstants.config.intake().k_length,
-      RobotConstants.config.intake().k_minAngle,
-      RobotConstants.config.intake().k_maxAngle,
+      SingleJointedArmSim.estimateMOI(Units.inchesToMeters(RobotConstants.config.Intake.k_length),
+          RobotConstants.config.Intake.k_mass),
+      RobotConstants.config.Intake.k_length,
+      RobotConstants.config.Intake.k_minAngle,
+      RobotConstants.config.Intake.k_maxAngle,
       true,
-      RobotConstants.config.intake().k_startingAngle);
+      RobotConstants.config.Intake.k_startingAngle);
 
   private Mechanism2d m_mech2d = null;
 
   private final Translation2d m_origin = new Translation2d(
-      (RobotConstants.config.simulation().k_width / 2) - RobotConstants.config.intake().k_distanceFromCenter, 0);
+      (RobotConstants.config.Simulation.k_width / 2) - RobotConstants.config.Intake.k_distanceFromCenter, 0);
 
   private MechanismRoot2d m_intakeBase = null;
 
@@ -53,18 +52,18 @@ public class IntakeSim {
 
   private IntakeSim(Mechanism2d mech2d) {
     m_mech2d = mech2d;
-    m_intakeBase = m_mech2d.getRoot("IntakePivot", m_origin.getX(), ApolloConstants.Robot.k_bumperStart);
+    m_intakeBase = m_mech2d.getRoot("IntakePivot", m_origin.getX(), RobotConstants.config.Robot.k_bumperStart);
     m_intakePivot = m_intakeBase.append(
         new MechanismLigament2d(
             "IntakePivot",
-            RobotConstants.config.intake().k_pivotHeight,
+            RobotConstants.config.Intake.k_pivotHeight,
             90,
             4,
             new Color8Bit(Color.kRed)));
     m_intake = m_intakePivot.append(
         new MechanismLigament2d(
             "Intake",
-            RobotConstants.config.intake().k_length,
+            RobotConstants.config.Intake.k_length,
             k_simOffset,
             4,
             new Color8Bit(Color.kBlue)));

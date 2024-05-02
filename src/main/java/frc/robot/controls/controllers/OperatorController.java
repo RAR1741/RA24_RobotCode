@@ -1,5 +1,7 @@
 package frc.robot.controls.controllers;
 
+import edu.wpi.first.wpilibj.Preferences;
+
 public class OperatorController extends FilteredController {
   public OperatorController(int port) {
     super(port, false, false);
@@ -65,7 +67,14 @@ public class OperatorController extends FilteredController {
     return this.getHat(Direction.LEFT);
   }
 
-  public boolean getWantsShooterBackwards() {
+  public boolean getWantsShooterOffDemo() {
     return this.getRawButtonPressed(Button.LEFT_JOYSTICK);
+  }
+
+  public boolean getWantsDemoLEDCycle() {
+    if(!Preferences.getBoolean("Demo Mode", false)){
+      return false;
+    }
+    return this.getRawButtonPressed(Button.RIGHT_JOYSTICK);
   }
 }

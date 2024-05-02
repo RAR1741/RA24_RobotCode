@@ -14,7 +14,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Helpers;
-import frc.robot.constants.ApolloConstants;
+import frc.robot.constants.RobotConstants;
 import frc.robot.wrappers.RARSparkMax;
 import frc.robot.wrappers.TalonSRXMagEncoder;
 
@@ -47,54 +47,54 @@ public class SwerveModule {
     m_moduleName = moduleName;
 
     m_drivingFeedForward = new SimpleMotorFeedforward(
-        ApolloConstants.SwerveDrive.Drive.k_FFS,
-        ApolloConstants.SwerveDrive.Drive.k_FFV,
-        ApolloConstants.SwerveDrive.Drive.k_FFA);
+        RobotConstants.config.SwerveDrive.Drive.k_FFS,
+        RobotConstants.config.SwerveDrive.Drive.k_FFV,
+        RobotConstants.config.SwerveDrive.Drive.k_FFA);
 
     m_driveMotor = new RARSparkMax(driveMotorChannel, MotorType.kBrushless);
     m_driveMotor.restoreFactoryDefaults();
     m_driveMotor.setIdleMode(IdleMode.kCoast);
     m_driveEncoder = m_driveMotor.getEncoder();
     m_driveEncoder
-        .setPositionConversionFactor(Units.inchesToMeters(ApolloConstants.SwerveDrive.k_wheelRadiusIn * 2.0 * Math.PI)
-            / ApolloConstants.SwerveDrive.k_driveGearRatio);
+        .setPositionConversionFactor(Units.inchesToMeters(RobotConstants.config.SwerveDrive.k_wheelRadiusIn * 2.0 * Math.PI)
+            / RobotConstants.config.SwerveDrive.k_driveGearRatio);
     m_driveEncoder.setVelocityConversionFactor(Units.inchesToMeters(
-        (ApolloConstants.SwerveDrive.k_wheelRadiusIn * 2.0 * Math.PI) / ApolloConstants.SwerveDrive.k_driveGearRatio)
+        (RobotConstants.config.SwerveDrive.k_wheelRadiusIn * 2.0 * Math.PI) / RobotConstants.config.SwerveDrive.k_driveGearRatio)
         / 60.0);
-    m_driveMotor.setSmartCurrentLimit(ApolloConstants.SwerveDrive.Drive.k_currentLimit);
+    m_driveMotor.setSmartCurrentLimit(RobotConstants.config.SwerveDrive.Drive.k_currentLimit);
 
     m_turnMotor = new RARSparkMax(turningMotorChannel, MotorType.kBrushless);
     m_turnMotor.restoreFactoryDefaults();
     m_turnMotor.setIdleMode(IdleMode.kCoast);
     m_turnMotor.setInverted(true);
-    m_turnMotor.setSmartCurrentLimit(ApolloConstants.SwerveDrive.Turn.k_currentLimit);
+    m_turnMotor.setSmartCurrentLimit(RobotConstants.config.SwerveDrive.Turn.k_currentLimit);
 
     m_turningAbsEncoder = new TalonSRXMagEncoder(turningAbsoluteID);
 
     m_turningRelEncoder = m_turnMotor.getEncoder();
-    m_turningRelEncoder.setPositionConversionFactor(ApolloConstants.SwerveDrive.k_turnGearRatio * 2.0 * Math.PI);
-    m_turningRelEncoder.setVelocityConversionFactor(ApolloConstants.SwerveDrive.k_turnGearRatio * 2.0 * Math.PI / 60.0);
+    m_turningRelEncoder.setPositionConversionFactor(RobotConstants.config.SwerveDrive.k_turnGearRatio * 2.0 * Math.PI);
+    m_turningRelEncoder.setVelocityConversionFactor(RobotConstants.config.SwerveDrive.k_turnGearRatio * 2.0 * Math.PI / 60.0);
     resetTurnConfig();
 
     m_turningPIDController = m_turnMotor.getPIDController();
-    m_turningPIDController.setP(ApolloConstants.SwerveDrive.Turn.k_P);
-    m_turningPIDController.setI(ApolloConstants.SwerveDrive.Turn.k_I);
-    m_turningPIDController.setD(ApolloConstants.SwerveDrive.Turn.k_D);
-    m_turningPIDController.setIZone(ApolloConstants.SwerveDrive.Turn.k_IZone);
-    m_turningPIDController.setFF(ApolloConstants.SwerveDrive.Turn.k_FF);
+    m_turningPIDController.setP(RobotConstants.config.SwerveDrive.Turn.k_P);
+    m_turningPIDController.setI(RobotConstants.config.SwerveDrive.Turn.k_I);
+    m_turningPIDController.setD(RobotConstants.config.SwerveDrive.Turn.k_D);
+    m_turningPIDController.setIZone(RobotConstants.config.SwerveDrive.Turn.k_IZone);
+    m_turningPIDController.setFF(RobotConstants.config.SwerveDrive.Turn.k_FF);
 
     m_turningPIDController.setPositionPIDWrappingEnabled(true);
     m_turningPIDController.setPositionPIDWrappingMinInput(0.0);
     m_turningPIDController.setPositionPIDWrappingMaxInput(2.0 * Math.PI);
     m_turningPIDController.setOutputRange(
-        ApolloConstants.SwerveDrive.Turn.k_TurningMinOutput,
-        ApolloConstants.SwerveDrive.Turn.k_TurningMaxOutput);
+        RobotConstants.config.SwerveDrive.Turn.k_TurningMinOutput,
+        RobotConstants.config.SwerveDrive.Turn.k_TurningMaxOutput);
 
     m_drivePIDController = m_driveMotor.getPIDController();
-    m_drivePIDController.setP(ApolloConstants.SwerveDrive.Drive.k_P);
-    m_drivePIDController.setI(ApolloConstants.SwerveDrive.Drive.k_I);
-    m_drivePIDController.setD(ApolloConstants.SwerveDrive.Drive.k_D);
-    m_drivePIDController.setIZone(ApolloConstants.SwerveDrive.Drive.k_IZone);
+    m_drivePIDController.setP(RobotConstants.config.SwerveDrive.Drive.k_P);
+    m_drivePIDController.setI(RobotConstants.config.SwerveDrive.Drive.k_I);
+    m_drivePIDController.setD(RobotConstants.config.SwerveDrive.Drive.k_D);
+    m_drivePIDController.setIZone(RobotConstants.config.SwerveDrive.Drive.k_IZone);
     // m_drivePIDController.setFF(Constants.SwerveDrive.Drive.k_FF);
 
     m_driveMotor.burnFlash();

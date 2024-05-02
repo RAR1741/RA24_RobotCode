@@ -8,7 +8,7 @@ import frc.robot.autonomous.tasks.IntakeTask;
 import frc.robot.autonomous.tasks.ParallelTask;
 import frc.robot.autonomous.tasks.ShooterTask;
 import frc.robot.autonomous.tasks.WaitTask;
-import frc.robot.constants.ApolloConstants;
+import frc.robot.constants.RobotConstants;
 import frc.robot.subsystems.Intake.IntakePivotTarget;
 import frc.robot.subsystems.Intake.IntakeState;
 import frc.robot.subsystems.Shooter.ShooterPivotTarget;
@@ -22,11 +22,11 @@ public class LeftTwoNoteMode extends AutoModeBase {
 
     queueTask(new ParallelTask(
         new AutoTargetTask(AllianceHelpers.getAllianceSpeakerPose3d()),
-        new WaitTask(ApolloConstants.Auto.Timing.k_shootRevTime)));
+        new WaitTask(RobotConstants.config.Auto.Timing.k_shootRevTime)));
 
     queueTask(new ParallelTask(
         new IntakeTask(IntakePivotTarget.STOW, IntakeState.FEED_SHOOTER),
-        new WaitTask(ApolloConstants.Auto.Timing.k_shootFeedTime)));
+        new WaitTask(RobotConstants.config.Auto.Timing.k_shootFeedTime)));
 
     queueTask(new ParallelTask(
         new IntakeTask(IntakePivotTarget.GROUND, IntakeState.INTAKE),
@@ -36,7 +36,7 @@ public class LeftTwoNoteMode extends AutoModeBase {
 
     queueTask(new ParallelTask(
         new IntakeTask(IntakePivotTarget.STOW, IntakeState.FEED_SHOOTER),
-        new WaitTask(ApolloConstants.Auto.Timing.k_shootFeedTime)));
+        new WaitTask(RobotConstants.config.Auto.Timing.k_shootFeedTime)));
 
     queueTask(new DriveForwardTask(0, 0));
   }

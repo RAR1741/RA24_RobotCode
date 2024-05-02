@@ -12,7 +12,7 @@ import frc.robot.autonomous.tasks.SequentialTask;
 import frc.robot.autonomous.tasks.ShooterTask;
 import frc.robot.autonomous.tasks.Task;
 import frc.robot.autonomous.tasks.WaitTask;
-import frc.robot.constants.ApolloConstants;
+import frc.robot.constants.RobotConstants;
 import frc.robot.constants.VisionConstants;
 import frc.robot.subsystems.Intake.IntakePivotTarget;
 import frc.robot.subsystems.Intake.IntakeState;
@@ -39,7 +39,7 @@ public abstract class AutoModeBase {
   }
 
   public VisionConstants getVisionTargetConstants() {
-    return ApolloConstants.Vision.defaultAutoVisionConstants;
+    return RobotConstants.config.Vision.defaultAutoVisionConstants;
   }
 
   public void queueTask(Task task) {
@@ -49,14 +49,14 @@ public abstract class AutoModeBase {
   public void queueShoot() {
     queueTask(new ParallelTask(
         new IntakeTask(IntakePivotTarget.STOW, IntakeState.FEED_SHOOTER),
-        new WaitTask(ApolloConstants.Auto.Timing.k_shootFeedTime)));
+        new WaitTask(RobotConstants.config.Auto.Timing.k_shootFeedTime)));
   }
 
   public void queueDriveAndIntake(String path) {
     queueTask(new ParallelTask(
         new IntakeTask(IntakePivotTarget.GROUND, IntakeState.INTAKE),
         new SequentialTask(
-            new WaitTask(ApolloConstants.Auto.Timing.k_intakeDeployTime),
+            new WaitTask(RobotConstants.config.Auto.Timing.k_intakeDeployTime),
             new DriveTrajectoryTask(path))));
   }
 
@@ -74,7 +74,7 @@ public abstract class AutoModeBase {
     queueTask(new ParallelTask(
         new IntakeTask(IntakePivotTarget.STOW, IntakeState.NONE),
         new AutoTargetTask(AllianceHelpers.getAllianceSpeakerPose3d()),
-        new WaitTask(ApolloConstants.Auto.Timing.k_intakeBounceTime)));
+        new WaitTask(RobotConstants.config.Auto.Timing.k_intakeBounceTime)));
 
     queueTask(new DriveForwardTask(0, 0));
   }
