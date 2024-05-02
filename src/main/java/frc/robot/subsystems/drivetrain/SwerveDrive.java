@@ -194,21 +194,35 @@ public class SwerveDrive extends SwerveSysId {
       for (SwerveModule module : m_modules) {
         module.resetDriveEncoder();
       }
+      
+      m_poseEstimator.resetPosition(
+          m_gyro.getRotation2d(),
+          new SwerveModulePosition[] {
+              new SwerveModulePosition(0.0,
+                  Rotation2d.fromRotations(m_modules[Module.FRONT_LEFT].getTurnPosition())),
+              new SwerveModulePosition(0.0,
+                  Rotation2d.fromRotations(m_modules[Module.FRONT_RIGHT].getTurnPosition())),
+              new SwerveModulePosition(0.0,
+                  Rotation2d.fromRotations(m_modules[Module.BACK_RIGHT].getTurnPosition())),
+              new SwerveModulePosition(0.0,
+                  Rotation2d.fromRotations(m_modules[Module.BACK_LEFT].getTurnPosition()))
+          },
+          pose);
+    } else {
+      m_poseEstimator.resetPosition(
+          m_gyro.getRotation2d(),
+          new SwerveModulePosition[] {
+              new SwerveModulePosition(m_modules[Module.FRONT_LEFT].getDrivePosition(),
+                  Rotation2d.fromRotations(m_modules[Module.FRONT_LEFT].getTurnPosition())),
+              new SwerveModulePosition(m_modules[Module.FRONT_RIGHT].getDrivePosition(),
+                  Rotation2d.fromRotations(m_modules[Module.FRONT_RIGHT].getTurnPosition())),
+              new SwerveModulePosition(m_modules[Module.BACK_RIGHT].getDrivePosition(),
+                  Rotation2d.fromRotations(m_modules[Module.BACK_RIGHT].getTurnPosition())),
+              new SwerveModulePosition(m_modules[Module.BACK_LEFT].getDrivePosition(),
+                  Rotation2d.fromRotations(m_modules[Module.BACK_LEFT].getTurnPosition()))
+          },
+          pose);
     }
-
-    m_poseEstimator.resetPosition(
-        m_gyro.getRotation2d(),
-        new SwerveModulePosition[] {
-            new SwerveModulePosition(0.0,
-                Rotation2d.fromRotations(m_modules[Module.FRONT_LEFT].getTurnPosition())),
-            new SwerveModulePosition(0.0,
-                Rotation2d.fromRotations(m_modules[Module.FRONT_RIGHT].getTurnPosition())),
-            new SwerveModulePosition(0.0,
-                Rotation2d.fromRotations(m_modules[Module.BACK_RIGHT].getTurnPosition())),
-            new SwerveModulePosition(0.0,
-                Rotation2d.fromRotations(m_modules[Module.BACK_LEFT].getTurnPosition()))
-        },
-        pose);
 
     // setPose(pose);
   }

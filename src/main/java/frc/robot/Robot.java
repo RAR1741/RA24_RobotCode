@@ -122,7 +122,7 @@ public class Robot extends LoggedRobot {
   public void autonomousInit() {
     // m_swerve.resetGyro();
     m_swerve.setBrakeMode(false);
-    m_swerve.resetTurnOffsets();
+    // m_swerve.resetTurnOffsets();
 
     if (DriverStation.getAlliance().get() == Alliance.Blue) {
       m_leds.setAllColor(Color.kBlue);
@@ -177,7 +177,7 @@ public class Robot extends LoggedRobot {
     m_swerve.drive(0, 0, 0, false);
     m_swerve.resetRotationTarget();
     // m_swerve.resetAccelerometerPose();
-    m_swerve.resetTurnOffsets();
+    // m_swerve.resetTurnOffsets();
 
     m_swerve.m_limelightLeft.setLightEnabled(false);
     m_swerve.m_limelightRight.setLightEnabled(false);
@@ -281,6 +281,12 @@ public class Robot extends LoggedRobot {
       m_intake.setPivotTarget(IntakePivotTarget.EJECT);
     }
 
+    boolean getWantsEjectFinished = m_driverController.getWantsEjectFinished() || m_operatorController.getWantsEjectFinished();
+
+    if (getWantsEjectFinished) {
+      m_intake.setPivotTarget(IntakePivotTarget.GROUND);
+    }
+
     if (wantsAmpAutoAim) {
       m_leds.redTwinkleFast();
       m_shooter.setAngle(ShooterPivotTarget.AMP);
@@ -309,6 +315,9 @@ public class Robot extends LoggedRobot {
                 - RobotConstants.config.intake().k_ejectPivotAngle))) {
       m_intake.setIntakeState(IntakeState.EJECT);
       m_intaking = false;
+    } else if (getWantsEjectFinished) {
+      m_intake.setIntakeState(IntakeState.INTAKE);
+      m_intaking = true;
     } else if (m_operatorController.getWantsShoot() && m_intake.isAtStow()) {
       if (m_shooter.isAtTarget() && m_shooter.getPivotTarget() == ShooterPivotTarget.AMP) {
         RobotTelemetry.print("It's ampin' time!");
@@ -379,7 +388,13 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void disabledPeriodic() {
-    m_leds.rainbowBreatheSlow();
+    
+    if (m_driverController.getWantsResetModules()) {
+      m_leds.setAllColor(Color.kPurple);
+      m_swerve.resetTurnOffsets();
+      m_swerve.resetOdometry(m_swerve.getPose(), false, true);
+      // m_leds.rainbowBreatheSlow();
+    }
   }
 
   @Override
