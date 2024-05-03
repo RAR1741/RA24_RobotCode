@@ -463,11 +463,11 @@ public class SwerveDrive extends SwerveSysId {
   // private double autoStdDevScale = m_visionConstants.autoStdDevScale; // 16.0;
 
   public void updateVisionPoseWithStdDev(PoseEstimate poseEstimate, VisionInstance instanceIndex) {
-    if (instanceIndex != VisionInstance.SHOOTER) {
-      return;
-    }
+    // if (instanceIndex != VisionInstance.SHOOTER) {
+      // return;
+    // }
 
-    // // Add observation to list
+    // Add observation to list
     double avgDistance = poseEstimate.avgTagDist;
     // double avgArea = poseEstimate.avgTagArea;
 
@@ -479,19 +479,19 @@ public class SwerveDrive extends SwerveSysId {
     // return;
     // }
 
-    if (poseEstimate.pose.getX() < 0 || poseEstimate.pose.getX() > RobotConstants.config.Field.k_width) {
-      return;
-    }
+    // if (poseEstimate.pose.getX() < 0 || poseEstimate.pose.getX() > RobotConstants.config.Field.k_width) {
+    //   return;
+    // }
 
-    if (poseEstimate.pose.getY() < 0 || poseEstimate.pose.getY() > RobotConstants.config.Field.k_length) {
-      return;
-    }
+    // if (poseEstimate.pose.getY() < 0 || poseEstimate.pose.getY() > RobotConstants.config.Field.k_length) {
+    //   return;
+    // }
 
     if (poseEstimate.tagCount <= 0) {
       return;
     }
 
-    if (Math.abs(m_gyro.getRate()) > 720.0) {
+    if (Math.abs(m_gyro.getRate()) > 720) {
       return;
     }
 
@@ -516,10 +516,12 @@ public class SwerveDrive extends SwerveSysId {
     // * (DriverStation.isAutonomous() ? m_visionConstants.autoStdDevScale : 1.0)
     // : Double.POSITIVE_INFINITY;
 
-    m_poseEstimator.addVisionMeasurement(
-        poseEstimate.pose,
-        poseEstimate.timestampSeconds,
-        VecBuilder.fill(0.7, 0.7, 9999999));
+    m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, 9999999));
+    m_poseEstimator.addVisionMeasurement(poseEstimate.pose, poseEstimate.timestampSeconds);
+
+    // m_poseEstimator.addVisionMeasurement(
+    //     poseEstimate.pose,
+    //     poseEstimate.timestampSeconds);
     // createVisionMeasurementStdDevs(xyStdDev, xyStdDev, thetaStdDev));
   }
 

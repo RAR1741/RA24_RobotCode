@@ -75,14 +75,17 @@ public class Limelight {
   }
 
   public PoseEstimate getPoseEstimation() {
-    LimelightHelpers.SetRobotOrientation("limelight",
-        Helpers.modDegrees(SwerveDrive.getInstance().getGyro().getAngle()),
-        0,
+    LimelightHelpers.SetRobotOrientation(m_name,
+        SwerveDrive.getInstance().getPose().getRotation().getDegrees(),
+        // SwerveDrive.getInstance().getGyro().getAngle(),
         // SwerveDrive.getInstance().getGyro().getRate(),
+        0,
         0, 0, 0, 0);
+    // return LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(m_name);
     return LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(m_name);
   }
 
+  
   public double getLatency() {
     return LimelightHelpers.getLatency_Capture(m_name) + LimelightHelpers.getLatency_Pipeline(m_name);
   }
