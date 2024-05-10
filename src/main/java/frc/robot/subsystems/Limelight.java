@@ -76,12 +76,10 @@ public class Limelight {
 
   public PoseEstimate getPoseEstimation() {
     LimelightHelpers.SetRobotOrientation(m_name,
-        SwerveDrive.getInstance().getPose().getRotation().getDegrees(),
+        SwerveDrive.getInstance().getRotation2d().getDegrees(),
         // SwerveDrive.getInstance().getGyro().getAngle(),
         // SwerveDrive.getInstance().getGyro().getRate(),
-        0,
-        0, 0, 0, 0);
-    // return LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(m_name);
+        0,0, 0, 0, 0);
     return LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(m_name);
   }
 

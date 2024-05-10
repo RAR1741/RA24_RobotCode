@@ -1,6 +1,8 @@
 package frc.robot.autonomous.modes;
 
+import frc.robot.autonomous.tasks.DriveForwardTask;
 import frc.robot.autonomous.tasks.DriveTask;
+import frc.robot.autonomous.tasks.DriveTrajectoryTask;
 
 public class TestMode extends AutoModeBase {
   @Override
@@ -27,8 +29,8 @@ public class TestMode extends AutoModeBase {
     // Note 2 (center)
     // queueTask(new IntakeTask(IntakePivotTarget.GROUND, IntakeState.NONE));
 
-    // queueTask(new DriveTrajectoryTask("pleasegodihope"));
-    // queueTask(new DriveForwardTask(0,0));
+    queueTask(new DriveTrajectoryTask("pleasegodihope"));
+    queueTask(new DriveForwardTask(0,0));
 
     // queueTask(new IntakeTask(IntakePivotTarget.GROUND, IntakeState.INTAKE));
     // queueTask(new WaitTask(0.5));
@@ -44,32 +46,32 @@ public class TestMode extends AutoModeBase {
     // ShooterSpeedTarget.OFF));
     // queueTask(new IntakeTask(IntakePivotTarget.STOW, IntakeState.NONE));
 
-    double speed = 1.0;
-    double distance = 4.0;
+    // double speed = 1.0;
+    // double distance = 4.0;
 
-    queueTask(new DriveTask(speed, 0.0, distance));
-    queueTask(new DriveTask(-speed, 0.0, distance));
-    queueTask(new DriveTask(0.0, speed, distance));
-    queueTask(new DriveTask(0.0, -speed, distance));
+    // queueTask(new DriveTask(speed, 0.0, distance));
+    // queueTask(new DriveTask(-speed, 0.0, distance));
+    // queueTask(new DriveTask(0.0, speed, distance));
+    // queueTask(new DriveTask(0.0, -speed, distance));
 
-    queueTask(new DriveTask(speed, 0.0, distance));
-    queueTask(new DriveTask(-speed, 0.0, distance));
-    queueTask(new DriveTask(0.0, speed, distance));
-    queueTask(new DriveTask(0.0, -speed, distance));
+    // queueTask(new DriveTask(speed, 0.0, distance));
+    // queueTask(new DriveTask(-speed, 0.0, distance));
+    // queueTask(new DriveTask(0.0, speed, distance));
+    // queueTask(new DriveTask(0.0, -speed, distance));
 
-    queueTask(new DriveTask(speed, 0.0, distance));
-    queueTask(new DriveTask(-speed, 0.0, distance));
-    queueTask(new DriveTask(0.0, speed, distance));
-    queueTask(new DriveTask(0.0, -speed, distance));
+    // queueTask(new DriveTask(speed, 0.0, distance));
+    // queueTask(new DriveTask(-speed, 0.0, distance));
+    // queueTask(new DriveTask(0.0, speed, distance));
+    // queueTask(new DriveTask(0.0, -speed, distance));
 
-    queueTask(new DriveTask(speed, 0.0, distance));
-    queueTask(new DriveTask(-speed, 0.0, distance));
-    queueTask(new DriveTask(0.0, speed, distance));
-    queueTask(new DriveTask(0.0, -speed, distance));
+    // queueTask(new DriveTask(speed, 0.0, distance));
+    // queueTask(new DriveTask(-speed, 0.0, distance));
+    // queueTask(new DriveTask(0.0, speed, distance));
+    // queueTask(new DriveTask(0.0, -speed, distance));
 
-    queueTask(new DriveTask(speed, 0.0, distance));
-    queueTask(new DriveTask(-speed, 0.0, distance));
-    queueTask(new DriveTask(0.0, speed, distance));
-    queueTask(new DriveTask(0.0, -speed, distance));
+    // queueTask(new DriveTask(speed, 0.0, distance));
+    // queueTask(new DriveTask(-speed, 0.0, distance));
+    // queueTask(new DriveTask(0.0, speed, distance));
+    // queueTask(new DriveTask(0.0, -speed, distance));
   }
 }

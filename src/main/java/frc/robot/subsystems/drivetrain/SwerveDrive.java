@@ -479,13 +479,13 @@ public class SwerveDrive extends SwerveSysId {
     // return;
     // }
 
-    // if (poseEstimate.pose.getX() < 0 || poseEstimate.pose.getX() > RobotConstants.config.Field.k_width) {
-    //   return;
-    // }
+    if (poseEstimate.pose.getX() <= 0 || poseEstimate.pose.getX() > RobotConstants.config.Field.k_width) {
+      return;
+    }
 
-    // if (poseEstimate.pose.getY() < 0 || poseEstimate.pose.getY() > RobotConstants.config.Field.k_length) {
-    //   return;
-    // }
+    if (poseEstimate.pose.getY() <= 0 || poseEstimate.pose.getY() > RobotConstants.config.Field.k_length) {
+      return;
+    }
 
     if (poseEstimate.tagCount <= 0) {
       return;
@@ -516,8 +516,10 @@ public class SwerveDrive extends SwerveSysId {
     // * (DriverStation.isAutonomous() ? m_visionConstants.autoStdDevScale : 1.0)
     // : Double.POSITIVE_INFINITY;
 
-    m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, 9999999));
-    m_poseEstimator.addVisionMeasurement(poseEstimate.pose, poseEstimate.timestampSeconds);
+    m_poseEstimator.addVisionMeasurement(
+      poseEstimate.pose, 
+      poseEstimate.timestampSeconds, 
+      VecBuilder.fill(0.4, 0.4, 9999999.9));
 
     // m_poseEstimator.addVisionMeasurement(
     //     poseEstimate.pose,
