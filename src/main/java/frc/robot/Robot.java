@@ -35,7 +35,6 @@ import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.subsystems.leds.LEDs;
 
 public class Robot extends LoggedRobot {
-  @SuppressWarnings("unused")
   private final RobotConstants constants = new RobotConstants();
 
   private final DriverController m_driverController = new DriverController(0, true, true);
@@ -65,7 +64,7 @@ public class Robot extends LoggedRobot {
   AutoChooser m_autoChooser = new AutoChooser();
 
   // Misc vars
-  private final boolean k_lockHeading = true;
+  private boolean k_lockHeading;
   private boolean m_intaking = false;
   public final static boolean k_ledsEnabled = true;
 
@@ -104,6 +103,12 @@ public class Robot extends LoggedRobot {
 
     if (k_ledsEnabled) {
       m_allSubsystems.add(m_leds);
+    }
+
+    if (constants.getRobotType() == RobotConstants.RobotType.AMADEUS) {
+      k_lockHeading = false;
+    } else {
+      k_lockHeading = true;
     }
   }
 
