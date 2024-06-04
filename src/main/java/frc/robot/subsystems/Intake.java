@@ -249,6 +249,11 @@ public class Intake extends Subsystem {
   }
 
   @AutoLogOutput
+  private String getIntakeStateAsString() {
+    return m_periodicIO.intake_state.toString();
+  }
+
+  @AutoLogOutput
   public double getPivotAngle() {
     return Units.rotationsToDegrees(m_pivotAbsEncoder.getAbsolutePosition());
   }
@@ -298,6 +303,11 @@ public class Intake extends Subsystem {
   @AutoLogOutput
   private double getIntakeCurrent() {
     return m_intakeMotor.getOutputCurrent();
+  }
+
+  @AutoLogOutput
+  private double getTargetIntakeSpeed() {
+    return m_periodicIO.intake_speed;
   }
 
   @AutoLogOutput
