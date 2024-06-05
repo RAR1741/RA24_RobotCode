@@ -27,7 +27,7 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.AllianceHelpers;
-import frc.robot.AprilTagLocations;
+// import frc.robot.AprilTagLocations;
 import frc.robot.LimelightHelpers.PoseEstimate;
 import frc.robot.constants.RobotConstants;
 import frc.robot.subsystems.Limelight;
@@ -162,21 +162,21 @@ public class SwerveDrive extends SwerveSysId {
     return degreeMode ? Units.radiansToDegrees(theta) : theta;
   }
 
-  public double calculateAmpAutoAimAngle(boolean degreeMode) {
-    double botX = m_poseEstimator.getEstimatedPosition().getX();
-    double botY = m_poseEstimator.getEstimatedPosition().getY();
-    double targetX = AprilTagLocations.Blue.k_ampTag6.getX(); // TODO: Work on red
-    double targetY = AprilTagLocations.Blue.k_ampTag6.getY();
+  // public double calculateAmpAutoAimAngle(boolean degreeMode) {
+  //   double botX = m_poseEstimator.getEstimatedPosition().getX();
+  //   double botY = m_poseEstimator.getEstimatedPosition().getY();
+  //   double targetX = AprilTagLocations.Blue.k_ampTag6.getX(); // TODO: Work on red
+  //   double targetY = AprilTagLocations.Blue.k_ampTag6.getY();
 
-    double x = targetX - botX;
-    double distance = Math.sqrt(Math.pow(x, 2) + Math.pow(targetY - botY, 2));
+  //   double x = targetX - botX;
+  //   double distance = Math.sqrt(Math.pow(x, 2) + Math.pow(targetY - botY, 2));
 
-    double theta = Math.acos(x / distance);
+  //   double theta = Math.acos(x / distance);
 
-    putNumber("AutoAimAngle", Units.radiansToDegrees(theta));
+  //   putNumber("AutoAimAngle", Units.radiansToDegrees(theta));
 
-    return degreeMode ? Units.radiansToDegrees(theta) : theta;
-  }
+  //   return degreeMode ? Units.radiansToDegrees(theta) : theta;
+  // }
 
   public void resetPose() {
     resetGyro();

@@ -282,4 +282,9 @@ public class SwerveModule {
   public double getTurnErrorRelToAbs() {
     return getState().angle.minus(Rotation2d.fromRotations(getTurnAbsPosition())).getDegrees();
   }
+
+  @AutoLogOutput(key = "SwerveDrive/Modules/{m_moduleName}/ModuleDisabled")
+  public boolean isModuleDisabled() {
+    return m_moduleDisabled;
+  }
 }
