@@ -31,10 +31,10 @@ public final class AmadeusConstants extends Constants {
     Shooter.k_maxRPM = 5000.0;
     Shooter.k_passRPM = 4000.0;
 
-    Shooter.ShootPID.k_shooterMotorP = 0.0009300;
-    Shooter.ShootPID.k_shooterMotorI = 0.00000008;
-    Shooter.ShootPID.k_shooterMotorD = 0.0001000;
-    Shooter.ShootPID.k_shooterMotorFF = 0.00015;
+    Shooter.ShootPID.k_shooterMotorP = 0.0007000; // 0.0009300;
+    Shooter.ShootPID.k_shooterMotorI = 0.00000008; // 0.00000008;
+    Shooter.ShootPID.k_shooterMotorD = 0.0000500; // 0.0001000;
+    Shooter.ShootPID.k_shooterMotorFF = 0.000150; // 0.00015;
 
     Shooter.k_shooterMinOutput = 0.0;
     Shooter.k_minAngle = 20;
