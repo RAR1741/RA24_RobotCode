@@ -26,7 +26,7 @@ import frc.robot.subsystems.drivetrain.RARHolonomicDriveController;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 
 public class DriveTrajectoryTask extends Task {
-  private final boolean k_debugPath = false;
+  private final boolean k_debugPath = true;
 
   private SwerveDrive m_swerve = SwerveDrive.getInstance();
   private PathPlannerTrajectory m_autoTrajectory;
@@ -84,7 +84,7 @@ public class DriveTrajectoryTask extends Task {
 
     // TODO: we probably want to do this all the time?
     if (!m_swerve.hasSetPose()) {
-      m_swerve.resetOdometry(getStartingPose());
+      // m_swerve.resetOdometry(getStartingPose());
     }
 
     m_swerve.clearTurnPIDAccumulation();

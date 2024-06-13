@@ -502,29 +502,29 @@ public class SwerveDrive extends SwerveSysId {
     // return;
     // }
 
-    // double xyStdDev = xyStdDevCoefficient
-    // * Math.pow(avgDistance, 2.0)
-    // / poseEstimate.tagCount
-    // * stdDevFactors[instanceIndex.ordinal()]
-    // * (DriverStation.isAutonomous() ? m_visionConstants.autoStdDevScale : 1.0);
+    double xyStdDev = xyStdDevCoefficient
+    * Math.pow(avgDistance, 2.0)
+    / poseEstimate.tagCount
+    * stdDevFactors[instanceIndex.ordinal()]
+    * (DriverStation.isAutonomous() ? m_visionConstants.autoStdDevScale : 1.0);
 
-    // double thetaStdDev = useVisionRotation
-    // ? thetaStdDevCoefficient
-    // * Math.pow(avgDistance, 2.0)
-    // / poseEstimate.tagCount
-    // * stdDevFactors[instanceIndex.ordinal()]
-    // * (DriverStation.isAutonomous() ? m_visionConstants.autoStdDevScale : 1.0)
-    // : Double.POSITIVE_INFINITY;
+    double thetaStdDev = useVisionRotation
+    ? thetaStdDevCoefficient
+    * Math.pow(avgDistance, 2.0)
+    / poseEstimate.tagCount
+    * stdDevFactors[instanceIndex.ordinal()]
+    * (DriverStation.isAutonomous() ? m_visionConstants.autoStdDevScale : 1.0)
+    : Double.POSITIVE_INFINITY;
 
     m_poseEstimator.addVisionMeasurement(
       poseEstimate.pose, 
       poseEstimate.timestampSeconds, 
-      VecBuilder.fill(0.4, 0.4, 9999999.9));
+      VecBuilder.fill(xyStdDev, xyStdDev, 99999.0));
 
     // m_poseEstimator.addVisionMeasurement(
     //     poseEstimate.pose,
     //     poseEstimate.timestampSeconds);
-    // createVisionMeasurementStdDevs(xyStdDev, xyStdDev, thetaStdDev));
+    // createVisionMeasurementStdDevs(xyStdDev, xyStdDev, thetaStdDev);
   }
 
   // private Pose2d clampPose(Pose2d pose) {
