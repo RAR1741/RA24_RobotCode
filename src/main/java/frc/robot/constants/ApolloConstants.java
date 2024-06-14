@@ -1,6 +1,6 @@
 package frc.robot.constants;
 
-public final class ApolloConstants extends Constants{
+public final class ApolloConstants extends Constants {
   public ApolloConstants() {
     Auto.k_maxModuleSpeed = 4.6;
     Auto.Timing.k_intakeBounceTime = 0.3;

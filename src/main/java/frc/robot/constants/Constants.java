@@ -112,7 +112,7 @@ public class Constants {
 
     public Pose2d k_redPassPose = new Pose2d(14.71, 6.0, new Rotation2d());
     public Pose2d k_bluePassPose = new Pose2d(1.75, 6.0, new Rotation2d());
-    public double k_passAngle = 23.5;
+    public double k_passAngle = 23.75;
   }
 
   public static class ShooterConstants {
@@ -131,6 +131,7 @@ public class Constants {
     public int k_bottomMotorId = 17;
 
     public ShootConstants ShootPID = new ShootConstants();
+
     public class ShootConstants {
       public double k_shooterMotorP;
       public double k_shooterMotorI;
@@ -139,6 +140,7 @@ public class Constants {
     }
 
     public AmpConstants AmpPID = new AmpConstants();
+
     public class AmpConstants {
       public double k_shooterMotorP = 0.0004300;
       public double k_shooterMotorI = 0.00000008;
@@ -147,6 +149,7 @@ public class Constants {
     }
 
     public TrapConstants TrapPID = new TrapConstants();
+
     public class TrapConstants {
       public double k_shooterMotorP = 0.0009300;
       public double k_shooterMotorI = 0.00000008;
@@ -368,11 +371,16 @@ public class Constants {
       public double k_D = 0.02;
     }
 
-    public frc.robot.constants.VisionConstants teleopVisionConstants = new frc.robot.constants.VisionConstants(1, 6.0, 32.0, 10.0);
-    public frc.robot.constants.VisionConstants defaultAutoVisionConstants = new frc.robot.constants.VisionConstants(2, 4.0, 32.0, 10.0);
-    public frc.robot.constants.VisionConstants fourNoteVisionConstants = new frc.robot.constants.VisionConstants(2, 4.0, 32.0, 10.0);
-    public frc.robot.constants.VisionConstants threeNoteVisionConstants = new frc.robot.constants.VisionConstants(2, 6.0, 16.0, 0.25);
-    public frc.robot.constants.VisionConstants funnyNoteVisionConstants = new frc.robot.constants.VisionConstants(1, 10.0, 100.0, 0.25);
+    public frc.robot.constants.VisionConstants teleopVisionConstants = new frc.robot.constants.VisionConstants(1, 6.0,
+        32.0, 10.0);
+    public frc.robot.constants.VisionConstants defaultAutoVisionConstants = new frc.robot.constants.VisionConstants(2,
+        4.0, 32.0, 10.0);
+    public frc.robot.constants.VisionConstants fourNoteVisionConstants = new frc.robot.constants.VisionConstants(2, 4.0,
+        32.0, 10.0);
+    public frc.robot.constants.VisionConstants threeNoteVisionConstants = new frc.robot.constants.VisionConstants(2,
+        6.0, 16.0, 0.25);
+    public frc.robot.constants.VisionConstants funnyNoteVisionConstants = new frc.robot.constants.VisionConstants(1,
+        10.0, 100.0, 0.25);
   }
 
   public static class AutoConstants {
@@ -394,16 +402,19 @@ public class Constants {
   }
 
   public LEDsConstants LEDs = new LEDsConstants();
+
   public static class LEDsConstants {
     public int k_PWMId = 1;
 
     public DriveConstants Drive = new DriveConstants();
+
     public class DriveConstants {
       public int k_start = 0;
       public int k_length = 150;
     }
 
     public ShooterConstants Shooter = new ShooterConstants();
+
     public class ShooterConstants {
       public int k_start = Drive.k_start + Drive.k_length;
       public int k_length = 150;

@@ -38,12 +38,14 @@
             "/RealOutputs/SwerveDrive/Modules/FR/Turn",
             "/RealOutputs",
             "/RealOutputs/SwerveModule",
-            "/RealOutputs/SwerveDrive/Modules",
-            "/RealOutputs/SwerveDrive"
+            "/RealOutputs/Auto",
+            "/RealOutputs/Auto/DriveTrajectory",
+            "/RealOutputs/SwerveDrive",
+            "/RealOutputs/SwerveDrive/HeadingLock"
           ]
         },
         "tabs": {
-          "selected": 3,
+          "selected": 5,
           "tabs": [
             {
               "type": 0,
@@ -246,17 +248,76 @@
                 "cameraIndex": -1,
                 "orbitFov": 90,
                 "cameraPosition": [
-                  -5.396995961393009,
-                  5.166349961314041,
-                  -4.015785201343719
+                  5.670765225309958,
+                  5.768478849988437,
+                  1.9669571433348636
                 ],
                 "cameraTarget": [
-                  -2.3030283644215204,
-                  -4.381807514793297,
-                  1.2139198822857502
+                  1.525247040989048,
+                  -6.272675689272516,
+                  -1.5079926901277763
                 ]
               },
               "title": "3D Field"
+            },
+            {
+              "type": 1,
+              "legendHeight": 0.3,
+              "legends": {
+                "left": {
+                  "lockedRange": null,
+                  "unitConversion": {
+                    "type": null,
+                    "factor": 1
+                  },
+                  "fields": [
+                    {
+                      "key": "/RealOutputs/SwerveDrive/HeadingLock/Target/value",
+                      "color": "#80588e",
+                      "show": true
+                    }
+                  ]
+                },
+                "discrete": {
+                  "fields": [
+                    {
+                      "key": "/RealOutputs/SwerveDrive/HeadingLock/AimingToAmp",
+                      "color": "#2b66a2",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/SwerveDrive/HeadingLock/AimingToPass",
+                      "color": "#e5b31b",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/SwerveDrive/HeadingLock/AimingToSpeaker",
+                      "color": "#af2437",
+                      "show": true
+                    }
+                  ]
+                },
+                "right": {
+                  "lockedRange": null,
+                  "unitConversion": {
+                    "type": null,
+                    "factor": 1
+                  },
+                  "fields": [
+                    {
+                      "key": "/RealOutputs/SwerveDrive/HeadingLock/RotFeedback",
+                      "color": "#e48b32",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/SwerveDrive/HeadingLock/RotFeedforward",
+                      "color": "#aacaee",
+                      "show": true
+                    }
+                  ]
+                }
+              },
+              "title": "Rot Rate"
             },
             {
               "type": 1,
@@ -873,7 +934,7 @@
             },
             {
               "type": 1,
-              "legendHeight": 0.15,
+              "legendHeight": 0.20787083753784055,
               "legends": {
                 "left": {
                   "lockedRange": null,
