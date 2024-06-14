@@ -106,7 +106,7 @@ public class Robot extends LoggedRobot {
     }
 
     if (constants.getRobotType() == RobotConstants.RobotType.AMADEUS) {
-      k_lockHeading = false;
+      k_lockHeading = true;
     } else {
       k_lockHeading = true;
     }

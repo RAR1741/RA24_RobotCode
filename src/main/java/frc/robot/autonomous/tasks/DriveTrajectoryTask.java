@@ -84,7 +84,7 @@ public class DriveTrajectoryTask extends Task {
 
     // TODO: we probably want to do this all the time?
     if (!m_swerve.hasSetPose()) {
-      // m_swerve.resetOdometry(getStartingPose());
+      m_swerve.resetOdometry(getStartingPose());
     }
 
     m_swerve.clearTurnPIDAccumulation();
