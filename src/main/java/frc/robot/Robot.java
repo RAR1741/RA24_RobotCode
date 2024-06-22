@@ -64,7 +64,7 @@ public class Robot extends LoggedRobot {
   AutoChooser m_autoChooser = new AutoChooser();
 
   // Misc vars
-  private boolean k_lockHeading;
+  private boolean k_lockHeading = true;
   private boolean m_intaking = false;
   public final static boolean k_ledsEnabled = true;
 
@@ -103,12 +103,6 @@ public class Robot extends LoggedRobot {
 
     if (k_ledsEnabled) {
       m_allSubsystems.add(m_leds);
-    }
-
-    if (constants.getRobotType() == RobotConstants.RobotType.AMADEUS) {
-      k_lockHeading = true;
-    } else {
-      k_lockHeading = true;
     }
   }
 
