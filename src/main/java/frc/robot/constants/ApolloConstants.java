@@ -33,9 +33,19 @@ public final class ApolloConstants extends Constants {
     Shooter.ShootPID.k_shooterMotorD = 0.0000500;
     Shooter.ShootPID.k_shooterMotorFF = 0.000150;
 
+    Shooter.AmpPID.k_shooterMotorP = 0.0004300;
+    Shooter.AmpPID.k_shooterMotorI = 0.00000008;
+    Shooter.AmpPID.k_shooterMotorD = 0.0001000;
+    Shooter.AmpPID.k_shooterMotorFF = 0.00010;
+
     Shooter.k_shooterMinOutput = -1.0;
     Shooter.k_minAngle = 21.0;
     Shooter.k_absPivotOffset = 149.254 - 90;
     Shooter.k_initialPivotOffset = 0.0;
+
+    Shooter.k_pivotMotorP = 2.0;
+    Shooter.k_pivotMotorI = 0.0;
+    Shooter.k_pivotMotorD = 0.001;
+    Shooter.k_pivotMotorIZone = 0.0;
   }
 }

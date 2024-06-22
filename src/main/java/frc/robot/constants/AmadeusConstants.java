@@ -36,9 +36,19 @@ public final class AmadeusConstants extends Constants {
     Shooter.ShootPID.k_shooterMotorD = 0.0000500; // 0.0001000;
     Shooter.ShootPID.k_shooterMotorFF = 0.000150; // 0.00015;
 
+    Shooter.AmpPID.k_shooterMotorP = 0.0004300;
+    Shooter.AmpPID.k_shooterMotorI = 0.0000000875; //0.00000008
+    Shooter.AmpPID.k_shooterMotorD = 0.0001000;
+    Shooter.AmpPID.k_shooterMotorFF = 0.00010;
+
     Shooter.k_shooterMinOutput = 0.0;
     Shooter.k_minAngle = 20;
     Shooter.k_absPivotOffset = 208.587 - 90;
     Shooter.k_initialPivotOffset = -1.75;
+
+    Shooter.k_pivotMotorP = 1.0;
+    Shooter.k_pivotMotorI = 0.0;
+    Shooter.k_pivotMotorD = 0.001;
+    Shooter.k_pivotMotorIZone = 0.0;
   }
 }

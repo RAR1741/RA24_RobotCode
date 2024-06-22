@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.Timer;
 import frc.robot.AllianceHelpers;
 import frc.robot.RobotTelemetry;
 import frc.robot.constants.RobotConstants;
+import frc.robot.constants.RobotConstants.RobotType;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.drivetrain.RARHolonomicDriveController;
@@ -84,7 +85,9 @@ public class DriveTrajectoryTask extends Task {
 
     // TODO: we probably want to do this all the time?
     if (!m_swerve.hasSetPose()) {
-      // m_swerve.resetOdometry(getStartingPose()); //TODO: Use RobotConstants to figure out which robot we're using, Amadeus NEEDS this call.
+      if (RobotConstants.getInstance().getRobotType() == RobotType.AMADEUS) {
+        m_swerve.resetOdometry(getStartingPose());
+      }
     }
 
     m_swerve.clearTurnPIDAccumulation();

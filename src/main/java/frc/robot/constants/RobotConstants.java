@@ -6,6 +6,7 @@ import frc.robot.Robot;
 import frc.robot.RobotTelemetry;
 
 public final class RobotConstants {
+  private static RobotConstants m_constants = null;
 
   public static String m_rioSerial = "empty";
   private static final double k_robotInitDelay = 2.0; // Seconds to wait before starting robot code
@@ -20,7 +21,14 @@ public final class RobotConstants {
   private boolean m_shooterAttached = true;
   private boolean m_climberAttached = true;
 
-  public RobotConstants() {
+  public static RobotConstants getInstance() {
+    if (m_constants == null) {
+      m_constants = new RobotConstants();
+    }
+    return m_constants;
+  }
+
+  private RobotConstants() {
     if (Robot.isReal()) {
       // Wait for the robot to fully boot up
       Timer.delay(RobotConstants.k_robotInitDelay);

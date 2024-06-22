@@ -142,10 +142,10 @@ public class Constants {
     public AmpConstants AmpPID = new AmpConstants();
 
     public class AmpConstants {
-      public double k_shooterMotorP = 0.0004300;
-      public double k_shooterMotorI = 0.00000008;
-      public double k_shooterMotorD = 0.0001000;
-      public double k_shooterMotorFF = 0.00010;
+      public double k_shooterMotorP;
+      public double k_shooterMotorI;
+      public double k_shooterMotorD;
+      public double k_shooterMotorFF;
     }
 
     public TrapConstants TrapPID = new TrapConstants();
@@ -162,10 +162,10 @@ public class Constants {
 
     public int k_pivotEncoderId = 5;
 
-    public double k_pivotMotorP = 2.0;
-    public double k_pivotMotorI = 0.0;
-    public double k_pivotMotorD = 0.001;
-    public double k_pivotMotorIZone = 0.0;
+    public double k_pivotMotorP;
+    public double k_pivotMotorI;
+    public double k_pivotMotorD;
+    public double k_pivotMotorIZone;
 
     public double k_ampPivotAngle = 65.0;
     public double k_wingPivotAngle = 26.0;

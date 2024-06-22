@@ -35,7 +35,7 @@ import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.subsystems.leds.LEDs;
 
 public class Robot extends LoggedRobot {
-  private final RobotConstants constants = new RobotConstants();
+  private final RobotConstants constants = RobotConstants.getInstance();
 
   private final DriverController m_driverController = new DriverController(0, true, true);
   private final OperatorController m_operatorController = new OperatorController(1, true, true);
