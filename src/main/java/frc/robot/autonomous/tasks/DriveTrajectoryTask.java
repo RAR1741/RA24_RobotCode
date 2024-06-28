@@ -60,7 +60,7 @@ public class DriveTrajectoryTask extends Task {
   }
 
   @Override
-  public void start() {
+  public void prepare() {
     RobotTelemetry.print("Auto trajectory start");
     m_runningTimer.reset();
     m_runningTimer.start();
@@ -86,7 +86,7 @@ public class DriveTrajectoryTask extends Task {
     // TODO: we probably want to do this all the time?
     if (!m_swerve.hasSetPose()) {
       if (RobotConstants.getInstance().getRobotType() == RobotType.AMADEUS) {
-        m_swerve.resetOdometry(getStartingPose());
+        // m_swerve.resetOdometry(getStartingPose());
       }
     }
 

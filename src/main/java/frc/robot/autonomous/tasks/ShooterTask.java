@@ -25,7 +25,7 @@ public class ShooterTask extends Task {
   }
 
   @Override
-  public void start() {
+  public void prepare() {
     RobotTelemetry.print("Auto shooter start");
 
     m_shooter.setAngle(m_pivotTarget);

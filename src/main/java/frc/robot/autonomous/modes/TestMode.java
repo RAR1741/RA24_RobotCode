@@ -3,6 +3,10 @@ package frc.robot.autonomous.modes;
 import frc.robot.autonomous.tasks.DriveForwardTask;
 import frc.robot.autonomous.tasks.DriveTask;
 import frc.robot.autonomous.tasks.DriveTrajectoryTask;
+import frc.robot.autonomous.tasks.IntakeTask;
+import frc.robot.autonomous.tasks.SkippableTask;
+import frc.robot.subsystems.Intake.IntakePivotTarget;
+import frc.robot.subsystems.Intake.IntakeState;
 
 public class TestMode extends AutoModeBase {
   @Override
@@ -29,8 +33,8 @@ public class TestMode extends AutoModeBase {
     // Note 2 (center)
     // queueTask(new IntakeTask(IntakePivotTarget.GROUND, IntakeState.NONE));
 
-    queueTask(new DriveTrajectoryTask("pleasegodihope"));
-    queueTask(new DriveForwardTask(0,0));
+    // queueTask(new DriveTrajectoryTask("pleasegodihope"));
+    // queueTask(new DriveForwardTask(0,0));
 
     // queueTask(new IntakeTask(IntakePivotTarget.GROUND, IntakeState.INTAKE));
     // queueTask(new WaitTask(0.5));
@@ -73,5 +77,6 @@ public class TestMode extends AutoModeBase {
     // queueTask(new DriveTask(-speed, 0.0, distance));
     // queueTask(new DriveTask(0.0, speed, distance));
     // queueTask(new DriveTask(0.0, -speed, distance));
+    queueTask(new SkippableTask(new DriveTrajectoryTask("4NoteClean"), 3, new IntakeTask(IntakePivotTarget.GROUND,IntakeState.INTAKE)));
   }
 }

@@ -12,7 +12,7 @@ public class WaitForTargetTask extends Task {
   }
 
   @Override
-  public void start() {
+  public void prepare() {
   }
 
   @Override

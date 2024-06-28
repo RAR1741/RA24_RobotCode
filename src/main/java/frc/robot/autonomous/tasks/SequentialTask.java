@@ -18,10 +18,10 @@ public class SequentialTask extends Task {
   }
 
   @Override
-  public void start() {
+  public void prepare() {
     m_currentTask = m_tasks[m_index];
 
-    m_currentTask.start();
+    m_currentTask.prepare();
   }
 
   @Override
@@ -37,7 +37,7 @@ public class SequentialTask extends Task {
 
       m_currentTask = m_tasks[m_index];
 
-      m_currentTask.start();
+      m_currentTask.prepare();
     } else {
       m_currentTask.update();
       m_currentTask.updateSim();

@@ -5,7 +5,7 @@ import org.littletonrobotics.junction.Logger;
 public abstract class Task {
   public boolean m_isFinished = false;
 
-  public abstract void start();
+  public abstract void prepare();
 
   public abstract void update();
 

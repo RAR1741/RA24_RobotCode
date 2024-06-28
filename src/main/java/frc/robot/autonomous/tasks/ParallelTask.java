@@ -13,9 +13,9 @@ public class ParallelTask extends Task {
   }
 
   @Override
-  public void start() {
+  public void prepare() {
     for (Task task : m_tasks) {
-      task.start();
+      task.prepare();
     }
   }
 

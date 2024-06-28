@@ -156,7 +156,7 @@ public class Robot extends LoggedRobot {
 
     // Start the first task
     if (m_currentTask != null) {
-      m_currentTask.start();
+      m_currentTask.prepare();
     }
   }
 
@@ -181,7 +181,7 @@ public class Robot extends LoggedRobot {
           // m_swerve.m_limelightRight.setLightEnabled(!m_swerve.m_limelightRight.getLightEnabled());
           // m_swerve.m_limelightShooter.setLightEnabled(!m_swerve.m_limelightShooter.getLightEnabled());
 
-          m_currentTask.start();
+          m_currentTask.prepare();
         }
       }
     }
