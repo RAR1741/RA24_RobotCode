@@ -111,6 +111,14 @@ public class DriverController extends FilteredController {
   }
 
   public boolean getWantsTrap() {
-    return this.getHat(Direction.DOWN);
+    return this.getHat(Direction.RIGHT);
+  }
+
+  public boolean getWantsLLOn() {
+    return this.getHatPressed(Direction.UP);
+  }
+
+  public boolean getWantsLLOff() {
+    return this.getHatPressed(Direction.DOWN);
   }
 }

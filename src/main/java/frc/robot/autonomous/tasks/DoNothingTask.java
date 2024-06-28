@@ -4,7 +4,7 @@ import frc.robot.RobotTelemetry;
 
 public class DoNothingTask extends Task {
   @Override
-  public void start() {
+  public void prepare() {
     RobotTelemetry.print("Starting do nothing auto...");
   }
 

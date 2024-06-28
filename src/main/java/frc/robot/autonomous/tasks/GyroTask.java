@@ -23,7 +23,7 @@ public class GyroTask extends Task {
   }
 
   @Override
-  public void start() {
+  public void prepare() {
 
   }
 

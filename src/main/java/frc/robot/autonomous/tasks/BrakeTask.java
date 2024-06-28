@@ -12,7 +12,7 @@ public class BrakeTask extends Task {
   }
 
   @Override
-  public void start() {
+  public void prepare() {
     m_swerve.setBrakeMode(m_brake);
   }
 
