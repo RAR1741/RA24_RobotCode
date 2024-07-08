@@ -57,11 +57,11 @@ public class Constants {
     public double k_ejectPivotAngle = 100.0;
     public double k_ampPivotAngle = 100.0;
 
-    public double k_intakeSpeed = 0.4;
+    public double k_intakeSpeed = 0.8;
     public double k_ejectSpeed = -0.525;
     public double k_feedShooterSpeed = -1.0;
 
-    public double k_pivotMotorP = 0.035;
+    public double k_pivotMotorP = 0.045;
     public double k_pivotMotorI = 0.0;
     public double k_pivotMotorD = 0.0;
     public double k_pivotMotorIZone = 0.0;
