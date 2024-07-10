@@ -38,14 +38,13 @@
             "/RealOutputs/SwerveDrive/Modules/FR/Turn",
             "/RealOutputs",
             "/RealOutputs/SwerveModule",
-            "/RealOutputs/Auto",
             "/RealOutputs/Auto/DriveTrajectory",
-            "/RealOutputs/SwerveDrive",
-            "/RealOutputs/SwerveDrive/HeadingLock"
+            "/RealOutputs/SwerveDrive/HeadingLock",
+            "/RealOutputs/SwerveDrive"
           ]
         },
         "tabs": {
-          "selected": 5,
+          "selected": 10,
           "tabs": [
             {
               "type": 0,
@@ -273,7 +272,7 @@
                   "fields": [
                     {
                       "key": "/RealOutputs/SwerveDrive/HeadingLock/Target/value",
-                      "color": "#80588e",
+                      "color": "#2b66a2",
                       "show": true
                     }
                   ]
@@ -282,17 +281,17 @@
                   "fields": [
                     {
                       "key": "/RealOutputs/SwerveDrive/HeadingLock/AimingToAmp",
-                      "color": "#2b66a2",
-                      "show": true
-                    },
-                    {
-                      "key": "/RealOutputs/SwerveDrive/HeadingLock/AimingToPass",
                       "color": "#e5b31b",
                       "show": true
                     },
                     {
-                      "key": "/RealOutputs/SwerveDrive/HeadingLock/AimingToSpeaker",
+                      "key": "/RealOutputs/SwerveDrive/HeadingLock/AimingToPass",
                       "color": "#af2437",
+                      "show": true
+                    },
+                    {
+                      "key": "/RealOutputs/SwerveDrive/HeadingLock/AimingToSpeaker",
+                      "color": "#80588e",
                       "show": true
                     }
                   ]
@@ -685,9 +684,9 @@
                 "arrangement": "0,1,3,2",
                 "sizeLeftRight": 0.76,
                 "sizeFrontBack": 0.76,
-                "forwardDirection": "down"
+                "forwardDirection": "up"
               },
-              "configHidden": true,
+              "configHidden": false,
               "visualizer": null,
               "title": "Swerve"
             },
