@@ -13,7 +13,7 @@ public class Constants {
   public SimulationConstants Simulation = new SimulationConstants();
   public FieldConstants Field = new FieldConstants();
   public AutoConstants Auto = new AutoConstants();
-  public VisionConstants Vision = new VisionConstants();
+  public PoseEstimationConstants Vision = new PoseEstimationConstants();
   public SwerveDriveConstants SwerveDrive = new SwerveDriveConstants();
   public AutoAimConstants AutoAim = new AutoAimConstants();
   public ShooterConstants Shooter = new ShooterConstants();
@@ -350,7 +350,7 @@ public class Constants {
     }
   }
 
-  public static class VisionConstants {
+  public static class PoseEstimationConstants {
     // Increase these numbers to trust your model's state estimates less.
     public double k_positionStdDevX = 0.1;
     public double k_positionStdDevY = 0.1;
@@ -371,15 +371,15 @@ public class Constants {
       public double k_D = 0.02;
     }
 
-    public frc.robot.constants.VisionConstants teleopVisionConstants = new frc.robot.constants.VisionConstants(1, 6.0,
+    public VisionConstants teleopVisionConstants = new VisionConstants(1, 6.0,
         32.0, 10.0);
-    public frc.robot.constants.VisionConstants defaultAutoVisionConstants = new frc.robot.constants.VisionConstants(2,
+    public VisionConstants defaultAutoVisionConstants = new VisionConstants(2,
         4.0, 32.0, 10.0);
-    public frc.robot.constants.VisionConstants fourNoteVisionConstants = new frc.robot.constants.VisionConstants(2, 4.0,
+    public VisionConstants fourNoteVisionConstants = new VisionConstants(2, 4.0,
         32.0, 10.0);
-    public frc.robot.constants.VisionConstants threeNoteVisionConstants = new frc.robot.constants.VisionConstants(2,
+    public VisionConstants threeNoteVisionConstants = new VisionConstants(2,
         6.0, 16.0, 0.25);
-    public frc.robot.constants.VisionConstants funnyNoteVisionConstants = new frc.robot.constants.VisionConstants(1,
+    public VisionConstants funnyNoteVisionConstants = new VisionConstants(1,
         10.0, 100.0, 0.25);
   }
 

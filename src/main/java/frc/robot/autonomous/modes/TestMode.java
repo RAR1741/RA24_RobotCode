@@ -77,6 +77,8 @@ public class TestMode extends AutoModeBase {
     // queueTask(new DriveTask(-speed, 0.0, distance));
     // queueTask(new DriveTask(0.0, speed, distance));
     // queueTask(new DriveTask(0.0, -speed, distance));
-    queueTask(new SkippableTask(new DriveTrajectoryTask("4NoteClean"), 3, new IntakeTask(IntakePivotTarget.GROUND,IntakeState.INTAKE)));
+    queueTask(new SkippableTask(
+      new DriveTrajectoryTask("4NoteClean"), 3, 
+      new IntakeTask(IntakePivotTarget.GROUND,IntakeState.INTAKE)));
   }
 }

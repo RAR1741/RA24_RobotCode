@@ -31,6 +31,7 @@ import frc.robot.Helpers;
 // import frc.robot.AprilTagLocations;
 import frc.robot.LimelightHelpers.PoseEstimate;
 import frc.robot.constants.RobotConstants;
+import frc.robot.constants.VisionConstants;
 import frc.robot.subsystems.Limelight;
 
 public class SwerveDrive extends SwerveSysId {
@@ -112,7 +113,7 @@ public class SwerveDrive extends SwerveSysId {
     SHOOTER, LEFT, RIGHT;
   }
 
-  public frc.robot.constants.VisionConstants m_visionConstants = RobotConstants.config.Vision.defaultAutoVisionConstants;
+  public VisionConstants m_visionConstants = RobotConstants.config.Vision.defaultAutoVisionConstants;
 
   private boolean m_hasSetPose = false;
 
