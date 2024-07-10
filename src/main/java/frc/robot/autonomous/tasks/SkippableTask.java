@@ -6,12 +6,10 @@ import edu.wpi.first.wpilibj.Timer;
 
 public class SkippableTask extends Task {
   private Task m_initialTask;
+  private Task m_nextTask;
   private double m_alottedTime;
   private double m_runTime;
-  private Task m_nextTask;
-
   private double m_startTime;
-
   private boolean m_isSkipped = false;
 
   public SkippableTask(Task initialTask, double time, Task nextTask) {
@@ -37,10 +35,9 @@ public class SkippableTask extends Task {
         m_initialTask.update();
 
         // Skip the task if it exceeded the allotted time, then prepare the task to run
-
         if (m_runTime >= m_alottedTime) {
           m_isSkipped = true;
-        
+
           m_nextTask.prepare();
         }
       }

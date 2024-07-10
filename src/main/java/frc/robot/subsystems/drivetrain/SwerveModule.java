@@ -13,6 +13,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.Helpers;
 import frc.robot.constants.RobotConstants;
 import frc.robot.wrappers.RARSparkMax;
@@ -181,6 +182,7 @@ public class SwerveModule {
         m_drivePIDController.setReference(getDriveTargetVelocity(), ControlType.kVelocity, 0, feedforward);
         m_turningPIDController.setReference(getTurnTargetAngleRadians(), ControlType.kPosition);
       } else {
+        DriverStation.reportWarning(m_moduleName + " is disabled, encoder is probably not plugged in!", false);
         m_driveMotor.setIdleMode(IdleMode.kCoast);
         m_turnMotor.setIdleMode(IdleMode.kCoast);
 
