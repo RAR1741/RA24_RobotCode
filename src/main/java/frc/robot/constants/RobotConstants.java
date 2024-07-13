@@ -1,5 +1,7 @@
 package frc.robot.constants;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Robot;
@@ -51,9 +53,9 @@ public final class RobotConstants {
         break;
       case AMADEUS:
         config = new AmadeusConstants();
-        m_intakeAttached = false;
-        m_shooterAttached = false;
-        m_climberAttached = false;
+        // m_intakeAttached = true;
+        // m_shooterAttached = true;
+        // m_climberAttached = true;
         break;
       default:
         // Set all the constants specifically for the robot
@@ -68,14 +70,17 @@ public final class RobotConstants {
       m_robotType = RobotType.SIM;
       // config = new ApolloConstants();
       RobotTelemetry.print("Robot Type: Simulation");
+      Logger.recordOutput("Robot Controller/Robot Model", "Simulation");
     } else if (m_rioSerial.equals(k_apolloSerial)) {
       m_robotType = RobotType.APOLLO;
       // config = new ApolloConstants();
       RobotTelemetry.print("Robot Type: APOLLO 2024");
+      Logger.recordOutput("Robot Controller/Robot Model", "Apollo");
     } else if (m_rioSerial.equals(k_amadeusSerial)) {
       m_robotType = RobotType.AMADEUS;
       // config = new AmadeusConstants();
       RobotTelemetry.print("Robot Type: AMADEUS 2024");
+      Logger.recordOutput("Robot Controller/Robot Model", "Amadeus");
     } else {
       m_robotType = RobotType.APOLLO;
       // config = new ApolloConstants();

@@ -47,5 +47,7 @@ public final class ApolloConstants extends Constants {
     Shooter.k_pivotMotorI = 0.0;
     Shooter.k_pivotMotorD = 0.001;
     Shooter.k_pivotMotorIZone = 0.0;
+
+    Intake.k_stowPivotAngle = 256.5;
   }
 }

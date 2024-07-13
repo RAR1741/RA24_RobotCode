@@ -185,7 +185,7 @@ public class SwerveModule {
         DriverStation.reportWarning(m_moduleName + " is disabled, encoder is probably not plugged in!", false);
         m_driveMotor.setIdleMode(IdleMode.kCoast);
         m_turnMotor.setIdleMode(IdleMode.kCoast);
-
+ 
         m_drivePIDController.setReference(0, ControlType.kVoltage);
         m_turningPIDController.setReference(0, ControlType.kVoltage);
       }

@@ -51,7 +51,7 @@ public class Constants {
 
     public int k_pivotEncoderId = 4;
 
-    public double k_stowPivotAngle = 256.5;
+    public double k_stowPivotAngle;
     public double k_groundPivotAngle = 40.4;
     public double k_sourcePivotAngle = 180.0;
     public double k_ejectPivotAngle = 100.0;
@@ -299,7 +299,7 @@ public class Constants {
       public int k_BRMotorId = 10;
       public int k_BLMotorId = 12;
 
-      public int k_currentLimit = 40;
+      public int k_currentLimit = 20;
 
       public double k_P;
       public double k_I = 0.0;
@@ -326,7 +326,7 @@ public class Constants {
       public int k_BRAbsId = 2;
       public int k_BLAbsId = 3;
 
-      public int k_currentLimit = 25;
+      public int k_currentLimit = 20;
 
       public int k_FLMotorId = 5;
       public int k_FRMotorId = 7;
