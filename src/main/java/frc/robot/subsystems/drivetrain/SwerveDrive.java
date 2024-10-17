@@ -27,9 +27,11 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.AllianceHelpers;
-import frc.robot.AprilTagLocations;
+import frc.robot.Helpers;
+// import frc.robot.AprilTagLocations;
 import frc.robot.LimelightHelpers.PoseEstimate;
 import frc.robot.constants.RobotConstants;
+import frc.robot.constants.VisionConstants;
 import frc.robot.subsystems.Limelight;
 
 public class SwerveDrive extends SwerveSysId {
@@ -39,16 +41,20 @@ public class SwerveDrive extends SwerveSysId {
   // private Pose2d m_accelerometerPose;
 
   private static final SwerveModule[] m_modules = {
-      new SwerveModule(RobotConstants.config.SwerveDrive.Drive.k_FLMotorId, RobotConstants.config.SwerveDrive.Turn.k_FLMotorId,
+      new SwerveModule(RobotConstants.config.SwerveDrive.Drive.k_FLMotorId,
+          RobotConstants.config.SwerveDrive.Turn.k_FLMotorId,
           RobotConstants.config.SwerveDrive.Turn.k_FLAbsId,
           RobotConstants.config.SwerveDrive.Turn.k_FLOffset, "FL"), // 0
-      new SwerveModule(RobotConstants.config.SwerveDrive.Drive.k_FRMotorId, RobotConstants.config.SwerveDrive.Turn.k_FRMotorId,
+      new SwerveModule(RobotConstants.config.SwerveDrive.Drive.k_FRMotorId,
+          RobotConstants.config.SwerveDrive.Turn.k_FRMotorId,
           RobotConstants.config.SwerveDrive.Turn.k_FRAbsId,
           RobotConstants.config.SwerveDrive.Turn.k_FROffset, "FR"), // 1
-      new SwerveModule(RobotConstants.config.SwerveDrive.Drive.k_BRMotorId, RobotConstants.config.SwerveDrive.Turn.k_BRMotorId,
+      new SwerveModule(RobotConstants.config.SwerveDrive.Drive.k_BRMotorId,
+          RobotConstants.config.SwerveDrive.Turn.k_BRMotorId,
           RobotConstants.config.SwerveDrive.Turn.k_BRAbsId,
           RobotConstants.config.SwerveDrive.Turn.k_BROffset, "BR"), // 2
-      new SwerveModule(RobotConstants.config.SwerveDrive.Drive.k_BLMotorId, RobotConstants.config.SwerveDrive.Turn.k_BLMotorId,
+      new SwerveModule(RobotConstants.config.SwerveDrive.Drive.k_BLMotorId,
+          RobotConstants.config.SwerveDrive.Turn.k_BLMotorId,
           RobotConstants.config.SwerveDrive.Turn.k_BLAbsId,
           RobotConstants.config.SwerveDrive.Turn.k_BLOffset, "BL") // 3
   };
@@ -57,16 +63,20 @@ public class SwerveDrive extends SwerveSysId {
   // Robot "left" is +y
   // Robot "clockwise" is -z
   private final Translation2d[] m_moduleLocations = {
-      new Translation2d(RobotConstants.config.SwerveDrive.k_xCenterDistance, RobotConstants.config.SwerveDrive.k_yCenterDistance),
-      new Translation2d(RobotConstants.config.SwerveDrive.k_xCenterDistance, -RobotConstants.config.SwerveDrive.k_yCenterDistance),
-      new Translation2d(-RobotConstants.config.SwerveDrive.k_xCenterDistance, -RobotConstants.config.SwerveDrive.k_yCenterDistance),
-      new Translation2d(-RobotConstants.config.SwerveDrive.k_xCenterDistance, RobotConstants.config.SwerveDrive.k_yCenterDistance)
+      new Translation2d(RobotConstants.config.SwerveDrive.k_xCenterDistance,
+          RobotConstants.config.SwerveDrive.k_yCenterDistance),
+      new Translation2d(RobotConstants.config.SwerveDrive.k_xCenterDistance,
+          -RobotConstants.config.SwerveDrive.k_yCenterDistance),
+      new Translation2d(-RobotConstants.config.SwerveDrive.k_xCenterDistance,
+          -RobotConstants.config.SwerveDrive.k_yCenterDistance),
+      new Translation2d(-RobotConstants.config.SwerveDrive.k_xCenterDistance,
+          RobotConstants.config.SwerveDrive.k_yCenterDistance)
   };
 
   private final AHRS m_gyro = new AHRS(SPI.Port.kMXP);
-  public final Limelight m_limelightLeft = new Limelight("limelight-left");
-  public final Limelight m_limelightRight = new Limelight("limelight-right");
-  public final Limelight m_limelightShooter = new Limelight("limelight-shooter");
+  public final Limelight m_limelightLeft;
+  public final Limelight m_limelightRight;
+  public final Limelight m_limelightShooter;
 
   private SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
       m_moduleLocations[Module.FRONT_LEFT],
@@ -103,7 +113,7 @@ public class SwerveDrive extends SwerveSysId {
     SHOOTER, LEFT, RIGHT;
   }
 
-  public frc.robot.constants.VisionConstants m_visionConstants = RobotConstants.config.Vision.defaultAutoVisionConstants;
+  public VisionConstants m_visionConstants = RobotConstants.config.Vision.defaultAutoVisionConstants;
 
   private boolean m_hasSetPose = false;
 
@@ -117,6 +127,10 @@ public class SwerveDrive extends SwerveSysId {
 
     resetTurnOffsets();
     reset();
+
+    m_limelightLeft = new Limelight("limelight-left");
+    m_limelightRight = new Limelight("limelight-right");
+    m_limelightShooter = new Limelight("limelight-shooter");
   }
 
   public static SwerveDrive getInstance() {
@@ -158,21 +172,22 @@ public class SwerveDrive extends SwerveSysId {
     return degreeMode ? Units.radiansToDegrees(theta) : theta;
   }
 
-  public double calculateAmpAutoAimAngle(boolean degreeMode) {
-    double botX = m_poseEstimator.getEstimatedPosition().getX();
-    double botY = m_poseEstimator.getEstimatedPosition().getY();
-    double targetX = AprilTagLocations.Blue.k_ampTag6.getX(); // TODO: Work on red
-    double targetY = AprilTagLocations.Blue.k_ampTag6.getY();
+  // public double calculateAmpAutoAimAngle(boolean degreeMode) {
+  // double botX = m_poseEstimator.getEstimatedPosition().getX();
+  // double botY = m_poseEstimator.getEstimatedPosition().getY();
+  // double targetX = AprilTagLocations.Blue.k_ampTag6.getX(); // TODO: Work on
+  // red
+  // double targetY = AprilTagLocations.Blue.k_ampTag6.getY();
 
-    double x = targetX - botX;
-    double distance = Math.sqrt(Math.pow(x, 2) + Math.pow(targetY - botY, 2));
+  // double x = targetX - botX;
+  // double distance = Math.sqrt(Math.pow(x, 2) + Math.pow(targetY - botY, 2));
 
-    double theta = Math.acos(x / distance);
+  // double theta = Math.acos(x / distance);
 
-    putNumber("AutoAimAngle", Units.radiansToDegrees(theta));
+  // putNumber("AutoAimAngle", Units.radiansToDegrees(theta));
 
-    return degreeMode ? Units.radiansToDegrees(theta) : theta;
-  }
+  // return degreeMode ? Units.radiansToDegrees(theta) : theta;
+  // }
 
   public void resetPose() {
     resetGyro();
@@ -273,6 +288,8 @@ public class SwerveDrive extends SwerveSysId {
         m_modules[Module.BACK_LEFT].getState());
   }
 
+  private boolean shouldManualRotate = false;
+
   public void driveLockedHeading(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean speakerAim,
       boolean ampAim, boolean passAim) {
     double rotationFeedback = 0.0;
@@ -293,15 +310,22 @@ public class SwerveDrive extends SwerveSysId {
     }
 
     if (Math.abs(rot) > 0.03 * RobotConstants.config.SwerveDrive.k_maxAngularSpeed) {
+      shouldManualRotate = true;
       m_rotationTarget = currentRotation.plus(new Rotation2d(rot * (1.0 / 50.0)));
     } else {
+      if (shouldManualRotate) {
+        m_rotationTarget = currentRotation.plus(Rotation2d.fromDegrees(m_gyro.getRate() * (1.0 / 50.0) * 1.0));
+      }
+      shouldManualRotate = false;
+
       rotationFeedback = k_rotController.calculate(
           currentRotation.getRadians(),
           m_rotationTarget.getRadians());
     }
     Logger.recordOutput("SwerveDrive/HeadingLock/RotFeedback", rotationFeedback);
     Logger.recordOutput("SwerveDrive/HeadingLock/RotFeedforward", rotationFF);
-    Logger.recordOutput("SwerveDrive/HeadingLock/Target", m_rotationTarget);
+    Logger.recordOutput("SwerveDrive/HeadingLock/Target", Helpers.modRadians(m_rotationTarget.getRadians()));
+    Logger.recordOutput("SwerveDrive/HeadingLock/CurrentRotation", Helpers.modRadians(currentRotation.getRadians()));
 
     Logger.recordOutput("SwerveDrive/HeadingLock/AimingToSpeaker", speakerAim);
     Logger.recordOutput("SwerveDrive/HeadingLock/AimingToAmp", ampAim);
@@ -459,30 +483,44 @@ public class SwerveDrive extends SwerveSysId {
   // private double autoStdDevScale = m_visionConstants.autoStdDevScale; // 16.0;
 
   public void updateVisionPoseWithStdDev(PoseEstimate poseEstimate, VisionInstance instanceIndex) {
+    // if (instanceIndex != VisionInstance.SHOOTER) {
+    // return;
+    // }
+
     // Add observation to list
     double avgDistance = poseEstimate.avgTagDist;
     // double avgArea = poseEstimate.avgTagArea;
 
-    if (poseEstimate.tagCount < m_visionConstants.minTagCount) {
+    // if (poseEstimate.tagCount < m_visionConstants.minTagCount) {
+    // return;
+    // }
+
+    // if (avgDistance >= m_visionConstants.maxAvgDistance) {
+    // return;
+    // }
+
+    if (poseEstimate.pose.getX() <= 0 || poseEstimate.pose.getX() > RobotConstants.config.Field.k_width) {
       return;
     }
 
-    if (avgDistance >= m_visionConstants.maxAvgDistance) {
+    if (poseEstimate.pose.getY() <= 0 || poseEstimate.pose.getY() > RobotConstants.config.Field.k_length) {
       return;
     }
 
-    if (poseEstimate.pose.getX() < 0 || poseEstimate.pose.getX() > RobotConstants.config.Field.k_width) {
+    if (poseEstimate.tagCount <= 0) {
       return;
     }
 
-    if (poseEstimate.pose.getY() < 0 || poseEstimate.pose.getY() > RobotConstants.config.Field.k_length) {
+    if (Math.abs(m_gyro.getRate()) > 720) {
       return;
     }
 
-    if (getChassisSpeeds().vxMetersPerSecond > m_visionConstants.autoTranslationMax
-        || getChassisSpeeds().vyMetersPerSecond > m_visionConstants.autoTranslationMax) {
-      return;
-    }
+    // if (getChassisSpeeds().vxMetersPerSecond >
+    // m_visionConstants.autoTranslationMax
+    // || getChassisSpeeds().vyMetersPerSecond >
+    // m_visionConstants.autoTranslationMax) {
+    // return;
+    // }
 
     double xyStdDev = xyStdDevCoefficient
         * Math.pow(avgDistance, 2.0)
@@ -501,7 +539,12 @@ public class SwerveDrive extends SwerveSysId {
     m_poseEstimator.addVisionMeasurement(
         poseEstimate.pose,
         poseEstimate.timestampSeconds,
-        createVisionMeasurementStdDevs(xyStdDev, xyStdDev, thetaStdDev));
+        VecBuilder.fill(xyStdDev, xyStdDev, 99999.0));
+
+    // m_poseEstimator.addVisionMeasurement(
+    // poseEstimate.pose,
+    // poseEstimate.timestampSeconds);
+    // createVisionMeasurementStdDevs(xyStdDev, xyStdDev, thetaStdDev);
   }
 
   // private Pose2d clampPose(Pose2d pose) {

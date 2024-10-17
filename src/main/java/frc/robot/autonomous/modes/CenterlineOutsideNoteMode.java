@@ -23,7 +23,8 @@ public class CenterlineOutsideNoteMode extends AutoModeBase {
         new ShooterTask(ShooterPivotTarget.SUBWOOFER, ShooterSpeedTarget.MAX),
         new IntakeTask(IntakePivotTarget.STOW, IntakeState.NONE),
         new AutoTargetTask(AllianceHelpers.getAllianceSpeakerPose3d())));
-
+    // queueShooterSpinUp();
+    // queueAutoTarget();
     queueShoot();
 
     // Note 2 (Center 4)

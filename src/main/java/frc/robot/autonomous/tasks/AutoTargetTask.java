@@ -51,7 +51,7 @@ public class AutoTargetTask extends Task {
   }
 
   @Override
-  public void start() {
+  public void prepare() {
     RobotTelemetry.print("Auto target start");
 
     Pose2d currentPose = m_swerve.getPose();

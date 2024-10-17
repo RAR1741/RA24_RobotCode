@@ -13,7 +13,7 @@ public class Constants {
   public SimulationConstants Simulation = new SimulationConstants();
   public FieldConstants Field = new FieldConstants();
   public AutoConstants Auto = new AutoConstants();
-  public VisionConstants Vision = new VisionConstants();
+  public PoseEstimationConstants Vision = new PoseEstimationConstants();
   public SwerveDriveConstants SwerveDrive = new SwerveDriveConstants();
   public AutoAimConstants AutoAim = new AutoAimConstants();
   public ShooterConstants Shooter = new ShooterConstants();
@@ -57,11 +57,11 @@ public class Constants {
     public double k_ejectPivotAngle = 100.0;
     public double k_ampPivotAngle = 100.0;
 
-    public double k_intakeSpeed = 0.4;
+    public double k_intakeSpeed = 0.8;
     public double k_ejectSpeed = -0.525;
     public double k_feedShooterSpeed = -1.0;
 
-    public double k_pivotMotorP = 0.035;
+    public double k_pivotMotorP = 0.045;
     public double k_pivotMotorI = 0.0;
     public double k_pivotMotorD = 0.0;
     public double k_pivotMotorIZone = 0.0;
@@ -112,7 +112,7 @@ public class Constants {
 
     public Pose2d k_redPassPose = new Pose2d(14.71, 6.0, new Rotation2d());
     public Pose2d k_bluePassPose = new Pose2d(1.75, 6.0, new Rotation2d());
-    public double k_passAngle = 23.5;
+    public double k_passAngle = 23.75;
   }
 
   public static class ShooterConstants {
@@ -131,6 +131,7 @@ public class Constants {
     public int k_bottomMotorId = 17;
 
     public ShootConstants ShootPID = new ShootConstants();
+
     public class ShootConstants {
       public double k_shooterMotorP;
       public double k_shooterMotorI;
@@ -139,14 +140,16 @@ public class Constants {
     }
 
     public AmpConstants AmpPID = new AmpConstants();
+
     public class AmpConstants {
-      public double k_shooterMotorP = 0.0004300;
-      public double k_shooterMotorI = 0.00000008;
-      public double k_shooterMotorD = 0.0001000;
-      public double k_shooterMotorFF = 0.00010;
+      public double k_shooterMotorP;
+      public double k_shooterMotorI;
+      public double k_shooterMotorD;
+      public double k_shooterMotorFF;
     }
 
     public TrapConstants TrapPID = new TrapConstants();
+
     public class TrapConstants {
       public double k_shooterMotorP = 0.0009300;
       public double k_shooterMotorI = 0.00000008;
@@ -159,10 +162,10 @@ public class Constants {
 
     public int k_pivotEncoderId = 5;
 
-    public double k_pivotMotorP = 2.0;
-    public double k_pivotMotorI = 0.0;
-    public double k_pivotMotorD = 0.001;
-    public double k_pivotMotorIZone = 0.0;
+    public double k_pivotMotorP;
+    public double k_pivotMotorI;
+    public double k_pivotMotorD;
+    public double k_pivotMotorIZone;
 
     public double k_ampPivotAngle = 65.0;
     public double k_wingPivotAngle = 26.0;
@@ -347,7 +350,7 @@ public class Constants {
     }
   }
 
-  public static class VisionConstants {
+  public static class PoseEstimationConstants {
     // Increase these numbers to trust your model's state estimates less.
     public double k_positionStdDevX = 0.1;
     public double k_positionStdDevY = 0.1;
@@ -368,11 +371,16 @@ public class Constants {
       public double k_D = 0.02;
     }
 
-    public frc.robot.constants.VisionConstants teleopVisionConstants = new frc.robot.constants.VisionConstants(1, 6.0, 32.0, 10.0);
-    public frc.robot.constants.VisionConstants defaultAutoVisionConstants = new frc.robot.constants.VisionConstants(2, 4.0, 32.0, 10.0);
-    public frc.robot.constants.VisionConstants fourNoteVisionConstants = new frc.robot.constants.VisionConstants(2, 4.0, 32.0, 10.0);
-    public frc.robot.constants.VisionConstants threeNoteVisionConstants = new frc.robot.constants.VisionConstants(2, 6.0, 16.0, 0.25);
-    public frc.robot.constants.VisionConstants funnyNoteVisionConstants = new frc.robot.constants.VisionConstants(1, 10.0, 100.0, 0.25);
+    public VisionConstants teleopVisionConstants = new VisionConstants(1, 6.0,
+        32.0, 10.0);
+    public VisionConstants defaultAutoVisionConstants = new VisionConstants(2,
+        4.0, 32.0, 10.0);
+    public VisionConstants fourNoteVisionConstants = new VisionConstants(2, 4.0,
+        32.0, 10.0);
+    public VisionConstants threeNoteVisionConstants = new VisionConstants(2,
+        6.0, 16.0, 0.25);
+    public VisionConstants funnyNoteVisionConstants = new VisionConstants(1,
+        10.0, 100.0, 0.25);
   }
 
   public static class AutoConstants {
@@ -394,16 +402,19 @@ public class Constants {
   }
 
   public LEDsConstants LEDs = new LEDsConstants();
+
   public static class LEDsConstants {
     public int k_PWMId = 1;
 
     public DriveConstants Drive = new DriveConstants();
+
     public class DriveConstants {
       public int k_start = 0;
       public int k_length = 150;
     }
 
     public ShooterConstants Shooter = new ShooterConstants();
+
     public class ShooterConstants {
       public int k_start = Drive.k_start + Drive.k_length;
       public int k_length = 150;

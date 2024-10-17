@@ -35,8 +35,7 @@ import frc.robot.subsystems.drivetrain.SwerveDrive;
 import frc.robot.subsystems.leds.LEDs;
 
 public class Robot extends LoggedRobot {
-  @SuppressWarnings("unused")
-  private final RobotConstants constants = new RobotConstants();
+  private final RobotConstants constants = RobotConstants.getInstance();
 
   private final DriverController m_driverController = new DriverController(0, true, true);
   private final OperatorController m_operatorController = new OperatorController(1, true, true);
@@ -65,7 +64,7 @@ public class Robot extends LoggedRobot {
   AutoChooser m_autoChooser = new AutoChooser();
 
   // Misc vars
-  private final boolean k_lockHeading = true;
+  private boolean k_lockHeading = true;
   private boolean m_intaking = false;
   public final static boolean k_ledsEnabled = true;
 
@@ -150,14 +149,14 @@ public class Robot extends LoggedRobot {
 
     m_swerve.m_limelightLeft.setLightEnabled(true);
     m_swerve.m_limelightRight.setLightEnabled(true);
-    m_swerve.m_limelightShooter.setLightEnabled(true);
+    m_swerve.m_limelightShooter.setLightEnabled(false);
 
     m_autoRunner.setAutoMode(m_autoChooser.getSelectedAuto());
     m_currentTask = m_autoRunner.getNextTask();
 
     // Start the first task
     if (m_currentTask != null) {
-      m_currentTask.start();
+      m_currentTask.prepare();
     }
   }
 
@@ -182,7 +181,7 @@ public class Robot extends LoggedRobot {
           // m_swerve.m_limelightRight.setLightEnabled(!m_swerve.m_limelightRight.getLightEnabled());
           // m_swerve.m_limelightShooter.setLightEnabled(!m_swerve.m_limelightShooter.getLightEnabled());
 
-          m_currentTask.start();
+          m_currentTask.prepare();
         }
       }
     }
@@ -416,7 +415,17 @@ public class Robot extends LoggedRobot {
     if(demoMode) {
       setDemoLEDs();
     }
-  }
+
+    if (m_driverController.getWantsLLOn()) {
+      m_swerve.m_limelightLeft.setLightEnabled(true);
+      m_swerve.m_limelightShooter.setLightEnabled(true);
+      m_swerve.m_limelightRight.setLightEnabled(true);
+    } else if (m_driverController.getWantsLLOff()) {
+      m_swerve.m_limelightLeft.setLightEnabled(false);
+      m_swerve.m_limelightShooter.setLightEnabled(false);
+      m_swerve.m_limelightRight.setLightEnabled(false);
+    }
+   }
 
   public void setDemoLEDs() {
     if (Preferences.getBoolean("Demo Mode", false)) {
@@ -475,7 +484,7 @@ public class Robot extends LoggedRobot {
   public void disabledPeriodic() {
 
     if (m_driverController.getWantsResetModules()) {
-      m_leds.setAllColor(Color.kPurple);
+      m_leds.breathe();
       m_swerve.resetTurnOffsets();
       m_swerve.resetOdometry(m_swerve.getPose(), false, true);
       // m_leds.rainbowBreatheSlow();

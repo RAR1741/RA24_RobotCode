@@ -26,7 +26,7 @@ public class IntakeTask extends Task {
   }
 
   @Override
-  public void start() {
+  public void prepare() {
     RobotTelemetry.print("Auto Intake start");
     m_intake.setPivotTarget(m_pivotTarget);
     m_intake.setIntakeState(m_intakeState);
