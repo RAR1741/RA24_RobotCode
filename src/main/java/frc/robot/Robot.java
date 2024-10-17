@@ -149,7 +149,7 @@ public class Robot extends LoggedRobot {
 
     m_swerve.m_limelightLeft.setLightEnabled(true);
     m_swerve.m_limelightRight.setLightEnabled(true);
-    m_swerve.m_limelightShooter.setLightEnabled(true);
+    m_swerve.m_limelightShooter.setLightEnabled(false);
 
     m_autoRunner.setAutoMode(m_autoChooser.getSelectedAuto());
     m_currentTask = m_autoRunner.getNextTask();
